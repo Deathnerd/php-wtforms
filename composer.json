@@ -1,0 +1,26 @@
+{
+  "name": "deathnerd/php-wtforms",
+  "description": "A PHP rewrite of the fantastic Python library WTForms",
+  "minimum-stability": "dev",
+  "license": "GPL-2.0",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/deathnerd/php-wtforms.git"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Wes Gilleland",
+      "email": "wes.gilleland@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "WTForms\\": "src/",
+      "WTForms\\CSRF\\": "src/csrf/",
+      "WTForms\\Fields\\": "src/fields/"
+    },
+    "files": ["src/helpers.php"]
+  }
+}
