@@ -22,7 +22,7 @@ class ListWidget extends Widget
         $this->prefix_label = $prefix_label;
     }
 
-    public function call(Field $field, $kwargs = [])
+    public function __invoke(Field $field, $kwargs = [])
     {
         $kwargs['id'] = is_null($kwargs['id']) ? $field->id : $kwargs['id'];
         $html = ["<$this->html_tag " . html_params($kwargs) . ">"];

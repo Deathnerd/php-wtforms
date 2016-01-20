@@ -9,8 +9,10 @@
 namespace Deathnerd\WTForms;
 
 
+use Deathnerd\WTForms\Fields\Field;
 use Deathnerd\WTForms\Fields\UnboundField;
 use Illuminate\Support\Collection;
+use Deathnerd\WTForms\Fields;
 
 /**
  * This is the default Meta class which defines all the default values
@@ -19,11 +21,16 @@ use Illuminate\Support\Collection;
  */
 class DefaultMeta
 {
-    public function bind_field($form, UnboundField $unbound_field, Collection $options)
+    public function bind_field(Form $form, UnboundField $unbound_field, Collection $options)
     {
         return $unbound_field->bind()
     }
 
+    /**
+     * @param Field $field
+     * @param array $render_kw
+     * @return mixed
+     */
     public function render_field(Field $field, $render_kw = [])
     {
         $other_kw = property_exists($field, 'render_kw') ? $field->render_kw : null;

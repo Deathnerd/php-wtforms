@@ -12,7 +12,7 @@ use Deathnerd\WTForms\Fields\Field;
 
 class Option
 {
-    public function call(Field $field, array $kwargs=[])
+    public function __invoke(Field $field, array $kwargs=[])
     {
         return Select::render_option($field->_value(), $field->label->text, $field->checked, $kwargs);
     }
