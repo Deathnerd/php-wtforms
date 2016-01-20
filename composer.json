@@ -19,11 +19,13 @@
     "psr-4": {
       "Deathnerd\\WTForms\\": "src/",
       "Deathnerd\\WTForms\\CSRF\\": "src/CSRF/",
-      "Deathnerd\\WTForms\\Fields\\": "src/Fields/"
+      "Deathnerd\\WTForms\\Fields\\": "src/Fields/",
+      "Deathnerd\\WTForms\\Widgets\\": "src/Widgets/"
     },
     "files": ["src/helpers.php"]
   },
   "require": {
+    "php": ">=5.3.*",
     "illuminate/support": "^5.2",
     "gettext/gettext": "^3.5",
     "gettext/languages": "^2.1"
