@@ -55,6 +55,10 @@ class Validator implements ValidatorInterface
 class StopValidation extends \Exception
 {
     /**
+     * @var array
+     */
+    public $args = [];
+    /**
      * Causes the validation chain to stop.
      *
      * If StopValidation is raised, no more validators in the validation chain are
@@ -67,6 +71,7 @@ class StopValidation extends \Exception
      */
     public function __construct($message, $code = 0, \Exception $previous = null)
     {
+        $this->args = func_get_args();
         parent::__construct($message, $code, $previous);
     }
 }
