@@ -125,6 +125,28 @@ if (!function_exists('html_params')) {
     }
 }
 
+if(!function_exists('chain')){
+    /**
+     * An implementation of Python's itertools.chain method.
+     *
+     * Makes an iterator that returns elements from teh first iterable until
+     * it is exhausted, then proceeds to the next iterable, until all of the
+     * iterables are exhausted. Used for treating consecutive sequences as a
+     * single sequence
+     *
+     * @see https://docs.python.org/2/library/itertools.html#itertools.chain
+     * @param array $iterables An array of iterables to iterate through
+     * @return Generator
+     */
+    function chain(array $iterables){
+        foreach($iterables as $it){
+            foreach($it as $element){
+                yield $element;
+            }
+        }
+    }
+}
+
 abstract class CanCall {
     public function call(){
         throw new RuntimeException;
