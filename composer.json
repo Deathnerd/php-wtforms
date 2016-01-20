@@ -17,10 +17,15 @@
   ],
   "autoload": {
     "psr-4": {
-      "WTForms\\": "src/",
-      "WTForms\\CSRF\\": "src/csrf/",
-      "WTForms\\Fields\\": "src/fields/"
+      "Deathnerd\\WTForms\\": "src/",
+      "Deathnerd\\WTForms\\CSRF\\": "src/CSRF/",
+      "Deathnerd\\WTForms\\Fields\\": "src/Fields/"
     },
     "files": ["src/helpers.php"]
+  },
+  "require": {
+    "illuminate/support": "^5.2",
+    "gettext/gettext": "^3.5",
+    "gettext/languages": "^2.1"
   }
 }
