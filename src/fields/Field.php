@@ -23,8 +23,9 @@ define('UNSET_VALUE', new Utils\UnsetValue());
  * Field base class
  * @package Deathnerd\WTForms\Fields
  */
-class Field extends CanCall implements \Iterator
+class Field implements \Iterator
 {
+    public $data;
     /**
      * @var array
      */
@@ -253,7 +254,64 @@ class Field extends CanCall implements \Iterator
 
         }
     }
+    /**
+     * Run a validation chain, stopping if any validator raises StopValidation
+     *
+     * @param Form $form The form instance this field belongs to
+     * @param \Generator $validators A sequence or iterable of validator callables
+     * @return bool True if the validation was stopped, False if otherwise
+     */
+    private function _run_validation_chain(Form $form, \Generator $validators)
+    {
+        foreach ($validators as $v) {
+            /**
+             * @var Validator
+             */
+            $validator = $v;
+            try {
+                $validator->call($form, $this);
+            } catch (StopValidation $e) {
+                if (!empty($e->args) && $e->args[0]) {
+                    $this->errors[] = $e->args[0];
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
+    /**
+     * Override if you need field-level validation. Runs before any other
+     * validators.
+     * @param Form $form The form the field belongs to
+     */
+    private function pre_validate($form)
+    {
+    }
+
+    /**
+     * Override if you need to run any field-level validation tasks after
+     * normal validation. This shouldn't be needed in most cases
+     *
+     * @param Form $form The form the field belongs to
+     * @param boolean $stop_validation `True` if any validator raised `StopValidation`
+     */
+    private function post_validate($form, $stop_validation)
+    {
+    }
+
+    /**
+     * To satisfy my static analyzer
+     * @return string
+     */
+    public function _value()
+    {
+        return "";
+    }
+
+    /////////////////////////////////////////////////
+    // INHERITED ITERABLE OVERRIDES                //
+    /////////////////////////////////////////////////
     /**
      * Return the current element
      * @link http://php.net/manual/en/iterator.current.php
@@ -310,58 +368,6 @@ class Field extends CanCall implements \Iterator
     public function rewind()
     {
         reset($this->entries);
-    }
-
-    public function _value()
-    {
-        return "";
-    }
-
-
-    /**
-     * Run a validation chain, stopping if any validator raises StopValidation
-     *
-     * @param Form $form The form instance this field belongs to
-     * @param \Generator $validators A sequence or iterable of validator callables
-     * @return bool True if the validation was stopped, False if otherwise
-     */
-    private function _run_validation_chain(Form $form, \Generator $validators)
-    {
-        foreach ($validators as $v) {
-            /**
-             * @var Validator
-             */
-            $validator = $v;
-            try {
-                $validator->call($form, $this);
-            } catch (StopValidation $e) {
-                if (!empty($e->args) && $e->args[0]) {
-                    $this->errors[] = $e->args[0];
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Override if you need field-level validation. Runs before any other
-     * validators.
-     * @param Form $form The form the field belongs to
-     */
-    private function pre_validate($form)
-    {
-    }
-
-    /**
-     * Override if you need to run any field-level validation tasks after
-     * normal validation. This shouldn't be needed in most cases
-     *
-     * @param Form $form The form the field belongs to
-     * @param boolean $stop_validation `True` if any validator raised `StopValidation`
-     */
-    private function post_validate($form, $stop_validation)
-    {
     }
 }
 
