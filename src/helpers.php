@@ -148,6 +148,7 @@ if(!function_exists('chain')){
 }
 
 abstract class CanCall {
+    // TODO Possibly get rid of this and implement a Callable structure
     public function call(){
         throw new RuntimeException;
     }
