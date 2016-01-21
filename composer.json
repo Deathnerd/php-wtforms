@@ -25,7 +25,7 @@
     "files": ["src/helpers.php"]
   },
   "require": {
-    "php": ">=5.3.*",
+    "php": ">=5.3",
     "illuminate/support": "^5.2",
     "gettext/gettext": "^3.5",
     "gettext/languages": "^2.1"
