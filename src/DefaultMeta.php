@@ -23,7 +23,8 @@ class DefaultMeta
 {
     public function bind_field(Form $form, UnboundField $unbound_field, Collection $options)
     {
-        return $unbound_field->bind()
+        // TODO Finish DefaultMeta
+        return $unbound_field->bind();
     }
 
     /**
@@ -35,7 +36,7 @@ class DefaultMeta
     {
         $other_kw = property_exists($field, 'render_kw') ? $field->render_kw : null;
         if(!is_null($other_kw)){
-            $render_kw = array_merge($other_kw, $render_kw)
+            $render_kw = array_merge($other_kw, $render_kw);
         }
         return $field->widget->call($field, $render_kw);
     }

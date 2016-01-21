@@ -18,9 +18,10 @@
   "autoload": {
     "psr-4": {
       "Deathnerd\\WTForms\\": "src/",
-      "Deathnerd\\WTForms\\CSRF\\": "src/CSRF/",
-      "Deathnerd\\WTForms\\Fields\\": "src/Fields/",
-      "Deathnerd\\WTForms\\Widgets\\": "src/Widgets/"
+      "Deathnerd\\WTForms\\CSRF\\": "src/csrf/",
+      "Deathnerd\\WTForms\\Fields\\": "src/fields/",
+      "Deathnerd\\WTForms\\Widgets\\": "src/widgets/",
+      "Deathnerd\\WTForms\\Validators\\": "src/validators"
     },
     "files": ["src/helpers.php"]
   },

@@ -7,25 +7,9 @@
  */
 
 namespace Deathnerd\WTForms;
-use Illuminate\Support\Collection;
 
 
-/**
- * Base Form Class.
- * Provides core behaviour like field construction, validation, and data and error proxying.
- * @package Deathnerd\WTForms
- */
-class BaseForm
+class Form extends BaseForm
 {
-
-    /**
-     * BaseForm constructor.
-     */
-    public function __construct(Collection $fields, $prefix="")
-    {
-    }
-}
-
-class Form extends BaseForm{
-
+    //TODO Implement Form
 }
