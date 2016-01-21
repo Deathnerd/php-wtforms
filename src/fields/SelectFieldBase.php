@@ -8,6 +8,8 @@
 
 namespace Deathnerd\WTForms\Fields;
 
+use Deathnerd\WTForms\Widgets\Option;
+
 abstract class SelectFieldBase extends Field
 {
     /**
@@ -19,19 +21,15 @@ abstract class SelectFieldBase extends Field
      * SelectFieldBase constructor.
      * @param string $label
      * @param array $validators
-     * @param \Widgets\Option $option_widget
+     * @param Option $option_widget
      * @param array $kwargs
      * @throws \TypeError
      */
-    public function __construct($label = "", array $validators = [], \Widgets\Option $option_widget = null, array $kwargs = [])
+    public function __construct($label = "", array $validators = [], Option $option_widget = null, array $kwargs = [])
     {
         $kwargs['validators'] = $validators;
         parent::__construct($label, $kwargs);
-        $this->option_widget = new Option();
-
-        if(!is_null($option_widget)){
-            $this->option_widget = $option_widget;
-        }
+        $this->option_widget = !is_null($option_widget) ? $option_widget : new Option();
     }
 
     /**
@@ -39,15 +37,16 @@ abstract class SelectFieldBase extends Field
      * iterable of `[value,label,selected]` tuples
      * @return array
      */
-    public function iter_choices(){
+    public function iter_choices()
+    {
         throw new \RuntimeException;
     }
 
     //TODO Implement PHP equivalent of __iter__
 }
 
-class _Option extends Field{
+//TODO Decide if Namespacing this to only be accessible from SelectFieldBase is necessary
+class _Option extends Field
+{
     public $checked = false;
-
-
 }
