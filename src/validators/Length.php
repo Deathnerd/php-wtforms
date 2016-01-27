@@ -18,24 +18,26 @@ use Deathnerd\WTForms\Fields\Field;
 class Length extends Validator
 {
     /**
-     * @var int
+     * @var int The minimum required length of the string
      */
     public $min;
     /**
-     * @var int
+     * @var int The maximum length of the string
      */
     public $max;
     /**
-     * @var string
+     * @var string Error message to raise in case of a validation error
      */
     public $message;
 
     /**
-     * @param int $min
-     * @param int $max
-     * @param string $message
+     * Validates the length of a string.
+     *
+     * @param int $min The minimum required length of the string. If not provided, minimum length will not be checked
+     * @param int $max The maximum length of the string. If not provided, maximum length will not be checked
+     * @param string $message Error message to raise in case of a validation error. TODO: Implement user interpolation
      */
-    public function __construct($min = -1, $max= -1, $message = "")
+    public function __construct($min = -1, $max = -1, $message = "")
     {
         assert(($min != -1 || $max != -1), "At least one of `min` or `max` must be specified");
         assert(($max == -1 || $min <= $max), "`min` cannot be more than `max`");
@@ -46,15 +48,23 @@ class Length extends Validator
 
     public function __invoke($form, Field $field)
     {
-        if(!is_null($field->data)){
-            $l = count($field->data);
+        if (!is_null($field->data)) {
+            $length = count($field->data);
         } else {
-            $l = 0;
+            $length = 0;
         }
-        $message = $this->message;
-        if($l < $this->min || $this->max != -1 && $l > $this->max){
-          // TODO: Finish the validator
+        if ($length < $this->min || $this->max != -1 && $length > $this->max) {
+            $message = $this->message;
+            if ($message == "") {
+                if ($this->max == -1) {
+                    $message = sprintf($field->ngettext("Field must be at least %d character long", "Field must be at least %d characters long", $this->min), $this->min);
+                } elseif ($this->min == -1) {
+                    $message = sprintf($field->ngettext("Field cannot be longer than %d character.", "Field cannot be longer than %d characters.", $this->max), $this->max);
+                } else {
+                    $message = sprintf($field->gettext("Field must be between %d and %d characters long."), $this->min, $this->max);
+                }
+                throw new ValidationError($message);
+            }
         }
-
     }
 }
