@@ -21,7 +21,7 @@ use Deathnerd\WTForms\Fields;
  */
 class DefaultMeta
 {
-    public function bind_field(Form $form, UnboundField $unbound_field, Collection $options)
+    public function bind_field(BaseForm $form, UnboundField $unbound_field, Collection $options)
     {
         // TODO Finish DefaultMeta
         return $unbound_field->bind();

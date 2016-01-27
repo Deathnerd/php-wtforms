@@ -26,6 +26,9 @@ define('UNSET_VALUE', new Utils\UnsetValue());
 class Field implements \Iterator
 {
     use FieldIterator;
+    /**
+     * @var array
+     */
     public $data;
     /**
      * @var array
@@ -73,6 +76,7 @@ class Field implements \Iterator
      * @var DefaultMeta
      */
     public $meta;
+    public $object_data;
     /**
      * @var bool
      */
@@ -251,10 +255,30 @@ class Field implements \Iterator
     public function process($formdata, $data = UNSET_VALUE)
     {
         $this->process_errors = [];
-        if(is_a($data, 'UnsetValue')){
+        if (is_a($data, 'UnsetValue')) {
+            // TODO this is a try/catch in Python source. Go back over
+            $data = $this->default();
+        }
 
+        $this->object_data = $data;
+
+        // TODO implement value errors
+        try {
+            $this->process_data($data);
+        } catch (ValueError $e) {
+            $this->process_errors[$e->getMessage()];
+        }
+
+        if ($formdata) {
+            if(in_array($this->name, $formdata)){
+                // TODO WeBob... do we need it?
+                foreach($formdata as $key=>$value){
+                    if()
+                }
+            }
         }
     }
+
     /**
      * Run a validation chain, stopping if any validator raises StopValidation
      *

@@ -9,15 +9,6 @@
 namespace Deathnerd\WTForms\Validators;
 
 
-use Deathnerd\WTForms\Interfaces\ValidatorInterface;
-
-class Validator implements ValidatorInterface
+class Validator
 {
-    /**
-     * @inheritdoc
-     */
-    public function validate($form, $field, $message = null)
-    {
-        throw new \RuntimeException;
-    }
 }
