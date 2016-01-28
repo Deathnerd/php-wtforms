@@ -7,12 +7,15 @@
  */
 
 namespace Deathnerd\WTForms\Widgets;
+use Deathnerd\WTForms\NotImplemented;
 
 /**
  * Just so I can have type hinting for widgets
  * @package Deathnerd\WTForms\Widgets
  */
-class Widget extends CanCall
+class Widget
 {
-    // TODO make this mean something
+    public function __invoke(...$args){
+        throw new NotImplemented("Widget needs an __invoke method");
+    }
 }

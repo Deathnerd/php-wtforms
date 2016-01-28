@@ -20,7 +20,7 @@ use Illuminate\Support\HtmlString;
  * to provide the ``value=`` HTML attribute
  * @package Deathnerd\WTForms\Widgets
  */
-class Input
+class Input extends Widget
 {
     /**
      * @var string

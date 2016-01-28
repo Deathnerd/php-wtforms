@@ -18,6 +18,9 @@ use Deathnerd\WTForms\Widgets\TextInput;
  */
 class StringField extends Field
 {
+    /**
+     * @var TextInput
+     */
     public $widget;
     public $data;
 

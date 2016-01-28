@@ -8,13 +8,12 @@
 
 namespace Deathnerd\WTForms\Fields;
 
-use CanCall;
+use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\DefaultMeta;
 use Deathnerd\WTForms\DummyTranslations;
-use Deathnerd\WTForms\Form;
-use Deathnerd\WTForms\StopValidation;
 use Deathnerd\WTForms\Utils;
-use Deathnerd\WTForms\Validator;
+use Deathnerd\WTForms\Validators\StopValidation;
+use Deathnerd\WTForms\ValueError;
 use Deathnerd\WTForms\Widgets\Widget;
 
 define('UNSET_VALUE', new Utils\UnsetValue());
@@ -27,7 +26,7 @@ class Field implements \Iterator
 {
     use FieldIterator;
     /**
-     * @var array
+     * @var mixed
      */
     public $data;
     /**
@@ -49,19 +48,25 @@ class Field implements \Iterator
     /**
      * @var Widget
      */
-    public $widget = null;
+    public $widget;
     /**
      * @var array
      */
     public $entries = [];
+    /**
+     * @var string
+     */
     public $description;
+    /**
+     * @var mixed
+     */
     public $default;
     /**
      * @var array
      */
     public $render_kw;
     /**
-     * @var string
+     * @var array
      */
     public $filters;
     /**
@@ -76,7 +81,14 @@ class Field implements \Iterator
      * @var DefaultMeta
      */
     public $meta;
+    /**
+     * @var mixed
+     */
     public $object_data;
+    /**
+     * @var string
+     */
+    public $current_token;
     /**
      * @var bool
      */
@@ -118,8 +130,8 @@ class Field implements \Iterator
      */
     public function __construct($label = '', array $kwargs = [])
     {
-        // TODO: Translations
         if (!is_null($kwargs['_translations'])) {
+            /** @var DummyTranslations $kwargs [_translations] */
             $this->_translations = $kwargs['_translations'];
         } else {
             $this->_translations = new DummyTranslations();
@@ -131,7 +143,6 @@ class Field implements \Iterator
         } else {
             throw new \TypeError("Must provide one of _form or _meta");
         }
-        $this->_translations = $kwargs['_translations'];
         $this->default = $kwargs['default'];
         $this->description = $kwargs['description'];
         $this->render_kw = array_key_exists("render_kw", $kwargs) ? [] : $kwargs['render_kw'];
@@ -144,10 +155,14 @@ class Field implements \Iterator
 
         $this->id = is_null($kwargs['id']) ? $this->name : $kwargs['id'];
         $this->type = gettype($this);
-        // TODO: Translations
-        $this->label = new Label($this->id, array_key_exists("label", $kwargs) ? $kwargs['label'] : str_replace("_", " ", $kwargs['_name']));
+        if (array_key_exists("label", $kwargs)) {
+            $label = $kwargs['label'];
+        } else {
+            $label = ucwords($this->gettext(str_replace("_", " ", $kwargs['_name'])));
+        }
+        $this->label = new Label($this->id, $label);
 
-        if (!is_null($kwargs['widget'])) {
+        if (!is_null($kwargs['widget']) && $kwargs['widget'] instanceof Widget) {
             $this->widget = $kwargs['widget'];
         }
     }
@@ -206,11 +221,11 @@ class Field implements \Iterator
      * Subfields shouldn't override this, but rather override either
      * {@link pre_validate}, {@link post_validate}, or both, depending on needs.
      *
-     * @param Form $form The form the field belongs to.
+     * @param BaseForm $form The form the field belongs to.
      * @param array $extra_validators A sequence of extra validators to run
      * @return bool
      */
-    public function validate(Form $form, array $extra_validators = [])
+    public function validate(BaseForm $form, array $extra_validators = [])
     {
         $this->errors = $this->process_errors;
         $stop_validation = false;
@@ -220,19 +235,24 @@ class Field implements \Iterator
             $this->pre_validate($form);
         } catch (StopValidation $e) {
             if (!empty($e->args) && $e->args[0]) {
-                $this->errors[] = $e->args[0];
+                $this->errors[] = $e->getMessage();
             }
             $stop_validation = true;
-        } // TODO: ValueErrors
+        } catch (ValueError $e) {
+            $this->errors[] = $e->getMessage();
+        }
 
         if (!$stop_validation) {
-            $chain = chain([$this->validators, $extra_validators]);
+            $chain = chain($this->validators, $extra_validators);
             $stop_validation = $this->_run_validation_chain($form, $chain);
         }
 
         // Call post_validate
-        // TODO: ValueErrors
-        $this->post_validate($form, $stop_validation);
+        try {
+            $this->post_validate($form, $stop_validation);
+        } catch (ValueError $e) {
+            $this->errors[] = $e->getMessage();
+        }
 
         return count($this->errors) == 0;
     }
@@ -256,41 +276,51 @@ class Field implements \Iterator
     {
         $this->process_errors = [];
         if (is_a($data, 'UnsetValue')) {
-            // TODO this is a try/catch in Python source. Go back over
-            $data = $this->default();
+            // Should work... See example at: http://php.net/manual/en/language.oop5.magic.php#object.invoke
+            if (is_callable($this->default)) {
+                $data = ${$this->default}();
+            } else {
+                $data = $this->default;
+            }
         }
-
         $this->object_data = $data;
-
-        // TODO implement value errors
         try {
             $this->process_data($data);
         } catch (ValueError $e) {
-            $this->process_errors[$e->getMessage()];
+            $this->process_errors[] = $e->getMessage();
         }
 
         if ($formdata) {
-            if(in_array($this->name, $formdata)){
-                // TODO WeBob... do we need it?
-                foreach($formdata as $key=>$value){
-                    if()
+            try {
+                if (in_array($this->name, $formdata)) {
+                    $this->raw_data = $_REQUEST[$this->name];
+                } else {
+                    $this->raw_data = [];
                 }
+                $this->process_formdata($this->raw_data);
+            } catch (ValueError $e) {
+                $this->process_errors[] = $e->getMessage();
             }
+        }
+
+        foreach ($this->filters as $filter) {
+            /** @var $filter \Deathnerd\WTForms\FilterInterface */
+            $this->data = $filter::run($data);
         }
     }
 
     /**
      * Run a validation chain, stopping if any validator raises StopValidation
      *
-     * @param Form $form The form instance this field belongs to
+     * @param BaseForm $form The form instance this field belongs to
      * @param \Generator $validators A sequence or iterable of validator callables
      * @return bool True if the validation was stopped, False if otherwise
      */
-    private function _run_validation_chain(Form $form, \Generator $validators)
+    private function _run_validation_chain(BaseForm $form, \Generator $validators)
     {
         foreach ($validators as $v) {
             /**
-             * @var Validator
+             * @var $validator \Deathnerd\WTForms\Validators\Validator
              */
             $validator = $v;
             try {
@@ -308,9 +338,9 @@ class Field implements \Iterator
     /**
      * Override if you need field-level validation. Runs before any other
      * validators.
-     * @param Form $form The form the field belongs to
+     * @param BaseForm $form The form the field belongs to
      */
-    private function pre_validate($form)
+    public function pre_validate($form)
     {
     }
 
@@ -318,10 +348,10 @@ class Field implements \Iterator
      * Override if you need to run any field-level validation tasks after
      * normal validation. This shouldn't be needed in most cases
      *
-     * @param Form $form The form the field belongs to
+     * @param BaseForm $form The form the field belongs to
      * @param boolean $stop_validation `True` if any validator raised `StopValidation`
      */
-    private function post_validate($form, $stop_validation)
+    public function post_validate(BaseForm $form, $stop_validation)
     {
     }
 
@@ -332,5 +362,45 @@ class Field implements \Iterator
     public function _value()
     {
         return "";
+    }
+
+    /**
+     * Process the data applied to this field and store the result.
+     *
+     * This will be called during form construction by the form's `kwargs` or
+     * `obj` argument.
+     * @param string|array $value
+     */
+    public function process_data($value)
+    {
+        $this->data = $value;
+    }
+
+    /**
+     * Process data received over the wire from a form.
+     *
+     * This will be called during form construction with data supplied
+     * through the `formdata` argument
+     *
+     * @param array $valuelist A list of strings to process
+     */
+    public function process_formdata(array $valuelist)
+    {
+        if (count($valuelist) > 0) {
+            $this->data = $valuelist[0];
+        }
+    }
+
+    /**
+     * Populates `$obj->$name` with the field's data.
+     *
+     * Note: This is a destructive operation. If `$obj->$name` already exists,
+     * it will be overridden. Use with caution
+     * @param $obj
+     * @param $name
+     */
+    public function populate_obj($obj, $name)
+    {
+        $obj->$name = $this->data;
     }
 }
