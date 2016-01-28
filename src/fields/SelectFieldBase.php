@@ -8,6 +8,7 @@
 
 namespace Deathnerd\WTForms\Fields;
 
+use Deathnerd\WTForms\NotImplemented;
 use Deathnerd\WTForms\Widgets\Option;
 
 abstract class SelectFieldBase extends Field
@@ -40,10 +41,11 @@ abstract class SelectFieldBase extends Field
      * Provides data for choice widget rendering. Must return a sequence or
      * iterable of `[value,label,selected]` tuples
      * @return array
+     * @throws NotImplemented
      */
     public function iter_choices()
     {
-        throw new \RuntimeException;
+        throw new NotImplemented();
     }
 
     //TODO Implement PHP equivalent of __iter__
