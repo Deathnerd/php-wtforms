@@ -11,11 +11,12 @@ namespace Deathnerd\WTForms\Fields;
 use Deathnerd\WTForms\Form;
 use Deathnerd\WTForms\ValueError;
 use Deathnerd\WTForms\Widgets;
+use Deathnerd\WTForms\Widgets\Select;
 
 class SelectField extends SelectFieldBase
 {
     /**
-     * @var \Widgets\Option
+     * @var \Deathnerd\WTForms\Widgets\Option
      */
     public $option_widget;
 
@@ -33,7 +34,7 @@ class SelectField extends SelectFieldBase
     public function __construct($label = "", array $validators = [], array $choices = [], array $kwargs = [])
     {
         parent::__construct($label, $validators, null, $kwargs);
-        $this->option_widget = new Widgets\Select();
+        $this->option_widget = new Select();
         $this->choices = $choices;
     }
 

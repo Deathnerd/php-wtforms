@@ -22,7 +22,6 @@ class StringField extends Field
      * @var TextInput
      */
     public $widget;
-    public $data;
 
     public function __construct($label, array $kwargs)
     {
