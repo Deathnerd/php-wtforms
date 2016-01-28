@@ -40,7 +40,7 @@ abstract class SelectFieldBase extends Field
     /**
      * Provides data for choice widget rendering. Must return a sequence or
      * iterable of `[value,label,selected]` tuples
-     * @return array
+     * @return \Generator
      * @throws NotImplemented
      */
     public function iter_choices()
