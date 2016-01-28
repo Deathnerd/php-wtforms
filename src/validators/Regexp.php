@@ -22,10 +22,6 @@ class Regexp extends Validator
      * @var string
      */
     public $regex;
-    /**
-     * @var string
-     */
-    public $message;
 
     /**
      * Assertion check is done here for a valid regular expression

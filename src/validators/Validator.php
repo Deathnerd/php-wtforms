@@ -11,4 +11,8 @@ namespace Deathnerd\WTForms\Validators;
 
 class Validator
 {
+    /**
+     * @var string Error message to raise in case of a validation error
+     */
+    public $message;
 }

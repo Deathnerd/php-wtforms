@@ -33,10 +33,6 @@ class DataRequired extends Validator
      * @var array
      */
     public $field_flags = ['required'];
-    /**
-     * @var string
-     */
-    public $message;
 
     /**
      * DataRequired constructor.

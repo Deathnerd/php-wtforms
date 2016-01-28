@@ -26,10 +26,6 @@ class InputRequired extends Validator
      * @var array
      */
     public $field_flags = ['required'];
-    /**
-     * @var string
-     */
-    public $message;
 
     /**
      * InputRequired constructor.

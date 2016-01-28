@@ -21,10 +21,6 @@ class EqualTo extends Validator
      * @var string
      */
     public $fieldname;
-    /**
-     * @var string
-     */
-    public $message;
 
     /**
      * TODO: Interpolation of other_label and other_name
@@ -45,6 +41,7 @@ class EqualTo extends Validator
     public function __invoke($form, Field $field)
     {
         if ($form->{$this->fieldname} !== null) {
+            /** @var Field $other */
             $other = $form->{$this->fieldname};
         } else {
             throw new ValidationError($field->gettext(sprintf("Invalid field name '%s'", $this->fieldname)));

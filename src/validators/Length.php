@@ -25,10 +25,7 @@ class Length extends Validator
      * @var int The maximum length of the string
      */
     public $max;
-    /**
-     * @var string Error message to raise in case of a validation error
-     */
-    public $message;
+
 
     /**
      * Validates the length of a string.

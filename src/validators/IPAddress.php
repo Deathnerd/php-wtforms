@@ -19,11 +19,6 @@ use Deathnerd\WTForms\ValueError;
 class IPAddress extends Validator
 {
     /**
-     * @var string
-     */
-    public $message;
-
-    /**
      * @var bool
      */
     public $ipv4;

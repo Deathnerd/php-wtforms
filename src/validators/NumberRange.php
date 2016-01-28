@@ -19,6 +19,15 @@ use Deathnerd\WTForms\Fields\Field;
  */
 class NumberRange extends Validator
 {
+    /**
+     * @var float|int
+     */
+    public $min;
+
+    /**
+     * @var float|int
+     */
+    public $max;
 
     /**
      * NumberRange constructor.
