@@ -35,6 +35,11 @@ class NumberRange extends Validator
         $this->message = $message;
     }
 
+    /**
+     * @param BaseForm $form
+     * @param Field $field
+     * @throws ValidationError
+     */
     public function __invoke(BaseForm $form, Field $field)
     {
         $data = $field->data;
