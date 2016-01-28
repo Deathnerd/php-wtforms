@@ -9,6 +9,7 @@
 namespace Deathnerd\WTForms\Fields;
 
 use Deathnerd\WTForms\Form;
+use Deathnerd\WTForms\ValueError;
 use Deathnerd\WTForms\Widgets;
 
 class SelectField extends SelectFieldBase
@@ -62,7 +63,7 @@ class SelectField extends SelectFieldBase
                 return;
             }
         }
-        // TODO: Translations
-        throw new ValueError("Not a valid choice");
+
+        throw new ValueError($this->gettext("Not a valid choice"));
     }
 }

@@ -7,6 +7,8 @@
  */
 
 namespace Deathnerd\WTForms\Interfaces;
+use Deathnerd\WTForms\Fields\Field;
+use Deathnerd\WTForms\Form;
 
 /**
  * Interface for all WTForms HTML validators
@@ -16,14 +18,11 @@ interface ValidatorInterface
 {
     /**
      *
-     * @todo Update the $form type when one is made
-     * @todo Update the $field type when one is made
-     *
-     * @param object $form The current form
-     * @param object $field The field being validated
-     * @param null $message The message display to the user if validation fails
+     * @param Form $form The current form
+     * @param Field $field The field being validated
+     * @param string $message The message display to the user if validation fails
      *
      * @return bool Did the validation pass?
      */
-    public function validate($form, $field, $message = null);
+    public function validate(Form $form, Field $field, $message = null);
 }

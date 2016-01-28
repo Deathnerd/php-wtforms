@@ -138,7 +138,7 @@ if(!function_exists('chain')){
      * @param array $iterables An array of iterables to iterate through
      * @return Generator
      */
-    function chain(array $iterables){
+    function chain(...$iterables){
         foreach($iterables as $it){
             foreach($it as $element){
                 yield $element;

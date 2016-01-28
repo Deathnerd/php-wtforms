@@ -44,8 +44,7 @@ class BaseForm implements \Iterator
 
     /**
      * BaseForm constructor.
-     * // TODO Maybe `fields` should be just an array
-     * @param mixed $fields
+     * @param array $fields
      * @param string $prefix
      * @param DefaultMeta|null $meta
      */
@@ -71,12 +70,11 @@ class BaseForm implements \Iterator
             array_merge($extra_fields, $this->_csrf->setup_form($this));
         }
 
-        foreach (chain([$fields, $extra_fields]) as $name => $unbound_field) {
+        foreach (chain($fields, $extra_fields) as $name => $unbound_field) {
             $options = ["name" => $name, "prefix" => $prefix, "translations" => $translations];
             $field = $meta->bind_field($this, $unbound_field, Collection::make($options));
             $this->_fields[$name] = $field;
         }
-
     }
 
     public function __get($field_name)
@@ -146,10 +144,7 @@ class BaseForm implements \Iterator
     public function populate_obj($obj)
     {
         foreach ($this->_fields as $name => $f) {
-            /**
-             * @var Field
-             */
-            $field = $f;
+            /** @var $field Field  */
             $field->populate_obj($obj, $name);
         }
     }
@@ -173,6 +168,7 @@ class BaseForm implements \Iterator
         $kwargs = array_merge($data, $kwargs);
 
         foreach ($this->_fields as $name => $field) {
+            /** @var $field Field|UnboundField */
             if (!is_null($obj) && property_exists($obj, $name)) {
                 $field->process($formdata, $obj->$name);
             } elseif (array_key_exists($name, $kwargs)) {
@@ -195,6 +191,7 @@ class BaseForm implements \Iterator
         $this->_errors = [];
         $success = true;
         foreach ($this->_fields as $name => $field) {
+            /** @var $field Field|UnboundField */
             if (count($extra_validators) > 0 && in_array($name, $extra_validators)) {
                 $extra = $extra_validators[$name];
             } else {

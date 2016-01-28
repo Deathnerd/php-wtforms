@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Fields;
+
 use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\Form;
 use Illuminate\Support\Collection;
@@ -48,11 +49,12 @@ class UnboundField
      * @param string $name
      * @param string $prefix
      * @param null $translations
+     * @param array $kwargs
      * @return mixed
      */
-    public function bind($form, $name, $prefix="", $translations=null)
+    public function bind($form, $name, $prefix = "", $translations = null, array $kwargs = [])
     {
-        $kw = array_merge($this->kwargs, ["_form"=>$form, "_prefix"=>$prefix, "_name"=>$name, "_translations"=>$translations]);
+        $kw = array_merge($this->kwargs, ["_form" => $form, "_prefix" => $prefix, "_name" => $name, "_translations" => $translations]);
         // TODO Finish
         return new $this->_field_class();
     }

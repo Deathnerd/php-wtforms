@@ -13,7 +13,7 @@ use Deathnerd\WTForms\Widgets\Option;
 abstract class SelectFieldBase extends Field
 {
     /**
-     * @var \Widgets\Option
+     * @var \Deathnerd\WTForms\Widgets\Option
      */
     public $option_widget;
 
@@ -29,7 +29,11 @@ abstract class SelectFieldBase extends Field
     {
         $kwargs['validators'] = $validators;
         parent::__construct($label, $kwargs);
-        $this->option_widget = !is_null($option_widget) ? $option_widget : new Option();
+        if (!is_null($option_widget)) {
+            $this->option_widget = $option_widget;
+        } else {
+            $this->option_widget = new Option();
+        }
     }
 
     /**
