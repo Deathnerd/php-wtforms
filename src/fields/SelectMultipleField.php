@@ -40,7 +40,6 @@ class SelectMultipleField extends SelectField
      */
     public function iter_choices()
     {
-        // TODO: This doesn't make sense. Why is $value a key?
         foreach ($this->choices as $value => $label) {
             $selected = $this->data !== null && in_array($value, $this->data);
             yield [$value, $label, $selected];
@@ -52,25 +51,27 @@ class SelectMultipleField extends SelectField
      */
     public function process_data(array $value = null)
     {
-        // TODO: Original python implementation does a try/catch with coercion. We obviously don't need coercion, but can we produce an error?
-        $this->data = $value;
+        foreach ($value as $v) {
+            $this->data[] = strval($v);
+        }
     }
 
     public function process_formdata(array $valuelist = [])
     {
-        // TODO: Original python implementation does a try/catch with coercion. We obviously don't need coercion, but can we produce an error?
-        $this->data = $valuelist;
+        foreach ($valuelist as $v) {
+            $this->data[] = strval($v);
+        }
     }
 
     public function pre_validate(Form $form)
     {
         if ($this->data !== null) {
             $values = [];
-            foreach($this->choices as $c){
+            foreach ($this->choices as $c) {
                 $values[] = $c[0];
             }
-            foreach($this->data as $d){
-                if(!in_array($d, $values)){
+            foreach ($this->data as $d) {
+                if (!in_array($d, $values)) {
                     throw new ValueError($this->gettext(sprintf("'%s' is not a valid choice for this field", $d)));
                 }
             }
