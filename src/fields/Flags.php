@@ -20,7 +20,7 @@ class Flags
     public function __get($name)
     {
         if (substr($name, 0, 1) == "_" && property_exists($this, $name)) {
-            return $this->{$name};
+            return $this->$name;
         }
         return false;
     }
@@ -30,7 +30,7 @@ class Flags
         if (substr($name, 0, 1) != "_") {
             $name = "_$name";
         }
-        $this->{$name} = $value;
+        $this->$name = $value;
     }
 
     function __toString()
