@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Widgets;
 
 
-class CheckboxInput
+class CheckboxInput extends Widget
 {
 
     /**

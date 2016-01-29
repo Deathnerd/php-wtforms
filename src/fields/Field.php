@@ -320,11 +320,10 @@ class Field implements \Iterator
     {
         foreach ($validators as $v) {
             /**
-             * @var $validator \Deathnerd\WTForms\Validators\Validator
+             * @var $v \Deathnerd\WTForms\Validators\Validator
              */
-            $validator = $v;
             try {
-                $validator->call($form, $this);
+                $v->call($form, $this);
             } catch (StopValidation $e) {
                 if (!empty($e->args) && $e->args[0]) {
                     $this->errors[] = $e->args[0];
