@@ -13,8 +13,10 @@ use Deathnerd\WTForms\DefaultMeta;
 use Deathnerd\WTForms\DummyTranslations;
 use Deathnerd\WTForms\Utils;
 use Deathnerd\WTForms\Validators\StopValidation;
+use Deathnerd\WTForms\Validators\Validator;
 use Deathnerd\WTForms\ValueError;
 use Deathnerd\WTForms\Widgets\Widget;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 define('UNSET_VALUE', new Utils\UnsetValue());
 
@@ -130,12 +132,22 @@ class Field implements \Iterator
      */
     public function __construct($label = '', array $kwargs = [])
     {
-        if (!is_null($kwargs['_translations'])) {
-            /** @var DummyTranslations $kwargs [_translations] */
-            $this->_translations = $kwargs['_translations'];
-        } else {
-            $this->_translations = new DummyTranslations();
-        }
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults([
+            "validators" => [],
+            "filters" => [],
+            "description" => "",
+            "id" => null,
+            "default" => null,
+            "widget" => null,
+            "render_kw" => null,
+            "_form" => null,
+            "_name" => null,
+            "_prefix" => '',
+            "_translations" => new DummyTranslations(),
+            "_meta" => null
+        ]);
+        $kwargs = $resolver->resolve($kwargs);
         if (!is_null($kwargs['_meta'])) {
             $this->meta = $kwargs['_meta'];
         } else if (!is_null($kwargs['_form'])) {
@@ -145,25 +157,22 @@ class Field implements \Iterator
         }
         $this->default = $kwargs['default'];
         $this->description = $kwargs['description'];
-        $this->render_kw = array_key_exists("render_kw", $kwargs) ? [] : $kwargs['render_kw'];
+        $this->render_kw = $kwargs['render_kw'];
         $this->filters = $kwargs['filters'];
         $this->flags = new Flags();
         $this->name = $kwargs['_prefix'] . $kwargs['_name'];
         $this->short_name = $kwargs['_name'];
         $this->type = get_class();
-        $this->validators = array_key_exists("validators", $kwargs) ? $kwargs['validators'] : $this->validators;
-
+        $this->validators = $kwargs['validators'];
         $this->id = is_null($kwargs['id']) ? $this->name : $kwargs['id'];
-        $this->type = gettype($this);
-        if (array_key_exists("label", $kwargs)) {
-            $label = $kwargs['label'];
-        } else {
-            $label = ucwords($this->gettext(str_replace("_", " ", $kwargs['_name'])));
-        }
-        $this->label = new Label($this->id, $label);
+        $this->label = new Label($this->id, $label != "" ? $label : $this->gettext(ucwords(str_replace("_", " ", $kwargs['_name']))));
+        $this->widget = $kwargs['widget'];
 
-        if (!is_null($kwargs['widget']) && $kwargs['widget'] instanceof Widget) {
-            $this->widget = $kwargs['widget'];
+        foreach (chain($this->validators, [$this->widget]) as $v) {
+            /** @var $v Validator */
+            foreach($v->field_flags as $flag) {
+                $this->flags->$flag = true;
+            }
         }
     }
 
