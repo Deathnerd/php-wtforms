@@ -6,7 +6,7 @@
  * Time: 11:04 AM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 use Deathnerd\WTForms\Widgets\ListWidget;
 use Deathnerd\WTForms\Widgets\RadioInput;

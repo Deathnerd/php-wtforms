@@ -6,7 +6,7 @@
  * Time: 10:58 AM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 
 /**

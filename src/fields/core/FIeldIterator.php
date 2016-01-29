@@ -6,7 +6,7 @@
  * Time: 10:55 AM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 
 trait FieldIterator

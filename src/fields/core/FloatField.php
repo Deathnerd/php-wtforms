@@ -6,7 +6,7 @@
  * Time: 1:40 PM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 
 use Deathnerd\WTForms\ValueError;

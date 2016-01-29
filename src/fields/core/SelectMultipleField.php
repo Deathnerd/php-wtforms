@@ -6,7 +6,7 @@
  * Time: 11:15 AM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 
 use Deathnerd\WTForms\Form;

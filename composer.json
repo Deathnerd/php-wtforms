@@ -20,6 +20,7 @@
       "Deathnerd\\WTForms\\": "src/",
       "Deathnerd\\WTForms\\CSRF\\": "src/csrf/",
       "Deathnerd\\WTForms\\Fields\\": "src/fields/",
+      "Deathnerd\\WTForms\\Fields\\Core\\": "src/fields/core/",
       "Deathnerd\\WTForms\\Widgets\\": "src/widgets/",
       "Deathnerd\\WTForms\\Validators\\": "src/validators/"
     },

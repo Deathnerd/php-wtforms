@@ -6,7 +6,7 @@
  * Time: 10:02 PM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 
 use Deathnerd\WTForms\Widgets\HiddenInput;

@@ -6,7 +6,7 @@
  * Time: 3:07 PM
  */
 
-namespace Deathnerd\WTForms\Fields;
+namespace Deathnerd\WTForms\Fields\Core;
 
 
 use Illuminate\Support\HtmlString;
