@@ -30,6 +30,7 @@
     "illuminate/support": "^5.2",
     "illuminate/http": "5.2.7",
     "gettext/gettext": "^3.5",
-    "gettext/languages": "^2.1"
+    "gettext/languages": "^2.1",
+    "symfony/options-resolver": "3.0.1"
   }
 }
