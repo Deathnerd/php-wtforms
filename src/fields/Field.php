@@ -12,13 +12,12 @@ use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\DefaultMeta;
 use Deathnerd\WTForms\DummyTranslations;
 use Deathnerd\WTForms\Utils;
+use Deathnerd\WTForms\Utils\UnsetValue;
 use Deathnerd\WTForms\Validators\StopValidation;
 use Deathnerd\WTForms\Validators\Validator;
 use Deathnerd\WTForms\ValueError;
 use Deathnerd\WTForms\Widgets\Widget;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-define('UNSET_VALUE', new Utils\UnsetValue());
 
 /**
  * Field base class
@@ -44,7 +43,7 @@ class Field implements \Iterator
      */
     public $raw_data = null;
     /**
-     * @var array
+     * @var Validator[]
      */
     public $validators = [];
     /**
@@ -60,7 +59,7 @@ class Field implements \Iterator
      */
     public $description;
     /**
-     * @var mixed
+     * @var callable|mixed
      */
     public $default;
     /**
@@ -115,7 +114,7 @@ class Field implements \Iterator
     public $name = '';
 
     /**
-     * @var Flags
+     * @var Flags[]
      */
     public $flags;
 
@@ -170,7 +169,7 @@ class Field implements \Iterator
 
         foreach (chain($this->validators, [$this->widget]) as $v) {
             /** @var $v Validator */
-            foreach($v->field_flags as $flag) {
+            foreach ($v->field_flags as $flag) {
                 $this->flags->$flag = true;
             }
         }
@@ -279,15 +278,18 @@ class Field implements \Iterator
      * inputs.
      *
      * @param $formdata
-     * @param Utils\UnsetValue|mixed $data
+     * @param null|mixed $data
      */
-    public function process($formdata, $data = UNSET_VALUE)
+    public function process($formdata, $data = null)
     {
         $this->process_errors = [];
-        if (is_a($data, 'UnsetValue')) {
+        if ($data === null) {
+            $data = new UnsetValue();
+        }
+        if ($data instanceof UnsetValue) {
             // Should work... See example at: http://php.net/manual/en/language.oop5.magic.php#object.invoke
             if (is_callable($this->default)) {
-                $data = ${$this->default}();
+                $data = $this->default();
             } else {
                 $data = $this->default;
             }
