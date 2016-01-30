@@ -9,7 +9,12 @@
 namespace Deathnerd\WTForms;
 
 
-class Form extends BaseForm
+/**
+ * Class Form
+ * @package Deathnerd\WTForms
+ * @property $Meta Meta
+ */
+class Form extends FormMeta
 {
     //TODO Implement Form
 }

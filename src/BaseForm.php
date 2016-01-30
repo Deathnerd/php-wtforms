@@ -9,14 +9,15 @@
 namespace Deathnerd\WTForms;
 
 
-use Deathnerd\WTForms\Fields\Field;
-use Deathnerd\WTForms\Fields\UnboundField;
+use Deathnerd\WTForms\Fields\Core\Field;
+use Deathnerd\WTForms\Fields\Core\UnboundField;
 use Illuminate\Support\Collection;
 
 /**
  * Class BaseForm
  * Provides core behaviour like field construction, validation, and data and error proxying
  * @package Deathnerd\WTForms
+ * @property $Meta Meta
  */
 class BaseForm implements \Iterator
 {
@@ -50,7 +51,7 @@ class BaseForm implements \Iterator
      */
     public function __construct($fields, $prefix = "", DefaultMeta $meta = null)
     {
-        if ($prefix != "" && !preg_match("/\\-_\\;:\\/\\./", substr($prefix, -1))) {
+        if (!ends_with($prefix, "-_;:/.")) {
             $prefix .= "-";
         }
         $this->meta = (is_null($meta)) ? new DefaultMeta() : $meta;

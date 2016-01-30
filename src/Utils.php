@@ -34,3 +34,18 @@ class UnsetValue
         return false;
     }
 }
+
+class Meta
+{
+    public $bases = [];
+
+    /**
+     * Meta constructor.
+     * @param array $bases
+     */
+    public function __construct(array $bases = [])
+    {
+        $this->bases = $bases;
+    }
+
+}

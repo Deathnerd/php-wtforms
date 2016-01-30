@@ -18,6 +18,9 @@ class UnboundField
      * @var bool
      */
     public $_formfield = true;
+    /**
+     * @var int
+     */
     public static $creation_counter = 0;
     protected $_creation_counter = 0;
     /**
