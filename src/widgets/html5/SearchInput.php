@@ -8,8 +8,9 @@
 
 namespace Deathnerd\WTForms\Widgets\HTML5;
 
+use Deathnerd\WTForms\Widgets\Core\Input;
 
-class SearchInput
+class SearchInput extends Input
 {
 
 }
