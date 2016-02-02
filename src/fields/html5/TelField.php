@@ -9,6 +9,7 @@
 namespace Deathnerd\WTForms\Fields\HTML5;
 
 use Deathnerd\WTForms\Fields\Core\StringField;
+use Deathnerd\WTForms\Widgets\HTML5\TelInput;
 
 /**
  * Represents an ``<input type="tel">``.
@@ -22,7 +23,7 @@ class TelField extends StringField
     public function __construct($label = "", array $kwargs = [])
     {
         parent::__construct($label, $kwargs);
-        $this->widget = new \Deathnerd\WTForms\Widgets\HTML5\TelInput();
+        $this->widget = new TelInput();
     }
 
 }
