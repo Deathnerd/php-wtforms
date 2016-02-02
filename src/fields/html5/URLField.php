@@ -11,6 +11,10 @@ namespace Deathnerd\WTForms\Fields\HTML5;
 use Deathnerd\WTForms\Fields\Core\StringField;
 use Deathnerd\WTForms\Widgets\HTML5\URLInput;
 
+/**
+ * Represents an ``<input type="url">``.
+ * @package Deathnerd\WTForms\Fields\HTML5
+ */
 class URLField extends StringField
 {
     /**

@@ -10,7 +10,10 @@ namespace Deathnerd\WTForms\Fields\HTML5;
 use Deathnerd\WTForms\Fields\Core\StringField;
 use Deathnerd\WTForms\Widgets\HTML5\SearchInput;
 
-
+/**
+ * Represents an ``<input type="search">``.
+ * @package Deathnerd\WTForms\Fields\HTML5
+ */
 class SearchField extends StringField
 {
     /**

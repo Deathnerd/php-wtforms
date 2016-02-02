@@ -10,6 +10,10 @@ namespace Deathnerd\WTForms\Fields\HTML5;
 
 use Deathnerd\WTForms\Fields\Core\StringField;
 
+/**
+ * Represents an ``<input type="tel">``.
+ * @package Deathnerd\WTForms\Fields\HTML5
+ */
 class TelField extends StringField
 {
     /**
