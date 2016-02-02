@@ -17,9 +17,7 @@ use Deathnerd\WTForms\Widgets\HTML5\SearchInput;
 class SearchField extends StringField
 {
     /**
-     * SearchField constructor.
-     * @param string $label
-     * @param array $kwargs
+     * @inheritdoc
      */
     public function __construct($label, array $kwargs)
     {

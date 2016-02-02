@@ -18,9 +18,7 @@ use Deathnerd\WTForms\Widgets\HTML5\URLInput;
 class URLField extends StringField
 {
     /**
-     * URLField constructor.
-     * @param string $label
-     * @param array $kwargs
+     * @inheritdoc
      */
     public function __construct($label, array $kwargs)
     {

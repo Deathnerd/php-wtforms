@@ -17,9 +17,7 @@ use Deathnerd\WTForms\Fields\Core\StringField;
 class TelField extends StringField
 {
     /**
-     * TelField constructor.
-     * @param string $label
-     * @param array $kwargs
+     * @inheritdoc
      */
     public function __construct($label, array $kwargs)
     {
