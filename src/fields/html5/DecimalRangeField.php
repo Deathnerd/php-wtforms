@@ -8,14 +8,14 @@
 
 namespace Deathnerd\WTForms\Fields\HTML5;
 
-use Deathnerd\WTForms\Fields\Core\IntegerField;
+use Deathnerd\WTForms\Fields\Core\DecimalField;
 use Deathnerd\WTForms\Widgets\HTML5\RangeInput;
 
 /**
  * Represents an ``<input type="range">``.
  * @package Deathnerd\WTForms\Fields\HTML5
  */
-class IntegerRangeField extends IntegerField
+class DecimalRangeField extends DecimalField
 {
     /**
      * @inheritdoc
@@ -23,6 +23,6 @@ class IntegerRangeField extends IntegerField
     public function __construct($label = "", array $kwargs = [])
     {
         parent::__construct($label, $kwargs);
-        $this->widget = new RangeInput(["step" => "1"]);
+        $this->widget = new RangeInput(["step" => "any"]);
     }
 }

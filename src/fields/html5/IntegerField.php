@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Fields\HTML5;
+
 use Deathnerd\WTForms\Widgets\HTML5\NumberInput;
 
 /**
@@ -21,6 +22,6 @@ class IntegerField extends \Deathnerd\WTForms\Fields\Core\IntegerField
     public function __construct($label = "", array $kwargs = [])
     {
         parent::__construct($label, $kwargs);
-        $this->widget = new NumberInput();
+        $this->widget = new NumberInput(["step" => "1"]);
     }
 }
