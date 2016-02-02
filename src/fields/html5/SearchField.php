@@ -1,0 +1,26 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Wes Gilleland
+ * Date: 2/2/2016
+ * Time: 2:09 PM
+ */
+
+namespace Deathnerd\WTForms\Fields\HTML5;
+use Deathnerd\WTForms\Fields\Core\StringField;
+use Deathnerd\WTForms\Widgets\HTML5\SearchInput;
+
+
+class SearchField extends StringField
+{
+    /**
+     * SearchField constructor.
+     * @param string $label
+     * @param array $kwargs
+     */
+    public function __construct($label, array $kwargs)
+    {
+        $this->widget = new SearchInput();
+        parent::__construct($label, $kwargs);
+    }
+}
