@@ -3,25 +3,24 @@
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 2/2/2016
- * Time: 2:09 PM
+ * Time: 3:45 PM
  */
 
 namespace Deathnerd\WTForms\Fields\HTML5;
-use Deathnerd\WTForms\Fields\Core\StringField;
-use Deathnerd\WTForms\Widgets\HTML5\SearchInput;
+use Deathnerd\WTForms\Widgets\HTML5\NumberInput;
 
 /**
- * Represents an ``<input type="search">``.
+ * Represents an ``<input type="number">``.
  * @package Deathnerd\WTForms\Fields\HTML5
  */
-class SearchField extends StringField
+class IntegerField extends \Deathnerd\WTForms\Fields\Core\IntegerField
 {
     /**
      * @inheritdoc
      */
     public function __construct($label = "", array $kwargs = [])
     {
-        $this->widget = new SearchInput();
         parent::__construct($label, $kwargs);
+        $this->widget = new NumberInput();
     }
 }

@@ -20,7 +20,7 @@ class DateTimeField extends \Deathnerd\WTForms\Fields\Core\DateTimeField
      * @param string $label
      * @param array $kwargs
      */
-    public function __construct($label, array $kwargs)
+    public function __construct($label = "", array $kwargs = [])
     {
         parent::__construct($label, $kwargs);
         $this->widget = new DateTimeInput();
