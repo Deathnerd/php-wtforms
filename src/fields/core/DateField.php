@@ -18,9 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DateField extends DateTimeField
 {
     /**
-     * DateField constructor.
-     * @param string $label
-     * @param array $kwargs
+     * @inheritdoc
      */
     public function __construct($label, array $kwargs)
     {

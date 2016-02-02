@@ -16,9 +16,7 @@ use Deathnerd\WTForms\Widgets\HTML5\DateInput;
 class DateField extends \Deathnerd\WTForms\Fields\Core\DateField
 {
     /**
-     * DateField constructor.
-     * @param string $label
-     * @param array $kwargs
+     * @inheritdoc
      */
     public function __construct($label, array $kwargs)
     {
