@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Fields\Core;
 
 use Deathnerd\WTForms\NotImplemented;
-use Deathnerd\WTForms\Widgets\Option;
+use Deathnerd\WTForms\Widgets\Core\Option;
 
 abstract class SelectFieldBase extends Field
 {

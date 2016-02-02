@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Fields\Core;
 
 use Deathnerd\WTForms\ValueError;
-use Deathnerd\WTForms\Widgets\TextInput;
+use Deathnerd\WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field, except all input is coerced to an integer. Erroneous input

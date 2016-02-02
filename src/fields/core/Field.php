@@ -16,7 +16,7 @@ use Deathnerd\WTForms\Utils\UnsetValue;
 use Deathnerd\WTForms\Validators\StopValidation;
 use Deathnerd\WTForms\Validators\Validator;
 use Deathnerd\WTForms\ValueError;
-use Deathnerd\WTForms\Widgets\Widget;
+use Deathnerd\WTForms\Widgets\Core\Widget;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

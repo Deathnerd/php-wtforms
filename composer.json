@@ -21,7 +21,10 @@
       "Deathnerd\\WTForms\\CSRF\\": "src/csrf/",
       "Deathnerd\\WTForms\\Fields\\": "src/fields/",
       "Deathnerd\\WTForms\\Fields\\Core\\": "src/fields/core/",
+      "Deathnerd\\WTForms\\Fields\\HTML5\\": "src/fields/html5/",
       "Deathnerd\\WTForms\\Widgets\\": "src/widgets/",
+      "Deathnerd\\WTForms\\Widgets\\Core\\": "src/widgets/core",
+      "Deathnerd\\WTForms\\Widgets\\HTML5\\": "src/widgets/html5",
       "Deathnerd\\WTForms\\Validators\\": "src/validators/"
     },
     "files": ["src/helpers.php"]

@@ -6,7 +6,7 @@
  * Time: 9:09 PM
  */
 
-namespace Deathnerd\WTForms\Widgets;
+namespace Deathnerd\WTForms\Widgets\Core;
 
 
 class CheckboxInput extends Widget

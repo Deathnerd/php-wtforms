@@ -11,7 +11,7 @@ namespace Deathnerd\WTForms\Fields\Core;
 
 use Deathnerd\WTForms\Form;
 use Deathnerd\WTForms\ValueError;
-use Deathnerd\WTForms\Widgets\Select;
+use Deathnerd\WTForms\Widgets\Core\Select;
 
 /**
  * No different from a normal select field, except this one can take (and

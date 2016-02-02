@@ -10,7 +10,7 @@ namespace Deathnerd\WTForms\Fields\Core;
 
 
 use Deathnerd\WTForms\ValueError;
-use Deathnerd\WTForms\Widgets\TextInput;
+use Deathnerd\WTForms\Widgets\Core\TextInput;
 
 class FloatField extends Field
 {

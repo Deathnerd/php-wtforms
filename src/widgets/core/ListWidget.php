@@ -6,9 +6,9 @@
  * Time: 2:42 PM
  */
 
-namespace Deathnerd\WTForms\Widgets;
+namespace Deathnerd\WTForms\Widgets\Core;
 
-use Deathnerd\WTForms\Fields\Field;
+use Deathnerd\WTForms\Fields\Core\Field;
 
 class ListWidget extends Widget
 {
