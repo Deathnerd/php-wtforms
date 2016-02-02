@@ -21,7 +21,7 @@ class SearchField extends StringField
      */
     public function __construct($label = "", array $kwargs = [])
     {
-        $this->widget = new SearchInput();
         parent::__construct($label, $kwargs);
+        $this->widget = new SearchInput();
     }
 }
