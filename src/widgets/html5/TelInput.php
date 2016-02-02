@@ -8,15 +8,20 @@
 
 namespace Deathnerd\WTForms\Widgets\HTML5;
 
-use Deathnerd\WTForms\Widgets\Core\Widget;
+use Deathnerd\WTForms\Widgets\Core\Input;
 
-class TelInput extends Widget
+/**
+ * Renders an input with type "tel"
+ * @package Deathnerd\WTForms\Widgets\HTML5
+ */
+class TelInput extends Input
 {
-
     /**
-     * TelInput constructor.
+     * @inheritdoc
      */
     public function __construct()
     {
+        parent::__construct("tel");
     }
+
 }
