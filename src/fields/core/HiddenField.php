@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Fields\Core;
 
 
-use Deathnerd\WTForms\Widgets\HiddenInput;
+use Deathnerd\WTForms\Widgets\Core\HiddenInput;
 
 class HiddenField extends StringField
 {

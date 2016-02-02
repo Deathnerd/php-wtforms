@@ -6,9 +6,10 @@
  * Time: 10:10 PM
  */
 
-namespace Deathnerd\WTForms\Widgets;
-use Deathnerd\WTForms\Fields\Field;
+namespace Deathnerd\WTForms\Widgets\Core;
+use Deathnerd\WTForms\Fields\Core\Field;
 use Illuminate\Support\HtmlString;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 /**
@@ -36,16 +37,12 @@ class Input extends Widget
 
     public function __invoke(Field $field, array $kwargs = [])
     {
-        if (!array_key_exists('id', $kwargs)) {
-            $kwargs['id'] = $field->id;
-        }
-        if (!array_key_exists('type', $kwargs)) {
-            $kwargs['type'] = $this->input_type;
-        }
-        if(!array_key_exists('value', $kwargs)){
-            $kwargs['value'] = $field->_value();
-        }
+        $kwargs = (new OptionsResolver())->setDefaults([
+            "id" => $field->id,
+            "type" => $this->input_type,
+            "value" => $field->_value()
+        ])->resolve($kwargs);
         $kwargs['name'] = $field->name;
-        return new HtmlString("<input " . html_params($kwargs));
+        return new HtmlString("<input " . html_params($kwargs) . ">");
     }
 }

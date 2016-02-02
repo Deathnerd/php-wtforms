@@ -6,7 +6,7 @@
  * Time: 10:05 PM
  */
 
-namespace Deathnerd\WTForms\Widgets;
+namespace Deathnerd\WTForms\Widgets\Core;
 
 
 /**

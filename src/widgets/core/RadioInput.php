@@ -6,7 +6,7 @@
  * Time: 11:07 AM
  */
 
-namespace Deathnerd\WTForms\Widgets;
+namespace Deathnerd\WTForms\Widgets\Core;
 
 
 class RadioInput extends Widget

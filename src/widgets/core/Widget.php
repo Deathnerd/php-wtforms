@@ -6,7 +6,7 @@
  * Time: 3:46 PM
  */
 
-namespace Deathnerd\WTForms\Widgets;
+namespace Deathnerd\WTForms\Widgets\Core;
 use Deathnerd\WTForms\NotImplemented;
 
 /**

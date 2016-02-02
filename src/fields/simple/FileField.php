@@ -1,0 +1,30 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Wes Gilleland
+ * Date: 2/2/2016
+ * Time: 5:02 PM
+ */
+
+namespace Deathnerd\WTForms\Fields\Simple;
+use Deathnerd\WTForms\Fields\Core\StringField;
+use Deathnerd\WTForms\Widgets\Core\FileInput;
+
+/**
+ * Can render a file-upload field.  Will take any passed filename value, if
+ * any is sent by the browser in the post params.  This field will NOT
+ * actually handle the file upload portion, as wtforms does not deal with
+ * individual frameworks' file handling capabilities.
+ * @package Deathnerd\WTForms\Fields\Simple
+ */
+class FileField extends StringField
+{
+    /**
+     * @inheritdoc
+     */
+    public function __construct($label = "", array $kwargs = [])
+    {
+        parent::__construct($label, $kwargs);
+        $this->widget = new FileInput();
+    }
+}

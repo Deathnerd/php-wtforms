@@ -8,7 +8,7 @@
 
 namespace Deathnerd\WTForms\Fields\Core;
 
-use Deathnerd\WTForms\Widgets\CheckboxInput;
+use Deathnerd\WTForms\Widgets\Core\CheckboxInput;
 
 /**
  * Represents an ``<input type="checkbox">``. Set the ``checked``-status by using the

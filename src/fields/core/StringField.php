@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Fields\Core;
 
 use Deathnerd\WTForms\Widgets;
-use Deathnerd\WTForms\Widgets\TextInput;
+use Deathnerd\WTForms\Widgets\Core\TextInput;
 
 /**
  * This field is the base for most of the more complicated fields, and

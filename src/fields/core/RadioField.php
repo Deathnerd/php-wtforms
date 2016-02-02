@@ -8,8 +8,8 @@
 
 namespace Deathnerd\WTForms\Fields\Core;
 
-use Deathnerd\WTForms\Widgets\ListWidget;
-use Deathnerd\WTForms\Widgets\RadioInput;
+use Deathnerd\WTForms\Widgets\Core\ListWidget;
+use Deathnerd\WTForms\Widgets\Core\RadioInput;
 
 /**
  * Like a SelectField, except displays a list of radio buttons.
