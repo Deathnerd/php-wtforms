@@ -35,7 +35,7 @@ class AnyOf extends Validator
      * @param string $message Error message to raise in case of a validation error. TODO: User interpolation
      * @param callable|null $values_formatter Function used to format the list of values in the error message
      */
-    public function __construct(array $values, $message = "", $values_formatter = null)
+    public function __construct(array $values, $message = "", callable $values_formatter = null)
     {
         $this->values = $values;
         $this->message = $message;

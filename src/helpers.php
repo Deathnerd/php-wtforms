@@ -64,13 +64,15 @@ if (!function_exists('get_builtin_gnu_translations')) {
 if (!function_exists('get_translations')) {
     /**
      * Gets a translation object
-     * @param null $languages
-     * @param null $getter
+     * @param null|string $languages
+     * @param null|callable $getter
      * @return \Gettext\GettextTranslator
      */
     function get_translations($languages = null, $getter = null)
     {
-        // TODO: Implement user-defined callback getter for translations
+        if (is_callable($getter)) {
+            return $getter($languages);
+        }
         return get_builtin_gnu_translations($languages);
     }
 }

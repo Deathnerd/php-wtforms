@@ -8,6 +8,9 @@
 
 namespace Deathnerd\WTForms\Validators;
 
+use Deathnerd\WTForms\BaseForm;
+use Deathnerd\WTForms\Fields\Core\Field;
+use Deathnerd\WTForms\NotImplemented;
 
 class Validator
 {
@@ -16,4 +19,17 @@ class Validator
      */
     public $message;
     public $field_flags = [];
+
+    /**
+     * @param BaseForm $form
+     * @param Field $field
+     * @param string $message
+     * @throws NotImplemented
+     */
+    function __invoke(BaseForm $form, Field $field, $message = "")
+    {
+        throw new NotImplemented("Validator must have an overridden __invoke method");
+    }
+
+
 }

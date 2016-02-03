@@ -53,7 +53,7 @@ class DateTimeField extends Field
      */
     public function process_formdata(array $valuelist)
     {
-        if (!empty($valuelist)) {
+        if ($valuelist) {
             $date_str = implode(" ", $valuelist);
             try {
                 $this->data = new DateTime($date_str);

@@ -63,7 +63,7 @@ class BooleanField extends Field
      */
     public function process_formdata(array $valuelist)
     {
-        if (empty($valuelist) || in_array($valuelist[0], $this->false_values)) {
+        if (!$valuelist || in_array($valuelist[0], $this->false_values)) {
             $this->data = false;
         } else {
             $this->data = true;

@@ -9,7 +9,9 @@
 namespace Deathnerd\WTForms\Validators;
 
 
+use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\Fields\Core\Field;
+use Deathnerd\WTForms\Form;
 
 /**
  * Validates the length of a string
@@ -43,7 +45,12 @@ class Length extends Validator
         $this->message = $message;
     }
 
-    public function __invoke($form, Field $field)
+    /**
+     * @param BaseForm|Form $form
+     * @param Field $field
+     * @throws ValidationError
+     */
+    public function __invoke(BaseForm $form, Field $field)
     {
         if (!is_null($field->data)) {
             $length = count($field->data);

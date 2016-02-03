@@ -44,7 +44,7 @@ class Regexp extends Validator
      */
     function __invoke(BaseForm $form, Field $field, $message = "")
     {
-        $match = preg_match($this->regex, !is_null($field->data) ? $field->data : '', $matches);
+        $match = preg_match($this->regex, $field->data ?: '', $matches);
         if (!$match) {
             if ($message == "") {
                 if ($this->message == "") {
@@ -57,6 +57,4 @@ class Regexp extends Validator
         }
         return $matches[0];
     }
-
-
 }

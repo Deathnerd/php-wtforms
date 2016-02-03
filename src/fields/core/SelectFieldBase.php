@@ -14,7 +14,7 @@ use Deathnerd\WTForms\Widgets\Core\Option;
 abstract class SelectFieldBase extends Field
 {
     /**
-     * @var \Deathnerd\WTForms\Widgets\Option
+     * @var Option
      */
     public $option_widget;
 

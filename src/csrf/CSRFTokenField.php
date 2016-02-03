@@ -36,7 +36,7 @@ class CSRFTokenField extends HiddenField
 
     /**
      * We want to always return the current token on render, regardless of
-     * whether a good ro bad token was passed
+     * whether a good or bad token was passed
      * @return string
      */
     public function _value()

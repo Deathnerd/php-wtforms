@@ -48,7 +48,7 @@ class BaseForm implements \Iterator
      * @param string $prefix
      * @param DefaultMeta|null $meta
      */
-    public function __construct($fields, $prefix = "", DefaultMeta $meta = null)
+    public function __construct(array $fields, $prefix = "", DefaultMeta $meta = null)
     {
         if (!ends_with($prefix, "-_;:/.")) {
             $prefix .= "-";
@@ -58,9 +58,12 @@ class BaseForm implements \Iterator
         $this->_errors = [];
         $this->_fields = [];
 
-        if (property_exists($fields, 'items')) {
-            $fields = $fields->items();
+        $f = [];
+        foreach($fields as $key=>$value){
+            $f[] = [$key, $value];
         }
+        $fields = $f;
+        unset($f);
 
         $translations = $this->_get_translations();
         $extra_fields = [];
@@ -86,7 +89,7 @@ class BaseForm implements \Iterator
      */
     private function _get_translations()
     {
-        return $this->meta->get_translations($this);
+        return $this->meta->get_translations();
     }
 
     public function __get($field_name)
@@ -102,7 +105,7 @@ class BaseForm implements \Iterator
             }
             return $ret_val;
         } elseif ($field_name == "errors") {
-            if (count($this->errors) == 0) {
+            if (count($this->_errors) == 0) {
                 foreach ($this->_fields as $name => $field) {
                     if (count($field->errors) > 0) {
                         $this->_errors[$name] = $field->errors;

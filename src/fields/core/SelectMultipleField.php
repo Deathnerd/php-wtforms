@@ -49,17 +49,21 @@ class SelectMultipleField extends SelectField
     /**
      * @param array|null $value
      */
-    public function process_data(array $value = null)
+    public function process_data(array $value)
     {
-        foreach ($value as $v) {
-            $this->data[] = strval($v);
+        if($value){
+            foreach ($value as $v) {
+                $this->data[] = strval($v);
+            }
         }
     }
 
-    public function process_formdata(array $valuelist = [])
+    public function process_formdata(array $valuelist)
     {
-        foreach ($valuelist as $v) {
-            $this->data[] = strval($v);
+        if($valuelist){
+            foreach ($valuelist as $v) {
+                $this->data[] = strval($v);
+            }
         }
     }
 

@@ -21,6 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Field base class
+ * @property  boolean $checked
  * @package Deathnerd\WTForms\Fields
  */
 class Field implements \Iterator

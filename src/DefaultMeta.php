@@ -42,6 +42,9 @@ class DefaultMeta
      * @var null|callable
      */
     public $csrf_class = null;
+    public $locales = false;
+    public $cache_translations = true;
+    public $translations_cache = [];
 
     public function bind_field(BaseForm $form, UnboundField $unbound_field, array $options)
     {
@@ -94,5 +97,37 @@ class DefaultMeta
         $widget = $field->widget;
 
         return $widget($field, $render_kw);
+    }
+
+
+    /**
+     * Override in subclasses to provide alternate translations factory.
+     *
+     * @return object An obejct that provides gettext() and ngettext() methods
+     */
+    public function get_translations()
+    {
+        $locales = $this->locales;
+        if ($locales === false) {
+            return null;
+        }
+
+        $locales = ($locales != false) ? $locales : null;
+        if (is_array($locales)) {
+            $locales = $locales[0];
+        }
+
+        if ($this->cache_translations === true) {
+            $translations = $this->translations_cache[$locales];
+
+            if ($translations === null) {
+                $this->translations_cache[$locales] = get_translations($locales);
+                $translations = $this->translations_cache[$locales];
+            }
+
+            return $translations;
+        }
+
+        return get_translations($locales);
     }
 }

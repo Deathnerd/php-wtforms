@@ -32,9 +32,9 @@ class StringField extends Field
     /**
      * @param array $valuelist
      */
-    public function process_formdata(array $valuelist = [])
+    public function process_formdata(array $valuelist)
     {
-        if (!empty($valuelist)) {
+        if ($valuelist) {
             $this->data = $valuelist[0];
         } else {
             $this->data = '';
@@ -43,6 +43,9 @@ class StringField extends Field
 
     public function _value()
     {
-        return (!empty($this->data)) ? $this->data : '';
+        if ($this->data) {
+            return $this->data;
+        }
+        return '';
     }
 }

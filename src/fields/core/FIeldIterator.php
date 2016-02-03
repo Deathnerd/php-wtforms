@@ -8,7 +8,11 @@
 
 namespace Deathnerd\WTForms\Fields\Core;
 
-
+/**
+ * Class FieldIterator
+ * @package Deathnerd\WTForms\Fields\Core
+ * @property array $entries
+ */
 trait FieldIterator
 {
     /**

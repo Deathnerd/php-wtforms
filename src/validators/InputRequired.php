@@ -53,6 +53,4 @@ class InputRequired extends Validator
             throw new StopValidation($message);
         }
     }
-
-
 }

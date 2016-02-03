@@ -8,7 +8,11 @@
 
 namespace Deathnerd\WTForms;
 
-
+/**
+ * Class BaseFormIterator
+ * @package Deathnerd\WTForms
+ * @property array|resource $_fields
+ */
 trait BaseFormIterator
 {
     /**
