@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms;
+
 use Exception;
 
 class ValueError extends Exception

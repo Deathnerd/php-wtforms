@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Validators;
 
 
-use Deathnerd\WTForms\Fields\Field;
+use Deathnerd\WTForms\Fields\Core\Field;
 
 /**
  * Validates the length of a string

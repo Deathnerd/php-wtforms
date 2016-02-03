@@ -15,13 +15,13 @@ use Illuminate\Support\Collection;
 class UnboundField
 {
     /**
-     * @var bool
-     */
-    public $_formfield = true;
-    /**
      * @var int
      */
     public static $creation_counter = 0;
+    /**
+     * @var bool
+     */
+    public $_formfield = true;
     protected $_creation_counter = 0;
     /**
      * @var string

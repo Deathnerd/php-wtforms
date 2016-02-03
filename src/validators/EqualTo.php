@@ -8,9 +8,9 @@
  */
 namespace Deathnerd\WTForms\Validators;
 
-use Deathnerd\WTForms\Fields\Field;
-use Deathnerd\WTForms\Form;
 use Deathnerd\WTForms\BaseForm;
+use Deathnerd\WTForms\Fields\Core\Field;
+use Deathnerd\WTForms\Form;
 
 /**
  * Compares the values of two fields
@@ -53,7 +53,7 @@ class EqualTo extends Validator
                 "other_name" => $this->fieldname
             ];
             $message = $this->message;
-            if($message == ""){
+            if ($message == "") {
                 $message = $field->gettext("Field must be equal to $d[other_name].");
             }
             throw new ValidationError($message);

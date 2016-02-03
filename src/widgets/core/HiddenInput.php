@@ -19,6 +19,7 @@ class HiddenInput extends Input
      * @var array
      */
     public $field_flags = ['hidden'];
+
     public function __construct()
     {
         parent::__construct("hidden");

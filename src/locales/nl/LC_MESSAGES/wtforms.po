@@ -71,7 +71,7 @@ msgstr "Ongeldige invoer."
 #: wtforms/validators.py:286
 msgid "Invalid email address."
 msgstr "Ongeldig e-mailadres."
-du
+
 #: wtforms/validators.py:318
 msgid "Invalid IP address."
 msgstr "Ongeldig IP-adres."

@@ -11,7 +11,6 @@ namespace Deathnerd\WTForms;
 use Deathnerd\WTForms\Fields\Core\Field;
 use Deathnerd\WTForms\Fields\Core\UnboundField;
 use Deathnerd\WTForms\Utils\Meta;
-use Illuminate\Support\Collection;
 
 /**
  * The metaclass for `Form` and any subclasses of `Form`.
@@ -34,14 +33,14 @@ class FormMeta extends BaseForm
 
     /**
      * FormMeta constructor.
-     * @param array $fields
-     * @param string $prefix
-     * @param DefaultMeta|null $meta
+     * @param string $name
+     * @param array $bases
+     * @param DefaultMeta|null $d
      */
     // TODO Figure out constructor order
     public function __construct($name = "", $bases = [], $d)
     {
-        $this->_create_unbound_fields($name);
+        $this->_create_unbound_fields();
         $this->_create_metas(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS | DEBUG_BACKTRACE_PROVIDE_OBJECT));
         parent::__construct($fields, $prefix, $meta);
     }
@@ -60,7 +59,7 @@ class FormMeta extends BaseForm
         parent::__set($field_name, $value);
     }
 
-    private function _create_unbound_fields($name)
+    private function _create_unbound_fields()
     {
         $fields = [];
         foreach (get_object_vars($this) as $var_name => $var) {

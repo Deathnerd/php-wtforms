@@ -8,6 +8,7 @@
 
 namespace Deathnerd\WTForms\Widgets\Core;
 
+use Deathnerd\WTForms\Fields\Core\SelectFieldBase;
 use Illuminate\Support\HtmlString;
 
 class Select extends Widget

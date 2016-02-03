@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Widgets\Core;
+
 use Deathnerd\WTForms\Fields\Core\Field;
 use Illuminate\Support\HtmlString;
 use Symfony\Component\OptionsResolver\OptionsResolver;

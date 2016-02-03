@@ -37,8 +37,8 @@ class FloatField extends Field
 
     public function process_formdata(array $valuelist)
     {
-        if(!empty($valuelist)){
-            if(is_numeric($valuelist[0])){
+        if (!empty($valuelist)) {
+            if (is_numeric($valuelist[0])) {
                 $this->data = floatval($valuelist[0]);
             } else {
                 $this->data = null;

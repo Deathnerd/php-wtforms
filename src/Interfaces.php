@@ -7,7 +7,8 @@
  */
 
 namespace Deathnerd\WTForms\Interfaces;
-use Deathnerd\WTForms\Fields\Field;
+
+use Deathnerd\WTForms\Fields\Core\Field;
 use Deathnerd\WTForms\Form;
 
 /**

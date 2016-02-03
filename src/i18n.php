@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms;
+
 use Gettext\GettextTranslator;
 
 
@@ -57,6 +58,7 @@ class DefaultTranslations
 
     /**
      * DefaultTranslations constructor.
+     * @param GettextTranslator $translations
      */
     public function __construct(GettextTranslator $translations)
     {

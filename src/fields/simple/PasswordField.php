@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Fields\Simple;
+
 use Deathnerd\WTForms\Fields\Core\StringField;
 use Deathnerd\WTForms\Widgets\Core\PasswordInput;
 

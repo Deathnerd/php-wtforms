@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Validators;
 
 use Deathnerd\WTForms\BaseForm;
-use Deathnerd\WTForms\Fields\Field;
+use Deathnerd\WTForms\Fields\Core\Field;
 
 /**
  * Simple url validation using PHP's filter_var.
@@ -41,9 +41,9 @@ class URL extends Validator
             } else {
                 $valid = filter_var($field->data, FILTER_VALIDATE_URL);
             }
-            if(!$valid){
+            if (!$valid) {
                 $message = $this->message;
-                if($message == ""){
+                if ($message == "") {
                     $message = $field->gettext("Invalid URL.");
                 }
                 throw new ValidationError($message);

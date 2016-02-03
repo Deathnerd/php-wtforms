@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Fields\Simple;
+
 use Deathnerd\WTForms\Fields\Core\BooleanField;
 use Deathnerd\WTForms\Widgets\Core\SubmitInput;
 

@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Widgets\Core;
+
 use Deathnerd\WTForms\NotImplemented;
 
 /**
@@ -15,7 +16,8 @@ use Deathnerd\WTForms\NotImplemented;
  */
 class Widget
 {
-    public function __invoke(...$args){
+    public function __invoke(...$args)
+    {
         throw new NotImplemented("Widget needs an __invoke method");
     }
 }

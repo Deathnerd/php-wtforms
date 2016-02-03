@@ -289,7 +289,7 @@ class Field implements \Iterator
         if ($data instanceof UnsetValue) {
             // Should work... See example at: http://php.net/manual/en/language.oop5.magic.php#object.invoke
             if (is_callable($this->default)) {
-                $data = $this->default();
+                $data = $this->default->__invoke();
             } else {
                 $data = $this->default;
             }
@@ -334,7 +334,7 @@ class Field implements \Iterator
              * @var $v \Deathnerd\WTForms\Validators\Validator
              */
             try {
-                $v->call($form, $this);
+                $v->__invoke($form, $this);
             } catch (StopValidation $e) {
                 if (!empty($e->args) && $e->args[0]) {
                     $this->errors[] = $e->args[0];

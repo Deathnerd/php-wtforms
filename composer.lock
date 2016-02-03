@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "de742dd6252e160d923bbaca6f44ee5d",
+    "hash": "f1550e451850019a6e59afbd4cac7cdf",
     "content-hash": "e2a2c04a4831098a2ffba390ba2f0719",
     "packages": [
         {
@@ -646,12 +646,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "aeba1b6403d32f42802cd628528ea48127ed9be0"
+                "reference": "9344a87ceedfc50354a39653e54257ee9aa6a77d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/aeba1b6403d32f42802cd628528ea48127ed9be0",
-                "reference": "aeba1b6403d32f42802cd628528ea48127ed9be0",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/9344a87ceedfc50354a39653e54257ee9aa6a77d",
+                "reference": "9344a87ceedfc50354a39653e54257ee9aa6a77d",
                 "shasum": ""
             },
             "require": {
@@ -690,7 +690,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2016-01-27 05:14:46"
+            "time": "2016-02-02 13:44:19"
         },
         {
             "name": "symfony/http-kernel",

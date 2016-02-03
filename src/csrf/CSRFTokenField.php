@@ -2,9 +2,9 @@
 namespace Deathnerd\WTForms\CSRF;
 
 use Deathnerd\WTForms;
-use Deathnerd\WTForms\Fields;
-use Deathnerd\WTForms\Fields\HiddenField;
+use Deathnerd\WTForms\Fields\Core\HiddenField;
 use Deathnerd\WTForms\Form;
+use Deathnerd\WTForms\Validators\ValidationError;
 
 class CSRFTokenField extends HiddenField
 {
@@ -23,7 +23,7 @@ class CSRFTokenField extends HiddenField
      * CSRFTokenField constructor.
      * @param array $kwargs
      */
-    public function __construct(array $kwargs = ['label' => 'CSRF Token', 'csrf_impl'=>'CSRF'])
+    public function __construct(array $kwargs = ['label' => 'CSRF Token', 'csrf_impl' => 'CSRF'])
     {
         // TODO: Might not work. Revisit
         $this->csrf_impl = new ${$kwargs['csrf_impl']}();
@@ -54,9 +54,10 @@ class CSRFTokenField extends HiddenField
     /**
      * Handle the validation of this token field.
      * @param Form $form
-     * @throws WTForms\ValidationError
+     * @throws ValidationError
      */
-    public function pre_validate(Form $form){
+    public function pre_validate(Form $form)
+    {
         $this->csrf_impl->validate_csrf_token($form, $this);
     }
 

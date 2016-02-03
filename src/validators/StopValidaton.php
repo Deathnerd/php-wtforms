@@ -22,6 +22,7 @@ class StopValidation extends \Exception
      * @var array
      */
     public $args = [];
+
     /**
      * Causes the validation chain to stop.
      *
