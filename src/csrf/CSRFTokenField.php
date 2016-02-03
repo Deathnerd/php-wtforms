@@ -2,9 +2,9 @@
 namespace Deathnerd\WTForms\CSRF;
 
 use Deathnerd\WTForms;
-use Deathnerd\WTForms\Fields;
-use Deathnerd\WTForms\Fields\HiddenField;
+use Deathnerd\WTForms\Fields\Core\HiddenField;
 use Deathnerd\WTForms\Form;
+use Deathnerd\WTForms\Validators\ValidationError;
 
 class CSRFTokenField extends HiddenField
 {
@@ -54,7 +54,7 @@ class CSRFTokenField extends HiddenField
     /**
      * Handle the validation of this token field.
      * @param Form $form
-     * @throws WTForms\ValidationError
+     * @throws ValidationError
      */
     public function pre_validate(Form $form)
     {

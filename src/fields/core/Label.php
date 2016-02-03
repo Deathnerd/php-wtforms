@@ -36,6 +36,6 @@ class Label
             $kwargs['for'] = $this->field_id;
         }
         $attributes = html_params($kwargs);
-        return new HtmlString("<label $attributes>" . $text or $this->text . "</label>");
+        return new HtmlString("<label" . $attributes . ">" . $text or $this->text . "</label>");
     }
 }

@@ -9,7 +9,6 @@
 namespace Deathnerd\WTForms\CSRF;
 
 
-use Deathnerd\WTForms\Fields\Field;
 use Deathnerd\WTForms\Form;
 use Deathnerd\WTForms\NotImplemented;
 use Deathnerd\WTForms\Validators\ValidationError;
@@ -38,11 +37,11 @@ class CSRF
      * based on some sort of user data, though it can be anything which you
      * can validate on a subsequent request.
      *
-     * @param Field $csrf_token_field The field which is being used for CSRF
+     * @param CSRFTokenField $csrf_token_field The field which is being used for CSRF
+     * @return string
      * @throws NotImplemented
-     * @return string A generated CSRF string
      */
-    public function generate_csrf_token(Field $csrf_token_field)
+    public function generate_csrf_token(CSRFTokenField $csrf_token_field)
     {
         throw new NotImplemented();
     }
@@ -54,10 +53,10 @@ class CSRF
      * generated token equals the one we received as formdata.
      *
      * @param Form $form The form which has this CSRF token
-     * @param Field $field The CSRF token field
+     * @param CSRFTokenField $field The CSRF token field
      * @throws ValidationError
      */
-    public function validate_csrf_token(Form $form, Field $field)
+    public function validate_csrf_token(Form $form, CSRFTokenField $field)
     {
         if ($field->current_token !== $field->data) {
             throw new ValidationError($field->gettext("Invalid CSRF Token"));

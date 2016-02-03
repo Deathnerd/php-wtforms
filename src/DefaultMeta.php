@@ -9,8 +9,9 @@
 namespace Deathnerd\WTForms;
 
 use Deathnerd\WTForms\Fields;
-use Deathnerd\WTForms\Fields\Field;
-use Deathnerd\WTForms\Fields\UnboundField;
+use Deathnerd\WTForms\Fields\Core\Field;
+use Deathnerd\WTForms\Fields\Core\UnboundField;
+use Deathnerd\WTForms\Widgets\Core\Widget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -68,7 +69,7 @@ class DefaultMeta
      * TODO: Accept Symfony HTTP Response objects
      * @param BaseForm $form
      * @param array|Collection $formdata
-     * @return array|Collection
+     * @return array
      */
     public function wrap_formdata(BaseForm $form, $formdata)
     {
@@ -89,7 +90,9 @@ class DefaultMeta
         if (!is_null($other_kw)) {
             $render_kw = array_merge($other_kw, $render_kw);
         }
-        // TODO Figure out a way to make the static analyzer happy
-        return $field->widget->__invoke($field, $render_kw);
+        /** @var Widget $widget */
+        $widget = $field->widget;
+
+        return $widget($field, $render_kw);
     }
 }

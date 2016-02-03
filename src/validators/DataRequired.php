@@ -9,7 +9,7 @@
 namespace Deathnerd\WTForms\Validators;
 
 use Deathnerd\WTForms\BaseForm;
-use Deathnerd\WTForms\Fields\Field;
+use Deathnerd\WTForms\Fields\Core\Field;
 
 /**
  * Checks the field's data is 'truthy' otherwise stops the validation chain.

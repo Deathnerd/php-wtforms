@@ -28,9 +28,9 @@ class ListWidget extends Widget
         $html = ["<$this->html_tag " . html_params($kwargs) . ">"];
         foreach ($field as $subfield) {
             if ($this->prefix_label) {
-                $html[] = "<li>$subfield->label {$subfield->call()}</li>";
+                $html[] = "<li>$subfield->label {$subfield()}</li>";
             } else {
-                $html[] = "<li>{$subfield->call()} $subfield->label</li>";
+                $html[] = "<li>{$subfield()} $subfield->label</li>";
             }
         }
         $html[] = "</$this->html_tag>";

@@ -11,7 +11,6 @@ namespace Deathnerd\WTForms;
 
 use Deathnerd\WTForms\Fields\Core\Field;
 use Deathnerd\WTForms\Fields\Core\UnboundField;
-use Illuminate\Support\Collection;
 
 /**
  * Class BaseForm
@@ -73,9 +72,21 @@ class BaseForm implements \Iterator
 
         foreach (chain($fields, $extra_fields) as $name => $unbound_field) {
             $options = ["name" => $name, "prefix" => $prefix, "translations" => $translations];
-            $field = $meta->bind_field($this, $unbound_field, Collection::make($options));
+            $field = $meta->bind_field($this, $unbound_field, $options);
             $this->_fields[$name] = $field;
         }
+    }
+
+    /**
+     * Override in subclasses to provide alternate translations factory.
+     *
+     * must return an object that provides `gettext()` and `ngettext()` methods.
+     * @deprecated 2.0 Use `Meta::get_translations` instead
+     * @return mixed
+     */
+    private function _get_translations()
+    {
+        return $this->meta->get_translations($this);
     }
 
     public function __get($field_name)
@@ -124,18 +135,6 @@ class BaseForm implements \Iterator
     }
 
     /**
-     * Override in subclasses to provide alternate translations factory.
-     *
-     * must return an object that provides `gettext()` and `ngettext()` methods.
-     * @deprecated 2.0 Use `Meta::get_translations` instead
-     * @return mixed
-     */
-    private function _get_translations()
-    {
-        return $this->meta->get_translations($this);
-    }
-
-    /**
      * Populates the attributes of the passed `$obj` with data from the form's
      * fields.
      * NOTE: This is a destructive operation; any attribute with the same name
@@ -165,7 +164,7 @@ class BaseForm implements \Iterator
      */
     public function process(array $formdata = [], $obj = null, array $data = [], array $kwargs = [])
     {
-        $formdata = $this->meta->wrap_formdata($formdata);
+        $formdata = $this->meta->wrap_formdata($this, $formdata);
         $kwargs = array_merge($data, $kwargs);
 
         foreach ($this->_fields as $name => $field) {
