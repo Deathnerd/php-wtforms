@@ -125,7 +125,7 @@ if (!function_exists('html_params')) {
     }
 }
 
-if(!function_exists('chain')){
+if (!function_exists('chain')) {
     /**
      * An implementation of Python's itertools.chain method.
      *
@@ -138,9 +138,10 @@ if(!function_exists('chain')){
      * @param array $iterables An array of iterables to iterate through
      * @return Generator
      */
-    function chain(...$iterables){
-        foreach($iterables as $it){
-            foreach($it as $element){
+    function chain(...$iterables)
+    {
+        foreach ($iterables as $it) {
+            foreach ($it as $element) {
                 yield $element;
             }
         }

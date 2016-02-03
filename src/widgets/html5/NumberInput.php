@@ -7,6 +7,7 @@
  */
 
 namespace Deathnerd\WTForms\Widgets\HTML5;
+
 use Deathnerd\WTForms\Fields\Core\Field;
 use Deathnerd\WTForms\Widgets\Core\Input;
 use Symfony\Component\OptionsResolver\OptionsResolver;

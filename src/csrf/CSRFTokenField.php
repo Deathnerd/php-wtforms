@@ -23,7 +23,7 @@ class CSRFTokenField extends HiddenField
      * CSRFTokenField constructor.
      * @param array $kwargs
      */
-    public function __construct(array $kwargs = ['label' => 'CSRF Token', 'csrf_impl'=>'CSRF'])
+    public function __construct(array $kwargs = ['label' => 'CSRF Token', 'csrf_impl' => 'CSRF'])
     {
         // TODO: Might not work. Revisit
         $this->csrf_impl = new ${$kwargs['csrf_impl']}();
@@ -56,7 +56,8 @@ class CSRFTokenField extends HiddenField
      * @param Form $form
      * @throws WTForms\ValidationError
      */
-    public function pre_validate(Form $form){
+    public function pre_validate(Form $form)
+    {
         $this->csrf_impl->validate_csrf_token($form, $this);
     }
 

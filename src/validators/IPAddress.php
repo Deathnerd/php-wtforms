@@ -12,6 +12,7 @@ namespace Deathnerd\WTForms\Validators;
 use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\Fields\Field;
 use Deathnerd\WTForms\ValueError;
+
 /**
  * Validates an IP Address
  * @package Deathnerd\WTForms\Validators

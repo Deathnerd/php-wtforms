@@ -145,7 +145,7 @@ class BaseForm implements \Iterator
     public function populate_obj($obj)
     {
         foreach ($this->_fields as $name => $f) {
-            /** @var $field Field  */
+            /** @var $field Field */
             $field->populate_obj($obj, $name);
         }
     }

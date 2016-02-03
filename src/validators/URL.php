@@ -41,9 +41,9 @@ class URL extends Validator
             } else {
                 $valid = filter_var($field->data, FILTER_VALIDATE_URL);
             }
-            if(!$valid){
+            if (!$valid) {
                 $message = $this->message;
-                if($message == ""){
+                if ($message == "") {
                     $message = $field->gettext("Invalid URL.");
                 }
                 throw new ValidationError($message);

@@ -11,7 +11,6 @@ namespace Deathnerd\WTForms;
 use Deathnerd\WTForms\Fields\Core\Field;
 use Deathnerd\WTForms\Fields\Core\UnboundField;
 use Deathnerd\WTForms\Utils\Meta;
-use Illuminate\Support\Collection;
 
 /**
  * The metaclass for `Form` and any subclasses of `Form`.

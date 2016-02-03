@@ -9,6 +9,7 @@
 namespace Deathnerd\WTForms\Fields\HTML5;
 
 use Deathnerd\WTForms\Widgets\HTML5\DateInput;
+
 /**
  * Represents an ``<input type="date">``.
  * @package Deathnerd\WTForms\Fields\HTML5

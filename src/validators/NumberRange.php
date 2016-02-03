@@ -55,9 +55,9 @@ class NumberRange extends Validator
         if (is_null($data) || (!is_null($this->min) && $data < $this->min) || (!is_null($this->max) && $data > $this->max)) {
             $message = $this->message;
             if ($message == "") {
-                if(is_null($this->max)){
+                if (is_null($this->max)) {
                     $message = sprintf($field->gettext('Number must be at least %s.'), $this->min);
-                } elseif(is_null($this->min)){
+                } elseif (is_null($this->min)) {
                     $message = sprintf($field->gettext('Number must be at most %s.'), $this->max);
                 } else {
                     $message = sprintf($field->gettext('Number must be between %s and %s.'), $this->min, $this->max);

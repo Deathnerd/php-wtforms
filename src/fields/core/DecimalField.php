@@ -10,7 +10,6 @@
 namespace Deathnerd\WTForms\Fields\Core;
 
 
-
 class DecimalField extends FloatField
 {
 
