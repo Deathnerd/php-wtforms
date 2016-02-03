@@ -11,6 +11,14 @@ namespace Deathnerd\WTForms\Fields\Core;
 use Deathnerd\WTForms\NotImplemented;
 use Deathnerd\WTForms\Widgets\Core\Option;
 
+/**
+ * Base class for fields which can be iterated to produce options.
+ *
+ * This isn't a field, but an abstract base class for fields which want to
+ * provide this functionality.
+ *
+ * @package Deathnerd\WTForms\Fields\Core
+ */
 abstract class SelectFieldBase extends Field
 {
     /**
@@ -30,11 +38,7 @@ abstract class SelectFieldBase extends Field
     {
         $kwargs['validators'] = $validators;
         parent::__construct($label, $kwargs);
-        if (!is_null($option_widget)) {
-            $this->option_widget = $option_widget;
-        } else {
-            $this->option_widget = new Option();
-        }
+        $this->option_widget = $option_widget ?: new Option();
     }
 
     /**

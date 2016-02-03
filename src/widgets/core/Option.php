@@ -10,6 +10,14 @@ namespace Deathnerd\WTForms\Widgets\Core;
 
 use Deathnerd\WTForms\Fields\Core\Field;
 
+/**
+ * Renders the individual option from a select field.
+ *
+ * This is just a convenience for various custom rendering situations, and an
+ * option by itself does not constitute an entire field.
+ *
+ * @package Deathnerd\WTForms\Widgets\Core
+ */
 class Option
 {
     public function __invoke(Field $field, array $kwargs = [])

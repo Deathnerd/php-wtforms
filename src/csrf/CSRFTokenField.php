@@ -4,6 +4,7 @@ namespace Deathnerd\WTForms\CSRF;
 use Deathnerd\WTForms;
 use Deathnerd\WTForms\Fields\Core\HiddenField;
 use Deathnerd\WTForms\Form;
+use Deathnerd\WTForms\Utils\UnsetValue;
 use Deathnerd\WTForms\Validators\ValidationError;
 
 class CSRFTokenField extends HiddenField
@@ -61,8 +62,16 @@ class CSRFTokenField extends HiddenField
         $this->csrf_impl->validate_csrf_token($form, $this);
     }
 
-    public function process($formdata, $data = UNSET_VALUE)
+    /**
+     * @param $formdata
+     * @param null $data
+     * @throws WTForms\NotImplemented
+     */
+    public function process($formdata, $data = null)
     {
+        if ($data === null) {
+            $data = new UnsetValue();
+        }
         parent::process($formdata, $data);
         $this->current_token = $this->csrf_impl->generate_csrf_token($this);
     }

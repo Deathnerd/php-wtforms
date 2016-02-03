@@ -10,7 +10,20 @@ namespace Deathnerd\WTForms\Widgets\Core;
 
 use Deathnerd\WTForms\Fields\Core\SelectFieldBase;
 use Illuminate\Support\HtmlString;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Renders a select field.
+ *
+ * If `$multiple` is true, then the `size` property should be specified on rendering
+ * to make the field useful.
+ *
+ * The field must provide an `iter_choices()` method which the widget will
+ * call on rendering; this method must yield tuples of
+ * `($value, $label, $selected)`.
+ *
+ * @package Deathnerd\WTForms\Widgets\Core
+ */
 class Select extends Widget
 {
     protected $multiple = false;
@@ -24,28 +37,34 @@ class Select extends Widget
         $this->multiple = $multiple;
     }
 
-    public function call(SelectFieldBase $field, array $kwargs = [])
+    /**
+     * @param SelectFieldBase $field
+     * @param array $kwargs
+     * @return HtmlString
+     * @throws \Deathnerd\WTForms\NotImplemented
+     */
+    public function __invoke(SelectFieldBase $field, array $kwargs = [])
     {
-        if (!is_null($kwargs['id'])) {
-            $kwargs['id'] = $field->id;
-        }
+        $kwargs = (new OptionsResolver())->setDefault("id", $field->id)->resolve($kwargs);
+        $kwargs['name'] = $field->name;
         if ($this->multiple) {
             $kwargs['multiple'] = true;
         }
-        $kwargs['name'] = $field->name;
-        $html = ["<select " . html_params($kwargs) . ">"];
+
+        $html = sprintf("<select %s>", html_params($kwargs));
         foreach ($field->iter_choices() as list($val, $label, $selected)) {
-            $html[] = self::render_option($val, $label, $selected);
+            $html .= self::render_option($val, $label, $selected);
         }
-        $html[] = "</select>";
-        return new HtmlString(implode("", $html));
+        $html .= "</select>";
+
+        return new HtmlString($html);
     }
 
     /**
      * Private method called when rendering each option as HTML
-     * @param $value
-     * @param $label
-     * @param $selected
+     * @param mixed $value
+     * @param string $label
+     * @param boolean $selected
      * @param array $kwargs
      * @return HtmlString
      */

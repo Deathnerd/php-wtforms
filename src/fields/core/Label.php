@@ -10,6 +10,7 @@ namespace Deathnerd\WTForms\Fields\Core;
 
 
 use Illuminate\Support\HtmlString;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Label
 {
@@ -32,10 +33,9 @@ class Label
         if (array_key_exists("for_", $kwargs)) {
             $kwargs["for"] = $kwargs["for_"];
             unset($kwargs["for_"]);
-        } else if (!array_key_exists("for", $kwargs)) {
-            $kwargs['for'] = $this->field_id;
+        } else {
+            $kwargs = (new OptionsResolver())->setDefault('for', $this->field_id)->resolve($kwargs);
         }
-        $attributes = html_params($kwargs);
-        return new HtmlString("<label" . $attributes . ">" . $text or $this->text . "</label>");
+        return new HtmlString(sprintf("<label %s>%s</label>", html_params($kwargs),$text ?: $this->text));
     }
 }

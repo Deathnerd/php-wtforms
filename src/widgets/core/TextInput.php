@@ -11,6 +11,7 @@ namespace Deathnerd\WTForms\Widgets\Core;
 
 /**
  * Render a single-line text input
+ *
  * @package Deathnerd\WTForms\Widgets
  */
 class TextInput extends Input

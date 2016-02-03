@@ -65,7 +65,7 @@ class BaseForm implements \Iterator
         $fields = $f;
         unset($f);
 
-        $translations = $this->_get_translations();
+        $translations = $this->meta->get_translations();
         $extra_fields = [];
 
         if (property_exists($meta, 'csrf') && isset($meta->csrf)) {
@@ -78,18 +78,6 @@ class BaseForm implements \Iterator
             $field = $meta->bind_field($this, $unbound_field, $options);
             $this->_fields[$name] = $field;
         }
-    }
-
-    /**
-     * Override in subclasses to provide alternate translations factory.
-     *
-     * must return an object that provides `gettext()` and `ngettext()` methods.
-     * @deprecated 2.0 Use `Meta::get_translations` instead
-     * @return mixed
-     */
-    private function _get_translations()
-    {
-        return $this->meta->get_translations();
     }
 
     public function __get($field_name)

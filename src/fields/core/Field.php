@@ -196,6 +196,11 @@ class Field implements \Iterator
         return $this->meta->render_field($this, $kwargs);
     }
 
+    public function __toString()
+    {
+        return (string)$this->__invoke();
+    }
+
     /**
      * Get a translation for the given message.
      *

@@ -1,30 +1,33 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Wes
- * Date: 1/28/2016
- * Time: 11:07 AM
+ * User: Wes Gilleland
+ * Date: 2/3/2016
+ * Time: 4:46 PM
  */
 
 namespace Deathnerd\WTForms\Widgets\Core;
+
 use Deathnerd\WTForms\Fields\Core\Field;
 use Illuminate\Support\HtmlString;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Render a single radio button.
+ * Renders a submit button.
  *
- * This widget is most commonly used in conjunction with ListWidget or some
- * other listing, as singular radio buttons are not very useful.
+ * The field's label is used as the text of the submit button instead of the
+ * data on the field.
+ *
  * @package Deathnerd\WTForms\Widgets\Core
  */
-class RadioInput extends Input
+class SubmitInput extends Input
 {
     /**
-     * RadioInput constructor.
+     * SubmitInput constructor.
      */
     public function __construct()
     {
-        parent::__construct("radio");
+        parent::__construct("submit");
     }
 
     /**
@@ -34,9 +37,7 @@ class RadioInput extends Input
      */
     public function __invoke(Field $field, array $kwargs = [])
     {
-        if($field->checked) {
-            $kwargs['checked'] = true;
-        }
+        $kwargs = (new OptionsResolver())->setDefault("value", $field->label->text)->resolve($kwargs);
         return parent::__invoke($field, $kwargs);
     }
 }

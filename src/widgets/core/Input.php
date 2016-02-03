@@ -29,6 +29,10 @@ class Input extends Widget
      */
     public $input_type;
 
+    /**
+     * @param string $input_type If passed, will add ``type="$input_type"`` to the
+     * html attributes for this input
+     */
     public function __construct($input_type = "")
     {
         if ($input_type !== "") {
@@ -36,6 +40,11 @@ class Input extends Widget
         }
     }
 
+    /**
+     * @param Field $field
+     * @param array $kwargs
+     * @return HtmlString
+     */
     public function __invoke(Field $field, array $kwargs = [])
     {
         $kwargs = (new OptionsResolver())->setDefaults([
