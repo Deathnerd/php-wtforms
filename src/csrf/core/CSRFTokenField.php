@@ -1,11 +1,12 @@
 <?php
-namespace Deathnerd\WTForms\CSRF;
+namespace Deathnerd\WTForms\CSRF\Core;
 
 use Deathnerd\WTForms;
 use Deathnerd\WTForms\Fields\Core\HiddenField;
 use Deathnerd\WTForms\Form;
 use Deathnerd\WTForms\Utils\UnsetValue;
 use Deathnerd\WTForms\Validators\ValidationError;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CSRFTokenField extends HiddenField
 {
@@ -24,10 +25,15 @@ class CSRFTokenField extends HiddenField
      * CSRFTokenField constructor.
      * @param array $kwargs
      */
-    public function __construct(array $kwargs = ['label' => 'CSRF Token', 'csrf_impl' => 'CSRF'])
+    public function __construct(array $kwargs = [])
     {
+        $kwargs = (new OptionsResolver())->setDefaults([
+            'label' => 'CSRF Token',
+            'csrf_impl' => 'CSRF'
+        ])->resolve($kwargs);
+
         // TODO: Might not work. Revisit
-        $this->csrf_impl = new ${$kwargs['csrf_impl']}();
+        $this->csrf_impl = new $kwargs['csrf_impl']();
         unset($kwargs['csrf_impl']);
         $label = $kwargs['label'];
         unset($kwargs['label']);

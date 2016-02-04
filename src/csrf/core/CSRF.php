@@ -6,7 +6,7 @@
  * Time: 10:32 PM
  */
 
-namespace Deathnerd\WTForms\CSRF;
+namespace Deathnerd\WTForms\CSRF\Core;
 
 
 use Deathnerd\WTForms\Form;
