@@ -47,9 +47,10 @@ class NumberRange extends Validator
     /**
      * @param BaseForm $form
      * @param Field $field
+     * @param string $message
      * @throws ValidationError
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message = "")
     {
         $data = $field->data;
         if (is_null($data) || (!is_null($this->min) && $data < $this->min) || (!is_null($this->max) && $data > $this->max)) {

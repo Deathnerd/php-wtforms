@@ -53,7 +53,7 @@ class BaseForm implements \Iterator
         if (!ends_with($prefix, "-_;:/.")) {
             $prefix .= "-";
         }
-        $this->meta = (is_null($meta)) ? new DefaultMeta() : $meta;
+        $this->meta = $this->meta ?: new DefaultMeta();
         $this->_prefix = $prefix;
         $this->_errors = [];
         $this->_fields = [];
@@ -68,7 +68,7 @@ class BaseForm implements \Iterator
         $translations = $this->meta->get_translations();
         $extra_fields = [];
 
-        if (property_exists($meta, 'csrf') && isset($meta->csrf)) {
+        if (!is_null($meta) && property_exists($meta, 'csrf') && isset($meta->csrf)) {
             $this->_csrf = $meta->build_csrf($this);
             array_merge($extra_fields, $this->_csrf->setup_form($this));
         }

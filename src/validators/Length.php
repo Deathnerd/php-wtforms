@@ -48,12 +48,13 @@ class Length extends Validator
     /**
      * @param BaseForm|Form $form
      * @param Field $field
+     * @param string $message
      * @throws ValidationError
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message = "")
     {
-        if (!is_null($field->data)) {
-            $length = count($field->data);
+        if ($field->data !== null) {
+            $length = strlen($field->data);
         } else {
             $length = 0;
         }

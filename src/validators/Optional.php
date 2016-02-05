@@ -48,9 +48,10 @@ class Optional extends Validator
     /**
      * @param BaseForm $form
      * @param Field $field
+     * @param string $message
      * @throws StopValidation
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message = "")
     {
         if (is_null($field->raw_data) || (is_string($field->raw_data[0] && $this->string_check($field->raw_data[0]) == ""))) {
             $field->errors = [];

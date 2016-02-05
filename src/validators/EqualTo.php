@@ -36,9 +36,10 @@ class EqualTo extends Validator
     /**
      * @param Form|BaseForm $form
      * @param Field $field
+     * @param string $message
      * @throws ValidationError
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message="")
     {
         if ($form->{$this->fieldname} !== null) {
             /** @var Field $other */

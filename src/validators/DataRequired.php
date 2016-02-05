@@ -46,9 +46,10 @@ class DataRequired extends Validator
     /**
      * @param BaseForm $form
      * @param Field $field
+     * @param string $message
      * @throws StopValidation
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message = "")
     {
         if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
             if ($this->message == "") {

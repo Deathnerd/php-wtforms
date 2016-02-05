@@ -32,7 +32,7 @@ class NoneOf extends AnyOf
     /**
      * @inheritdoc
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message = "")
     {
         if (in_array($field->data, $this->values)) {
             $message = $this->message;

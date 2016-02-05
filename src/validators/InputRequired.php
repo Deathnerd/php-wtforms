@@ -39,9 +39,10 @@ class InputRequired extends Validator
     /**
      * @param BaseForm $form
      * @param Field $field
+     * @param string $message
      * @throws StopValidation
      */
-    function __invoke(BaseForm $form, Field $field)
+    function __invoke(BaseForm $form, Field $field, $message = "")
     {
         if (is_null($field->raw_data) || !$field->raw_data[0]) {
             if ($this->message == "") {

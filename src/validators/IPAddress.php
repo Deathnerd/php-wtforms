@@ -47,9 +47,10 @@ class IPAddress extends Validator
     /**
      * @param BaseForm $form
      * @param Field $field
+     * @param string $message
      * @throws ValidationError
      */
-    public function __invoke(BaseForm $form, Field $field)
+    public function __invoke(BaseForm $form, Field $field, $message = "")
     {
         $value = $field->data;
         $valid = false;

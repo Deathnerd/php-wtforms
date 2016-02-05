@@ -1,48 +1,14 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 1/4/2016
- * Time: 9:59 AM
+ * User: Wes
+ * Date: 2/4/2016
+ * Time: 5:51 PM
  */
 
-namespace Deathnerd\WTForms;
+namespace Deathnerd\WTForms\i18n;
 
 use Gettext\GettextTranslator;
-
-
-/**
- * A translations object which simply returns unmodified strings.
- *
- * This is typically used when translations are disabled or if no
- * valid translations provider can be found.
- * @package Deathnerd\WTForms
- */
-class DummyTranslations
-{
-    /**
-     * @param $string
-     * @return mixed
-     */
-    public function gettext($string)
-    {
-        return $string;
-    }
-
-    /**
-     * @param $singular
-     * @param $plural
-     * @param int $n
-     * @return mixed
-     */
-    public function ngettext($singular, $plural, $n = 1)
-    {
-        if ($n == 1) {
-            return $singular;
-        }
-        return $plural;
-    }
-}
 
 /**
  * An object to wrap translations objects which use

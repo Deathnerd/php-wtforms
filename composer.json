@@ -26,7 +26,10 @@
       "Deathnerd\\WTForms\\Widgets\\": "src/widgets/",
       "Deathnerd\\WTForms\\Widgets\\Core\\": "src/widgets/core",
       "Deathnerd\\WTForms\\Widgets\\HTML5\\": "src/widgets/html5",
-      "Deathnerd\\WTForms\\Validators\\": "src/validators/"
+      "Deathnerd\\WTForms\\Validators\\": "src/validators/",
+      "Deathnerd\\WTForms\\i18n\\": "src/i18n",
+      "Deathnerd\\WTForms\\utils\\": "src/utils",
+      "Deathnerd\\WTForms\\Tests\\": "tests/"
     },
     "files": ["src/helpers.php"]
   },
@@ -36,6 +39,7 @@
     "illuminate/http": "5.2.7",
     "gettext/gettext": "^3.5",
     "gettext/languages": "^2.1",
-    "symfony/options-resolver": "3.0.1"
+    "symfony/options-resolver": "3.0.1",
+    "phpunit/phpunit": "5.4.x-dev"
   }
 }

@@ -10,7 +10,7 @@ namespace Deathnerd\WTForms\Fields\Core;
 
 use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\DefaultMeta;
-use Deathnerd\WTForms\DummyTranslations;
+use Deathnerd\WTForms\i18n\DummyTranslations;
 use Deathnerd\WTForms\Utils;
 use Deathnerd\WTForms\Utils\UnsetValue;
 use Deathnerd\WTForms\Validators\StopValidation;
@@ -321,7 +321,7 @@ class Field implements \Iterator
         }
 
         foreach ($this->filters as $filter) {
-            /** @var $filter \Deathnerd\WTForms\FilterInterface */
+            /** @var $filter \Deathnerd\WTForms\Interfaces\FilterInterface */
             $this->data = $filter::run($data);
         }
     }
