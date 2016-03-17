@@ -11,9 +11,9 @@ namespace Deathnerd\WTForms;
 /**
  * Class BaseFormIterator
  * @package Deathnerd\WTForms
- * @property array|resource $_fields
+ * @property array|resource $fields
  */
-trait BaseFormIterator
+trait FormIterator
 {
     /**
      * Return the current element
@@ -23,7 +23,7 @@ trait BaseFormIterator
      */
     public function current()
     {
-        return current($this->_fields);
+        return current($this->fields);
     }
 
     /**
@@ -34,7 +34,7 @@ trait BaseFormIterator
      */
     public function next()
     {
-        next($this->_fields);
+        next($this->fields);
     }
 
     /**
@@ -45,7 +45,7 @@ trait BaseFormIterator
      */
     public function key()
     {
-        return key($this->_fields);
+        return key($this->fields);
     }
 
     /**
@@ -57,7 +57,7 @@ trait BaseFormIterator
      */
     public function valid()
     {
-        $key = key($this->_fields);
+        $key = key($this->fields);
         $var = ($key !== null && $key !== false);
         return $var;
     }
@@ -70,6 +70,6 @@ trait BaseFormIterator
      */
     public function rewind()
     {
-        rewind($this->_fields);
+        rewind($this->fields);
     }
 }

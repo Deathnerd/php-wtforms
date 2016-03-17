@@ -24,7 +24,7 @@ class UnboundField
     public $_formfield = true;
     protected $_creation_counter = 0;
     /**
-     * @var string
+     * @var Field
      */
     protected $_field_class;
     protected $args = [];
@@ -32,8 +32,7 @@ class UnboundField
 
     /**
      * UnboundField constructor.
-     * // TODO Reflection, DI, or hack?
-     * @param string $field_class
+     * @param Field $field_class
      * @param array $args
      * @param array $kwargs
      */
@@ -56,14 +55,20 @@ class UnboundField
      */
     public function bind(BaseForm $form, $name, $prefix = "", $translations = null, array $kwargs = [])
     {
-        $kw = array_merge($this->kwargs, ["_form" => $form, "_prefix" => $prefix, "_name" => $name, "_translations" => $translations]);
+        $kw = array_merge($this->kwargs,
+            [
+                "_form" => $form,
+                "_prefix" => $prefix,
+                "_name" => $name,
+                "_translations" => $translations
+            ]);
         $kw = array_merge($kw, $kwargs);
         // TODO Finish
-        return new $this->_field_class();
+        return new $this->_field_class(...$this->args, $kw);
     }
 
     public function __toString()
     {
-        return sprintf("<UnboundField(%s, %r, %r)>", get_class($this->_field_class), Collection::make($args)->__toString(), Collection::make($kwargs)->__toString());
+        return sprintf("<UnboundField(%s, %r, %r)>", get_class($this->_field_class), Collection::make($this->args)->__toString(), Collection::make($this->kwargs)->__toString());
     }
 }

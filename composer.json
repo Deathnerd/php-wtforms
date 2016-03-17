@@ -21,25 +21,35 @@
       "Deathnerd\\WTForms\\CSRF\\": "src/csrf/",
       "Deathnerd\\WTForms\\Fields\\": "src/fields/",
       "Deathnerd\\WTForms\\Fields\\Core\\": "src/fields/core/",
+      "Deathnerd\\WTForms\\Fields\\Core\\Annotations\\": "src/fields/core/annotations/",
       "Deathnerd\\WTForms\\Fields\\HTML5\\": "src/fields/html5/",
+      "Deathnerd\\WTForms\\Fields\\HTML5\\Annotations\\": "src/fields/html5/annotations/",
       "Deathnerd\\WTForms\\Fields\\Simple\\": "src/fields/simple/",
+      "Deathnerd\\WTForms\\Fields\\Simple\\Annotations\\": "src/fields/simple/annotations/",
       "Deathnerd\\WTForms\\Widgets\\": "src/widgets/",
       "Deathnerd\\WTForms\\Widgets\\Core\\": "src/widgets/core",
       "Deathnerd\\WTForms\\Widgets\\HTML5\\": "src/widgets/html5",
       "Deathnerd\\WTForms\\Validators\\": "src/validators/",
-      "Deathnerd\\WTForms\\i18n\\": "src/i18n",
-      "Deathnerd\\WTForms\\utils\\": "src/utils",
-      "Deathnerd\\WTForms\\Tests\\": "tests/"
+      "Deathnerd\\WTForms\\Validators\\Annotations\\": "src/validators/annotations/",
+      "Deathnerd\\WTForms\\i18n\\": "src/i18n/",
+      "Deathnerd\\WTForms\\utils\\": "src/utils/",
+      "Deathnerd\\WTForms\\Tests\\": "tests/",
+      "Deathnerd\\WTForms\\Tests\\Common\\": "tests/common/",
+      "wtforms\\tests\\supporting_classes\\": "tests/supporting_classes/"
     },
     "files": ["src/helpers.php"]
   },
   "require": {
-    "php": ">=5.6",
+    "php": ">=5.4",
     "illuminate/support": "^5.2",
     "illuminate/http": "5.2.7",
     "gettext/gettext": "^3.5",
     "gettext/languages": "^2.1",
     "symfony/options-resolver": "3.0.1",
+    "mindplay/annotations": "1.3.0"
+  },
+  "require-dev": {
+    "filp/whoops": "^2.1",
     "phpunit/phpunit": "5.4.x-dev"
   }
 }

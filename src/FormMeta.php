@@ -26,7 +26,7 @@ use Deathnerd\WTForms\Utils\Meta;
  * @package Deathnerd\WTForms
  * @property $Meta Meta
  */
-class FormMeta extends BaseForm
+class FormMeta //extends BaseForm
 {
     public $_unbound_fields;
     public $_wtforms_meta;

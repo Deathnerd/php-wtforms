@@ -25,7 +25,7 @@ class Label
 
     public function __toString()
     {
-        return "Label($this->field_id,$this->text)";
+        return (string)$this->__invoke();
     }
 
     public function __invoke($text = "", array $kwargs = [])

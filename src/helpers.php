@@ -108,7 +108,7 @@ if (!function_exists('html_params')) {
     function html_params($kwargs)
     {
         $params = [];
-        sort($kwargs);
+        asort($kwargs);
         foreach ($kwargs as $key => $value) {
             if (in_array($key, ['class_', 'class__', 'for_'])) {
                 $key = substr($key, 0, strlen($key) - 1);

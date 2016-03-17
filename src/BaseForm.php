@@ -16,7 +16,6 @@ use Deathnerd\WTForms\Fields\Core\UnboundField;
  * Class BaseForm
  * Provides core behaviour like field construction, validation, and data and error proxying
  * @package Deathnerd\WTForms
- * @property $Meta Meta
  */
 class BaseForm implements \Iterator
 {

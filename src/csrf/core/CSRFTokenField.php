@@ -60,7 +60,9 @@ class CSRFTokenField extends HiddenField
 
     /**
      * Handle the validation of this token field.
+     *
      * @param Form $form
+     *
      * @throws ValidationError
      */
     public function pre_validate(Form $form)

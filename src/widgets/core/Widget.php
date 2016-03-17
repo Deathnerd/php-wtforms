@@ -8,6 +8,7 @@
 
 namespace Deathnerd\WTForms\Widgets\Core;
 
+use Deathnerd\WTForms\Fields\Core\Field;
 use Deathnerd\WTForms\NotImplemented;
 
 /**
@@ -16,7 +17,15 @@ use Deathnerd\WTForms\NotImplemented;
  */
 class Widget
 {
-    public function __invoke(...$args)
+    public $field_flags = [];
+
+    /**
+     * @param Field $field
+     * @param array $kwargs
+     *
+     * @throws NotImplemented
+     */
+    public function __invoke(Field $field, array $kwargs=[])
     {
         throw new NotImplemented("Widget needs an __invoke method");
     }

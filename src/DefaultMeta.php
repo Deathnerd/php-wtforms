@@ -70,11 +70,11 @@ class DefaultMeta
      *
      * Override if you need to implement your own wrapper.
      * TODO: Accept Symfony HTTP Response objects
-     * @param BaseForm $form
+     * @param Form $form
      * @param array|Collection $formdata
      * @return array
      */
-    public function wrap_formdata(BaseForm $form, $formdata)
+    public function wrap_formdata(Form $form, $formdata)
     {
         if ($formdata instanceof Collection || $formdata instanceof Request) {
             return $formdata->all();

@@ -10,6 +10,7 @@ namespace Deathnerd\WTForms\Validators;
 
 use Deathnerd\WTForms\BaseForm;
 use Deathnerd\WTForms\Fields\Core\Field;
+use Deathnerd\WTForms\Form;
 
 /**
  * Validates that input was provided for this field.
@@ -37,16 +38,16 @@ class InputRequired extends Validator
     }
 
     /**
-     * @param BaseForm $form
+     * @param Form $form
      * @param Field $field
      * @param string $message
      * @throws StopValidation
      */
-    function __invoke(BaseForm $form, Field $field, $message = "")
+    function __invoke(Form $form, Field $field=null, $message = "")
     {
         if (is_null($field->raw_data) || !$field->raw_data[0]) {
             if ($this->message == "") {
-                $message = $field->gettext("This field is required.");
+                $message = "This field is required.";
             } else {
                 $message = $this->message;
             }

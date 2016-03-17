@@ -19,7 +19,7 @@ class Flags
 {
     public function __get($name)
     {
-        if (substr($name, 0, 1) == "_" && property_exists($this, $name)) {
+        if (starts_with($name, "_") && property_exists($this, $name)) {
             return $this->$name;
         }
         return false;
@@ -27,7 +27,7 @@ class Flags
 
     public function __set($name, $value)
     {
-        if (substr($name, 0, 1) != "_") {
+        if (starts_with($name, "_")) {
             $name = "_$name";
         }
         $this->$name = $value;
@@ -37,10 +37,10 @@ class Flags
     {
         $flags = [];
         foreach (get_object_vars($this) as $name => $value) {
-            if (substr($name, 0, 1) == "_") {
+            if (starts_with($name, "_")) {
                 $flags[] = "$name: " . strval($value);
             }
         }
-        return '<wtforms.fields.Flags: {' . implode(", ", $flags) . '}>';
+        return sprintf("<wtforms.fields.Flags: {%s}>", implode(", ", $flags));
     }
 }
