@@ -9,7 +9,6 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\SelectFieldBase;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders a select field.
@@ -46,7 +45,7 @@ class Select extends Widget
    */
   public function __invoke(SelectFieldBase $field, array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefault("id", $field->id)->resolve($kwargs);
+    $kwargs = array_merge(["id" => $field->id], $kwargs);
     $kwargs['name'] = $field->name;
     if ($this->multiple) {
       $kwargs['multiple'] = true;
@@ -54,7 +53,7 @@ class Select extends Widget
 
     $html = sprintf("<select %s>", html_params($kwargs));
     foreach ($field->iter_choices() as $choice) {
-      $html .= self::render_option($choice[0], $choice[1], $choice[2]);
+      $html .= self::render_option($choice["value"], $choice["label"], $choice["selected"]);
     }
     $html .= "</select>";
 

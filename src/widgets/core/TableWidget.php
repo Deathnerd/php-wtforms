@@ -9,7 +9,6 @@
 namespace WTForms\widgets\core;
 
 use WTForms\Fields\Core\Field;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders a list of fields as a set of table rows with th/td pairs.
@@ -51,9 +50,7 @@ class TableWidget extends Widget
     $hidden = "";
 
     if ($this->with_table_tag) {
-      $resolver = new OptionsResolver();
-      $resolver->setDefault("id", $field->id);
-      $html .= sprintf("<table %s>", html_params($resolver->resolve($kwargs)));
+      $html .= sprintf("<table %s>", html_params(array_merge(['id'=>$field->id], $kwargs)));
     }
 
     foreach ($field as $subfield) {

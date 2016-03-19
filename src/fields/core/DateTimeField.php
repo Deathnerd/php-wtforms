@@ -11,7 +11,6 @@ namespace WTForms\Fields\Core;
 use DateTime;
 use WTForms\ValueError;
 use Exception;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * A text field which stores a `DateTime` matching a format
@@ -30,9 +29,7 @@ class DateTimeField extends Field
     public function __construct($label, array $kwargs)
     {
         parent::__construct($label, $kwargs);
-        $kwargs = (new OptionsResolver())->setDefaults([
-            "format" => "Y-m-d H:M:S"
-        ])->resolve($kwargs);
+        $kwargs = array_merge(["format" => "Y-m-d H:M:S"], $kwargs);
         $this->format = $kwargs['format'];
     }
 

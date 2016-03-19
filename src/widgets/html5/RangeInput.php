@@ -10,7 +10,6 @@ namespace WTForms\Widgets\HTML5;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Widgets\Core\Input;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders an input with the type "range".
@@ -25,7 +24,7 @@ class RangeInput extends Input
    */
   public function __construct(array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefault('step', null)->resolve($kwargs);
+    $kwargs = array_merge(["step" => null], $kwargs);
     $this->step = $kwargs['step'];
     parent::__construct("month");
   }
@@ -38,8 +37,6 @@ class RangeInput extends Input
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefault("step", $this->step)->resolve($kwargs);
-
-    return parent::__invoke($field, $kwargs);
+    return parent::__invoke($field, array_merge(["step"=>$this->step], $kwargs));
   }
 }

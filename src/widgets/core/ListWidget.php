@@ -9,7 +9,6 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders a list of fields as `ul` or `ol` list.
@@ -57,7 +56,7 @@ class ListWidget extends Widget
    */
   public function __invoke(Field $field, $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefault("id", $field->id)->resolve($kwargs);
+    $kwargs = array_merge(["id"=>$field->id], $kwargs);
     $html = sprintf("<%s %s>", $this->html_tag, html_params($kwargs));
     foreach ($field as $subfield) {
       if ($this->prefix_label) {

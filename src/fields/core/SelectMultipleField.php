@@ -43,7 +43,7 @@ class SelectMultipleField extends SelectField
     $t = [];
     foreach ($this->choices as $value => $label) {
       $selected = $this->data !== null && in_array($value, $this->data);
-      $t[] = [$value, $label, $selected];
+      $t[] = ["value" => $value, "label" => $label, "selected" => $selected];
     }
 
     return $t;

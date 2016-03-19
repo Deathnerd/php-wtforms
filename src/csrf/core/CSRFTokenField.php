@@ -5,7 +5,6 @@ use WTForms;
 use WTForms\Fields\Core\HiddenField;
 use WTForms\Form;
 use WTForms\Validators\ValidationError;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CSRFTokenField extends HiddenField
 {
@@ -26,10 +25,8 @@ class CSRFTokenField extends HiddenField
      */
     public function __construct(array $kwargs = [])
     {
-        $kwargs = (new OptionsResolver())->setDefaults([
-            'label' => 'CSRF Token',
-            'csrf_impl' => 'CSRF'
-        ])->resolve($kwargs);
+        $defaults = ['label'=>'CSRF Token', 'csrf_impl', 'CSRF'];
+        $kwargs = array_merge($defaults, $kwargs);
 
         // TODO: Might not work. Revisit
         $this->csrf_impl = new $kwargs['csrf_impl']();

@@ -8,14 +8,13 @@
 
 namespace WTForms\Fields\Core;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use WTForms\DefaultMeta;
+use WTForms\Flags;
 use WTForms\Form;
 use WTForms\Validators\StopValidation;
 use WTForms\Validators\Validator;
 use WTForms\ValueError;
 use WTForms\Widgets\Core\Widget;
-use WTForms\Flags;
 
 /**
  * Field base class
@@ -69,7 +68,7 @@ class Field implements \Iterator
   /**
    * @var array
    */
-  public $render_kw;
+  public $render_kw = [];
   /**
    * @var array
    */
@@ -121,44 +120,45 @@ class Field implements \Iterator
    */
   public function __construct($label = '', array $kwargs = [])
   {
-    $resolver = new OptionsResolver();
-    $resolver->setDefaults([
+    $kwargs = array_merge([
         "validators"  => [],
         "filters"     => [],
         "description" => "",
         "id"          => null,
         "default"     => null,
         "widget"      => null,
-        "render_kw"   => null,
+        "render_kw"   => [],
         "form"        => null,
         "name"        => null,
         "prefix"      => '',
-        "meta"        => null,
+        "meta"        => new DefaultMeta(),
         "attributes"  => [],
-      /// Inherited from annotation but not needed so here to keep OptionsResolver happy
-        "class"       => null,
-        "classes"     => null,
-        "inherited"   => null,
-        "method"      => null,
-        "multiple"    => null,
-        "property"    => null,
-        "type"        => null,
         "label"       => null,
+        "class"       => null,
+        "class_"      => [],
+        "class__"     => [],
         "value"       => null,
-    ]);
-    $kwargs = $resolver->resolve($kwargs);
-
+    ], $kwargs);
 
     if (array_key_exists('meta', $kwargs) && !is_null($kwargs['meta'])) {
       $this->meta = $kwargs['meta'];
     } else if (array_key_exists('form', $kwargs) && !is_null($kwargs['form'])) {
       $this->meta = $kwargs['form']->meta;
-    } else {
-      $this->meta = new DefaultMeta();
     }
+    if(is_string($this->meta)){
+      $this->meta = new $this->meta();
+    }
+
+    if ($kwargs['class_']) {
+      $this->render_kw['class'] = $kwargs['class_'];
+    } elseif ($kwargs['class__']) {
+      $this->render_kw['class'] = $kwargs['class__'];
+    } elseif ($kwargs['classes']) {
+      $this->render_kw['class'] = $kwargs['classes'];
+    }
+    $this->render_kw = array_merge(array_merge($this->render_kw, $kwargs['attributes']), $kwargs['render_kw']);
     $this->default = $kwargs['default'];
     $this->description = $kwargs['description'];
-    $this->render_kw = $kwargs['render_kw'];
     $this->filters = $kwargs['filters'];
     $this->flags = new Flags();
     $this->name = $kwargs['prefix'] . $kwargs['name'];
@@ -199,11 +199,12 @@ class Field implements \Iterator
   public function __call($name, $arguments)
   {
     if ($name == "label") {
-      if(count($arguments) == 2){
+      if (count($arguments) == 2) {
         return $this->label->__invoke($arguments[0], $arguments[1]);
-      } elseif(count($arguments) == 1){
+      } elseif (count($arguments) == 1) {
         return $this->label->__invoke($arguments[0]);
       }
+
       return $this->label->__invoke();
     }
 

@@ -9,7 +9,6 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders a submit button.
@@ -37,8 +36,6 @@ class SubmitInput extends Input
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefault("value", $field->label->text)->resolve($kwargs);
-
-    return parent::__invoke($field, $kwargs);
+    return parent::__invoke($field, array_merge(["value" => $field->label->text], $kwargs));
   }
 }

@@ -9,7 +9,6 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders a file input chooser field.
@@ -26,7 +25,7 @@ class FileInput extends Widget
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefault('id', $field->id)->resolve($kwargs);
+    $kwargs = array_merge(["id"=>$field->id], $kwargs);
     $kwargs['name'] = $field->name;
     $kwargs['type'] = "file";
 

@@ -8,7 +8,6 @@
 
 namespace WTForms\Fields\Core;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Same as DateTimeField, except stores a date (actually still a DateTime,
@@ -22,7 +21,6 @@ class DateField extends DateTimeField
      */
     public function __construct($label, array $kwargs)
     {
-        $kwargs = (new OptionsResolver())->setDefault("format", "Y-m-d")->resolve($kwargs);
-        parent::__construct($label, $kwargs);
+        parent::__construct($label, array_merge(['format'=>"Y-m-d"], $kwargs));
     }
 }

@@ -10,7 +10,6 @@ namespace WTForms\Widgets\HTML5;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Widgets\Core\Input;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Renders an input with type "number".
@@ -27,11 +26,7 @@ class NumberInput extends Input
    */
   public function __construct(array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefaults([
-        "step" => null,
-        "min"  => null,
-        "max"  => null,
-    ])->resolve($kwargs);
+    $kwargs = array_merge(["step" => null, "min"  => null, "max"  => null], $kwargs);
     $this->step = $kwargs['step'];
     $this->min = $kwargs['min'];
     $this->max = $kwargs['max'];
@@ -43,12 +38,7 @@ class NumberInput extends Input
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefaults([
-        "step" => $this->step,
-        "min"  => $this->min,
-        "max"  => $this->max,
-    ])->resolve($kwargs);
-
+    $kwargs = array_merge(["step" => $this->step, "min"  => $this->min, "max"  => $this->max], $kwargs);
     return parent::__invoke($field, $kwargs);
   }
 

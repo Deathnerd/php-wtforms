@@ -9,7 +9,6 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 /**
@@ -47,11 +46,10 @@ class Input extends Widget
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = (new OptionsResolver())->setDefaults([
-        "id"    => $field->id,
-        "type"  => $this->input_type,
-        "value" => $field->_value(),
-    ])->resolve($kwargs);
+    $defaults = ["id"    => $field->id,
+                 "type"  => $this->input_type,
+                 "value" => $field->_value()];
+    $kwargs = array_merge($defaults, $kwargs);
     $kwargs['name'] = $field->name;
 
     return sprintf("<input %s>", html_params($kwargs));
