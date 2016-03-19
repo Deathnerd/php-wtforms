@@ -16,12 +16,12 @@ use WTForms\Widgets\HTML5\NumberInput;
  */
 class IntegerField extends \WTForms\Fields\Core\IntegerField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new NumberInput(["step" => "1"]);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new NumberInput(["step" => "1"]);
+  }
 }

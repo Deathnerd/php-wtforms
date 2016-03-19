@@ -17,13 +17,13 @@ use WTForms\Widgets\HTML5\DateTimeLocalInput;
  */
 class DateTimeLocalField extends DateTimeField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new DateTimeLocalInput();
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new DateTimeLocalInput();
+  }
 
 }

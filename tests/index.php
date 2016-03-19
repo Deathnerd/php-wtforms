@@ -6,12 +6,11 @@
  * Time: 5:27 PM
  */
 require_once("../vendor/autoload.php");
+use DebugBar\StandardDebugBar;
 use mindplay\annotations\AnnotationCache;
 use mindplay\annotations\Annotations;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
-use WTForms\Tests\SupportingClasses\Helper;
 use WTForms\Forms;
-use DebugBar\StandardDebugBar;
+use WTForms\Tests\SupportingClasses\AnnotatedHelper;
 
 Annotations::$config['cache'] = new AnnotationCache(__DIR__ . "/runtime");
 $annotationManager = Annotations::getManager();
@@ -31,14 +30,14 @@ $debugbar['time']->stopMeasure('form_create');
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-  <?=$debugbarRenderer->renderHead()?>
+  <?= $debugbarRenderer->renderHead() ?>
 </head>
 <body>
 <form action="">
-  <?=$form['first_name']->label('Hey, Foo!')?>
-  <?=$form['first_name']?>
-  <?=$form->first_name->label?>
+  <?= $form['first_name']->label('Hey, Foo!') ?>
+  <?= $form['first_name'] ?>
+  <?= $form->first_name->label ?>
 </form>
-<?=$debugbarRenderer->render()?>
+<?= $debugbarRenderer->render() ?>
 </body>
 </html>

@@ -8,8 +8,8 @@
 
 namespace WTForms\Validators;
 
-use WTForms\Form;
 use WTForms\Fields\Core\Field;
+use WTForms\Form;
 
 /**
  * Validates that a number is of a minimum and/or maximum value, inclusive.

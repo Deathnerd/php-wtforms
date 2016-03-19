@@ -11,7 +11,8 @@ namespace WTForms\Tests\SupportingClasses;
 /**
  * @form
  */
-class Helper {
+class Helper
+{
   public $foo = 1;
   public $bar = "baz";
 }

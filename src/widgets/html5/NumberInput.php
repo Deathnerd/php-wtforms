@@ -26,7 +26,7 @@ class NumberInput extends Input
    */
   public function __construct(array $kwargs = [])
   {
-    $kwargs = array_merge(["step" => null, "min"  => null, "max"  => null], $kwargs);
+    $kwargs = array_merge(["step" => null, "min" => null, "max" => null], $kwargs);
     $this->step = $kwargs['step'];
     $this->min = $kwargs['min'];
     $this->max = $kwargs['max'];
@@ -38,7 +38,8 @@ class NumberInput extends Input
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = array_merge(["step" => $this->step, "min"  => $this->min, "max"  => $this->max], $kwargs);
+    $kwargs = array_merge(["step" => $this->step, "min" => $this->min, "max" => $this->max], $kwargs);
+
     return parent::__invoke($field, $kwargs);
   }
 

@@ -20,9 +20,9 @@ class FieldList extends Field
   /**
    * Field constructor.
    *
-   * @param string       $label
-   * @param Field $field
-   * @param array        $kwargs
+   * @param string $label
+   * @param Field  $field
+   * @param array  $kwargs
    *
    * @throws \TypeError
    * @deprecated Not finished yet

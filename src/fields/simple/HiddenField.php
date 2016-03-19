@@ -19,12 +19,12 @@ use WTForms\Widgets\Core\HiddenInput;
  */
 class HiddenField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new HiddenInput();
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new HiddenInput();
+  }
 }

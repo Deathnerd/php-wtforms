@@ -17,13 +17,13 @@ use WTForms\Form;
  */
 interface ValidatorInterface
 {
-    /**
-     *
-     * @param Form $form The current form
-     * @param Field $field The field being validated
-     * @param string $message The message display to the user if validation fails
-     *
-     * @return bool Did the validation pass?
-     */
-    public function validate(Form $form, Field $field, $message = null);
+  /**
+   *
+   * @param Form   $form    The current form
+   * @param Field  $field   The field being validated
+   * @param string $message The message display to the user if validation fails
+   *
+   * @return bool Did the validation pass?
+   */
+  public function validate(Form $form, Field $field, $message = null);
 }

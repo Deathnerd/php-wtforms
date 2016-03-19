@@ -72,7 +72,7 @@ class Select extends Widget
    */
   public static function render_option($value, $label, $selected, $kwargs = [])
   {
-    if ($value == true) {
+    if ($value === true) {
       // Handle the special case of a true value
       $value = "true";
     }

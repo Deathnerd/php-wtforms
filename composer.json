@@ -36,10 +36,12 @@
       "WTForms\\Validators\\": "src/validators/",
       "WTForms\\Validators\\Annotations\\": "src/validators/annotations/"
     },
-    "files": ["src/helpers.php"]
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "autoload-dev": {
-    "psr-4":{
+    "psr-4": {
       "WTForms\\Tests\\": "tests/",
       "WTForms\\Tests\\Common\\": "tests/common/",
       "WTForms\\Tests\\Fields\\": "tests/fields/",

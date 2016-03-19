@@ -16,11 +16,11 @@ namespace WTForms\Fields\Core;
  */
 class DateField extends DateTimeField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label, array $kwargs)
-    {
-        parent::__construct($label, array_merge(['format'=>"Y-m-d"], $kwargs));
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label, array $kwargs)
+  {
+    parent::__construct($label, array_merge(['format' => "Y-m-d"], $kwargs));
+  }
 }

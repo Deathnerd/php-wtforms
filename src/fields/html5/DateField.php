@@ -16,12 +16,12 @@ use WTForms\Widgets\HTML5\DateInput;
  */
 class DateField extends \WTForms\Fields\Core\DateField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new DateInput();
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new DateInput();
+  }
 }

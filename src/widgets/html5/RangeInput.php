@@ -37,6 +37,6 @@ class RangeInput extends Input
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    return parent::__invoke($field, array_merge(["step"=>$this->step], $kwargs));
+    return parent::__invoke($field, array_merge(["step" => $this->step], $kwargs));
   }
 }

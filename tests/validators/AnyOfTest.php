@@ -16,39 +16,39 @@ use WTForms\Validators\AnyOf;
 class AnyOfTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testAnyOf()
-    {
-        $any_of = new AnyOf(['a', 'b', 'c']);
-        $this->assertNull($any_of(new Form(), new DummyField("",['data'=>"b"])));
-        $any_of = new AnyOf([1, 2, 3]);
-        $this->assertNull($any_of(new Form(), new DummyField("",['data'=>2])));
-    }
+  public function testAnyOf()
+  {
+    $any_of = new AnyOf(['a', 'b', 'c']);
+    $this->assertNull($any_of(new Form(), new DummyField("", ['data' => "b"])));
+    $any_of = new AnyOf([1, 2, 3]);
+    $this->assertNull($any_of(new Form(), new DummyField("", ['data' => 2])));
+  }
 
-    /**
-     * @expectedException \WTForms\Validators\ValidationError
-     * @expectedExceptionMessage test 7, 8, 9
-     */
-    public function testAnyOfValuesFormatter()
-    {
-        $any_of = new AnyOf([7, 8, 9], "test %s");
-        $any_of(new Form(), new DummyField("",['data'=>4]));
-    }
+  /**
+   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedExceptionMessage test 7, 8, 9
+   */
+  public function testAnyOfValuesFormatter()
+  {
+    $any_of = new AnyOf([7, 8, 9], "test %s");
+    $any_of(new Form(), new DummyField("", ['data' => 4]));
+  }
 
-    /**
-     * @expectedException \WTForms\Validators\ValidationError
-     */
-    public function testAnyOfValueErrorExceptions1()
-    {
-        $any_of = new AnyOf(['a', 'b', 'c']);
-        $this->assertNull($any_of(new Form(), new DummyField()));
-    }
+  /**
+   * @expectedException \WTForms\Validators\ValidationError
+   */
+  public function testAnyOfValueErrorExceptions1()
+  {
+    $any_of = new AnyOf(['a', 'b', 'c']);
+    $this->assertNull($any_of(new Form(), new DummyField()));
+  }
 
-    /**
-     * @expectedException \WTForms\Validators\ValidationError
-     */
-    public function testAnyOfValueErrorExceptions2()
-    {
-        $any_of = new AnyOf([1,2,3]);
-        $this->assertNull($any_of(new Form(), new DummyField("",['data'=>4])));
-    }
+  /**
+   * @expectedException \WTForms\Validators\ValidationError
+   */
+  public function testAnyOfValueErrorExceptions2()
+  {
+    $any_of = new AnyOf([1, 2, 3]);
+    $this->assertNull($any_of(new Form(), new DummyField("", ['data' => 4])));
+  }
 }

@@ -16,14 +16,15 @@ use WTForms\Widgets\HTML5\DateTimeInput;
  */
 class DateTimeField extends \WTForms\Fields\Core\DateTimeField
 {
-    /**
-     * DateTimeField constructor.
-     * @param string $label
-     * @param array $kwargs
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new DateTimeInput();
-    }
+  /**
+   * DateTimeField constructor.
+   *
+   * @param string $label
+   * @param array  $kwargs
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new DateTimeInput();
+  }
 }

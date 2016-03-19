@@ -18,13 +18,13 @@ use WTForms\Widgets\Core\TextArea;
  */
 class TextAreaField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new TextArea();
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new TextArea();
+  }
 
 }

@@ -145,7 +145,7 @@ class Field implements \Iterator
     } else if (array_key_exists('form', $kwargs) && !is_null($kwargs['form'])) {
       $this->meta = $kwargs['form']->meta;
     }
-    if(is_string($this->meta)){
+    if (is_string($this->meta)) {
       $this->meta = new $this->meta();
     }
 

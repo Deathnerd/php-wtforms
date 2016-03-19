@@ -21,8 +21,8 @@ class NoneOf extends AnyOf
   /**
    * NoneOf constructor.
    *
-   * @param array         $values           A sequence of invalid inputs.
-   * @param string        $message          Error message to raise in case of a validation error. //TODO: User
+   * @param array  $values                  A sequence of invalid inputs.
+   * @param string $message                 Error message to raise in case of a validation error. //TODO: User
    *                                        interpolation
    */
   public function __construct(array $values, $message = "")

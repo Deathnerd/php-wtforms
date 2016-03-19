@@ -56,7 +56,7 @@ class ListWidget extends Widget
    */
   public function __invoke(Field $field, $kwargs = [])
   {
-    $kwargs = array_merge(["id"=>$field->id], $kwargs);
+    $kwargs = array_merge(["id" => $field->id], $kwargs);
     $html = sprintf("<%s %s>", $this->html_tag, html_params($kwargs));
     foreach ($field as $subfield) {
       if ($this->prefix_label) {

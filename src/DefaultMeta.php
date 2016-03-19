@@ -60,7 +60,7 @@ class DefaultMeta
    * Override if you need to implement your own wrapper.
    * TODO: Accept Symfony HTTP Response objects
    *
-   * @param Form  $form
+   * @param Form         $form
    * @param array|object $formdata
    *
    * @return array

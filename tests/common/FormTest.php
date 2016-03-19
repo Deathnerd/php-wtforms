@@ -7,16 +7,16 @@
  */
 
 namespace WTForms\Tests\Common;
-require_once(__DIR__ .'/../../vendor/autoload.php');
+require_once(__DIR__ . '/../../vendor/autoload.php');
 
 use Composer\Autoload\ClassLoader;
+use mindplay\annotations\AnnotationCache;
+use mindplay\annotations\Annotations;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\StringField;
 use WTForms\Forms;
-use mindplay\annotations\AnnotationCache;
-use mindplay\annotations\Annotations;
-use WTForms\Tests\SupportingClasses\Helper;
 use WTForms\Tests\SupportingClasses\AnnotatedHelper;
+use WTForms\Tests\SupportingClasses\Helper;
 
 class FormsTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,7 +57,8 @@ class FormsTest extends \PHPUnit_Framework_TestCase
   /**
    * Test for field annotations
    */
-  public function testCreateFieldAnnotation(){
+  public function testCreateFieldAnnotation()
+  {
     $form = Forms::create($this->annotated_helper);
     $this->assertNotEmpty($form->fields);
     $this->assertTrue($form['first_name'] instanceof Field && $form['first_name'] instanceof StringField);

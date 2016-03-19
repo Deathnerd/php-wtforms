@@ -21,42 +21,44 @@ use WTForms\Widgets\Core\Option;
  */
 abstract class SelectFieldBase extends Field
 {
-    /**
-     * @var Option
-     */
-    public $option_widget;
+  /**
+   * @var Option
+   */
+  public $option_widget;
 
-    /**
-     * SelectFieldBase constructor.
-     * @param string $label
-     * @param array $validators
-     * @param Option $option_widget
-     * @param array $kwargs
-     * @throws \TypeError
-     */
-    public function __construct($label = "", array $validators = [], Option $option_widget = null, array $kwargs = [])
-    {
-        $kwargs['validators'] = $validators;
-        parent::__construct($label, $kwargs);
-        $this->option_widget = $option_widget ?: new Option();
-    }
+  /**
+   * SelectFieldBase constructor.
+   *
+   * @param string $label
+   * @param array  $validators
+   * @param Option $option_widget
+   * @param array  $kwargs
+   *
+   * @throws \TypeError
+   */
+  public function __construct($label = "", array $validators = [], Option $option_widget = null, array $kwargs = [])
+  {
+    $kwargs['validators'] = $validators;
+    parent::__construct($label, $kwargs);
+    $this->option_widget = $option_widget ?: new Option();
+  }
 
-    /**
-     * Provides data for choice widget rendering. Must return a sequence or
-     * iterable of `[value,label,selected]` tuples
-     * @return \Generator
-     * @throws NotImplemented
-     */
-    public function iter_choices()
-    {
-        throw new NotImplemented();
-    }
+  /**
+   * Provides data for choice widget rendering. Must return a sequence or
+   * iterable of `[value,label,selected]` tuples
+   * @return \Generator
+   * @throws NotImplemented
+   */
+  public function iter_choices()
+  {
+    throw new NotImplemented();
+  }
 
-    //TODO Implement PHP equivalent of __iter__
+  //TODO Implement PHP equivalent of __iter__
 }
 
 //TODO Decide if Namespacing this to only be accessible from SelectFieldBase is necessary
 class _Option extends Field
 {
-    public $checked = false;
+  public $checked = false;
 }

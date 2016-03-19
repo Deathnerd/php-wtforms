@@ -17,19 +17,20 @@ namespace WTForms;
  */
 class Flags
 {
-    public function __get($name)
-    {
-        if (starts_with($name, "_") && property_exists($this, $name)) {
-            return $this->$name;
-        }
-        return false;
+  public function __get($name)
+  {
+    if (starts_with($name, "_") && property_exists($this, $name)) {
+      return $this->$name;
     }
 
-    public function __set($name, $value)
-    {
-        if (!starts_with($name, "_")) {
-            $name = "_$name";
-        }
-        $this->$name = $value;
+    return false;
+  }
+
+  public function __set($name, $value)
+  {
+    if (!starts_with($name, "_")) {
+      $name = "_$name";
     }
+    $this->$name = $value;
+  }
 }

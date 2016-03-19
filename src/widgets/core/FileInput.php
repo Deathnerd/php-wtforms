@@ -25,7 +25,7 @@ class FileInput extends Widget
    */
   public function __invoke(Field $field, array $kwargs = [])
   {
-    $kwargs = array_merge(["id"=>$field->id], $kwargs);
+    $kwargs = array_merge(["id" => $field->id], $kwargs);
     $kwargs['name'] = $field->name;
     $kwargs['type'] = "file";
 

@@ -15,7 +15,7 @@ class FlagsTest extends \PHPUnit_Framework_TestCase
 {
   public function testFlags()
   {
-    $flags= new Flags();
+    $flags = new Flags();
     $flags->foo = true;
     $flags->_bar = false;
     $this->assertObjectHasAttribute("_foo", $flags);

@@ -11,5 +11,5 @@ namespace WTForms\Interfaces;
 
 interface FilterInterface
 {
-    public static function run($data);
+  public static function run($data);
 }

@@ -19,36 +19,38 @@ use WTForms\Widgets\Core\TextInput;
  */
 class IntegerField extends Field
 {
-    /**
-     * IntegerField constructor.
-     * @param string $label
-     * @param array $kwargs
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new TextInput();
+  /**
+   * IntegerField constructor.
+   *
+   * @param string $label
+   * @param array  $kwargs
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new TextInput();
+  }
+
+  public function _value()
+  {
+    if ($this->raw_data) {
+      return $this->raw_data[0];
+    } elseif ($this->raw_data !== null) {
+      return strval($this->data);
     }
 
-    public function _value()
-    {
-        if ($this->raw_data) {
-            return $this->raw_data[0];
-        } elseif ($this->raw_data !== null) {
-            return strval($this->data);
-        }
-        return "";
-    }
+    return "";
+  }
 
-    public function process_formdata(array $valuelist)
-    {
-        if ($valuelist) {
-            if (is_numeric($valuelist[0])) {
-                $this->data = intval($valuelist[0]);
-            } else {
-                $this->data = null;
-                throw new ValueError("Not a valid integer value");
-            }
-        }
+  public function process_formdata(array $valuelist)
+  {
+    if ($valuelist) {
+      if (is_numeric($valuelist[0])) {
+        $this->data = intval($valuelist[0]);
+      } else {
+        $this->data = null;
+        throw new ValueError("Not a valid integer value");
+      }
     }
+  }
 }

@@ -13,28 +13,29 @@ namespace WTForms;
  */
 trait FormArrayable
 {
-    public function offsetExists($offset)
-    {
-        return array_key_exists($offset, $this->fields);
+  public function offsetExists($offset)
+  {
+    return array_key_exists($offset, $this->fields);
+  }
+
+  public function offsetGet($offset)
+  {
+    if (array_key_exists($offset, $this->fields)) {
+      return $this->fields[$offset];
     }
 
-    public function offsetGet($offset)
-    {
-        if (array_key_exists($offset, $this->fields)) {
-            return $this->fields[$offset];
-        }
-        return null;
-    }
+    return null;
+  }
 
-    public function offsetSet(/** @noinspection PhpUnusedParameterInspection */
-        $offset, $value)
-    {
-        throw new \TypeError("Fields may not be added to Form instances, only classes");
-    }
+  public function offsetSet(/** @noinspection PhpUnusedParameterInspection */
+      $offset, $value)
+  {
+    throw new \TypeError("Fields may not be added to Form instances, only classes");
+  }
 
-    public function offsetUnset($offset)
-    {
-        unset($this->fields[$offset]);
-        $this->$offset = null;
-    }
+  public function offsetUnset($offset)
+  {
+    unset($this->fields[$offset]);
+    $this->$offset = null;
+  }
 }

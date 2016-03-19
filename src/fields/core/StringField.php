@@ -18,34 +18,35 @@ use WTForms\Widgets\Core\TextInput;
  */
 class StringField extends Field
 {
-    /**
-     * @var TextInput
-     */
-    public $widget;
+  /**
+   * @var TextInput
+   */
+  public $widget;
 
-    public function __construct($label, array $kwargs)
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new TextInput();
+  public function __construct($label, array $kwargs)
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new TextInput();
+  }
+
+  /**
+   * @param array $valuelist
+   */
+  public function process_formdata(array $valuelist)
+  {
+    if ($valuelist) {
+      $this->data = $valuelist[0];
+    } else {
+      $this->data = '';
+    }
+  }
+
+  public function _value()
+  {
+    if ($this->data) {
+      return $this->data;
     }
 
-    /**
-     * @param array $valuelist
-     */
-    public function process_formdata(array $valuelist)
-    {
-        if ($valuelist) {
-            $this->data = $valuelist[0];
-        } else {
-            $this->data = '';
-        }
-    }
-
-    public function _value()
-    {
-        if ($this->data) {
-            return $this->data;
-        }
-        return '';
-    }
+    return '';
+  }
 }

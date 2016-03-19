@@ -50,7 +50,7 @@ class TableWidget extends Widget
     $hidden = "";
 
     if ($this->with_table_tag) {
-      $html .= sprintf("<table %s>", html_params(array_merge(['id'=>$field->id], $kwargs)));
+      $html .= sprintf("<table %s>", html_params(array_merge(['id' => $field->id], $kwargs)));
     }
 
     foreach ($field as $subfield) {

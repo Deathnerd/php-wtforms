@@ -12,17 +12,17 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();*/
 
 use Composer\Autoload\ClassLoader;
-$auto_loader = new ClassLoader();
-$auto_loader->addPsr4("mindplay\\demo\\", __DIR__ . "../vendor/mindplay/annotations/demo/annotations");
-$auto_loader->addPsr4("wtforms\\tests\\supporting_classes\\", __DIR__ . "/supporting_classes" );
-$auto_loader->addPsr4("Deathnerd\\WTForms\\", __DIR__."../src");
-$auto_loader->register();
-
-
-use WTForms\Forms;
 use mindplay\annotations\AnnotationCache;
 use mindplay\annotations\Annotations;
+use WTForms\Forms;
 use WTForms\Tests\SupportingClasses\Person;
+
+$auto_loader = new ClassLoader();
+$auto_loader->addPsr4("mindplay\\demo\\", __DIR__ . "../vendor/mindplay/annotations/demo/annotations");
+$auto_loader->addPsr4("wtforms\\tests\\supporting_classes\\", __DIR__ . "/supporting_classes");
+$auto_loader->addPsr4("Deathnerd\\WTForms\\", __DIR__ . "../src");
+$auto_loader->register();
+
 
 Annotations::$config['cache'] = new AnnotationCache(__DIR__ . "/runtime");
 $annotationManager = Annotations::getManager();

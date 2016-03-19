@@ -17,12 +17,12 @@ use WTForms\Widgets\HTML5\SearchInput;
  */
 class SearchField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $kwargs = [])
-    {
-        parent::__construct($label, $kwargs);
-        $this->widget = new SearchInput();
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $kwargs = [])
+  {
+    parent::__construct($label, $kwargs);
+    $this->widget = new SearchInput();
+  }
 }

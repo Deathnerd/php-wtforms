@@ -21,13 +21,13 @@ use WTForms\Widgets\Core\RadioInput;
  */
 class RadioField extends SelectField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct($label = "", array $validators = [], array $choices = [], array $kwargs = [])
-    {
-        parent::__construct($label, $validators, $choices, $kwargs);
-        $this->option_widget = new RadioInput();
-        $this->widget = new ListWidget("ul", false);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct($label = "", array $validators = [], array $choices = [], array $kwargs = [])
+  {
+    parent::__construct($label, $validators, $choices, $kwargs);
+    $this->option_widget = new RadioInput();
+    $this->widget = new ListWidget("ul", false);
+  }
 }

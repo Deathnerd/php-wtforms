@@ -26,8 +26,8 @@ class FieldAnnotation extends Annotation
    */
   public $label;
   /**
-   * @var string Identifies the field as a specific type (text input, select, range input, etc). Do not manually override
-   *             in the annotation. It will be overridden by the respective annotation anyways
+   * @var string Identifies the field as a specific type (text input, select, range input, etc). Do not manually
+   *      override in the annotation. It will be overridden by the respective annotation anyways
    */
   public $type;
   /**
