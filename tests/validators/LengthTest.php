@@ -15,15 +15,15 @@ use WTForms\Validators\Length;
 
 class LengthTest extends \PHPUnit_Framework_TestCase
 {
-    public function testLength()
-    {
-        $field = new DummyField("", ["data"=>"foobar"]);
-        $length = new Length(2, 6);
-        $baseForm = new Form();
-        $this->assertNull($length($baseForm, $field));
-        $length = new Length(2);
-        $this->assertNull($length($baseForm, $field));
-        $length = new Length(-1, 6);
-        $this->assertNull($length($baseForm, $field));
-    }
+  public function testLength()
+  {
+    $field = new DummyField("", ["data" => "foobar"]);
+    $length = new Length(2, 6);
+    $baseForm = new Form();
+    $this->assertNull($length($baseForm, $field));
+    $length = new Length(2);
+    $this->assertNull($length($baseForm, $field));
+    $length = new Length(-1, 6);
+    $this->assertNull($length($baseForm, $field));
+  }
 }
