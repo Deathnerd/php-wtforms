@@ -6,10 +6,10 @@
  * Time: 11:43 PM
  */
 
-namespace wtforms\tests\supporting_classes;
+namespace WTForms\Tests\SupportingClasses;
 
 
-use Deathnerd\WTForms\DefaultMeta;
+use WTForms\DefaultMeta;
 
 class FooMeta extends DefaultMeta
 {

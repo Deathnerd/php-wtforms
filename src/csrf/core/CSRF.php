@@ -6,14 +6,14 @@
  * Time: 10:32 PM
  */
 
-namespace Deathnerd\WTForms\CSRF\Core;
+namespace WTForms\CSRF\Core;
 
 
-use Deathnerd\WTForms\Form;
-use Deathnerd\WTForms\NotImplemented;
-use Deathnerd\WTForms\Validators\ValidationError;
+use WTForms\Form;
+use WTForms\NotImplemented;
+use WTForms\Validators\ValidationError;
 
-class CSRF
+abstract class CSRF
 {
     /**
      * @var string
@@ -59,7 +59,7 @@ class CSRF
     public function validate_csrf_token(Form $form, CSRFTokenField $field)
     {
         if ($field->current_token !== $field->data) {
-            throw new ValidationError($field->gettext("Invalid CSRF Token"));
+            throw new ValidationError("Invalid CSRF Token");
         }
     }
 }

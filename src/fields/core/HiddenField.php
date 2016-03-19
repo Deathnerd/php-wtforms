@@ -6,10 +6,10 @@
  * Time: 10:02 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 
-use Deathnerd\WTForms\Widgets\Core\HiddenInput;
+use WTForms\Widgets\Core\HiddenInput;
 
 class HiddenField extends StringField
 {

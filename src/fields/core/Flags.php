@@ -6,14 +6,14 @@
  * Time: 10:58 AM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 
 /**
  * Holds a set of boolean flags as attributes
  *
  * Accessing a non-existing attribute returns false for its value
- * @package Deathnerd\WTForms\Fields
+ * @package WTForms\Fields
  */
 class Flags
 {
@@ -31,16 +31,5 @@ class Flags
             $name = "_$name";
         }
         $this->$name = $value;
-    }
-
-    function __toString()
-    {
-        $flags = [];
-        foreach (get_object_vars($this) as $name => $value) {
-            if (starts_with($name, "_")) {
-                $flags[] = "$name: " . strval($value);
-            }
-        }
-        return sprintf("<wtforms.fields.Flags: {%s}>", implode(", ", $flags));
     }
 }

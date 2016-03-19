@@ -6,11 +6,11 @@
  * Time: 10:55 AM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 /**
  * Class FieldIterator
- * @package Deathnerd\WTForms\Fields\Core
+ * @package WTForms\Fields\Core
  * @property array $entries
  */
 trait FieldIterator

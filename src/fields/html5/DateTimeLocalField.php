@@ -6,14 +6,14 @@
  * Time: 3:22 PM
  */
 
-namespace Deathnerd\WTForms\Fields\HTML5;
+namespace WTForms\Fields\HTML5;
 
-use Deathnerd\WTForms\Fields\Core\DateTimeField;
-use Deathnerd\WTForms\Widgets\HTML5\DateTimeLocalInput;
+use WTForms\Fields\Core\DateTimeField;
+use WTForms\Widgets\HTML5\DateTimeLocalInput;
 
 /**
  * Represents an ``<input type="datetime-local">``.
- * @package Deathnerd\WTForms\Fields\HTML5
+ * @package WTForms\Fields\HTML5
  */
 class DateTimeLocalField extends DateTimeField
 {

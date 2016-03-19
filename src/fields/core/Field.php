@@ -6,28 +6,29 @@
  * Time: 9:55 AM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
-use Deathnerd\WTForms\BaseForm;
-use Deathnerd\WTForms\DefaultMeta;
-use Deathnerd\WTForms\Form;
-use Deathnerd\WTForms\i18n\DummyTranslations;
-use Deathnerd\WTForms\Utils;
-use Deathnerd\WTForms\Utils\UnsetValue;
-use Deathnerd\WTForms\Validators\StopValidation;
-use Deathnerd\WTForms\Validators\Validator;
-use Deathnerd\WTForms\ValueError;
-use Deathnerd\WTForms\Widgets\Core\Widget;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use WTForms\DefaultMeta;
+use WTForms\Form;
+use WTForms\Validators\StopValidation;
+use WTForms\Validators\Validator;
+use WTForms\ValueError;
+use WTForms\Widgets\Core\Widget;
 
 /**
  * Field base class
  * @property  boolean $checked
- * @package Deathnerd\WTForms\Fields
+ * @package WTForms\Fields
  */
 class Field implements \Iterator
 {
   use FieldIterator;
+
+  /**
+   * @var Form
+   */
+  public $form;
   /**
    * @var mixed
    */
@@ -80,7 +81,6 @@ class Field implements \Iterator
    * @var string
    */
   public $type;
-
   /**
    * @var DefaultMeta
    */
@@ -89,27 +89,22 @@ class Field implements \Iterator
    * @var mixed
    */
   public $object_data;
-
   /**
    * @var string
    */
   public $id = '';
-
   /**
    * @var string
    */
   public $name = '';
-
   /**
    * @var Flags[]
    */
   public $flags;
-
   /**
    * @var Label
    */
   public $label;
-
   /**
    * @var array
    */
@@ -127,29 +122,28 @@ class Field implements \Iterator
   {
     $resolver = new OptionsResolver();
     $resolver->setDefaults([
-        "validators"    => [],
-        "filters"       => [],
-        "description"   => "",
-        "id"            => null,
-        "default"       => null,
-        "widget"        => null,
-        "render_kw"     => null,
-        "form"          => null,
-        "name"          => null,
-        "prefix"        => '',
-        "_translations" => new DummyTranslations(),
-        "meta"          => null,
-        "attributes"    => [],
+        "validators"  => [],
+        "filters"     => [],
+        "description" => "",
+        "id"          => null,
+        "default"     => null,
+        "widget"      => null,
+        "render_kw"   => null,
+        "form"        => null,
+        "name"        => null,
+        "prefix"      => '',
+        "meta"        => null,
+        "attributes"  => [],
       /// Inherited from annotation but not needed so here to keep OptionsResolver happy
-        "class"         => null,
-        "classes"       => null,
-        "inherited"     => null,
-        "method"        => null,
-        "multiple"      => null,
-        "property"      => null,
-        "type"          => null,
-        "label"         => null,
-        "value"         => null,
+        "class"       => null,
+        "classes"     => null,
+        "inherited"   => null,
+        "method"      => null,
+        "multiple"    => null,
+        "property"    => null,
+        "type"        => null,
+        "label"       => null,
+        "value"       => null,
     ]);
     $kwargs = $resolver->resolve($kwargs);
 
@@ -175,10 +169,15 @@ class Field implements \Iterator
     $this->widget = $kwargs['widget'];
   }
 
+  public function __toString()
+  {
+    return (string)$this->__invoke();
+  }
+
   /**
    * Render this field as HTML, using keyword args as additional attributes
    *
-   * This delegates rendering to {@link Deathnerd\WTForms\DefaultMeta\render_field}
+   * This delegates rendering to {@link WTForms\DefaultMeta\render_field}
    * whose default behavior is to call the field's widget, passing any
    * keyword arguments from this call to the widget.
    *
@@ -196,39 +195,6 @@ class Field implements \Iterator
     return $this->meta->render_field($this, $kwargs);
   }
 
-  public function __toString()
-  {
-    return (string)$this->__invoke();
-  }
-
-  /**
-   * Get a translation for the given message.
-   *
-   * This proxies for the internal translations object
-   *
-   * @param string $string A string to be translated
-   *
-   * @return mixed A string which is the translated output
-   */
-  public function gettext($string)
-  {
-    return $this->_translations->gettext($string);
-  }
-
-  /**
-   * Get a translation for a message which can be pluralized.
-   *
-   * @param string $singular The singular form of the message
-   * @param string $plural   The plural form of the message
-   * @param int    $n        The number of elements this message is referring to
-   *
-   * @return mixed A string which is the translated output
-   */
-  public function ngettext($singular, $plural, $n)
-  {
-    return $this->_translations->ngettext($singular, $plural, $n);
-  }
-
   /**
    * Validates the field and returns true or false. {@link errors} will
    * contain any errors raised during validation. This is usually only
@@ -237,8 +203,8 @@ class Field implements \Iterator
    * Subfields shouldn't override this, but rather override either
    * {@link pre_validate}, {@link post_validate}, or both, depending on needs.
    *
-   * @param BaseForm|Form $form             The form the field belongs to.
-   * @param array         $extra_validators A sequence of extra validators to run
+   * @param Form        $form             The form the field belongs to.
+   * @param Validator[] $extra_validators A sequence of extra validators to run
    *
    * @return bool
    */
@@ -260,8 +226,7 @@ class Field implements \Iterator
     }
 
     if (!$stop_validation) {
-      $chain = chain($this->validators, $extra_validators);
-      $stop_validation = $this->_run_validation_chain($form, $chain);
+      $stop_validation = $this->_run_validation_chain($form, $this->validators) && $this->_run_validation_chain($form, $extra_validators);
     }
 
     // Call post_validate
@@ -272,6 +237,54 @@ class Field implements \Iterator
     }
 
     return count($this->errors) == 0;
+  }
+
+  /**
+   * Override if you need field-level validation. Runs before any other
+   * validators.
+   *
+   * @param Form $form The form the field belongs to
+   */
+  public function pre_validate(Form $form)
+  {
+  }
+
+  /**
+   * Run a validation chain, stopping if any validator raises StopValidation
+   *
+   * @param Form        $form       The form instance this field belongs to
+   * @param Validator[] $validators A sequence or iterable of validator callables
+   *
+   * @return bool True if the validation was stopped, False if otherwise
+   * @throws \WTForms\NotImplemented
+   */
+  private function _run_validation_chain(Form $form, array $validators)
+  {
+    foreach ($validators as $v) {
+      try {
+        $v->__invoke($form, $this);
+      } catch (StopValidation $e) {
+        $message = $e->getMessage();
+        if ($message != "") {
+          $form->errors[] = $message;
+        }
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Override if you need to run any field-level validation tasks after
+   * normal validation. This shouldn't be needed in most cases
+   *
+   * @param Form    $form            The form the field belongs to
+   * @param boolean $stop_validation `True` if any validator raised `StopValidation`
+   */
+  public function post_validate(Form $form, $stop_validation)
+  {
   }
 
   /**
@@ -293,9 +306,6 @@ class Field implements \Iterator
   {
     $this->process_errors = [];
     if ($data === null) {
-      $data = new UnsetValue();
-    }
-    if ($data instanceof UnsetValue) {
       // Should work... See example at: http://php.net/manual/en/language.oop5.magic.php#object.invoke
       if (is_callable($this->default)) {
         $data = $this->default->__invoke();
@@ -324,66 +334,9 @@ class Field implements \Iterator
     }
 
     foreach ($this->filters as $filter) {
-      /** @var $filter \Deathnerd\WTForms\Interfaces\FilterInterface */
+      /** @var $filter \WTForms\Interfaces\FilterInterface */
       $this->data = $filter::run($data);
     }
-  }
-
-  /**
-   * Run a validation chain, stopping if any validator raises StopValidation
-   *
-   * @param BaseForm|Form $form       The form instance this field belongs to
-   * @param \Generator    $validators A sequence or iterable of validator callables
-   *
-   * @return bool True if the validation was stopped, False if otherwise
-   * @throws \Deathnerd\WTForms\NotImplemented
-   */
-  private function _run_validation_chain(Form $form, \Generator $validators)
-  {
-    foreach ($validators as $v) {
-      /**
-       * @var $v \Deathnerd\WTForms\Validators\Validator
-       */
-      try {
-        $v->__invoke($form, $this);
-      } catch (StopValidation $e) {
-        if (!empty($e->args) && $e->args[0]) {
-          $this->errors[] = $e->args[0];
-        }
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Override if you need field-level validation. Runs before any other
-   * validators.
-   *
-   * @param Form $form The form the field belongs to
-   */
-  public function pre_validate(Form $form)
-  {
-  }
-
-  /**
-   * Override if you need to run any field-level validation tasks after
-   * normal validation. This shouldn't be needed in most cases
-   *
-   * @param Form $form            The form the field belongs to
-   * @param boolean       $stop_validation `True` if any validator raised `StopValidation`
-   */
-  public function post_validate(Form $form, $stop_validation)
-  {
-  }
-
-  /**
-   * To satisfy my static analyzer
-   * @return string
-   */
-  public function _value()
-  {
-    return "";
   }
 
   /**
@@ -415,6 +368,15 @@ class Field implements \Iterator
   }
 
   /**
+   * To satisfy my static analyzer
+   * @return string
+   */
+  public function _value()
+  {
+    return "";
+  }
+
+  /**
    * Populates `$obj->$name` with the field's data.
    *
    * Note: This is a destructive operation. If `$obj->$name` already exists,
@@ -440,8 +402,9 @@ class Field implements \Iterator
   {
     $this->form = $form;
     $this->validators = $validators;
-    foreach (chain($this->validators, [$this->widget]) as $v) {
-      /** @var $v Validator */
+    $t = $this->validators;
+    $t[] = $this->widget;
+    foreach ($t as $v) {
       foreach ($v->field_flags as $flag) {
         $this->flags->$flag = true;
       }

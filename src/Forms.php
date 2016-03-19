@@ -6,11 +6,15 @@
  * Time: 7:48 PM
  */
 
-namespace Deathnerd\WTForms;
+namespace WTForms;
 
-use Deathnerd\WTForms\Fields\Core\Field;
+use mindplay\annotations\Annotation;
 use mindplay\annotations\AnnotationException;
 use mindplay\annotations\Annotations;
+use ReflectionProperty;
+use WTForms\Fields\Core\Field;
+use WTForms\Validators\Validator;
+use WTForms\Widgets\Core\Widget;
 
 
 class Forms
@@ -18,65 +22,65 @@ class Forms
   private static $instance = null;
 
   private static $registeredValidators = [
-      'Deathnerd\WTForms\Validators\Annotations\AnyOfAnnotation'         => 'Deathnerd\WTForms\Validators\AnyOf',
-      'Deathnerd\WTForms\Validators\Annotations\DataRequiredAnnotation'  => 'Deathnerd\WTForms\Validators\DataRequired',
-      'Deathnerd\WTForms\Validators\Annotations\EqualToAnnotation'       => 'Deathnerd\WTForms\Validators\EqualTo',
-      'Deathnerd\WTForms\Validators\Annotations\InputRequiredAnnotation' => 'Deathnerd\WTForms\Validators\InputRequired',
-      'Deathnerd\WTForms\Validators\Annotations\IPAddressAnnotation'     => 'Deathnerd\WTForms\Validators\IPAddress',
-      'Deathnerd\WTForms\Validators\Annotations\LengthAnnotation'        => 'Deathnerd\WTForms\Validators\Length',
-      'Deathnerd\WTForms\Validators\Annotations\MacAddressAnnotation'    => 'Deathnerd\WTForms\Validators\MacAddress',
-      'Deathnerd\WTForms\Validators\Annotations\NoneOfAnnotation'        => 'Deathnerd\WTForms\Validators\NoneOf',
-      'Deathnerd\WTForms\Validators\Annotations\NumberRangeAnnotation'   => 'Deathnerd\WTForms\Validators\NumberRange',
-      'Deathnerd\WTForms\Validators\Annotations\OptionalAnnotation'      => 'Deathnerd\WTForms\Validators\Optional',
-      'Deathnerd\WTForms\Validators\Annotations\RegexpAnnotation'        => 'Deathnerd\WTForms\Validators\Regexp',
-      'Deathnerd\WTForms\Validators\Annotations\URLAnnotation'           => 'Deathnerd\WTForms\Validators\URL',
-      'Deathnerd\WTForms\Validators\Annotations\UUIDAnnotation'          => 'Deathnerd\WTForms\Validators\UUID',
+      'WTForms\Validators\Annotations\AnyOfAnnotation'         => 'WTForms\Validators\AnyOf',
+      'WTForms\Validators\Annotations\DataRequiredAnnotation'  => 'WTForms\Validators\DataRequired',
+      'WTForms\Validators\Annotations\EqualToAnnotation'       => 'WTForms\Validators\EqualTo',
+      'WTForms\Validators\Annotations\InputRequiredAnnotation' => 'WTForms\Validators\InputRequired',
+      'WTForms\Validators\Annotations\IPAddressAnnotation'     => 'WTForms\Validators\IPAddress',
+      'WTForms\Validators\Annotations\LengthAnnotation'        => 'WTForms\Validators\Length',
+      'WTForms\Validators\Annotations\MacAddressAnnotation'    => 'WTForms\Validators\MacAddress',
+      'WTForms\Validators\Annotations\NoneOfAnnotation'        => 'WTForms\Validators\NoneOf',
+      'WTForms\Validators\Annotations\NumberRangeAnnotation'   => 'WTForms\Validators\NumberRange',
+      'WTForms\Validators\Annotations\OptionalAnnotation'      => 'WTForms\Validators\Optional',
+      'WTForms\Validators\Annotations\RegexpAnnotation'        => 'WTForms\Validators\Regexp',
+      'WTForms\Validators\Annotations\URLAnnotation'           => 'WTForms\Validators\URL',
+      'WTForms\Validators\Annotations\UUIDAnnotation'          => 'WTForms\Validators\UUID',
   ];
   private static $registeredFields = [
-      'Deathnerd\WTForms\Fields\Core\BooleanField',
-      'Deathnerd\WTForms\Fields\Core\DateField',
-      'Deathnerd\WTForms\Fields\Core\DateTimeField',
-      'Deathnerd\WTForms\Fields\Core\DecimalField',
-      'Deathnerd\WTForms\Fields\Core\FloatField',
-      'Deathnerd\WTForms\Fields\Core\IntegerField',
-      'Deathnerd\WTForms\Fields\Core\RadioField',
-      'Deathnerd\WTForms\Fields\Core\SelectField',
-      'Deathnerd\WTForms\Fields\Core\SelectMultipleField',
-      'Deathnerd\WTForms\Fields\Core\Annotations\StringFieldAnnotation' => 'Deathnerd\WTForms\Fields\Core\StringField',
-      'Deathnerd\WTForms\Fields\HTML5\DateField',
-      'Deathnerd\WTForms\Fields\HTML5\DateTimeField',
-      'Deathnerd\WTForms\Fields\HTML5\DateTimeLocalField',
-      'Deathnerd\WTForms\Fields\HTML5\DecimalField',
-      'Deathnerd\WTForms\Fields\HTML5\DecimalRangeField',
-      'Deathnerd\WTForms\Fields\HTML5\EmailField',
-      'Deathnerd\WTForms\Fields\HTML5\IntegerField',
-      'Deathnerd\WTForms\Fields\HTML5\IntegerRangeField',
-      'Deathnerd\WTForms\Fields\HTML5\SearchField',
-      'Deathnerd\WTForms\Fields\HTML5\TelField',
-      'Deathnerd\WTForms\Fields\HTML5\URLField',
-      'Deathnerd\WTForms\Fields\Simple\FileField',
-      'Deathnerd\WTForms\Fields\Simple\HiddenField',
-      'Deathnerd\WTForms\Fields\Simple\PasswordField',
-      'Deathnerd\WTForms\Fields\Simple\SubmitField',
-      'Deathnerd\WTForms\Fields\Simple\TextAreaField',
+      'WTForms\Fields\Core\Annotations\BooleanFieldAnnotation'        => 'WTForms\Fields\Core\BooleanField',
+      'WTForms\Fields\Core\Annotations\DateFieldAnnotation'           => 'WTForms\Fields\Core\DateField',
+      'WTForms\Fields\Core\Annotations\DateTimeFieldAnnotation'       => 'WTForms\Fields\Core\DateTimeField',
+      'WTForms\Fields\Core\Annotations\DecimalFieldAnnotation'        => 'WTForms\Fields\Core\DecimalField',
+      'WTForms\Fields\Core\Annotations\FloatFieldAnnotation'          => 'WTForms\Fields\Core\FloatField',
+      'WTForms\Fields\Core\Annotations\IntegerFieldAnnotation'        => 'WTForms\Fields\Core\IntegerField',
+      'WTForms\Fields\Core\Annotations\RadioFieldAnnotation'          => 'WTForms\Fields\Core\RadioField',
+      'WTForms\Fields\Core\Annotations\SelectFieldAnnotation'         => 'WTForms\Fields\Core\SelectField',
+      'WTForms\Fields\Core\Annotations\SelectMultipleFieldAnnotation' => 'WTForms\Fields\Core\SelectMultipleField',
+      'WTForms\Fields\Core\Annotations\StringFieldAnnotation'         => 'WTForms\Fields\Core\StringField',
+      'WTForms\Fields\HTML5\Annotations\DateFieldAnnotation'          => 'WTForms\Fields\HTML5\DateField',
+      'WTForms\Fields\HTML5\Annotations\DateTimeFieldAnnotation'      => 'WTForms\Fields\HTML5\DateTimeField',
+      'WTForms\Fields\HTML5\Annotations\DateTimeLocalFieldAnnotation' => 'WTForms\Fields\HTML5\DateTimeLocalField',
+      'WTForms\Fields\HTML5\Annotations\DecimalFieldAnnotation'       => 'WTForms\Fields\HTML5\DecimalField',
+      'WTForms\Fields\HTML5\Annotations\DecimalRangeFieldAnnotation'  => 'WTForms\Fields\HTML5\DecimalRangeField',
+      'WTForms\Fields\HTML5\Annotations\EmailFieldAnnotation'         => 'WTForms\Fields\HTML5\EmailField',
+      'WTForms\Fields\HTML5\Annotations\IntegerFieldAnnotation'       => 'WTForms\Fields\HTML5\IntegerField',
+      'WTForms\Fields\HTML5\Annotations\IntegerRangeFieldAnnotation'  => 'WTForms\Fields\HTML5\IntegerRangeField',
+      'WTForms\Fields\HTML5\Annotations\SearchFieldAnnotation'        => 'WTForms\Fields\HTML5\SearchField',
+      'WTForms\Fields\HTML5\Annotations\TelFieldAnnotation'           => 'WTForms\Fields\HTML5\TelField',
+      'WTForms\Fields\HTML5\Annotations\URLFieldAnnotation'           => 'WTForms\Fields\HTML5\URLField',
+      'WTForms\Fields\Simple\Annotations\FileFieldAnnotation'         => 'WTForms\Fields\Simple\FileField',
+      'WTForms\Fields\Simple\Annotations\HiddenFieldAnnotation'       => 'WTForms\Fields\Simple\HiddenField',
+      'WTForms\Fields\Simple\Annotations\PasswordFieldAnnotation'     => 'WTForms\Fields\Simple\PasswordField',
+      'WTForms\Fields\Simple\Annotations\SubmitFieldAnnotation'       => 'WTForms\Fields\Simple\SubmitField',
+      'WTForms\Fields\Simple\Annotations\TextAreaFieldAnnotation'     => 'WTForms\Fields\Simple\TextAreaField',
   ];
 
   private static $registeredWidgets = [
-      'Deathnerd\WTForms\Widgets\Core\CheckboxInput',
-      'Deathnerd\WTForms\Widgets\Core\FileInput',
-      'Deathnerd\WTForms\Widgets\Core\HiddenInput',
-      'Deathnerd\WTForms\Widgets\Core\List',
-      'Deathnerd\WTForms\Widgets\Core\Option',
-      'Deathnerd\WTForms\Widgets\Core\PasswordInput',
-      'Deathnerd\WTForms\Widgets\Core\RadioInput',
-      'Deathnerd\WTForms\Widgets\Core\Select',
-      'Deathnerd\WTForms\Widgets\Core\SubmitInput',
-      'Deathnerd\WTForms\Widgets\Core\Table',
-      'Deathnerd\WTForms\Widgets\Core\TextArea',
-      'Deathnerd\WTForms\Widgets\Core\TextInput',
+      'WTForms\Widgets\Core\Annotations\CheckboxInputAnnotation' => 'WTForms\Widgets\Core\CheckboxInput',
+      'WTForms\Widgets\Core\Annotations\FileInputAnnotation'     => 'WTForms\Widgets\Core\FileInput',
+      'WTForms\Widgets\Core\Annotations\HiddenInputAnnotation'   => 'WTForms\Widgets\Core\HiddenInput',
+      'WTForms\Widgets\Core\Annotations\ListAnnotation'          => 'WTForms\Widgets\Core\List',
+      'WTForms\Widgets\Core\Annotations\OptionAnnotation'        => 'WTForms\Widgets\Core\Option',
+      'WTForms\Widgets\Core\Annotations\PasswordInputAnnotation' => 'WTForms\Widgets\Core\PasswordInput',
+      'WTForms\Widgets\Core\Annotations\RadioInputAnnotation'    => 'WTForms\Widgets\Core\RadioInput',
+      'WTForms\Widgets\Core\Annotations\SelectAnnotation'        => 'WTForms\Widgets\Core\Select',
+      'WTForms\Widgets\Core\Annotations\SubmitInputAnnotation'   => 'WTForms\Widgets\Core\SubmitInput',
+      'WTForms\Widgets\Core\Annotations\TableAnnotation'         => 'WTForms\Widgets\Core\Table',
+      'WTForms\Widgets\Core\Annotations\TextAreaAnnotation'      => 'WTForms\Widgets\Core\TextArea',
+      'WTForms\Widgets\Core\Annotations\TextInputAnnotation'     => 'WTForms\Widgets\Core\TextInput',
   ];
 
-  private static $labelClass = 'Deathnerd\WTForms\Fields\Label';
+  private static $labelClass = 'WTForms\Fields\Label';
 
   /**
    * @return array
@@ -92,6 +96,15 @@ class Forms
   public static function setRegisteredValidators($registeredValidators)
   {
     self::$registeredValidators = array_merge($registeredValidators, self::$registeredValidators);
+  }
+
+  /**
+   * @param string $annotation_namespace
+   * @param string $validator_namespace
+   */
+  public static function registerValidator($annotation_namespace, $validator_namespace)
+  {
+    self::$registeredValidators[$annotation_namespace] = $validator_namespace;
   }
 
   /**
@@ -111,6 +124,15 @@ class Forms
   }
 
   /**
+   * @param string $annotation_namespace
+   * @param string $field_namespace
+   */
+  public static function registerField($annotation_namespace, $field_namespace)
+  {
+    self::$registeredFields[$annotation_namespace] = $field_namespace;
+  }
+
+  /**
    * @return array
    */
   public static function getRegisteredWidgets()
@@ -124,6 +146,15 @@ class Forms
   public static function setRegisteredWidgets($registeredWidgets)
   {
     self::$registeredWidgets = array_merge($registeredWidgets, self::$registeredWidgets);
+  }
+
+  /**
+   * @param string $annotation_namespace
+   * @param string $widget_namespace
+   */
+  public static function registerWidget($annotation_namespace, $widget_namespace)
+  {
+    self::$registeredWidgets[$annotation_namespace] = $widget_namespace;
   }
 
   /**
@@ -143,9 +174,17 @@ class Forms
   }
 
   /**
-   * @param        $class
-   * @param array  $data
-   * @param object $obj
+   * Takes in a class that's annotated as a form and builds a form object to manipulate
+   *
+   * @param object|string $class The object reference or string representation of the
+   *                             class name that's annotated as a form
+   * @param array         $data  An associative array with keys matching field names
+   *                             on the form that is used to pre-populate fields with
+   *                             the respective data
+   * @param object        $obj   An object with properties that have names the same as
+   *                             field names on the form. It is used in the same way
+   *                             as `$data`, except it has lower priority when it comes
+   *                             time to assign data
    *
    * @return Form A form object with all fields and validators instantiated
    * @throws AnnotationException If the class passed in was not annotated as a form
@@ -170,14 +209,11 @@ class Forms
       foreach (Annotations::ofProperty($annotated_object->name, $property->name) as $annotation) {
         $annotation_class = get_class($annotation);
         if (key_exists($annotation_class, self::$registeredValidators)) {
-          $c = self::$registeredValidators[$annotation_class];
-          $validators[] = new $c($annotation->message);
+          $validators[] = self::processValidator($annotation_class, $annotation);
         } else if (key_exists($annotation_class, self::$registeredWidgets)) {
-          $widget = new $annotation_class();
+          $widget = self::processWidget($annotation_class);
         } else if (key_exists($annotation_class, self::$registeredFields)) {
-          $annotation->name = $annotation->name ?: $property->name;
-          $c = self::$registeredFields[$annotation_class];
-          $field = new $c($annotation->label, (array)$annotation);
+          $field = self::processField($data, $obj, $annotation, $property, $annotation_class);
         }
       }
       if (!is_null($field)) {
@@ -213,6 +249,63 @@ class Forms
     }
 
     return $form;
+  }
+
+  /**
+   * @param $annotation_class
+   * @param $annotation
+   *
+   * @return Validator
+   */
+  private static function processValidator($annotation_class, $annotation)
+  {
+    $c = self::$registeredValidators[$annotation_class];
+
+    return new $c($annotation->message);
+  }
+
+  /**
+   * @param $annotation_class
+   *
+   * @return Widget
+   */
+  private static function processWidget($annotation_class)
+  {
+    $c = self::$registeredWidgets[$annotation_class];
+
+    return new $c();
+  }
+
+  /**
+   * @param array              $data             Data to pre-populate the field with. This was passed in during form
+   *                                             creation. This has
+   * @param object             $obj              Data to pre-populate the field with. This was passed in during form
+   *                                             creation
+   * @param Annotation         $annotation       The current annotation being processed
+   * @param ReflectionProperty $property         The current property that is annotated and being processed
+   * @param string             $annotation_class String representation of the class used to instantiate this field
+   *
+   * @return Field The processed field ready to go except for finalization
+   */
+  private static function processField(array $data, $obj, $annotation, $property, $annotation_class)
+  {
+    // Default to the php property name for the HTML name if not specified in the annotation
+    $annotation->name = $annotation->name ?: $property->name;
+    // Instantiate new field using the registered field lookup table
+    $c = self::$registeredFields[$annotation_class];
+    /** @var $field Field */
+    $field = new $c($annotation->label, (array)$annotation);
+
+    // Pre-populate the field with data from the supplied object
+    if ($obj && property_exists($obj, $field->name)) {
+      $field->data = $obj->{$field->name};
+    }
+    // Pre-populate the field with data from the supplied array
+    if ($data && array_key_exists($field->name, $data)) {
+      $field->data = $data[$field->name];
+    }
+
+    return $field;
   }
 }
 

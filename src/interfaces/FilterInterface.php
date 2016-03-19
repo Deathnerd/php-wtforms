@@ -6,7 +6,7 @@
  * Time: 4:35 PM
  */
 
-namespace Deathnerd\WTForms\Interfaces;
+namespace WTForms\Interfaces;
 
 
 interface FilterInterface

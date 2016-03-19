@@ -6,10 +6,9 @@
  * Time: 2:26 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\Core;
+namespace WTForms\Widgets\Core;
 
-use Deathnerd\WTForms\Fields\Core\SelectFieldBase;
-use Illuminate\Support\HtmlString;
+use WTForms\Fields\Core\SelectFieldBase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -22,62 +21,67 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * call on rendering; this method must yield tuples of
  * `($value, $label, $selected)`.
  *
- * @package Deathnerd\WTForms\Widgets\Core
+ * @package WTForms\Widgets\Core
  */
 class Select extends Widget
 {
-    protected $multiple = false;
+  protected $multiple = false;
 
-    /**
-     * Select constructor.
-     * @param bool $multiple
-     */
-    public function __construct($multiple = false)
-    {
-        $this->multiple = $multiple;
+  /**
+   * Select constructor.
+   *
+   * @param bool $multiple
+   */
+  public function __construct($multiple = false)
+  {
+    $this->multiple = $multiple;
+  }
+
+  /**
+   * @param SelectFieldBase $field
+   * @param array           $kwargs
+   *
+   * @return string
+   * @throws \WTForms\NotImplemented
+   */
+  public function __invoke(SelectFieldBase $field, array $kwargs = [])
+  {
+    $kwargs = (new OptionsResolver())->setDefault("id", $field->id)->resolve($kwargs);
+    $kwargs['name'] = $field->name;
+    if ($this->multiple) {
+      $kwargs['multiple'] = true;
     }
 
-    /**
-     * @param SelectFieldBase $field
-     * @param array $kwargs
-     * @return HtmlString
-     * @throws \Deathnerd\WTForms\NotImplemented
-     */
-    public function __invoke(SelectFieldBase $field, array $kwargs = [])
-    {
-        $kwargs = (new OptionsResolver())->setDefault("id", $field->id)->resolve($kwargs);
-        $kwargs['name'] = $field->name;
-        if ($this->multiple) {
-            $kwargs['multiple'] = true;
-        }
+    $html = sprintf("<select %s>", html_params($kwargs));
+    foreach ($field->iter_choices() as $choice) {
+      $html .= self::render_option($choice[0], $choice[1], $choice[2]);
+    }
+    $html .= "</select>";
 
-        $html = sprintf("<select %s>", html_params($kwargs));
-        foreach ($field->iter_choices() as list($val, $label, $selected)) {
-            $html .= self::render_option($val, $label, $selected);
-        }
-        $html .= "</select>";
+    return $html;
+  }
 
-        return new HtmlString($html);
+  /**
+   * Private method called when rendering each option as HTML
+   *
+   * @param mixed   $value
+   * @param string  $label
+   * @param boolean $selected
+   * @param array   $kwargs
+   *
+   * @return string
+   */
+  public static function render_option($value, $label, $selected, $kwargs = [])
+  {
+    if ($value == true) {
+      // Handle the special case of a true value
+      $value = "true";
+    }
+    $options = array_merge($kwargs, ["value" => $value]);
+    if ($selected) {
+      $options['selected'] = true;
     }
 
-    /**
-     * Private method called when rendering each option as HTML
-     * @param mixed $value
-     * @param string $label
-     * @param boolean $selected
-     * @param array $kwargs
-     * @return HtmlString
-     */
-    public static function render_option($value, $label, $selected, $kwargs = [])
-    {
-        if ($value == true) {
-            // Handle the special case of a true value
-            $value = "true";
-        }
-        $options = array_merge($kwargs, ["value" => $value]);
-        if ($selected) {
-            $options['selected'] = true;
-        }
-        return new HtmlString("<option " . html_params($options) . ">" . e($label) . "</option>");
-    }
+    return sprintf("<option %s>%s</option>", html_params($options), e($label));
+  }
 }

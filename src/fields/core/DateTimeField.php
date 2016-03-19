@@ -6,16 +6,16 @@
  * Time: 2:36 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 use DateTime;
-use Deathnerd\WTForms\ValueError;
+use WTForms\ValueError;
 use Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * A text field which stores a `DateTime` matching a format
- * @package Deathnerd\WTForms\Fields\Core
+ * @package WTForms\Fields\Core
  */
 class DateTimeField extends Field
 {
@@ -59,7 +59,7 @@ class DateTimeField extends Field
                 $this->data = new DateTime($date_str);
             } catch (Exception $e) {
                 $this->data = null;
-                throw new ValueError($this->gettext("Not a valid datetime value."));
+                throw new ValueError("Not a valid datetime value.");
             }
         }
     }

@@ -6,41 +6,42 @@
  * Time: 11:56 PM
  */
 
-namespace Deathnerd\WTForms\Validators;
+namespace WTForms\Validators;
 
 
-use Deathnerd\WTForms\BaseForm;
-use Deathnerd\WTForms\Fields\Core\Field;
+use WTForms\Fields\Core\Field;
+use WTForms\Form;
 
 /**
  * Compares the incoming data to a sequence of invalid objects
- * @package Deathnerd\WTForms\Validators
+ * @package WTForms\Validators
  */
 class NoneOf extends AnyOf
 {
-    /**
-     * NoneOf constructor.
-     * @param array $values A sequence of invalid inputs.
-     * @param string $message Error message to raise in case of a validation error. //TODO: User interpolation
-     * @param callable|null $values_formatter Function used to format the list of values in the error message.
-     */
-    public function __construct(array $values, $message = "", $values_formatter = null)
-    {
-        parent::__construct($values, $message, $values_formatter);
-    }
+  /**
+   * NoneOf constructor.
+   *
+   * @param array         $values           A sequence of invalid inputs.
+   * @param string        $message          Error message to raise in case of a validation error. //TODO: User
+   *                                        interpolation
+   */
+  public function __construct(array $values, $message = "")
+  {
+    parent::__construct($values, $message);
+  }
 
-    /**
-     * @inheritdoc
-     */
-    public function __invoke(BaseForm $form, Field $field, $message = "")
-    {
-        if (in_array($field->data, $this->values)) {
-            $message = $this->message;
-            $values_string = $this->formatter($this->values);
-            if ($message == "") {
-                $message = sprintf($field->gettext("Invalid value, can't be any of: %s."), $values_string);
-            }
-            throw new ValidationError($message);
-        }
+  /**
+   * @inheritdoc
+   */
+  public function __invoke(Form $form, Field $field, $message = "")
+  {
+    if (in_array($field->data, $this->values)) {
+      $message = $this->message;
+      $values_string = $this->formatter($this->values);
+      if ($message == "") {
+        $message = "Invalid value, can't be any of: $values_string.";
+      }
+      throw new ValidationError($message);
     }
+  }
 }

@@ -6,15 +6,15 @@
  * Time: 3:45 PM
  */
 
-namespace Deathnerd\WTForms\Fields\HTML5;
+namespace WTForms\Fields\HTML5;
 
-use Deathnerd\WTForms\Widgets\HTML5\NumberInput;
+use WTForms\Widgets\HTML5\NumberInput;
 
 /**
  * Represents an ``<input type="number">``.
- * @package Deathnerd\WTForms\Fields\HTML5
+ * @package WTForms\Fields\HTML5
  */
-class IntegerField extends \Deathnerd\WTForms\Fields\Core\IntegerField
+class IntegerField extends \WTForms\Fields\Core\IntegerField
 {
     /**
      * @inheritdoc

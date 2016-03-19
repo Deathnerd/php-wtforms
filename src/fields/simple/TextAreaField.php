@@ -6,15 +6,15 @@
  * Time: 4:49 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Simple;
+namespace WTForms\Fields\Simple;
 
-use Deathnerd\WTForms\Fields\Core\StringField;
-use Deathnerd\WTForms\Widgets\Core\TextArea;
+use WTForms\Fields\Core\StringField;
+use WTForms\Widgets\Core\TextArea;
 
 /**
  * This field represents an HTML ``<textarea>`` and can be used to take
  * multi-line input.
- * @package Deathnerd\WTForms\Fields\Simple
+ * @package WTForms\Fields\Simple
  */
 class TextAreaField extends StringField
 {

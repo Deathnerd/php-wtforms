@@ -6,16 +6,16 @@
  * Time: 1:24 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
-use Deathnerd\WTForms\ValueError;
-use Deathnerd\WTForms\Widgets\Core\TextInput;
+use WTForms\ValueError;
+use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field, except all input is coerced to an integer. Erroneous input
  * is ignored and will nto be accepted as a value
  *
- * @package Deathnerd\WTForms\Fields
+ * @package WTForms\Fields
  */
 class IntegerField extends Field
 {
@@ -47,7 +47,7 @@ class IntegerField extends Field
                 $this->data = intval($valuelist[0]);
             } else {
                 $this->data = null;
-                throw new ValueError($this->gettext("Not a valid integer value"));
+                throw new ValueError("Not a valid integer value");
             }
         }
     }

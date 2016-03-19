@@ -6,16 +6,16 @@
  * Time: 8:59 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
-use Deathnerd\WTForms\Widgets\Core\CheckboxInput;
+use WTForms\Widgets\Core\CheckboxInput;
 
 /**
  * Represents an ``<input type="checkbox">``. Set the ``checked``-status by using the
  * ``default``-option. Any value for ``default``, e.g. ``default="checked"`` puts
  * ``checked`` into the html-element and sets the ``data`` to ``true``
  *
- * @package Deathnerd\WTForms\Fields
+ * @package WTForms\Fields
  */
 class BooleanField extends Field
 {

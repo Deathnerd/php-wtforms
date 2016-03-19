@@ -6,7 +6,7 @@
  * Time: 10:27 PM
  */
 
-namespace Deathnerd\WTForms;
+namespace WTForms;
 
 use Exception;
 

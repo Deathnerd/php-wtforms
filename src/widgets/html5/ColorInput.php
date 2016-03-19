@@ -6,21 +6,21 @@
  * Time: 5:26 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\HTML5;
+namespace WTForms\Widgets\HTML5;
 
-use Deathnerd\WTForms\Widgets\Core\Input;
+use WTForms\Widgets\Core\Input;
 
 /**
  * Renders an input with the type "color".
- * @package Deathnerd\WTForms\Widgets\HTML5
+ * @package WTForms\Widgets\HTML5
  */
 class ColorInput extends Input
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct()
-    {
-        parent::__construct("color");
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct()
+  {
+    parent::__construct("color");
+  }
 }

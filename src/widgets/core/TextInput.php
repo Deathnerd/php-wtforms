@@ -6,18 +6,18 @@
  * Time: 10:05 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\Core;
+namespace WTForms\Widgets\Core;
 
 
 /**
  * Render a single-line text input
  *
- * @package Deathnerd\WTForms\Widgets
+ * @package WTForms\Widgets
  */
 class TextInput extends Input
 {
-    public function __construct()
-    {
-        parent::__construct("text");
-    }
+  public function __construct()
+  {
+    parent::__construct("text");
+  }
 }

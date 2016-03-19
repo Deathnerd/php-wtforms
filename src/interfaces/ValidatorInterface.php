@@ -6,14 +6,14 @@
  * Time: 5:52 PM
  */
 
-namespace Deathnerd\WTForms\Interfaces;
+namespace WTForms\Interfaces;
 
-use Deathnerd\WTForms\Fields\Core\Field;
-use Deathnerd\WTForms\Form;
+use WTForms\Fields\Core\Field;
+use WTForms\Form;
 
 /**
  * Interface for all WTForms HTML validators
- * @package Deathnerd\WTForms\Interfaces
+ * @package WTForms\Interfaces
  */
 interface ValidatorInterface
 {

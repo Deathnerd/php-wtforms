@@ -6,16 +6,16 @@
  * Time: 5:00 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Simple;
+namespace WTForms\Fields\Simple;
 
-use Deathnerd\WTForms\Fields\Core\StringField;
-use Deathnerd\WTForms\Widgets\Core\HiddenInput;
+use WTForms\Fields\Core\StringField;
+use WTForms\Widgets\Core\HiddenInput;
 
 /**
  * HiddenField is a convenience for a StringField with a HiddenInput widget.
  *
  * It will render as an ``<input type="hidden">`` but otherwise coerce to a string.
- * @package Deathnerd\WTForms\Fields\Simple
+ * @package WTForms\Fields\Simple
  */
 class HiddenField extends StringField
 {

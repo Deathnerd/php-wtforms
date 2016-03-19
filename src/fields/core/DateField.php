@@ -6,14 +6,14 @@
  * Time: 3:14 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Same as DateTimeField, except stores a date (actually still a DateTime,
  * but formats to just a Date).
- * @package Deathnerd\WTForms\Fields\Core
+ * @package WTForms\Fields\Core
  */
 class DateField extends DateTimeField
 {

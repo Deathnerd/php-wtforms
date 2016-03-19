@@ -6,17 +6,17 @@
  * Time: 4:53 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Simple;
+namespace WTForms\Fields\Simple;
 
-use Deathnerd\WTForms\Fields\Core\StringField;
-use Deathnerd\WTForms\Widgets\Core\PasswordInput;
+use WTForms\Fields\Core\StringField;
+use WTForms\Widgets\Core\PasswordInput;
 
 /**
  * A StringField, except renders an ``<input type="password">``.
  *
  * Also, whatever value is accepted by this field is not rendered back
  * to the browser like normal fields.
- * @package Deathnerd\WTForms\Fields\Simple
+ * @package WTForms\Fields\Simple
  */
 class PasswordField extends StringField
 {

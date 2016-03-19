@@ -6,17 +6,17 @@
  * Time: 9:11 PM
  */
 
-namespace Deathnerd\WTForms\Tests\Common;
+namespace WTForms\Tests\Common;
 require_once('../../vendor/autoload.php');
 
 use Composer\Autoload\ClassLoader;
-use Deathnerd\WTForms\Fields\Core\Field;
-use Deathnerd\WTForms\Fields\Core\StringField;
-use Deathnerd\WTForms\Forms;
+use WTForms\Fields\Core\Field;
+use WTForms\Fields\Core\StringField;
+use WTForms\Forms;
 use mindplay\annotations\AnnotationCache;
 use mindplay\annotations\Annotations;
-use wtforms\tests\supporting_classes\Helper;
-use wtforms\tests\supporting_classes\AnnotatedHelper;
+use WTForms\Tests\SupportingClasses\Helper;
+use WTForms\Tests\SupportingClasses\AnnotatedHelper;
 
 class FormsTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,9 +27,9 @@ class FormsTest extends \PHPUnit_Framework_TestCase
   {
     Annotations::$config['cache'] = new AnnotationCache(__DIR__ . "/../runtime");
     $annotationManager = Annotations::getManager();
-    $annotationManager->registry['stringField'] = 'Deathnerd\WTForms\Fields\Core\Annotations\StringFieldAnnotation';
-    $annotationManager->registry['form'] = 'Deathnerd\WTForms\FormAnnotation';
-    $annotationManager->registry['inputRequired'] = 'Deathnerd\WTForms\Validators\Annotations\InputRequiredAnnotation';
+    $annotationManager->registry['stringField'] = 'WTForms\Fields\Core\Annotations\StringFieldAnnotation';
+    $annotationManager->registry['form'] = 'WTForms\FormAnnotation';
+    $annotationManager->registry['inputRequired'] = 'WTForms\Validators\Annotations\InputRequiredAnnotation';
     $this->helper = new Helper;
     $this->annotated_helper = new AnnotatedHelper;
   }
@@ -50,7 +50,7 @@ class FormsTest extends \PHPUnit_Framework_TestCase
   {
     $form = Forms::create($this->annotated_helper);
     $this->assertEquals('foo', $form->prefix);
-    $this->assertAttributeInstanceOf('wtforms\tests\supporting_classes\FooMeta', 'meta', $form);
+    $this->assertAttributeInstanceOf('WTForms\Tests\SupportingClasses\FooMeta', 'meta', $form);
     $this->assertEquals(false, $form->csrf);
   }
 

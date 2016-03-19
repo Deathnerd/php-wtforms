@@ -1,11 +1,10 @@
 <?php
-namespace Deathnerd\WTForms\CSRF\Core;
+namespace WTForms\CSRF\Core;
 
-use Deathnerd\WTForms;
-use Deathnerd\WTForms\Fields\Core\HiddenField;
-use Deathnerd\WTForms\Form;
-use Deathnerd\WTForms\Utils\UnsetValue;
-use Deathnerd\WTForms\Validators\ValidationError;
+use WTForms;
+use WTForms\Fields\Core\HiddenField;
+use WTForms\Form;
+use WTForms\Validators\ValidationError;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CSRFTokenField extends HiddenField
@@ -77,9 +76,6 @@ class CSRFTokenField extends HiddenField
      */
     public function process($formdata, $data = null)
     {
-        if ($data === null) {
-            $data = new UnsetValue();
-        }
         parent::process($formdata, $data);
         $this->current_token = $this->csrf_impl->generate_csrf_token($this);
     }

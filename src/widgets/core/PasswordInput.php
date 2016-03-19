@@ -6,10 +6,9 @@
  * Time: 4:42 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\Core;
+namespace WTForms\Widgets\Core;
 
-use Deathnerd\WTForms\Fields\Core\Field;
-use Illuminate\Support\HtmlString;
+use WTForms\Fields\Core\Field;
 
 /**
  * Render a password input.
@@ -18,35 +17,38 @@ use Illuminate\Support\HtmlString;
  * submit by default. To have the value filled in, set the `$hide_value` to
  * `false`
  *
- * @package Deathnerd\WTForms\Widgets\Core
+ * @package WTForms\Widgets\Core
  */
 class PasswordInput extends Input
 {
-    /**
-     * @var bool
-     */
-    public $hide_value;
+  /**
+   * @var bool
+   */
+  public $hide_value;
 
-    /**
-     * PasswordInput constructor.
-     * @param bool $hide_value
-     */
-    public function __construct($hide_value = true)
-    {
-        parent::__construct("password");
-        $this->hide_value = $hide_value;
+  /**
+   * PasswordInput constructor.
+   *
+   * @param bool $hide_value
+   */
+  public function __construct($hide_value = true)
+  {
+    parent::__construct("password");
+    $this->hide_value = $hide_value;
+  }
+
+  /**
+   * @param Field $field
+   * @param array $kwargs
+   *
+   * @return string
+   */
+  public function __invoke(Field $field, array $kwargs = [])
+  {
+    if ($this->hide_value) {
+      $kwargs['value'] = "";
     }
 
-    /**
-     * @param Field $field
-     * @param array $kwargs
-     * @return HtmlString
-     */
-    public function __invoke(Field $field, array $kwargs = [])
-    {
-        if($this->hide_value){
-            $kwargs['value'] = "";
-        }
-        return parent::__invoke($field, $kwargs);
-    }
+    return parent::__invoke($field, $kwargs);
+  }
 }

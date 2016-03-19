@@ -19,18 +19,18 @@ $auto_loader->addPsr4("Deathnerd\\WTForms\\", __DIR__."../src");
 $auto_loader->register();
 
 
-use Deathnerd\WTForms\Forms;
+use WTForms\Forms;
 use mindplay\annotations\AnnotationCache;
 use mindplay\annotations\Annotations;
-use wtforms\tests\supporting_classes\Person;
+use WTForms\Tests\SupportingClasses\Person;
 
 Annotations::$config['cache'] = new AnnotationCache(__DIR__ . "/runtime");
 $annotationManager = Annotations::getManager();
 $annotationManager->registry['length'] = 'mindplay\demo\annotations\LengthAnnotation';
 $annotationManager->registry['required'] = 'mindplay\demo\annotations\RequiredAnnotation';
 $annotationManager->registry['text'] = 'mindplay\demo\annotations\TextAnnotation';
-$annotationManager->registry['stringfield'] = 'Deathnerd\WTForms\Fields\Core\Annotations\StringFieldAnnotation';
-$annotationManager->registry['form'] = 'Deathnerd\WTForms\FormAnnotation';
+$annotationManager->registry['stringfield'] = 'WTForms\Fields\Core\Annotations\StringFieldAnnotation';
+$annotationManager->registry['form'] = 'WTForms\FormAnnotation';
 
 $person = new Person;
 

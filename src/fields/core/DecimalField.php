@@ -7,7 +7,7 @@
  * Time: 4:06 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 
 class DecimalField extends FloatField

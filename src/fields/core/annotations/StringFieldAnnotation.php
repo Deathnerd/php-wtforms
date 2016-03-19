@@ -6,7 +6,7 @@
  * Time: 9:56 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core\Annotations;
+namespace WTForms\Fields\Core\Annotations;
 
 /**
  * Class StringFieldAnnotation
@@ -20,5 +20,5 @@ class StringFieldAnnotation extends FieldAnnotation
   /**
    * @var string
    */
-  public $widget = 'Deathnerd\WTForms\Widgets\Core\TextInput';
+  public $widget = 'WTForms\Widgets\Core\TextInput';
 }

@@ -6,10 +6,9 @@
  * Time: 3:07 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
 
-use Illuminate\Support\HtmlString;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Label
@@ -36,6 +35,6 @@ class Label
         } else {
             $kwargs = (new OptionsResolver())->setDefault('for', $this->field_id)->resolve($kwargs);
         }
-        return new HtmlString(sprintf("<label %s>%s</label>", html_params($kwargs),$text ?: $this->text));
+        return sprintf("<label %s>%s</label>", html_params($kwargs),$text ?: $this->text);
     }
 }

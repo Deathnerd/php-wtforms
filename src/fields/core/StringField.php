@@ -6,15 +6,15 @@
  * Time: 10:02 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
-use Deathnerd\WTForms\Widgets;
-use Deathnerd\WTForms\Widgets\Core\TextInput;
+use WTForms\Widgets;
+use WTForms\Widgets\Core\TextInput;
 
 /**
  * This field is the base for most of the more complicated fields, and
  * represents an ``<input type="text">``.
- * @package Deathnerd\WTForms\Fields
+ * @package WTForms\Fields
  */
 class StringField extends Field
 {

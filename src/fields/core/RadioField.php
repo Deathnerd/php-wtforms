@@ -6,10 +6,10 @@
  * Time: 11:04 AM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
-use Deathnerd\WTForms\Widgets\Core\ListWidget;
-use Deathnerd\WTForms\Widgets\Core\RadioInput;
+use WTForms\Widgets\Core\ListWidget;
+use WTForms\Widgets\Core\RadioInput;
 
 /**
  * Like a SelectField, except displays a list of radio buttons.
@@ -17,7 +17,7 @@ use Deathnerd\WTForms\Widgets\Core\RadioInput;
  * Iterating a field will produce subfields (each containing a label as
  * well) in order to allow custom rendering of the individual radio fields.
  *
- * @package Deathnerd\WTForms\Fields
+ * @package WTForms\Fields
  */
 class RadioField extends SelectField
 {

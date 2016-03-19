@@ -6,9 +6,9 @@
  * Time: 2:11 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\Core;
+namespace WTForms\Widgets\Core;
 
-use Deathnerd\WTForms\Fields\Core\Field;
+use WTForms\Fields\Core\Field;
 
 /**
  * Renders the individual option from a select field.
@@ -16,12 +16,12 @@ use Deathnerd\WTForms\Fields\Core\Field;
  * This is just a convenience for various custom rendering situations, and an
  * option by itself does not constitute an entire field.
  *
- * @package Deathnerd\WTForms\Widgets\Core
+ * @package WTForms\Widgets\Core
  */
 class Option
 {
-    public function __invoke(Field $field, array $kwargs = [])
-    {
-        return Select::render_option($field->_value(), $field->label->text, $field->checked, $kwargs);
-    }
+  public function __invoke(Field $field, array $kwargs = [])
+  {
+    return Select::render_option($field->_value(), $field->label->text, $field->checked, $kwargs);
+  }
 }

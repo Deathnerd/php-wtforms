@@ -6,10 +6,10 @@
  * Time: 2:10 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core;
+namespace WTForms\Fields\Core;
 
-use Deathnerd\WTForms\NotImplemented;
-use Deathnerd\WTForms\Widgets\Core\Option;
+use WTForms\NotImplemented;
+use WTForms\Widgets\Core\Option;
 
 /**
  * Base class for fields which can be iterated to produce options.
@@ -17,7 +17,7 @@ use Deathnerd\WTForms\Widgets\Core\Option;
  * This isn't a field, but an abstract base class for fields which want to
  * provide this functionality.
  *
- * @package Deathnerd\WTForms\Fields\Core
+ * @package WTForms\Fields\Core
  */
 abstract class SelectFieldBase extends Field
 {

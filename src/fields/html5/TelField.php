@@ -6,14 +6,14 @@
  * Time: 2:21 PM
  */
 
-namespace Deathnerd\WTForms\Fields\HTML5;
+namespace WTForms\Fields\HTML5;
 
-use Deathnerd\WTForms\Fields\Core\StringField;
-use Deathnerd\WTForms\Widgets\HTML5\TelInput;
+use WTForms\Fields\Core\StringField;
+use WTForms\Widgets\HTML5\TelInput;
 
 /**
  * Represents an ``<input type="tel">``.
- * @package Deathnerd\WTForms\Fields\HTML5
+ * @package WTForms\Fields\HTML5
  */
 class TelField extends StringField
 {

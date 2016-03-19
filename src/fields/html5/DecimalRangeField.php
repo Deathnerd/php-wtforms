@@ -6,14 +6,14 @@
  * Time: 4:30 PM
  */
 
-namespace Deathnerd\WTForms\Fields\HTML5;
+namespace WTForms\Fields\HTML5;
 
-use Deathnerd\WTForms\Fields\Core\DecimalField;
-use Deathnerd\WTForms\Widgets\HTML5\RangeInput;
+use WTForms\Fields\Core\DecimalField;
+use WTForms\Widgets\HTML5\RangeInput;
 
 /**
  * Represents an ``<input type="range">``.
- * @package Deathnerd\WTForms\Fields\HTML5
+ * @package WTForms\Fields\HTML5
  */
 class DecimalRangeField extends DecimalField
 {

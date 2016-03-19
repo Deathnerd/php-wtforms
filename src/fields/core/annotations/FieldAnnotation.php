@@ -6,11 +6,10 @@
  * Time: 9:33 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Core\Annotations;
+namespace WTForms\Fields\Core\Annotations;
 
 
 use mindplay\annotations\Annotation;
-use mindplay\annotations\UsageAnnotation;
 
 /**
  * @usage('property'=>true,'inherited'=>true)

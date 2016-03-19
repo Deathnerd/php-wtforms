@@ -6,22 +6,22 @@
  * Time: 10:10 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\Core;
+namespace WTForms\Widgets\Core;
 
 
 /**
  * Render a hidden input
- * @package Deathnerd\WTForms\Widgets
+ * @package WTForms\Widgets
  */
 class HiddenInput extends Input
 {
-    /**
-     * @var array
-     */
-    public $field_flags = ['hidden'];
+  /**
+   * @var array
+   */
+  public $field_flags = ['hidden'];
 
-    public function __construct()
-    {
-        parent::__construct("hidden");
-    }
+  public function __construct()
+  {
+    parent::__construct("hidden");
+  }
 }

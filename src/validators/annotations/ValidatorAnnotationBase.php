@@ -6,7 +6,8 @@
  * Time: 4:04 PM
  */
 
-namespace Deathnerd\WTForms\Validators\Annotations;
+namespace WTForms\Validators\Annotations;
+
 use mindplay\annotations\Annotation;
 
 /**

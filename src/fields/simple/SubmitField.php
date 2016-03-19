@@ -6,15 +6,15 @@
  * Time: 5:04 PM
  */
 
-namespace Deathnerd\WTForms\Fields\Simple;
+namespace WTForms\Fields\Simple;
 
-use Deathnerd\WTForms\Fields\Core\BooleanField;
-use Deathnerd\WTForms\Widgets\Core\SubmitInput;
+use WTForms\Fields\Core\BooleanField;
+use WTForms\Widgets\Core\SubmitInput;
 
 /**
  * Represents an ``<input type="submit">``.  This allows checking if a given
  * submit button has been pressed.
- * @package Deathnerd\WTForms\Fields\Simple
+ * @package WTForms\Fields\Simple
  */
 class SubmitField extends BooleanField
 {

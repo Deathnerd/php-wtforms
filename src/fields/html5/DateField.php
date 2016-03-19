@@ -6,15 +6,15 @@
  * Time: 3:14 PM
  */
 
-namespace Deathnerd\WTForms\Fields\HTML5;
+namespace WTForms\Fields\HTML5;
 
-use Deathnerd\WTForms\Widgets\HTML5\DateInput;
+use WTForms\Widgets\HTML5\DateInput;
 
 /**
  * Represents an ``<input type="date">``.
- * @package Deathnerd\WTForms\Fields\HTML5
+ * @package WTForms\Fields\HTML5
  */
-class DateField extends \Deathnerd\WTForms\Fields\Core\DateField
+class DateField extends \WTForms\Fields\Core\DateField
 {
     /**
      * @inheritdoc

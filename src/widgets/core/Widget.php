@@ -6,27 +6,27 @@
  * Time: 3:46 PM
  */
 
-namespace Deathnerd\WTForms\Widgets\Core;
+namespace WTForms\Widgets\Core;
 
-use Deathnerd\WTForms\Fields\Core\Field;
-use Deathnerd\WTForms\NotImplemented;
+use WTForms\Fields\Core\Field;
+use WTForms\NotImplemented;
 
 /**
  * Just so I can have type hinting for widgets
- * @package Deathnerd\WTForms\Widgets
+ * @package WTForms\Widgets
  */
 class Widget
 {
-    public $field_flags = [];
+  public $field_flags = [];
 
-    /**
-     * @param Field $field
-     * @param array $kwargs
-     *
-     * @throws NotImplemented
-     */
-    public function __invoke(Field $field, array $kwargs=[])
-    {
-        throw new NotImplemented("Widget needs an __invoke method");
-    }
+  /**
+   * @param Field $field
+   * @param array $kwargs
+   *
+   * @throws NotImplemented
+   */
+  public function __invoke(Field $field, array $kwargs = [])
+  {
+    throw new NotImplemented("Widget needs an __invoke method");
+  }
 }

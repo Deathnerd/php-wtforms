@@ -6,7 +6,7 @@
  * Time: 4:11 PM
  */
 
-namespace Deathnerd\WTForms\Validators\Annotations;
+namespace WTForms\Validators\Annotations;
 
 /**
  * @usage('property'=>true,'multiple'=>false,'inherited'=>true)

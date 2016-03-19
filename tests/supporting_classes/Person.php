@@ -6,7 +6,7 @@
  * Time: 8:22 PM
  */
 
-namespace wtforms\tests\supporting_classes;
+namespace WTForms\Tests\SupportingClasses;
 
 /**
  * @form

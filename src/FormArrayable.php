@@ -6,7 +6,7 @@
  * Time: 4:23 PM
  */
 
-namespace Deathnerd\WTForms;
+namespace WTForms;
 
 
 trait FormArrayable

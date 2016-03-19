@@ -6,10 +6,10 @@
  * Time: 11:37 PM
  */
 
-namespace wtforms\tests\supporting_classes;
+namespace WTForms\Tests\SupportingClasses;
 
 /**
- * @form('prefix'=>'foo', 'csrf'=>false, 'meta'=>'\wtforms\tests\supporting_classes\FooMeta')
+ * @form('prefix'=>'foo', 'csrf'=>false, 'meta'=>'\WTForms\Tests\SupportingClasses\FooMeta')
  */
 class AnnotatedHelper
 {
