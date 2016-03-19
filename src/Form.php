@@ -35,10 +35,9 @@ class Form implements \ArrayAccess, \Iterator
    */
   public function __construct(array $fields = [], $prefix = "", $meta = null)
   {
-  }
-
-  function __invoke()
-  {
+    $this->fields = $fields;
+    $this->prefix = $prefix;
+    $this->meta = $meta;
   }
 
   /**

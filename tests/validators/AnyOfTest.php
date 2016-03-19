@@ -10,8 +10,7 @@ namespace WTForms\Tests\validators;
 
 
 use WTForms\Form;
-use WTForms\Tests\common\AnyOfFormatter;
-use WTForms\Tests\common\DummyField;
+use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\AnyOf;
 
 class AnyOfTest extends \PHPUnit_Framework_TestCase
@@ -20,19 +19,19 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
     public function testAnyOf()
     {
         $any_of = new AnyOf(['a', 'b', 'c']);
-        $this->assertNull($any_of(new Form([]), new DummyField("b")));
+        $this->assertNull($any_of(new Form(), new DummyField("",['data'=>"b"])));
         $any_of = new AnyOf([1, 2, 3]);
-        $this->assertNull($any_of(new Form([]), new DummyField(2)));
+        $this->assertNull($any_of(new Form(), new DummyField("",['data'=>2])));
     }
 
     /**
      * @expectedException \WTForms\Validators\ValidationError
-     * @expectedExceptionMessage test 9::8::7
+     * @expectedExceptionMessage test 7, 8, 9
      */
     public function testAnyOfValuesFormatter()
     {
-        $any_of = new AnyOf([7, 8, 9], "test %s", new AnyOfFormatter());
-        $any_of(new Form([]), new DummyField(4));
+        $any_of = new AnyOf([7, 8, 9], "test %s");
+        $any_of(new Form(), new DummyField("",['data'=>4]));
     }
 
     /**
@@ -41,7 +40,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
     public function testAnyOfValueErrorExceptions1()
     {
         $any_of = new AnyOf(['a', 'b', 'c']);
-        $this->assertNull($any_of(new Form([]), new DummyField(null)));
+        $this->assertNull($any_of(new Form(), new DummyField()));
     }
 
     /**
@@ -50,6 +49,6 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
     public function testAnyOfValueErrorExceptions2()
     {
         $any_of = new AnyOf([1,2,3]);
-        $this->assertNull($any_of(new Form([]), new DummyField(4)));
+        $this->assertNull($any_of(new Form(), new DummyField("",['data'=>4])));
     }
 }

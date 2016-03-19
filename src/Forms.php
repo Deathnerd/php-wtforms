@@ -194,7 +194,7 @@ class Forms
     $annotated_object = new \ReflectionClass($class);
     // Set up the form annotation overrides
     try {
-      $form = self::getFormProperties($class, new Form());
+      $form = self::getFormProperties($class);
     } catch (AnnotationException $e) {
       throw new AnnotationException($e->getMessage());
     } catch (\Exception $e) {
@@ -228,27 +228,21 @@ class Forms
 
   /**
    * @param $class
-   * @param $form
    *
    * @return Form
    * @throws \Exception
    */
-  private static function getFormProperties($class, $form)
+  private static function getFormProperties($class)
   {
-    $has_form_annotation = false;
     foreach (Annotations::ofClass($class) as $class_annotation) {
       if ($class_annotation instanceof FormAnnotation) {
-        $form->meta = new $class_annotation->meta;
+        $form = new Form([], $class_annotation->prefix, new $class_annotation->meta);
         $form->csrf = $class_annotation->csrf;
-        $form->prefix = $class_annotation->prefix;
-        $has_form_annotation = true;
+
+        return $form;
       }
     }
-    if (!$has_form_annotation) {
-      throw new \Exception();
-    }
-
-    return $form;
+    throw new \Exception();
   }
 
   /**

@@ -42,6 +42,7 @@
     "psr-4":{
       "WTForms\\Tests\\": "tests/",
       "WTForms\\Tests\\Common\\": "tests/common/",
+      "WTForms\\Tests\\Fields\\": "tests/fields/",
       "WTForms\\Tests\\SupportingClasses\\": "tests/supporting_classes/"
     }
   },
@@ -51,6 +52,7 @@
     "mindplay/annotations": "1.3.0"
   },
   "require-dev": {
-    "filp/whoops": "^2.1"
+    "filp/whoops": "^2.1",
+    "maximebf/debugbar": "1.*"
   }
 }

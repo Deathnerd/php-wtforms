@@ -195,6 +195,20 @@ class Field implements \Iterator
     return $this->meta->render_field($this, $kwargs);
   }
 
+  public function __call($name, $arguments)
+  {
+    if ($name == "label") {
+      if(count($arguments) == 2){
+        return $this->label->__invoke($arguments[0], $arguments[1]);
+      } elseif(count($arguments) == 1){
+        return $this->label->__invoke($arguments[0]);
+      }
+      return $this->label->__invoke();
+    }
+
+    throw new \BadMethodCallException("Method $name not found on form!");
+  }
+
   /**
    * Validates the field and returns true or false. {@link errors} will
    * contain any errors raised during validation. This is usually only

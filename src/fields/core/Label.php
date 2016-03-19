@@ -29,12 +29,7 @@ class Label
 
     public function __invoke($text = "", array $kwargs = [])
     {
-        if (array_key_exists("for_", $kwargs)) {
-            $kwargs["for"] = $kwargs["for_"];
-            unset($kwargs["for_"]);
-        } else {
-            $kwargs = (new OptionsResolver())->setDefault('for', $this->field_id)->resolve($kwargs);
-        }
+        $kwargs = array_merge(["for" => $this->field_id], $kwargs);
         return sprintf("<label %s>%s</label>", html_params($kwargs),$text ?: $this->text);
     }
 }

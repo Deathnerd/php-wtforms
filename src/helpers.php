@@ -25,22 +25,22 @@ if (!function_exists('e')) {
 }
 
 
-if (!function_exists('messages_path')) {
-  /**
-   * Determine the path to the 'messages' directory as best as possible
-   *
-   * @return string The best guess for where the messages are
-   */
-  function messages_path()
-  {
-    $module_path = __DIR__ . DS . "locale";
-    if (!file_exists($module_path)) {
-      $module_path = "/usr/share/locale";
-    }
-
-    return $module_path;
-  }
-}
+//if (!function_exists('messages_path')) {
+//  /**
+//   * Determine the path to the 'messages' directory as best as possible
+//   *
+//   * @return string The best guess for where the messages are
+//   */
+//  function messages_path()
+//  {
+//    $module_path = __DIR__ . DS . "locale";
+//    if (!file_exists($module_path)) {
+//      $module_path = "/usr/share/locale";
+//    }
+//
+//    return $module_path;
+//  }
+//}
 
 //if (!function_exists('get_builtin_gnu_translations')) {
 //  /**
@@ -116,10 +116,9 @@ if (!function_exists('html_params')) {
   function html_params($kwargs)
   {
     $params = [];
-    asort($kwargs);
     foreach ($kwargs as $key => $value) {
       if (in_array($key, ['class_', 'class__', 'for_'])) {
-        $key = substr($key, 0, strlen($key) - 1);
+        $key = str_replace("_", "", $key);
       } elseif (starts_with($key, "data_")) {
         $key = preg_replace('/_/', '-', $key, 1);
       }
@@ -128,6 +127,9 @@ if (!function_exists('html_params')) {
       } elseif ($value === false) {
         continue;
       } else {
+        if (is_array($value)) {
+          $value = implode(" ", $value);
+        }
         $params[] = $key . '="' . e($value) . '"';
       }
     }
