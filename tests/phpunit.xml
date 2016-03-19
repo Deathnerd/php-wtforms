@@ -3,4 +3,10 @@
     <testsuite name='WTForms Validators Test'>
         <directory>./validators</directory>
     </testsuite>
+    <testsuite name="WTForms Common Tests">
+        <directory>./common</directory>
+    </testsuite>
+    <testsuite name="WTForms Field Tests">
+        <directory>./fields</directory>
+    </testsuite>
 </phpunit>

@@ -7,7 +7,7 @@
  */
 
 namespace WTForms\Tests\Common;
-require_once('../../vendor/autoload.php');
+require_once(__DIR__ .'/../../vendor/autoload.php');
 
 use Composer\Autoload\ClassLoader;
 use WTForms\Fields\Core\Field;
