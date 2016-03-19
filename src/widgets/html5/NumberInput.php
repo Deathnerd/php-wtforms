@@ -24,23 +24,23 @@ class NumberInput extends Input
   /**
    * @inheritdoc
    */
-  public function __construct(array $kwargs = [])
+  public function __construct(array $options = [])
   {
-    $kwargs = array_merge(["step" => null, "min" => null, "max" => null], $kwargs);
-    $this->step = $kwargs['step'];
-    $this->min = $kwargs['min'];
-    $this->max = $kwargs['max'];
+    $options = array_merge(["step" => null, "min" => null, "max" => null], $options);
+    $this->step = $options['step'];
+    $this->min = $options['min'];
+    $this->max = $options['max'];
     parent::__construct("number");
   }
 
   /**
    * @inheritdoc
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
-    $kwargs = array_merge(["step" => $this->step, "min" => $this->min, "max" => $this->max], $kwargs);
+    $options = array_merge(["step" => $this->step, "min" => $this->min, "max" => $this->max], $options);
 
-    return parent::__invoke($field, $kwargs);
+    return parent::__invoke($field, $options);
   }
 
 }

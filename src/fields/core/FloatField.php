@@ -18,26 +18,15 @@ class FloatField extends Field
    * FloatField constructor.
    *
    * @param string $label
-   * @param array  $kwargs
+   * @param array  $options
    */
-  public function __construct($label = "", array $kwargs = [])
+  public function __construct($label = "", array $options = [])
   {
-    parent::__construct($label, $kwargs);
+    parent::__construct($label, $options);
     $this->widget = new TextInput();
   }
 
-  public function _value()
-  {
-    if ($this->raw_data) {
-      return $this->raw_data[0];
-    } elseif ($this->data !== null) {
-      return strval($this->data);
-    }
-
-    return "";
-  }
-
-  public function process_formdata(array $valuelist)
+  public function processFormData(array $valuelist)
   {
     if ($valuelist) {
       if (is_numeric($valuelist[0])) {

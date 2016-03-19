@@ -40,18 +40,18 @@ class Input extends Widget
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
     $defaults = ["id"    => $field->id,
                  "type"  => $this->input_type,
-                 "value" => $field->_value()];
-    $kwargs = array_merge($defaults, $kwargs);
-    $kwargs['name'] = $field->name;
+                 "value" => $field->value];
+    $options = array_merge($defaults, $options);
+    $options['name'] = $field->name;
 
-    return sprintf("<input %s>", html_params($kwargs));
+    return sprintf("<input %s>", html_params($options));
   }
 }

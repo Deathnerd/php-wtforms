@@ -25,10 +25,10 @@ class Label
     return (string)$this->__invoke();
   }
 
-  public function __invoke($text = "", array $kwargs = [])
+  public function __invoke($text = "", array $options = [])
   {
-    $kwargs = array_merge(["for" => $this->field_id], $kwargs);
+    $options = array_merge(["for" => $this->field_id], $options);
 
-    return sprintf("<label %s>%s</label>", html_params($kwargs), $text ?: $this->text);
+    return sprintf("<label %s>%s</label>", html_params($options), $text ?: $this->text);
   }
 }

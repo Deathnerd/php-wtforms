@@ -32,14 +32,14 @@ class SelectField extends SelectFieldBase
    */
   public $data = [];
 
-  public function __construct($label = "", array $validators = [], array $choices = [], array $kwargs = [])
+  public function __construct($label = "", array $validators = [], array $choices = [], array $options = [])
   {
-    parent::__construct($label, $validators, null, $kwargs);
+    parent::__construct($label, $validators, null, $options);
     $this->option_widget = new Select();
     $this->choices = $choices;
   }
 
-  public function iter_choices()
+  public function getChoices()
   {
     $t = [];
     foreach ($this->choices as $value => $label) {
@@ -49,19 +49,19 @@ class SelectField extends SelectFieldBase
     return $t;
   }
 
-  public function process_data($value)
+  public function processData($value)
   {
     $this->data = $value;
   }
 
-  public function process_formdata(array $valuelist = [])
+  public function processFormData(array $valuelist = [])
   {
     if (count($valuelist) != 0) {
       $this->data = $valuelist[0];
     }
   }
 
-  public function pre_validate(Form $form)
+  public function preValidate(Form $form)
   {
     foreach ($this->choices as $v => $_) {
       if ($this->data == $v) {

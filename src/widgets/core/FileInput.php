@@ -19,17 +19,17 @@ class FileInput extends Widget
 {
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
-    $kwargs = array_merge(["id" => $field->id], $kwargs);
-    $kwargs['name'] = $field->name;
-    $kwargs['type'] = "file";
+    $options = array_merge(["id" => $field->id], $options);
+    $options['name'] = $field->name;
+    $options['type'] = "file";
 
-    return sprintf("<input %s>", html_params($kwargs));
+    return sprintf("<input %s>", html_params($options));
   }
 
 }

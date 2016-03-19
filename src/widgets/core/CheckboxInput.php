@@ -29,16 +29,16 @@ class CheckboxInput extends Input
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string|void
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
     if ($field->checked or $field->data) {
-      $kwargs['checked'] = true;
+      $options['checked'] = true;
     }
 
-    return parent::__invoke($field, $kwargs);
+    return parent::__invoke($field, $options);
   }
 }

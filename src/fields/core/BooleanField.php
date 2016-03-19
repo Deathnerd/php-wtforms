@@ -33,30 +33,30 @@ class BooleanField extends Field
    * Field constructor.
    *
    * @param string $label
-   * @param array  $kwargs In addition to {@link Field}'s kwargs, you may
+   * @param array  $options In addition to {@link Field}'s options, you may
    *                       also pass an entry with key ``'false_values'`` which is a sequence of
    *                       strings of what is considered a "false" value. Defaults are ``['false', '']``
    *
    * @throws \TypeError
    */
-  public function __construct($label = "", array $kwargs = [])
+  public function __construct($label = "", array $options = [])
   {
-    parent::__construct($label, $kwargs);
+    parent::__construct($label, $options);
     $this->widget = new CheckboxInput();
-    if (array_key_exists("false_values", $kwargs) && is_array($kwargs['false_values'])) {
-      $this->false_values = $kwargs['false_values'];
+    if (array_key_exists("false_values", $options) && is_array($options['false_values'])) {
+      $this->false_values = $options['false_values'];
     }
   }
 
   /**
    * Process the data applied to this field and store the result.
    *
-   * This will be called during form construction by the form's `kwargs` or
+   * This will be called during form construction by the form's `options` or
    * `obj` argument.
    *
    * @param string|array $value
    */
-  public function process_data($value)
+  public function processData($value)
   {
     $this->data = boolval($value);
   }
@@ -64,7 +64,7 @@ class BooleanField extends Field
   /**
    * @inheritdoc
    */
-  public function process_formdata(array $valuelist)
+  public function processFormData(array $valuelist)
   {
     if (!$valuelist || in_array($valuelist[0], $this->false_values)) {
       $this->data = false;
@@ -73,12 +73,16 @@ class BooleanField extends Field
     }
   }
 
-  public function _value()
+  public function __get($name)
   {
-    if ($this->raw_data !== null && !empty($this->raw_data)) {
-      return strval($this->raw_data[0]);
+    if (in_array($name, ['value'])) {
+      if ($this->raw_data !== null && !empty($this->raw_data)) {
+        return strval($this->raw_data[0]);
+      }
+
+      return 'y';
     }
 
-    return 'y';
+    return null;
   }
 }

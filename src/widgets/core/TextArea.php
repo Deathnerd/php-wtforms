@@ -13,7 +13,7 @@ use WTForms\Fields\Core\Field;
 /**
  * Renders a multi-line text area.
  *
- * `rows` and `cols` ought to be passed as members of the `$kwargs` array when
+ * `rows` and `cols` ought to be passed as members of the `$options` array when
  * rendering
  * @package WTForms\Widgets\Core
  */
@@ -21,15 +21,15 @@ class TextArea extends Widget
 {
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
-    $kwargs = array_merge(["id" => $field->id], $kwargs);
-    $kwargs['name'] = $field->name;
+    $options = array_merge(["id" => $field->id], $options);
+    $options['name'] = $field->name;
 
-    return sprintf("<textarea %s>%s</textarea>", html_params($kwargs), e($field->_value()));
+    return sprintf("<textarea %s>%s</textarea>", html_params($options), e($field->value));
   }
 }

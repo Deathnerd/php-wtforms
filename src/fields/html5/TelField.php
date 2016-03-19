@@ -20,9 +20,9 @@ class TelField extends StringField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $kwargs = [])
+  public function __construct($label = "", array $options = [])
   {
-    parent::__construct($label, $kwargs);
+    parent::__construct($label, $options);
     $this->widget = new TelInput();
   }
 

@@ -27,9 +27,9 @@ class SelectMultipleField extends SelectField
    */
   public $data;
 
-  public function __construct($label = "", array $validators = [], array $choices = [], array $kwargs = [])
+  public function __construct($label = "", array $validators = [], array $choices = [], array $options = [])
   {
-    parent::__construct($label, $validators, $choices, $kwargs);
+    parent::__construct($label, $validators, $choices, $options);
     $this->widget = new Select(true);
   }
 
@@ -38,7 +38,7 @@ class SelectMultipleField extends SelectField
    * iterable of `[value,label,selected]` tuples
    * @return \Generator
    */
-  public function iter_choices()
+  public function getChoices()
   {
     $t = [];
     foreach ($this->choices as $value => $label) {
@@ -52,7 +52,7 @@ class SelectMultipleField extends SelectField
   /**
    * @param array|null $value
    */
-  public function process_data(array $value)
+  public function processData(array $value)
   {
     if ($value) {
       foreach ($value as $v) {
@@ -61,7 +61,7 @@ class SelectMultipleField extends SelectField
     }
   }
 
-  public function process_formdata(array $valuelist)
+  public function processFormData(array $valuelist)
   {
     if ($valuelist) {
       foreach ($valuelist as $v) {
@@ -70,7 +70,7 @@ class SelectMultipleField extends SelectField
     }
   }
 
-  public function pre_validate(Form $form)
+  public function preValidate(Form $form)
   {
     if ($this->data !== null) {
       $values = [];

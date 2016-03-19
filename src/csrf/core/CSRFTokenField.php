@@ -22,37 +22,40 @@ class CSRFTokenField extends HiddenField
   /**
    * CSRFTokenField constructor.
    *
-   * @param array $kwargs
+   * @param array $options
    */
-  public function __construct(array $kwargs = [])
+  public function __construct(array $options = [])
   {
-    $defaults = ['label' => 'CSRF Token', 'csrf_impl', 'CSRF'];
-    $kwargs = array_merge($defaults, $kwargs);
+    $defaults = ['label' => 'CSRF Token', 'csrf_impl', 'WTForms\CSRF\Core\CSRF'];
+    $options = array_merge($defaults, $options);
 
-    // TODO: Might not work. Revisit
-    $this->csrf_impl = new $kwargs['csrf_impl']();
-    unset($kwargs['csrf_impl']);
-    $label = $kwargs['label'];
-    unset($kwargs['label']);
-    parent::__construct($label, $kwargs);
+    $c = $options['csrf_impl'];
+    $this->csrf_impl = new $c();
+    unset($options['csrf_impl']);
+    $label = $options['label'];
+    unset($options['label']);
+    parent::__construct($label, $options);
   }
-
 
   /**
    * We want to always return the current token on render, regardless of
    * whether a good or bad token was passed
    * @return string
    */
-  public function _value()
+  public function __get($name)
   {
-    return $this->current_token;
+    if (in_array($name, ['value'])) {
+      return $this->current_token;
+    }
+    return null;
   }
 
   /**
    * Don't populate objects with CSRF Token
    */
-  public function populate_obj()
+  public function populateObj($obj, $name)
   {
+    return $obj;
   }
 
   /**
@@ -62,9 +65,9 @@ class CSRFTokenField extends HiddenField
    *
    * @throws ValidationError
    */
-  public function pre_validate(Form $form)
+  public function preValidate(Form $form)
   {
-    $this->csrf_impl->validate_csrf_token($form, $this);
+    $this->csrf_impl->validateCSRFToken($form, $this);
   }
 
   /**
@@ -76,6 +79,6 @@ class CSRFTokenField extends HiddenField
   public function process($formdata, $data = null)
   {
     parent::process($formdata, $data);
-    $this->current_token = $this->csrf_impl->generate_csrf_token($this);
+    $this->current_token = $this->csrf_impl->generateCSRFToken($this);
   }
 }

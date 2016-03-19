@@ -33,11 +33,11 @@ class SessionCSRF extends CSRF
   public $form_meta;
 
 
-  public function setup_form(Form $form)
+  public function setupForm(Form $form)
   {
     $this->form_meta = $form->meta;
 
-    return parent::setup_form($form);
+    return parent::setupForm($form);
   }
 
   /**
@@ -54,7 +54,7 @@ class SessionCSRF extends CSRF
    * @throws \Exception
    * @throws \TypeError
    */
-  public function generate_csrf_token(CSRFTokenField $csrf_token_field)
+  public function generateCSRFToken(CSRFTokenField $csrf_token_field)
   {
     $meta = $this->form_meta;
     if (!$meta->csrf_secret) {
@@ -100,7 +100,7 @@ class SessionCSRF extends CSRF
    *
    * @throws ValidationError
    */
-  public function validate_csrf_token(Form $form, CSRFTokenField $field)
+  public function validateCSRFToken(Form $form, CSRFTokenField $field)
   {
     $meta = $this->form_meta;
     if (!$field->data || !str_contains($field->data, "##")) {

@@ -20,11 +20,11 @@ class DateTimeField extends \WTForms\Fields\Core\DateTimeField
    * DateTimeField constructor.
    *
    * @param string $label
-   * @param array  $kwargs
+   * @param array  $options
    */
-  public function __construct($label = "", array $kwargs = [])
+  public function __construct($label = "", array $options = [])
   {
-    parent::__construct($label, $kwargs);
+    parent::__construct($label, $options);
     $this->widget = new DateTimeInput();
   }
 }

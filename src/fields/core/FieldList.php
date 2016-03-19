@@ -22,14 +22,14 @@ class FieldList extends Field
    *
    * @param string $label
    * @param Field  $field
-   * @param array  $kwargs
+   * @param array  $options
    *
    * @throws \TypeError
    * @deprecated Not finished yet
    */
-  public function __construct($label, Field $field, array $kwargs = [])
+  public function __construct($label, Field $field, array $options = [])
   {
-    parent::__construct($label, $kwargs);
+    parent::__construct($label, $options);
     if ($this->filters) {
       throw new \TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field");
     }

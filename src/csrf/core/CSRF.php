@@ -20,7 +20,7 @@ abstract class CSRF
    */
   public $field_class = "CSRFTokenField";
 
-  public function setup_form(Form $form)
+  public function setupForm(Form $form)
   {
     $meta = $form->meta;
     $field_name = $meta->csrf_field_name;
@@ -43,7 +43,7 @@ abstract class CSRF
    * @return string
    * @throws NotImplemented
    */
-  public function generate_csrf_token(/** @noinspection PhpUnusedParameterInspection */
+  public function generateCSRFToken(/** @noinspection PhpUnusedParameterInspection */
       CSRFTokenField $csrf_token_field)
   {
     throw new NotImplemented();
@@ -60,7 +60,7 @@ abstract class CSRF
    *
    * @throws ValidationError
    */
-  public function validate_csrf_token(/** @noinspection PhpUnusedParameterInspection */
+  public function validateCSRFToken(/** @noinspection PhpUnusedParameterInspection */
       Form $form, CSRFTokenField $field)
   {
     if ($field->current_token !== $field->data) {

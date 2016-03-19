@@ -50,14 +50,14 @@ class ListWidget extends Widget
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, $kwargs = [])
+  public function __invoke(Field $field, $options = [])
   {
-    $kwargs = array_merge(["id" => $field->id], $kwargs);
-    $html = sprintf("<%s %s>", $this->html_tag, html_params($kwargs));
+    $options = array_merge(["id" => $field->id], $options);
+    $html = sprintf("<%s %s>", $this->html_tag, html_params($options));
     foreach ($field as $subfield) {
       if ($this->prefix_label) {
         $html .= sprintf("<li>%s %s</li>", $subfield->label, $subfield());

@@ -16,7 +16,7 @@ use WTForms\Fields\Core\SelectFieldBase;
  * If `$multiple` is true, then the `size` property should be specified on rendering
  * to make the field useful.
  *
- * The field must provide an `iter_choices()` method which the widget will
+ * The field must provide a `getChoices()` method which the widget will
  * call on rendering; this method must yield tuples of
  * `($value, $label, $selected)`.
  *
@@ -38,22 +38,22 @@ class Select extends Widget
 
   /**
    * @param SelectFieldBase $field
-   * @param array           $kwargs
+   * @param array           $options
    *
    * @return string
    * @throws \WTForms\NotImplemented
    */
-  public function __invoke(SelectFieldBase $field, array $kwargs = [])
+  public function __invoke(SelectFieldBase $field, array $options = [])
   {
-    $kwargs = array_merge(["id" => $field->id], $kwargs);
-    $kwargs['name'] = $field->name;
+    $options = array_merge(["id" => $field->id], $options);
+    $options['name'] = $field->name;
     if ($this->multiple) {
-      $kwargs['multiple'] = true;
+      $options['multiple'] = true;
     }
 
-    $html = sprintf("<select %s>", html_params($kwargs));
-    foreach ($field->iter_choices() as $choice) {
-      $html .= self::render_option($choice["value"], $choice["label"], $choice["selected"]);
+    $html = sprintf("<select %s>", html_params($options));
+    foreach ($field->getChoices() as $choice) {
+      $html .= self::renderOption($choice["value"], $choice["label"], $choice["selected"]);
     }
     $html .= "</select>";
 
@@ -66,17 +66,17 @@ class Select extends Widget
    * @param mixed   $value
    * @param string  $label
    * @param boolean $selected
-   * @param array   $kwargs
+   * @param array   $options
    *
    * @return string
    */
-  public static function render_option($value, $label, $selected, $kwargs = [])
+  public static function renderOption($value, $label, $selected, $options = [])
   {
     if ($value === true) {
       // Handle the special case of a true value
       $value = "true";
     }
-    $options = array_merge($kwargs, ["value" => $value]);
+    $options = array_merge($options, ["value" => $value]);
     if ($selected) {
       $options['selected'] = true;
     }

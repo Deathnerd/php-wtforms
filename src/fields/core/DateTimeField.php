@@ -26,23 +26,24 @@ class DateTimeField extends Field
   /**
    * @inheritdoc
    */
-  public function __construct($label, array $kwargs)
+  public function __construct($label, array $options)
   {
-    parent::__construct($label, $kwargs);
-    $kwargs = array_merge(["format" => "Y-m-d H:M:S"], $kwargs);
-    $this->format = $kwargs['format'];
+    parent::__construct($label, $options);
+    $options = array_merge(["format" => "Y-m-d H:M:S"], $options);
+    $this->format = $options['format'];
   }
 
-  /**
-   * @return string
-   */
-  public function _value()
-  {
-    if ($this->raw_data !== null) {
-      return implode(" ", $this->raw_data);
-    }
 
-    return $this->data instanceof DateTime ? $this->data->format($this->format) : '';
+  public function __get($name)
+  {
+    if(in_array($name, ["value"])){
+      if ($this->raw_data) {
+        return implode(" ", $this->raw_data);
+      }
+
+      return $this->data instanceof DateTime ? $this->data->format($this->format) : '';
+    }
+    return null;
   }
 
   /**
@@ -50,7 +51,7 @@ class DateTimeField extends Field
    *
    * @throws ValueError
    */
-  public function process_formdata(array $valuelist)
+  public function processFormData(array $valuelist)
   {
     if ($valuelist) {
       $date_str = implode(" ", $valuelist);

@@ -109,14 +109,14 @@ if (!function_exists('html_params')) {
    * >>> html_params(['checked'=>true, 'readonly'=>false, 'name'=>'text1', 'abc'=>'hello'])
    * 'abc="hello" checked name="text1"
    *
-   * @param array $kwargs An associative array of attributes for an HTML tag
+   * @param array $options An associative array of attributes for an HTML tag
    *
    * @return string The string of HTML attributes
    */
-  function html_params($kwargs)
+  function html_params($options)
   {
     $params = [];
-    foreach ($kwargs as $key => $value) {
+    foreach ($options as $key => $value) {
       if (in_array($key, ['class_', 'class__', 'for_'])) {
         $key = str_replace("_", "", $key);
       } elseif (starts_with($key, "data_")) {

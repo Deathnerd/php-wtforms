@@ -30,12 +30,12 @@ class SubmitInput extends Input
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
-    return parent::__invoke($field, array_merge(["value" => $field->label->text], $kwargs));
+    return parent::__invoke($field, array_merge(["value" => $field->label->text], $options));
   }
 }

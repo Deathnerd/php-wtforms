@@ -22,21 +22,21 @@ class RangeInput extends Input
   /**
    * @inheritdoc
    */
-  public function __construct(array $kwargs = [])
+  public function __construct(array $options = [])
   {
-    $kwargs = array_merge(["step" => null], $kwargs);
-    $this->step = $kwargs['step'];
+    $options = array_merge(["step" => null], $options);
+    $this->step = $options['step'];
     parent::__construct("month");
   }
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
-    return parent::__invoke($field, array_merge(["step" => $this->step], $kwargs));
+    return parent::__invoke($field, array_merge(["step" => $this->step], $options));
   }
 }

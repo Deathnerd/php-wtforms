@@ -21,11 +21,11 @@ class Widget
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @throws NotImplemented
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
     throw new NotImplemented("Widget needs an __invoke method");
   }

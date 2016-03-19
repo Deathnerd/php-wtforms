@@ -32,14 +32,14 @@ abstract class SelectFieldBase extends Field
    * @param string $label
    * @param array  $validators
    * @param Option $option_widget
-   * @param array  $kwargs
+   * @param array  $options
    *
    * @throws \TypeError
    */
-  public function __construct($label = "", array $validators = [], Option $option_widget = null, array $kwargs = [])
+  public function __construct($label = "", array $validators = [], Option $option_widget = null, array $options = [])
   {
-    $kwargs['validators'] = $validators;
-    parent::__construct($label, $kwargs);
+    $options['validators'] = $validators;
+    parent::__construct($label, $options);
     $this->option_widget = $option_widget ?: new Option();
   }
 
@@ -49,7 +49,7 @@ abstract class SelectFieldBase extends Field
    * @return \Generator
    * @throws NotImplemented
    */
-  public function iter_choices()
+  public function getChoices()
   {
     throw new NotImplemented();
   }

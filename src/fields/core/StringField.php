@@ -23,16 +23,16 @@ class StringField extends Field
    */
   public $widget;
 
-  public function __construct($label, array $kwargs)
+  public function __construct($label, array $options)
   {
-    parent::__construct($label, $kwargs);
+    parent::__construct($label, $options);
     $this->widget = new TextInput();
   }
 
   /**
    * @param array $valuelist
    */
-  public function process_formdata(array $valuelist)
+  public function processFormData(array $valuelist)
   {
     if ($valuelist) {
       $this->data = $valuelist[0];
@@ -41,12 +41,12 @@ class StringField extends Field
     }
   }
 
-  public function _value()
+  public function __get($name)
   {
-    if ($this->data) {
-      return $this->data;
+    if (in_array($name, ["value"])) {
+      return $this->data ?: "";
     }
 
-    return '';
+    return null;
   }
 }

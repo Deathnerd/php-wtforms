@@ -19,7 +19,7 @@ class StringFieldTest extends \PHPUnit_Framework_TestCase
   {
     $string_field = new StringField("Foobar", ["name" => "string_field"]);
     $string_field->finalize(new Form(), new TextInput());
-    $string_field->process_data("Shazbot!");
+    $string_field->processData("Shazbot!");
     $this->assertEquals('<input id="string_field" type="text" value="Shazbot!" name="string_field">', $string_field());
     $string_field = new StringField("", ["name"   => "string_field",
                                          "id"     => "foobar",

@@ -39,16 +39,16 @@ class PasswordInput extends Input
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
     if ($this->hide_value) {
-      $kwargs['value'] = "";
+      $options['value'] = "";
     }
 
-    return parent::__invoke($field, $kwargs);
+    return parent::__invoke($field, $options);
   }
 }

@@ -40,17 +40,17 @@ class TableWidget extends Widget
 
   /**
    * @param Field $field
-   * @param array $kwargs
+   * @param array $options
    *
    * @return string
    */
-  public function __invoke(Field $field, array $kwargs = [])
+  public function __invoke(Field $field, array $options = [])
   {
     $html = "";
     $hidden = "";
 
     if ($this->with_table_tag) {
-      $html .= sprintf("<table %s>", html_params(array_merge(['id' => $field->id], $kwargs)));
+      $html .= sprintf("<table %s>", html_params(array_merge(['id' => $field->id], $options)));
     }
 
     foreach ($field as $subfield) {

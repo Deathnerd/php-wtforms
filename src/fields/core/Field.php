@@ -18,8 +18,9 @@ use WTForms\Widgets\Core\Widget;
 
 /**
  * Field base class
- * @property  boolean $checked
+ * @property  boolean    $checked
  * @package WTForms\Fields
+ * @property null|string value
  */
 class Field implements \Iterator
 {
@@ -114,13 +115,13 @@ class Field implements \Iterator
    * Field constructor.
    *
    * @param string $label
-   * @param array  $kwargs
+   * @param array  $options
    *
    * @throws \TypeError
    */
-  public function __construct($label = '', array $kwargs = [])
+  public function __construct($label = '', array $options = [])
   {
-    $kwargs = array_merge([
+    $options = array_merge([
         "validators"  => [],
         "filters"     => [],
         "description" => "",
@@ -138,36 +139,36 @@ class Field implements \Iterator
         "class_"      => [],
         "class__"     => [],
         "value"       => null,
-    ], $kwargs);
+    ], $options);
 
-    if (array_key_exists('meta', $kwargs) && !is_null($kwargs['meta'])) {
-      $this->meta = $kwargs['meta'];
-    } else if (array_key_exists('form', $kwargs) && !is_null($kwargs['form'])) {
-      $this->meta = $kwargs['form']->meta;
+    if (array_key_exists('meta', $options) && !is_null($options['meta'])) {
+      $this->meta = $options['meta'];
+    } else if (array_key_exists('form', $options) && !is_null($options['form'])) {
+      $this->meta = $options['form']->meta;
     }
     if (is_string($this->meta)) {
       $this->meta = new $this->meta();
     }
 
-    if ($kwargs['class_']) {
-      $this->render_kw['class'] = $kwargs['class_'];
-    } elseif ($kwargs['class__']) {
-      $this->render_kw['class'] = $kwargs['class__'];
-    } elseif ($kwargs['classes']) {
-      $this->render_kw['class'] = $kwargs['classes'];
+    if ($options['class_']) {
+      $this->render_kw['class'] = $options['class_'];
+    } elseif ($options['class__']) {
+      $this->render_kw['class'] = $options['class__'];
+    } elseif ($options['classes']) {
+      $this->render_kw['class'] = $options['classes'];
     }
-    $this->render_kw = array_merge(array_merge($this->render_kw, $kwargs['attributes']), $kwargs['render_kw']);
-    $this->default = $kwargs['default'];
-    $this->description = $kwargs['description'];
-    $this->filters = $kwargs['filters'];
+    $this->render_kw = array_merge(array_merge($this->render_kw, $options['attributes']), $options['render_kw']);
+    $this->default = $options['default'];
+    $this->description = $options['description'];
+    $this->filters = $options['filters'];
     $this->flags = new Flags();
-    $this->name = $kwargs['prefix'] . $kwargs['name'];
-    $this->short_name = $kwargs['name'];
+    $this->name = $options['prefix'] . $options['name'];
+    $this->short_name = $options['name'];
     $this->type = get_class();
-    $this->validators = $kwargs['validators'];
-    $this->id = is_null($kwargs['id']) ? $this->name : $kwargs['id'];
-    $this->label = new Label($this->id, $label != "" ? $label : ucwords(str_replace("_", " ", $kwargs['name'])));
-    $this->widget = $kwargs['widget'];
+    $this->validators = $options['validators'];
+    $this->id = is_null($options['id']) ? $this->name : $options['id'];
+    $this->label = new Label($this->id, $label != "" ? $label : ucwords(str_replace("_", " ", $options['name'])));
+    $this->widget = $options['widget'];
   }
 
   public function __toString()
@@ -187,13 +188,13 @@ class Field implements \Iterator
    * wants with the supplied keyword arguments, and widgets don't have to
    * even do anything related to HTML
    *
-   * @param array $kwargs
+   * @param array $options
    *
    * @return mixed
    */
-  public function __invoke($kwargs = [])
+  public function __invoke($options = [])
   {
-    return $this->meta->render_field($this, $kwargs);
+    return $this->meta->render_field($this, $options);
   }
 
   public function __call($name, $arguments)
@@ -231,7 +232,7 @@ class Field implements \Iterator
 
     // Call pre-validate
     try {
-      $this->pre_validate($form);
+      $this->preValidate($form);
     } catch (StopValidation $e) {
       if (!empty($e->args) && $e->args[0]) {
         $this->errors[] = $e->getMessage();
@@ -242,12 +243,12 @@ class Field implements \Iterator
     }
 
     if (!$stop_validation) {
-      $stop_validation = $this->_run_validation_chain($form, $this->validators) && $this->_run_validation_chain($form, $extra_validators);
+      $stop_validation = $this->runValidationChain($form, $this->validators) && $this->runValidationChain($form, $extra_validators);
     }
 
     // Call post_validate
     try {
-      $this->post_validate($form, $stop_validation);
+      $this->postValidate($form, $stop_validation);
     } catch (ValueError $e) {
       $this->errors[] = $e->getMessage();
     }
@@ -261,7 +262,7 @@ class Field implements \Iterator
    *
    * @param Form $form The form the field belongs to
    */
-  public function pre_validate(Form $form)
+  public function preValidate(Form $form)
   {
   }
 
@@ -274,7 +275,7 @@ class Field implements \Iterator
    * @return bool True if the validation was stopped, False if otherwise
    * @throws \WTForms\NotImplemented
    */
-  private function _run_validation_chain(Form $form, array $validators)
+  private function runValidationChain(Form $form, array $validators)
   {
     foreach ($validators as $v) {
       try {
@@ -299,7 +300,7 @@ class Field implements \Iterator
    * @param Form    $form            The form the field belongs to
    * @param boolean $stop_validation `True` if any validator raised `StopValidation`
    */
-  public function post_validate(Form $form, $stop_validation)
+  public function postValidate(Form $form, $stop_validation)
   {
   }
 
@@ -331,7 +332,7 @@ class Field implements \Iterator
     }
     $this->object_data = $data;
     try {
-      $this->process_data($data);
+      $this->processData($data);
     } catch (ValueError $e) {
       $this->process_errors[] = $e->getMessage();
     }
@@ -343,7 +344,7 @@ class Field implements \Iterator
         } else {
           $this->raw_data = [];
         }
-        $this->process_formdata($this->raw_data);
+        $this->processFormData($this->raw_data);
       } catch (ValueError $e) {
         $this->process_errors[] = $e->getMessage();
       }
@@ -358,12 +359,12 @@ class Field implements \Iterator
   /**
    * Process the data applied to this field and store the result.
    *
-   * This will be called during form construction by the form's `kwargs` or
+   * This will be called during form construction by the form's `options` or
    * `obj` argument.
    *
    * @param string|array $value
    */
-  public function process_data($value)
+  public function processData($value)
   {
     $this->data = $value;
   }
@@ -376,20 +377,11 @@ class Field implements \Iterator
    *
    * @param array $valuelist A list of strings to process
    */
-  public function process_formdata(array $valuelist)
+  public function processFormData(array $valuelist)
   {
     if (count($valuelist) > 0) {
       $this->data = $valuelist[0];
     }
-  }
-
-  /**
-   * To satisfy my static analyzer
-   * @return string
-   */
-  public function _value()
-  {
-    return "";
   }
 
   /**
@@ -401,7 +393,7 @@ class Field implements \Iterator
    * @param $obj
    * @param $name
    */
-  public function populate_obj($obj, $name)
+  public function populateObj($obj, $name)
   {
     $obj->$name = $this->data;
   }
@@ -432,5 +424,20 @@ class Field implements \Iterator
       $this->meta = $form->meta;
     }
     $this->name = $form->prefix . $this->name;
+  }
+
+  public function __get($name)
+  {
+    if (in_array($name, ["value"])) {
+      if ($this->raw_data) {
+        return $this->raw_data[0];
+      } elseif ($this->data !== null) {
+        return strval($this->data);
+      }
+
+      return "";
+    }
+
+    return null;
   }
 }
