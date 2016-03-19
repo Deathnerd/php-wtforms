@@ -15,6 +15,7 @@ use WTForms\Validators\StopValidation;
 use WTForms\Validators\Validator;
 use WTForms\ValueError;
 use WTForms\Widgets\Core\Widget;
+use WTForms\Flags;
 
 /**
  * Field base class

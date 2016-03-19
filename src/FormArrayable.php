@@ -8,7 +8,9 @@
 
 namespace WTForms;
 
-
+/**
+ * @property $fields
+ */
 trait FormArrayable
 {
     public function offsetExists($offset)
@@ -24,7 +26,8 @@ trait FormArrayable
         return null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(/** @noinspection PhpUnusedParameterInspection */
+        $offset, $value)
     {
         throw new \TypeError("Fields may not be added to Form instances, only classes");
     }

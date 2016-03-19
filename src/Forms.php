@@ -19,8 +19,6 @@ use WTForms\Widgets\Core\Widget;
 
 class Forms
 {
-  private static $instance = null;
-
   private static $registeredValidators = [
       'WTForms\Validators\Annotations\AnyOfAnnotation'         => 'WTForms\Validators\AnyOf',
       'WTForms\Validators\Annotations\DataRequiredAnnotation'  => 'WTForms\Validators\DataRequired',
@@ -281,13 +279,15 @@ class Forms
    *
    * @return Field The processed field ready to go except for finalization
    */
-  private static function processField(array $data, $obj, $annotation, $property, $annotation_class)
+  private static function processField(array $data, $obj, Annotation $annotation, \ReflectionProperty $property, $annotation_class)
   {
     // Default to the php property name for the HTML name if not specified in the annotation
+    /** @noinspection PhpUndefinedFieldInspection */
     $annotation->name = $annotation->name ?: $property->name;
     // Instantiate new field using the registered field lookup table
     $c = self::$registeredFields[$annotation_class];
     /** @var $field Field */
+    /** @noinspection PhpUndefinedFieldInspection */
     $field = new $c($annotation->label, (array)$annotation);
 
     // Pre-populate the field with data from the supplied object

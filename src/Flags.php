@@ -6,14 +6,14 @@
  * Time: 10:58 AM
  */
 
-namespace WTForms\Fields\Core;
+namespace WTForms;
 
 
 /**
  * Holds a set of boolean flags as attributes
  *
  * Accessing a non-existing attribute returns false for its value
- * @package WTForms\Fields
+ * @package WTForms
  */
 class Flags
 {
@@ -27,7 +27,7 @@ class Flags
 
     public function __set($name, $value)
     {
-        if (starts_with($name, "_")) {
+        if (!starts_with($name, "_")) {
             $name = "_$name";
         }
         $this->$name = $value;

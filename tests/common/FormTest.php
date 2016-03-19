@@ -61,9 +61,7 @@ class FormsTest extends \PHPUnit_Framework_TestCase
     $form = Forms::create($this->annotated_helper);
     $this->assertNotEmpty($form->fields);
     $this->assertTrue($form['first_name'] instanceof Field && $form['first_name'] instanceof StringField);
-    $this->assertEquals('<label for="fname">First Name</label>', $form['first_name']->label->__invoke("First Name"));
-    echo $form['first_name']->label;
-    echo $form['first_name'];
+    $this->assertEquals('<label for="fname">First Name</label>', $form['first_name']->label("First Name"));
   }
   // test for populated by array
   // test for populated by object

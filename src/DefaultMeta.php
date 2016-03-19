@@ -65,7 +65,8 @@ class DefaultMeta
    *
    * @return array
    */
-  public function wrap_formdata(Form $form, $formdata)
+  public function wrap_formdata(/** @noinspection PhpUnusedParameterInspection */
+      Form $form, $formdata)
   {
     return $formdata;
   }

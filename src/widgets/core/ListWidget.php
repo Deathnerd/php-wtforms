@@ -12,7 +12,7 @@ use WTForms\Fields\Core\Field;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * REnders a list of fields as `ul` or `ol` list.
+ * Renders a list of fields as `ul` or `ol` list.
  *
  * This is used for fields which encapsulate many inner fields as subfields.
  * The widget will try to iterate the field to get access to the subfields and

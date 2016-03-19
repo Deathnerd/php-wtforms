@@ -41,7 +41,8 @@ abstract class CSRF
      * @return string
      * @throws NotImplemented
      */
-    public function generate_csrf_token(CSRFTokenField $csrf_token_field)
+    public function generate_csrf_token(/** @noinspection PhpUnusedParameterInspection */
+        CSRFTokenField $csrf_token_field)
     {
         throw new NotImplemented();
     }
@@ -56,7 +57,8 @@ abstract class CSRF
      * @param CSRFTokenField $field The CSRF token field
      * @throws ValidationError
      */
-    public function validate_csrf_token(Form $form, CSRFTokenField $field)
+    public function validate_csrf_token(/** @noinspection PhpUnusedParameterInspection */
+        Form $form, CSRFTokenField $field)
     {
         if ($field->current_token !== $field->data) {
             throw new ValidationError("Invalid CSRF Token");
