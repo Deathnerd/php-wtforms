@@ -62,4 +62,9 @@ class Field
    * @var mixed
    */
   public $default;
+
+  /**
+   * @var array
+   */
+  public $render_kw = [];
 }

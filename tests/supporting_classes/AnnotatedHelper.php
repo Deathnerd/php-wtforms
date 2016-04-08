@@ -45,4 +45,10 @@ class AnnotatedHelper
    * @BooleanField(default=true, false_values={})
    */
   public $bool2;
+
+  /**
+   * @var string
+   * @StringField(default="hello", render_kw={"readonly"=true,"foo"="bar"})
+   */
+  public $a;
 }

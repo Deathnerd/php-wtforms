@@ -4,7 +4,6 @@ TESTS
 ======
 - Filters
 - Fields
-    - Generic
     - Select
     - Select Multiple
     - Radio

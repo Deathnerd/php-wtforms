@@ -32,8 +32,6 @@ class LabelTest extends \PHPUnit_Framework_TestCase
         $debug = true
     );
     $this->registry = new AnnotationRegistry();
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Foo.php");
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Bar.php");
     $this->helper = new Helper;
     $this->annotated_helper = new AnnotatedHelper;
     Forms::init($this->reader, $this->registry);

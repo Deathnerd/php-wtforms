@@ -71,22 +71,7 @@ class Forms
       'WTForms\Annotations\Fields\Simple\SubmitField'       => 'WTForms\Fields\Simple\SubmitField',
       'WTForms\Annotations\Fields\Simple\TextAreaField'     => 'WTForms\Fields\Simple\TextAreaField',
   ];
-
-  /*private static $registeredWidgets = [
-      'WTForms\Annotations\Widgets\Core\CheckboxInput' => 'WTForms\Widgets\Core\CheckboxInput',
-      'WTForms\Annotations\Widgets\Core\FileInput'     => 'WTForms\Widgets\Core\FileInput',
-      'WTForms\Annotations\Widgets\Core\HiddenInput'   => 'WTForms\Widgets\Core\HiddenInput',
-      'WTForms\Annotations\Widgets\Core\List'          => 'WTForms\Widgets\Core\List',
-      'WTForms\Annotations\Widgets\Core\Option'        => 'WTForms\Widgets\Core\Option',
-      'WTForms\Annotations\Widgets\Core\PasswordInput' => 'WTForms\Widgets\Core\PasswordInput',
-      'WTForms\Annotations\Widgets\Core\RadioInput'    => 'WTForms\Widgets\Core\RadioInput',
-      'WTForms\Annotations\Widgets\Core\Select'        => 'WTForms\Widgets\Core\Select',
-      'WTForms\Annotations\Widgets\Core\SubmitInput'   => 'WTForms\Widgets\Core\SubmitInput',
-      'WTForms\Annotations\Widgets\Core\Table'         => 'WTForms\Widgets\Core\Table',
-      'WTForms\Annotations\Widgets\Core\TextArea'      => 'WTForms\Widgets\Core\TextArea',
-      'WTForms\Annotations\Widgets\Core\TextInput'     => 'WTForms\Widgets\Core\TextInput',
-  ];*/
-
+  
   private static $namespaces = [
       'WTForms\Annotations\Validators',
       'WTForms\Annotations\Fields\Core',
@@ -145,31 +130,6 @@ class Forms
   public static function registerField($annotation_namespace, $field_namespace)
   {
     self::$registeredFields[$annotation_namespace] = $field_namespace;
-  }
-
-  /**
-   * @return array
-   */
-  public static function getRegisteredWidgets()
-  {
-    return self::$registeredWidgets;
-  }
-
-  /**
-   * @param array $registeredWidgets
-   */
-  public static function setRegisteredWidgets($registeredWidgets)
-  {
-    self::$registeredWidgets = array_merge($registeredWidgets, self::$registeredWidgets);
-  }
-
-  /**
-   * @param string $annotation_namespace
-   * @param string $widget_namespace
-   */
-  public static function registerWidget($annotation_namespace, $widget_namespace)
-  {
-    self::$registeredWidgets[$annotation_namespace] = $widget_namespace;
   }
 
   /**
