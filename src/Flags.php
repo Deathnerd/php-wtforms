@@ -21,16 +21,14 @@ class Flags
   {
     if (starts_with($name, "_") && property_exists($this, $name)) {
       return $this->$name;
+    } elseif(property_exists($this, $name)){
+      return $this->$name;
     }
-
-    return false;
+    return $this->$name = false;
   }
 
   public function __set($name, $value)
   {
-    if (!starts_with($name, "_")) {
-      $name = "_$name";
-    }
     $this->$name = $value;
   }
 }
