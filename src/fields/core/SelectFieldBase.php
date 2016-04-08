@@ -36,7 +36,7 @@ abstract class SelectFieldBase extends Field implements \Iterator
    */
   public function __construct($label = "", array $options = ['validators' => [], 'option_widget' => null])
   {
-    $options = array_merge($options, ['validators' => [], 'option_widget' => null]);
+    $options = array_merge(['validators' => [], 'option_widget' => null], $options);
     parent::__construct($label, $options);
     $this->option_widget = $options['option_widget'] ?: new Option();
     if (is_string($this->option_widget)) {
@@ -67,9 +67,9 @@ abstract class SelectFieldBase extends Field implements \Iterator
       $options = $this->getChoices();
       for ($i = 0; $i < count($options); $i++) {
         $opts['id'] = "{$this->id}-{$i}";
-        $opt = new _Option($this->label, $opts);
+        $opt = new _Option($options[$i]['label'], $opts);
         $opt->process([], $options[$i]['value']);
-        $opt->checked = $options[$i]['checked'];
+        $opt->checked = $options[$i]['selected'] || $options[$i]['checked'];
         $this->options[] = $opt;
       }
 

@@ -81,6 +81,6 @@ class Select extends Widget
       $options['selected'] = true;
     }
 
-    return sprintf("<option %s>%s</option>", html_params($options), e($label));
+    return sprintf("<option %s>%s</option>", html_params($options), $label);
   }
 }

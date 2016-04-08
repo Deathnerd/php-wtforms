@@ -9,6 +9,7 @@
 namespace WTForms\Tests\SupportingClasses;
 
 use WTForms\Annotations\Fields\Core\BooleanField;
+use WTForms\Annotations\Fields\Core\SelectField;
 use WTForms\Annotations\Fields\Core\StringField;
 use WTForms\Annotations\Form;
 use WTForms\Annotations\Validators\AnyOf;
@@ -51,4 +52,16 @@ class AnnotatedHelper
    * @StringField(default="hello", render_kw={"readonly"=true,"foo"="bar"})
    */
   public $a;
+
+  /**
+   * @var array
+   * @SelectField(choices={{"a", "hello"}, {"btest", "bye"}}, default="a")
+   */
+  public $select_a;
+
+  /**
+   * @var array
+   * @SelectField(choices={{1,"Item 1"},{2,"Item 2"}}, option_widget="WTForms\Widgets\Core\TextInput", coerce="intval")
+   */
+  public $select_b;
 }

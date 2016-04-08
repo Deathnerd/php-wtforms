@@ -4,7 +4,7 @@ TESTS
 ======
 - Filters
 - Fields
-    - Select
+    - Select (in progress)
     - Select Multiple
     - Radio
     - Text

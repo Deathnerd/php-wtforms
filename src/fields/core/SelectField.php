@@ -40,7 +40,8 @@ class SelectField extends SelectFieldBase
   public function getChoices()
   {
     $t = [];
-    foreach ($this->choices as $value => $label) {
+    foreach ($this->choices as $x) {
+      list($value, $label) = $x;
       $t[] = ["value" => $value, "label" => $label, "selected" => $value == $this->data];
     }
 

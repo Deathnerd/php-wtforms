@@ -71,7 +71,7 @@ class Forms
       'WTForms\Annotations\Fields\Simple\SubmitField'       => 'WTForms\Fields\Simple\SubmitField',
       'WTForms\Annotations\Fields\Simple\TextAreaField'     => 'WTForms\Fields\Simple\TextAreaField',
   ];
-  
+
   private static $namespaces = [
       'WTForms\Annotations\Validators',
       'WTForms\Annotations\Fields\Core',
@@ -334,6 +334,7 @@ class Forms
     }
     $annotation->widget = self::resolveFieldWidget($annotation->widget);
     $options = (array)$annotation;
+    $options['validators'] = $validators;
     $options['name'] = $options['name'] ?: $property->getName();
 
     return new $concrete_class($annotation->label, $options);

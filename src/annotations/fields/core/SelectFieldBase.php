@@ -28,4 +28,14 @@ class SelectFieldBase extends Field
    * @var string
    */
   public $option_widget;
+
+  /**
+   * @var array
+   */
+  public $choices = [];
+
+  /**
+   * @var string
+   */
+  public $coerce = "strval";
 }

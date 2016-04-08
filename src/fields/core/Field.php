@@ -167,8 +167,8 @@ class Field implements \Iterator
     $this->id = is_null($options['id']) ? $this->name : $options['id'];
     $this->label = new Label($this->id, $label !== null ? $label : ucwords(str_replace("_", " ", $options['name'])));
     $w = $options['widget'];
-    if($w){
-      if(is_object($w)){
+    if ($w) {
+      if (is_object($w)) {
         $this->widget = $w;
       } else {
         $this->widget = new $w();
@@ -178,8 +178,10 @@ class Field implements \Iterator
     $t = $this->validators;
     $t[] = $this->widget;
     foreach ($t as $v) {
-      foreach ($v->field_flags as $flag) {
-        $this->flags->$flag = true;
+      if ($v->field_flags) {
+        foreach ($v->field_flags as $flag) {
+          $this->flags->$flag = true;
+        }
       }
     }
   }
@@ -353,7 +355,7 @@ class Field implements \Iterator
     if ($formdata) {
       try {
         if (array_key_exists($this->name, $formdata)) {
-          if(is_array($formdata[$this->name])){
+          if (is_array($formdata[$this->name])) {
             $this->raw_data = $formdata[$this->name];
           } else {
             $this->raw_data = [$formdata[$this->name]];
