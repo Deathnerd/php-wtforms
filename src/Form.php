@@ -111,20 +111,20 @@ class Form implements \ArrayAccess, \Iterator
    * Under the hood it calls {@link populateObj} or {@link populateArray}
    * depending on what was passed into the function.
    *
-   * @param array|object $thing
+   * @param array|object $data
    *
    * @throws \RuntimeException If something besides an object or an array were passed
    * @return array|object The result of populating the object or array passed
    */
-  public function populate($thing)
+  public function populate($data)
   {
-    if (is_object($thing)) {
-      return $this->populateObj($thing);
+    if (is_object($data)) {
+      return $this->populateObj($data);
     }
-    if (is_array($thing)) {
-      return $this->populateArray($thing);
+    if (is_array($data)) {
+      return $this->populateArray($data);
     }
-    throw new \RuntimeException(sprintf("Form::populate accepts only an array or an object as input; %s given.", gettype($thing)));
+    throw new \RuntimeException(sprintf("Form::populate accepts only an array or an object as input; %s given.", gettype($data)));
   }
 
   /**
