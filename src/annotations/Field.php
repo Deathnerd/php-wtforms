@@ -6,15 +6,16 @@
  * Time: 9:33 PM
  */
 
-namespace WTForms\Fields\Core\Annotations;
+namespace WTForms\Annotations;
 
+use Doctrine\Common\Annotations\Annotation\Target;
 
-use mindplay\annotations\Annotation;
 
 /**
- * @usage('property'=>true,'inherited'=>true)
+ * @Annotation
+ * @Target({"PROPERTY"})
  */
-class FieldAnnotation extends Annotation
+class Field
 {
   /**
    * @var mixed The value(s) held in this field, either from user submission or pre-population
@@ -27,7 +28,7 @@ class FieldAnnotation extends Annotation
   public $label;
   /**
    * @var string Identifies the field as a specific type (text input, select, range input, etc). Do not manually
-   *      override in the annotation. It will be overridden by the respective annotation anyways
+   *      override in the annotation declaration. It will be overridden by the respective annotation anyways
    */
   public $type;
   /**
@@ -51,4 +52,14 @@ class FieldAnnotation extends Annotation
    * @var array A list of classes to be applied to the field element at render time
    */
   public $classes = [];
+
+  /**
+   * @var array
+   */
+  public $validators = [];
+
+  /**
+   * @var mixed
+   */
+  public $default;
 }

@@ -17,14 +17,13 @@ use WTForms\Form;
  */
 class URL extends Validator
 {
-  //TODO Investigate whether relying on PHP's filter_var is okay for this
-
   /**
    * URL constructor.
    *
    * @param string $message Error message to raise in case of a validation error
+   * @param array  $other_options
    */
-  public function __construct($message = "")
+  public function __construct($message = "", array $other_options = [])
   {
     $this->message = $message;
   }

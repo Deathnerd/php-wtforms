@@ -19,34 +19,36 @@ use WTForms\Widgets\Core\Option;
  *
  * @package WTForms\Fields\Core
  */
-abstract class SelectFieldBase extends Field
+abstract class SelectFieldBase extends Field implements \Iterator
 {
   /**
    * @var Option
    */
   public $option_widget;
 
+  private $options = [];
+
   /**
    * SelectFieldBase constructor.
    *
    * @param string $label
-   * @param array  $validators
-   * @param Option $option_widget
    * @param array  $options
-   *
-   * @throws \TypeError
    */
-  public function __construct($label = "", array $validators = [], Option $option_widget = null, array $options = [])
+  public function __construct($label = "", array $options = ['validators' => [], 'option_widget' => null])
   {
-    $options['validators'] = $validators;
+    $options = array_merge($options, ['validators' => [], 'option_widget' => null]);
     parent::__construct($label, $options);
-    $this->option_widget = $option_widget ?: new Option();
+    $this->option_widget = $options['option_widget'] ?: new Option();
+    if (is_string($this->option_widget)) {
+      $w = $this->option_widget;
+      $this->option_widget = new $w();
+    }
   }
 
   /**
-   * Provides data for choice widget rendering. Must return a sequence or
-   * iterable of `[value,label,selected]` tuples
-   * @return \Generator
+   * Provides data for choice widget rendering. Must return an array
+   * of `[value,label,selected]` tuples
+   * @return array
    * @throws NotImplemented
    */
   public function getChoices()
@@ -54,11 +56,36 @@ abstract class SelectFieldBase extends Field
     throw new NotImplemented();
   }
 
-  //TODO Implement PHP equivalent of __iter__
+  public function __get($name)
+  {
+    if ($name == "options") {
+      if ($this->options) {
+        return $this->options;
+      }
+      $this->options = [];
+      $opts = ['widget' => $this->option_widget, 'name' => $this->name, 'form' => $this->form, 'meta' => $this->meta];
+      $options = $this->getChoices();
+      for ($i = 0; $i < count($options); $i++) {
+        $opts['id'] = "{$this->id}-{$i}";
+        $opt = new _Option($this->label, $opts);
+        $opt->process([], $options[$i]['value']);
+        $opt->checked = $options[$i]['checked'];
+        $this->options[] = $opt;
+      }
+
+      return $this->options;
+    }
+
+    return parent::__get($name);
+  }
 }
 
-//TODO Decide if Namespacing this to only be accessible from SelectFieldBase is necessary
 class _Option extends Field
 {
   public $checked = false;
+
+  public function __get($name)
+  {
+    return $this->data;
+  }
 }

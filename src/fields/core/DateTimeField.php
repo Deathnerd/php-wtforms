@@ -26,7 +26,7 @@ class DateTimeField extends Field
   /**
    * @inheritdoc
    */
-  public function __construct($label, array $options)
+  public function __construct($label = '', array $options = '')
   {
     parent::__construct($label, $options);
     $options = array_merge(["format" => "Y-m-d H:M:S"], $options);

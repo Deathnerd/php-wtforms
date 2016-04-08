@@ -43,9 +43,9 @@ class Field implements \Iterator
    */
   public $process_errors = [];
   /**
-   * @var null
+   * @var array
    */
-  public $raw_data = null;
+  public $raw_data = [];
   /**
    * @var Validator[]
    */
@@ -154,8 +154,6 @@ class Field implements \Iterator
       $this->render_kw['class'] = $options['class_'];
     } elseif ($options['class__']) {
       $this->render_kw['class'] = $options['class__'];
-    } elseif ($options['classes']) {
-      $this->render_kw['class'] = $options['classes'];
     }
     $this->render_kw = array_merge(array_merge($this->render_kw, $options['attributes']), $options['render_kw']);
     $this->default = $options['default'];
@@ -167,8 +165,23 @@ class Field implements \Iterator
     $this->type = get_class();
     $this->validators = $options['validators'];
     $this->id = is_null($options['id']) ? $this->name : $options['id'];
-    $this->label = new Label($this->id, $label != "" ? $label : ucwords(str_replace("_", " ", $options['name'])));
-    $this->widget = $options['widget'];
+    $this->label = new Label($this->id, $label !== null ? $label : ucwords(str_replace("_", " ", $options['name'])));
+    $w = $options['widget'];
+    if($w){
+      if(is_object($w)){
+        $this->widget = $w;
+      } else {
+        $this->widget = new $w();
+      }
+    }
+
+    $t = $this->validators;
+    $t[] = $this->widget;
+    foreach ($t as $v) {
+      foreach ($v->field_flags as $flag) {
+        $this->flags->$flag = true;
+      }
+    }
   }
 
   public function __toString()
@@ -339,8 +352,12 @@ class Field implements \Iterator
 
     if ($formdata) {
       try {
-        if (in_array($this->name, $formdata)) {
-          $this->raw_data = $_REQUEST[$this->name];
+        if (array_key_exists($this->name, $formdata)) {
+          if(is_array($formdata[$this->name])){
+            $this->raw_data = $formdata[$this->name];
+          } else {
+            $this->raw_data = [$formdata[$this->name]];
+          }
         } else {
           $this->raw_data = [];
         }
@@ -396,34 +413,6 @@ class Field implements \Iterator
   public function populateObj($obj, $name)
   {
     $obj->$name = $this->data;
-  }
-
-  /**
-   * Runs final initialization procedures. Checks for things such as Meta references
-   * and holding form references
-   *
-   * @param Form        $form
-   * @param Widget|null $widget
-   * @param array       $validators
-   */
-  public function finalize(Form $form, $widget, array $validators = [])
-  {
-    $this->form = $form;
-    $this->validators = $validators;
-    $t = $this->validators;
-    $t[] = $this->widget;
-    foreach ($t as $v) {
-      foreach ($v->field_flags as $flag) {
-        $this->flags->$flag = true;
-      }
-    }
-    if ($widget) {
-      $this->widget = $widget;
-    }
-    if (!$this->meta && $form->meta) {
-      $this->meta = $form->meta;
-    }
-    $this->name = $form->prefix . $this->name;
   }
 
   public function __get($name)

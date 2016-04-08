@@ -8,74 +8,91 @@
 
 namespace WTForms;
 
-use mindplay\annotations\Annotation;
-use mindplay\annotations\AnnotationException;
-use mindplay\annotations\Annotations;
+use Doctrine\Common\Annotations\Annotation;
+use Doctrine\Common\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\Reader;
 use ReflectionProperty;
 use WTForms\Fields\Core\Field;
-use WTForms\Validators\Validator;
-use WTForms\Widgets\Core\Widget;
 
 
 class Forms
 {
+  /**
+   * @var AnnotationReader
+   */
+  private static $annotation_reader;
+  /**
+   * @var AnnotationRegistry
+   */
+  private static $annotation_registry;
+
   private static $registeredValidators = [
-      'WTForms\Validators\Annotations\AnyOfAnnotation'         => 'WTForms\Validators\AnyOf',
-      'WTForms\Validators\Annotations\DataRequiredAnnotation'  => 'WTForms\Validators\DataRequired',
-      'WTForms\Validators\Annotations\EqualToAnnotation'       => 'WTForms\Validators\EqualTo',
-      'WTForms\Validators\Annotations\InputRequiredAnnotation' => 'WTForms\Validators\InputRequired',
-      'WTForms\Validators\Annotations\IPAddressAnnotation'     => 'WTForms\Validators\IPAddress',
-      'WTForms\Validators\Annotations\LengthAnnotation'        => 'WTForms\Validators\Length',
-      'WTForms\Validators\Annotations\MacAddressAnnotation'    => 'WTForms\Validators\MacAddress',
-      'WTForms\Validators\Annotations\NoneOfAnnotation'        => 'WTForms\Validators\NoneOf',
-      'WTForms\Validators\Annotations\NumberRangeAnnotation'   => 'WTForms\Validators\NumberRange',
-      'WTForms\Validators\Annotations\OptionalAnnotation'      => 'WTForms\Validators\Optional',
-      'WTForms\Validators\Annotations\RegexpAnnotation'        => 'WTForms\Validators\Regexp',
-      'WTForms\Validators\Annotations\URLAnnotation'           => 'WTForms\Validators\URL',
-      'WTForms\Validators\Annotations\UUIDAnnotation'          => 'WTForms\Validators\UUID',
+      'WTForms\Annotations\Validators\AnyOf'         => 'WTForms\Validators\AnyOf',
+      'WTForms\Annotations\Validators\DataRequired'  => 'WTForms\Validators\DataRequired',
+      'WTForms\Annotations\Validators\EqualTo'       => 'WTForms\Validators\EqualTo',
+      'WTForms\Annotations\Validators\InputRequired' => 'WTForms\Validators\InputRequired',
+      'WTForms\Annotations\Validators\IPAddress'     => 'WTForms\Validators\IPAddress',
+      'WTForms\Annotations\Validators\Length'        => 'WTForms\Validators\Length',
+      'WTForms\Annotations\Validators\MacAddress'    => 'WTForms\Validators\MacAddress',
+      'WTForms\Annotations\Validators\NoneOf'        => 'WTForms\Validators\NoneOf',
+      'WTForms\Annotations\Validators\NumberRange'   => 'WTForms\Validators\NumberRange',
+      'WTForms\Annotations\Validators\Optional'      => 'WTForms\Validators\Optional',
+      'WTForms\Annotations\Validators\Regexp'        => 'WTForms\Validators\Regexp',
+      'WTForms\Annotations\Validators\URL'           => 'WTForms\Validators\URL',
+      'WTForms\Annotations\Validators\UUID'          => 'WTForms\Validators\UUID',
   ];
   private static $registeredFields = [
-      'WTForms\Fields\Core\Annotations\BooleanFieldAnnotation'        => 'WTForms\Fields\Core\BooleanField',
-      'WTForms\Fields\Core\Annotations\DateFieldAnnotation'           => 'WTForms\Fields\Core\DateField',
-      'WTForms\Fields\Core\Annotations\DateTimeFieldAnnotation'       => 'WTForms\Fields\Core\DateTimeField',
-      'WTForms\Fields\Core\Annotations\DecimalFieldAnnotation'        => 'WTForms\Fields\Core\DecimalField',
-      'WTForms\Fields\Core\Annotations\FloatFieldAnnotation'          => 'WTForms\Fields\Core\FloatField',
-      'WTForms\Fields\Core\Annotations\IntegerFieldAnnotation'        => 'WTForms\Fields\Core\IntegerField',
-      'WTForms\Fields\Core\Annotations\RadioFieldAnnotation'          => 'WTForms\Fields\Core\RadioField',
-      'WTForms\Fields\Core\Annotations\SelectFieldAnnotation'         => 'WTForms\Fields\Core\SelectField',
-      'WTForms\Fields\Core\Annotations\SelectMultipleFieldAnnotation' => 'WTForms\Fields\Core\SelectMultipleField',
-      'WTForms\Fields\Core\Annotations\StringFieldAnnotation'         => 'WTForms\Fields\Core\StringField',
-      'WTForms\Fields\HTML5\Annotations\DateFieldAnnotation'          => 'WTForms\Fields\HTML5\DateField',
-      'WTForms\Fields\HTML5\Annotations\DateTimeFieldAnnotation'      => 'WTForms\Fields\HTML5\DateTimeField',
-      'WTForms\Fields\HTML5\Annotations\DateTimeLocalFieldAnnotation' => 'WTForms\Fields\HTML5\DateTimeLocalField',
-      'WTForms\Fields\HTML5\Annotations\DecimalFieldAnnotation'       => 'WTForms\Fields\HTML5\DecimalField',
-      'WTForms\Fields\HTML5\Annotations\DecimalRangeFieldAnnotation'  => 'WTForms\Fields\HTML5\DecimalRangeField',
-      'WTForms\Fields\HTML5\Annotations\EmailFieldAnnotation'         => 'WTForms\Fields\HTML5\EmailField',
-      'WTForms\Fields\HTML5\Annotations\IntegerFieldAnnotation'       => 'WTForms\Fields\HTML5\IntegerField',
-      'WTForms\Fields\HTML5\Annotations\IntegerRangeFieldAnnotation'  => 'WTForms\Fields\HTML5\IntegerRangeField',
-      'WTForms\Fields\HTML5\Annotations\SearchFieldAnnotation'        => 'WTForms\Fields\HTML5\SearchField',
-      'WTForms\Fields\HTML5\Annotations\TelFieldAnnotation'           => 'WTForms\Fields\HTML5\TelField',
-      'WTForms\Fields\HTML5\Annotations\URLFieldAnnotation'           => 'WTForms\Fields\HTML5\URLField',
-      'WTForms\Fields\Simple\Annotations\FileFieldAnnotation'         => 'WTForms\Fields\Simple\FileField',
-      'WTForms\Fields\Simple\Annotations\HiddenFieldAnnotation'       => 'WTForms\Fields\Simple\HiddenField',
-      'WTForms\Fields\Simple\Annotations\PasswordFieldAnnotation'     => 'WTForms\Fields\Simple\PasswordField',
-      'WTForms\Fields\Simple\Annotations\SubmitFieldAnnotation'       => 'WTForms\Fields\Simple\SubmitField',
-      'WTForms\Fields\Simple\Annotations\TextAreaFieldAnnotation'     => 'WTForms\Fields\Simple\TextAreaField',
+      'WTForms\Annotations\Fields\Core\BooleanField'        => 'WTForms\Fields\Core\BooleanField',
+      'WTForms\Annotations\Fields\Core\DateField'           => 'WTForms\Fields\Core\DateField',
+      'WTForms\Annotations\Fields\Core\DateTimeField'       => 'WTForms\Fields\Core\DateTimeField',
+      'WTForms\Annotations\Fields\Core\DecimalField'        => 'WTForms\Fields\Core\DecimalField',
+      'WTForms\Annotations\Fields\Core\FloatField'          => 'WTForms\Fields\Core\FloatField',
+      'WTForms\Annotations\Fields\Core\IntegerField'        => 'WTForms\Fields\Core\IntegerField',
+      'WTForms\Annotations\Fields\Core\RadioField'          => 'WTForms\Fields\Core\RadioField',
+      'WTForms\Annotations\Fields\Core\SelectField'         => 'WTForms\Fields\Core\SelectField',
+      'WTForms\Annotations\Fields\Core\SelectMultipleField' => 'WTForms\Fields\Core\SelectMultipleField',
+      'WTForms\Annotations\Fields\Core\StringField'         => 'WTForms\Fields\Core\StringField',
+      'WTForms\Annotations\Fields\HTML5\DateField'          => 'WTForms\Fields\HTML5\DateField',
+      'WTForms\Annotations\Fields\HTML5\DateTimeField'      => 'WTForms\Fields\HTML5\DateTimeField',
+      'WTForms\Annotations\Fields\HTML5\DateTimeLocalField' => 'WTForms\Fields\HTML5\DateTimeLocalField',
+      'WTForms\Annotations\Fields\HTML5\DecimalField'       => 'WTForms\Fields\HTML5\DecimalField',
+      'WTForms\Annotations\Fields\HTML5\DecimalRangeField'  => 'WTForms\Fields\HTML5\DecimalRangeField',
+      'WTForms\Annotations\Fields\HTML5\EmailField'         => 'WTForms\Fields\HTML5\EmailField',
+      'WTForms\Annotations\Fields\HTML5\IntegerField'       => 'WTForms\Fields\HTML5\IntegerField',
+      'WTForms\Annotations\Fields\HTML5\IntegerRangeField'  => 'WTForms\Fields\HTML5\IntegerRangeField',
+      'WTForms\Annotations\Fields\HTML5\SearchField'        => 'WTForms\Fields\HTML5\SearchField',
+      'WTForms\Annotations\Fields\HTML5\TelField'           => 'WTForms\Fields\HTML5\TelField',
+      'WTForms\Annotations\Fields\HTML5\URLField'           => 'WTForms\Fields\HTML5\URLField',
+      'WTForms\Annotations\Fields\Simple\FileField'         => 'WTForms\Fields\Simple\FileField',
+      'WTForms\Annotations\Fields\Simple\HiddenField'       => 'WTForms\Fields\Simple\HiddenField',
+      'WTForms\Annotations\Fields\Simple\PasswordField'     => 'WTForms\Fields\Simple\PasswordField',
+      'WTForms\Annotations\Fields\Simple\SubmitField'       => 'WTForms\Fields\Simple\SubmitField',
+      'WTForms\Annotations\Fields\Simple\TextAreaField'     => 'WTForms\Fields\Simple\TextAreaField',
   ];
 
-  private static $registeredWidgets = [
-      'WTForms\Widgets\Core\Annotations\CheckboxInputAnnotation' => 'WTForms\Widgets\Core\CheckboxInput',
-      'WTForms\Widgets\Core\Annotations\FileInputAnnotation'     => 'WTForms\Widgets\Core\FileInput',
-      'WTForms\Widgets\Core\Annotations\HiddenInputAnnotation'   => 'WTForms\Widgets\Core\HiddenInput',
-      'WTForms\Widgets\Core\Annotations\ListAnnotation'          => 'WTForms\Widgets\Core\List',
-      'WTForms\Widgets\Core\Annotations\OptionAnnotation'        => 'WTForms\Widgets\Core\Option',
-      'WTForms\Widgets\Core\Annotations\PasswordInputAnnotation' => 'WTForms\Widgets\Core\PasswordInput',
-      'WTForms\Widgets\Core\Annotations\RadioInputAnnotation'    => 'WTForms\Widgets\Core\RadioInput',
-      'WTForms\Widgets\Core\Annotations\SelectAnnotation'        => 'WTForms\Widgets\Core\Select',
-      'WTForms\Widgets\Core\Annotations\SubmitInputAnnotation'   => 'WTForms\Widgets\Core\SubmitInput',
-      'WTForms\Widgets\Core\Annotations\TableAnnotation'         => 'WTForms\Widgets\Core\Table',
-      'WTForms\Widgets\Core\Annotations\TextAreaAnnotation'      => 'WTForms\Widgets\Core\TextArea',
-      'WTForms\Widgets\Core\Annotations\TextInputAnnotation'     => 'WTForms\Widgets\Core\TextInput',
+  /*private static $registeredWidgets = [
+      'WTForms\Annotations\Widgets\Core\CheckboxInput' => 'WTForms\Widgets\Core\CheckboxInput',
+      'WTForms\Annotations\Widgets\Core\FileInput'     => 'WTForms\Widgets\Core\FileInput',
+      'WTForms\Annotations\Widgets\Core\HiddenInput'   => 'WTForms\Widgets\Core\HiddenInput',
+      'WTForms\Annotations\Widgets\Core\List'          => 'WTForms\Widgets\Core\List',
+      'WTForms\Annotations\Widgets\Core\Option'        => 'WTForms\Widgets\Core\Option',
+      'WTForms\Annotations\Widgets\Core\PasswordInput' => 'WTForms\Widgets\Core\PasswordInput',
+      'WTForms\Annotations\Widgets\Core\RadioInput'    => 'WTForms\Widgets\Core\RadioInput',
+      'WTForms\Annotations\Widgets\Core\Select'        => 'WTForms\Widgets\Core\Select',
+      'WTForms\Annotations\Widgets\Core\SubmitInput'   => 'WTForms\Widgets\Core\SubmitInput',
+      'WTForms\Annotations\Widgets\Core\Table'         => 'WTForms\Widgets\Core\Table',
+      'WTForms\Annotations\Widgets\Core\TextArea'      => 'WTForms\Widgets\Core\TextArea',
+      'WTForms\Annotations\Widgets\Core\TextInput'     => 'WTForms\Widgets\Core\TextInput',
+  ];*/
+
+  private static $namespaces = [
+      'WTForms\Annotations\Validators',
+      'WTForms\Annotations\Fields\Core',
+      'WTForms\Annotations\Fields\HTML5',
+      'WTForms\Annotations\Fields\Simple',
+      'WTForms\Annotations\Widgets\Core',
   ];
 
   private static $labelClass = 'WTForms\Fields\Label';
@@ -172,52 +189,152 @@ class Forms
   }
 
   /**
+   * @return AnnotationReader
+   */
+  public static function getAnnotationReader()
+  {
+    return self::$annotation_reader;
+  }
+
+  /**
+   * @param AnnotationReader $annotation_reader
+   */
+  public static function setAnnotationReader(AnnotationReader $annotation_reader)
+  {
+    self::$annotation_reader = $annotation_reader;
+  }
+
+  /**
+   * @return AnnotationRegistry
+   */
+  public static function getAnnotationRegistry()
+  {
+    return self::$annotation_registry;
+  }
+
+  /**
+   * @param AnnotationRegistry $annotation_registry
+   */
+  public static function setAnnotationRegistry(AnnotationRegistry $annotation_registry)
+  {
+    self::$annotation_registry = $annotation_registry;
+  }
+
+  /**
+   * @return array
+   */
+  public static function getNamespaces()
+  {
+    return self::$namespaces;
+  }
+
+  /**
+   * @param array $namespaces
+   */
+  public static function setNamespaces($namespaces)
+  {
+    self::$namespaces = $namespaces;
+  }
+
+  /**
+   * @param array $namespaces
+   */
+  public static function addNamespaces(array $namespaces)
+  {
+    self::setNamespaces(array_merge(self::$namespaces, $namespaces));
+  }
+
+  /**
+   * @param $class
+   */
+  public static function addClassToNamespaces($class)
+  {
+    if (!$class instanceof \ReflectionClass) {
+      $class = new \ReflectionClass($class);
+    }
+    self::addNamespace($class->getNamespaceName());
+  }
+
+  /**
+   * @param string $namespace
+   */
+  public static function addNamespace($namespace)
+  {
+    if ($namespace != "" && !in_array($namespace, self::$namespaces)) {
+      self::$namespaces[] = $namespace;
+    }
+  }
+
+  public static function init(Reader $annotationReader, AnnotationRegistry $annotationRegistry)
+  {
+    self::$annotation_reader = $annotationReader;
+    self::$annotation_registry = $annotationRegistry;
+    foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(__DIR__ . "/annotations")) as $filename) {
+      if ($filename->isDir()) {
+        continue;
+      }
+      $file = $filename->getPathname();
+      self::$annotation_registry->registerFile($file);
+    }
+  }
+
+  /**
    * Takes in a class that's annotated as a form and builds a form object to manipulate
    *
-   * @param object|string $class The object reference or string representation of the
-   *                             class name that's annotated as a form
-   * @param array         $data  An associative array with keys matching field names
-   *                             on the form that is used to pre-populate fields with
-   *                             the respective data
-   * @param object        $obj   An object with properties that have names the same as
-   *                             field names on the form. It is used in the same way
-   *                             as `$data`, except it has lower priority when it comes
-   *                             time to assign data
+   * @param object|string $class    The object reference or string representation of the
+   *                                class name that's annotated as a form
+   * @param array         $formdata Data that was passed in from the user on form submission,
+   *                                e.g. `$_POST`
+   * @param array         $data     An associative array with keys matching field names
+   *                                on the form that is used to pre-populate fields with
+   *                                the respective data
+   * @param object        $obj      An object with properties that have names the same as
+   *                                field names on the form. It is used in the same way
+   *                                as `$data`, except it has lower priority when it comes
+   *                                time to assign data
    *
    * @return Form A form object with all fields and validators instantiated
    * @throws AnnotationException If the class passed in was not annotated as a form
    */
-  public static function create($class, array $data = [], $obj = null)
+  public static function create($class, array $formdata = [], array $data = [], $obj = null)
   {
+    if (!self::$annotation_registry || !self::$annotation_reader ||
+        !(self::$annotation_registry instanceof AnnotationRegistry) ||
+        !(self::$annotation_reader instanceof Reader)
+    ) {
+      throw new \RuntimeException("Forms class has not been initialized!");
+    }
     $annotated_object = new \ReflectionClass($class);
+
     // Set up the form annotation overrides
     try {
-      $form = self::getFormProperties($class);
+      $form = self::getFormProperties($annotated_object);
     } catch (AnnotationException $e) {
       throw new AnnotationException($e->getMessage());
     } catch (\Exception $e) {
-      throw new AnnotationException(get_class($annotated_object) . " does not have a @form class annotation.");
+      throw new AnnotationException(get_class($annotated_object) . " does not have a @Form class annotation.");
     }
 
-    // Set up fields on the form and their validators
+    // Find all field annotations and convert them to their
+    // usable object forms and attach to the form
     foreach ($annotated_object->getProperties() as $property) {
-      $validators = [];
-      $widget = null;
-      $field = null;
-      foreach (Annotations::ofProperty($annotated_object->name, $property->name) as $annotation) {
+      foreach (self::$annotation_reader->getPropertyAnnotations($property) as $annotation) {
         $annotation_class = get_class($annotation);
-        if (key_exists($annotation_class, self::$registeredValidators)) {
-          $validators[] = self::processValidator($annotation_class, $annotation);
-        } else if (key_exists($annotation_class, self::$registeredWidgets)) {
-          $widget = self::processWidget($annotation_class);
-        } else if (key_exists($annotation_class, self::$registeredFields)) {
-          $field = self::processField($data, $obj, $annotation, $property, $annotation_class);
+
+        if (array_key_exists($annotation_class, self::$registeredFields)) {
+          $field = self::resolveField($annotation, $property);
+          $field_name = $field->name ?: $field->id;
+
+          if ($obj && property_exists($obj, $field_name)) {
+            $field->process($formdata, $obj->{$field_name});
+          } elseif (array_key_exists($field_name, $data)) {
+            $field->process($formdata, $data[$field_name]);
+          } else {
+            $field->process($formdata);
+          }
+
+          $form[$field_name] = $field;
         }
-      }
-      if (!is_null($field)) {
-        /** @var $field Field */
-        $field->finalize($form, $widget, $validators);
-        $form->fields[$property->name] = $field;
       }
     }
 
@@ -225,81 +342,59 @@ class Forms
   }
 
   /**
-   * @param $class
+   * @param \ReflectionClass $class
    *
-   * @return Form
+   * @return \WTForms\Form
    * @throws \Exception
    */
-  private static function getFormProperties($class)
+  private static function getFormProperties(\ReflectionClass $class)
   {
-    foreach (Annotations::ofClass($class) as $class_annotation) {
-      if ($class_annotation instanceof FormAnnotation) {
-        $form = new Form([], $class_annotation->prefix, new $class_annotation->meta);
+    foreach (self::$annotation_reader->getClassAnnotations($class) as $class_annotation) {
+      if ($class_annotation instanceof \WTForms\Annotations\Form) {
+        $form = new \WTForms\Form([], $class_annotation->prefix, new $class_annotation->meta);
         $form->csrf = $class_annotation->csrf;
-
         return $form;
       }
     }
     throw new \Exception();
   }
 
-  /**
-   * @param $annotation_class
-   * @param $annotation
-   *
-   * @return Validator
-   */
-  private static function processValidator($annotation_class, $annotation)
+  private static function resolveField(\WTForms\Annotations\Field $annotation, \ReflectionProperty $property)
   {
-    $c = self::$registeredValidators[$annotation_class];
+    /**
+     * @var $concrete_class Field
+     */
+    $concrete_class = self::$registeredFields[get_class($annotation)];
+    if (!$concrete_class) {
+      throw new \RuntimeException("Annotation class " . get_class($annotation) . " is not mapped to any concrete class!");
+    }
+    $validators = [];
+    foreach ($annotation->validators as $validator_annotation) {
+      $validators[] = self::resolveFieldValidator($validator_annotation);
+    }
+    $annotation->widget = self::resolveFieldWidget($annotation->widget);
+    $options = (array)$annotation;
+    $options['name'] = $options['name'] ?: $property->getName();
 
-    return new $c($annotation->message);
+    return new $concrete_class($annotation->label, $options);
   }
 
-  /**
-   * @param $annotation_class
-   *
-   * @return Widget
-   */
-  private static function processWidget($annotation_class)
+  private static function resolveFieldValidator(\WTForms\Annotations\Validators\ValidatorBase $validator_annotation)
   {
-    $c = self::$registeredWidgets[$annotation_class];
+    $concrete_class = self::$registeredValidators[get_class($validator_annotation)];
+    if (!$concrete_class) {
+      throw new \RuntimeException("Annotation class " . get_class($validator_annotation) . " is not mapped to any concrete class!");
+    }
+    $options = (array)$validator_annotation;
+    $message = $options['message'];
+    unset($options['message']);
 
-    return new $c();
+    return new $concrete_class($message, $options);
   }
 
-  /**
-   * @param array              $data             Data to pre-populate the field with. This was passed in during form
-   *                                             creation. This has
-   * @param object             $obj              Data to pre-populate the field with. This was passed in during form
-   *                                             creation
-   * @param Annotation         $annotation       The current annotation being processed
-   * @param ReflectionProperty $property         The current property that is annotated and being processed
-   * @param string             $annotation_class String representation of the class used to instantiate this field
-   *
-   * @return Field The processed field ready to go except for finalization
-   */
-  private static function processField(array $data, $obj, Annotation $annotation, \ReflectionProperty $property, $annotation_class)
+  private static function resolveFieldWidget($widget)
   {
-    // Default to the php property name for the HTML name if not specified in the annotation
-    /** @noinspection PhpUndefinedFieldInspection */
-    $annotation->name = $annotation->name ?: $property->name;
-    // Instantiate new field using the registered field lookup table
-    $c = self::$registeredFields[$annotation_class];
-    /** @var $field Field */
-    /** @noinspection PhpUndefinedFieldInspection */
-    $field = new $c($annotation->label, (array)$annotation);
-
-    // Pre-populate the field with data from the supplied object
-    if ($obj && property_exists($obj, $field->name)) {
-      $field->data = $obj->{$field->name};
-    }
-    // Pre-populate the field with data from the supplied array
-    if ($data && array_key_exists($field->name, $data)) {
-      $field->data = $data[$field->name];
-    }
-
-    return $field;
+    return new $widget();
   }
 }
 

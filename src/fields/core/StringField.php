@@ -23,7 +23,7 @@ class StringField extends Field
    */
   public $widget;
 
-  public function __construct($label, array $options)
+  public function __construct($label = '', array $options = [])
   {
     parent::__construct($label, $options);
     $this->widget = new TextInput();

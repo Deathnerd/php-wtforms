@@ -27,10 +27,14 @@ class SelectMultipleField extends SelectField
    */
   public $data;
 
-  public function __construct($label = "", array $validators = [], array $choices = [], array $options = [])
+  public function __construct($label = "", array $options = ['validators' => [], 'choices' => []])
   {
-    parent::__construct($label, $validators, $choices, $options);
-    $this->widget = new Select(true);
+    parent::__construct($label, $options);
+    $this->widget = $options['widget'] ?: new Select(true);
+    if (is_string($this->widget)) {
+      $w = $this->widget;
+      $this->widget = new $w(true);
+    }
   }
 
   /**

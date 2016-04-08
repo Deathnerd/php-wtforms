@@ -38,12 +38,15 @@ class Optional extends Validator
   /**
    * Optional constructor.
    *
-   * @param bool $strip_whitespace If true (the default) also stop the validation
+   * @param string $message
+   * @param array  $other_options
+   *
+   * @internal                     param bool $strip_whitespace If true (the default) also stop the validation
    *                               chain on input which consists of only whitespace.
    */
-  public function __construct($strip_whitespace = true)
+  public function __construct($message = "", array $other_options = ['strip_whitespace' => []])
   {
-    $this->strip_whitespace = $strip_whitespace;
+    $this->strip_whitespace = $other_options['strip_whitespace'];
   }
 
   /**

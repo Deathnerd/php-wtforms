@@ -26,17 +26,15 @@ class SelectField extends SelectFieldBase
    */
   public $choices = [];
 
-  /**
-   * // TODO: Investigate whether this var needs to be moved to super class... probably
-   * @var array
-   */
-  public $data = [];
-
-  public function __construct($label = "", array $validators = [], array $choices = [], array $options = [])
+  public function __construct($label = "", array $options = ['validators' => [], 'choices' => []])
   {
-    parent::__construct($label, $validators, null, $options);
-    $this->option_widget = new Select();
-    $this->choices = $choices;
+    $this->choices = $options['choices'];
+    parent::__construct($label, $options);
+    $this->widget = $options['widget'] ?: new Select();
+    if(is_string($this->widget)){
+      $w = $this->widget;
+      $this->widget = new $w();
+    }
   }
 
   public function getChoices()

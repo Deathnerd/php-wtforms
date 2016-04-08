@@ -23,14 +23,13 @@ trait FormArrayable
     if (array_key_exists($offset, $this->fields)) {
       return $this->fields[$offset];
     }
-
     return null;
   }
 
-  public function offsetSet(/** @noinspection PhpUnusedParameterInspection */
-      $offset, $value)
+  public function offsetSet($offset, $value)
   {
-    throw new \TypeError("Fields may not be added to Form instances, only classes");
+    $this->fields[$offset] = $value;
+    $this->$offset = $value;
   }
 
   public function offsetUnset($offset)

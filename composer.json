@@ -22,19 +22,20 @@
   "autoload": {
     "psr-4": {
       "WTForms\\": "src/",
+      "WTForms\\Annotations\\": "src/annotations/",
+      "WTForms\\Annotations\\Fields\\Core\\": "src/annotations/fields/core/",
+      "WTForms\\Annotations\\Fields\\HTML5\\": "src/annotations/fields/html5/",
+      "WTForms\\Annotations\\Fields\\Simple\\": "src/annotations/fields/simple/",
+      "WTForms\\Annotations\\Validators\\": "src/annotations/validators/",
       "WTForms\\CSRF\\": "src/csrf/",
       "WTForms\\Fields\\": "src/fields/",
       "WTForms\\Fields\\Core\\": "src/fields/core/",
-      "WTForms\\Fields\\Core\\Annotations\\": "src/fields/core/annotations/",
       "WTForms\\Fields\\HTML5\\": "src/fields/html5/",
-      "WTForms\\Fields\\HTML5\\Annotations\\": "src/fields/html5/annotations/",
       "WTForms\\Fields\\Simple\\": "src/fields/simple/",
-      "WTForms\\Fields\\Simple\\Annotations\\": "src/fields/simple/annotations/",
       "WTForms\\Widgets\\": "src/widgets/",
       "WTForms\\Widgets\\Core\\": "src/widgets/core",
       "WTForms\\Widgets\\HTML5\\": "src/widgets/html5",
-      "WTForms\\Validators\\": "src/validators/",
-      "WTForms\\Validators\\Annotations\\": "src/validators/annotations/"
+      "WTForms\\Validators\\": "src/validators/"
     },
     "files": [
       "src/helpers.php"
@@ -50,7 +51,8 @@
   },
   "require": {
     "php": ">=5.4",
-    "mindplay/annotations": "1.3.0"
+    "doctrine/annotations": "1.2.7",
+    "doctrine/cache": "1.6.0"
   },
   "require-dev": {
     "filp/whoops": "^2.1",

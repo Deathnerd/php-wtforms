@@ -6,12 +6,14 @@
  * Time: 9:56 PM
  */
 
-namespace WTForms\Fields\Core\Annotations;
+namespace WTForms\Annotations\Fields\Core;
+use WTForms\Annotations\Field;
 
 /**
- * Class StringFieldAnnotation
+ * @Annotation
+ * @Target({"PROPERTY"})
  */
-class StringFieldAnnotation extends FieldAnnotation
+class StringField extends Field
 {
   /**
    * @var string

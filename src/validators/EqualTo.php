@@ -24,12 +24,17 @@ class EqualTo extends Validator
   /**
    * TODO: Interpolation of other_label and other_name
    *
-   * @param string $fieldname The name of the other field to compare to
-   * @param string $message   Error message to raise in case of a validation error.
+   * @param string $message Error message to raise in case of a validation error.
+   * @param array  $other_options
+   *
+   * @internal param string $fieldname The name of the other field to compare to
    */
-  public function __construct($fieldname, $message = "")
+  public function __construct($message = "", array $other_options = ['fieldname' => ''])
   {
-    $this->fieldname = $fieldname;
+    if (!$other_options['field_name']) {
+      throw new \RuntimeException("EqualTo requires fieldname!");
+    }
+    $this->fieldname = $other_options['fieldname'];
     $this->message = $message;
   }
 

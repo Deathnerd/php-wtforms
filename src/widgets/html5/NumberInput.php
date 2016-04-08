@@ -24,7 +24,7 @@ class NumberInput extends Input
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [])
+  public function __construct(array $options = ["step" => null, "min" => null, "max" => null])
   {
     $options = array_merge(["step" => null, "min" => null, "max" => null], $options);
     $this->step = $options['step'];

@@ -4,3 +4,4 @@ composer.phar
 vendor/
 tests/runtime/
 phpunit-*.phar
+notes.md

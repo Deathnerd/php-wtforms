@@ -25,10 +25,19 @@ class Label
     return (string)$this->__invoke();
   }
 
-  public function __invoke($text = "", array $options = [])
+  public function __invoke($text = null, array $options = [])
   {
     $options = array_merge(["for" => $this->field_id], $options);
 
-    return sprintf("<label %s>%s</label>", html_params($options), $text ?: $this->text);
+    return sprintf("<label %s>%s</label>", html_params($options), $text !== null ? $text : $this->text);
+  }
+
+  public function __get($name)
+  {
+    if ($name == "for") {
+      return $this->field_id;
+    }
+
+    return $this->$name;
   }
 }

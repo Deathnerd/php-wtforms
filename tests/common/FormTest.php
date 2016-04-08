@@ -10,8 +10,9 @@ namespace WTForms\Tests\Common;
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
 use Composer\Autoload\ClassLoader;
-use mindplay\annotations\AnnotationCache;
-use mindplay\annotations\Annotations;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\FileCacheReader;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\StringField;
 use WTForms\Forms;
@@ -22,25 +23,34 @@ class FormsTest extends \PHPUnit_Framework_TestCase
 {
   protected $helper;
   protected $annotated_helper;
-
+  protected $registry;
+  protected $reader;
+  
   public function setUp()
   {
-    Annotations::$config['cache'] = new AnnotationCache(__DIR__ . "/../runtime");
-    $annotationManager = Annotations::getManager();
-    $annotationManager->registry['stringField'] = 'WTForms\Fields\Core\Annotations\StringFieldAnnotation';
-    $annotationManager->registry['form'] = 'WTForms\FormAnnotation';
-    $annotationManager->registry['inputRequired'] = 'WTForms\Validators\Annotations\InputRequiredAnnotation';
+    $this->reader = new FileCacheReader(
+        new AnnotationReader(),
+        __DIR__ . "/../runtime",
+        $debug = true
+    );
+    $this->registry = new AnnotationRegistry();
+    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Foo.php");
+    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Bar.php");
+    $this->registry->registerFile(__DIR__ . "/../../src/annotations/Extend.php");
+    $this->registry->registerFile(__DIR__ . "/../../src/annotations/Field.php");
+    $this->registry->registerFile(__DIR__ . "/../../src/annotations/Form.php");
     $this->helper = new Helper;
     $this->annotated_helper = new AnnotatedHelper;
+    Forms::init($this->reader, $this->registry);
   }
 
   /**
-   * Should return an empty form object
+   * Should throw an error
+   * @expectedException \Doctrine\Common\Annotations\AnnotationException
    */
   public function testCreateNonAnnotated()
   {
     $form = Forms::create($this->helper);
-    $this->assertFalse(property_exists($form, 'foo') || property_exists($form, 'bar'));
   }
 
   /**
@@ -64,7 +74,34 @@ class FormsTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue($form['first_name'] instanceof Field && $form['first_name'] instanceof StringField);
     $this->assertEquals('<label for="fname">First Name</label>', $form['first_name']->label("First Name"));
   }
-  // test for populated by array
-  // test for populated by object
-  // test for populated by array and object
+
+  /**
+   * Test for populated by Formdata
+   */
+  public function testPopulateByFormdata()
+  {
+    $form = Forms::create($this->annotated_helper, ['first_name' => "Chester", 'last_name' => "Tester"]);
+    $this->assertEquals('Chester', $form['first_name']->value);
+    $this->assertNull($form['middle_name']);
+  }
+
+  /**
+   * Test for populated by Data
+   */
+  public function testPopulateByData()
+  {
+    $form = Forms::create($this->annotated_helper, [], ['first_name' => "Chester", 'last_name' => "Tester"]);
+    $this->assertEquals('Chester', $form['first_name']->value);
+    $this->assertNull($form['middle_name']);
+  }
+
+  /**
+   * Test for populated by Object
+   */
+  public function testPopulateByObject()
+  {
+    $form = Forms::create($this->annotated_helper, [], [], (object) ['first_name'=>"Chester", 'last_name'=>"Tester"]);
+    $this->assertEquals('Chester', $form['first_name']->value);
+    $this->assertNull($form['middle_name']);
+  }
 }

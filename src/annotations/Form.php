@@ -6,14 +6,15 @@
  * Time: 7:45 PM
  */
 
-namespace WTForms;
-
-use mindplay\annotations\Annotation;
+namespace WTForms\Annotations;
+use Doctrine\Common\Annotations\Annotation;
 
 /**
- * @usage('inherited'=>true,'class'=>true,'property'=>true)
+ * @Annotation
+ * @Target({"PROPERTY", "CLASS"})
+ * @MapAnnotationTo(class_path="WTForms\Form")
  */
-class FormAnnotation extends Annotation
+class Form
 {
   /**
    * @var string The Class name to use as the meta class supporting this form

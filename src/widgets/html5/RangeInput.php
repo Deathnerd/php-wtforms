@@ -22,7 +22,7 @@ class RangeInput extends Input
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [])
+  public function __construct(array $options = ["step" => null])
   {
     $options = array_merge(["step" => null], $options);
     $this->step = $options['step'];

@@ -9,10 +9,14 @@
 namespace WTForms\Tests\SupportingClasses;
 
 /**
- * @form
+ * @Form
  */
 class Helper
 {
+  /**
+   * @StringField
+   * @var int
+   */
   public $foo = 1;
   public $bar = "baz";
 }

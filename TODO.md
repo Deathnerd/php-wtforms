@@ -1,3 +1,2 @@
-EVERYTHING
-
+Document optional arguments
 TESTS

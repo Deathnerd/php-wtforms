@@ -24,7 +24,7 @@ class UUID extends Regexp
    */
   public function __construct($message = "")
   {
-    parent::__construct('^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$', $message);
+    parent::__construct($message, ['regex' => '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$']);
   }
 
   /**
@@ -38,7 +38,7 @@ class UUID extends Regexp
   function __invoke(Form $form, Field $field, $message = "")
   {
     $message = $this->message;
-    if ($message == "") {
+    if (!$message) {
       $message = "Invalid URL.";
     }
 

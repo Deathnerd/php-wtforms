@@ -19,7 +19,7 @@ class DateField extends DateTimeField
   /**
    * @inheritdoc
    */
-  public function __construct($label, array $options)
+  public function __construct($label = '', array $options = [])
   {
     parent::__construct($label, array_merge(['format' => "Y-m-d"], $options));
   }

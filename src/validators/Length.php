@@ -31,17 +31,16 @@ class Length extends Validator
   /**
    * Validates the length of a string.
    *
-   * @param int    $min     The minimum required length of the string. If not provided, minimum length will not be
-   *                        checked
-   * @param int    $max     The maximum length of the string. If not provided, maximum length will not be checked
    * @param string $message Error message to raise in case of a validation error. TODO: Implement user interpolation
+   * @param array  $other_options
    */
-  public function __construct($min = -1, $max = -1, $message = "")
+  public function __construct($message = "", array $other_options = ['min' => -1, 'max' => -1])
   {
-    assert(($min != -1 || $max != -1), "At least one of `min` or `max` must be specified");
-    assert(($max == -1 || $min <= $max), "`min` cannot be more than `max`");
-    $this->min = $min;
-    $this->max = $max;
+    $other_options = array_merge(['min' => -1, 'max' => -1], $other_options);
+    assert(($other_options['min'] != -1 || $other_options['max'] != -1), "At least one of `min` or `max` must be specified");
+    assert(($other_options['max'] == -1 || $other_options['min'] <= $other_options['max']), "`min` cannot be more than `max`");
+    $this->min = $other_options['min'];
+    $this->max = $other_options['max'];
     $this->message = $message;
   }
 

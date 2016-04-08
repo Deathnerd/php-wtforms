@@ -41,8 +41,8 @@ class BooleanField extends Field
    */
   public function __construct($label = "", array $options = [])
   {
+    $options = array_merge(["widget"=>new CheckboxInput()], $options);
     parent::__construct($label, $options);
-    $this->widget = new CheckboxInput();
     if (array_key_exists("false_values", $options) && is_array($options['false_values'])) {
       $this->false_values = $options['false_values'];
     }

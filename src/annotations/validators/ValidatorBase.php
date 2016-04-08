@@ -6,17 +6,23 @@
  * Time: 4:04 PM
  */
 
-namespace WTForms\Validators\Annotations;
+namespace WTForms\Annotations\Validators;
+use Doctrine\Common\Annotations\Annotation;
 
-use mindplay\annotations\Annotation;
 
 /**
- * @usage('property'=>true, 'multiple'=>true,'inherited'=>true))
+ * @Annotation
+ * @Target({"ANNOTATION"})
  */
-abstract class ValidatorAnnotationBase extends Annotation
+class ValidatorBase
 {
   /**
    * @var string The error message to display when this validation fails
    */
   public $message;
+
+  /**
+   * @var array
+   */
+  public $field_flags = [];
 }

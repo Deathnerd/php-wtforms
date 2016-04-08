@@ -26,13 +26,14 @@ class AnyOf extends Validator
   /**
    * AnyOf constructor.
    *
-   * @param array  $values                            A sequence of valid inputs
    * @param string $message                           Error message to raise in case of a validation error. TODO: User
    *                                                  interpolation
+   * @param array  $other_options
+   *
    */
-  public function __construct(array $values, $message = "")
+  public function __construct($message = "", array $other_options = ['values' => []])
   {
-    $this->values = $values;
+    $this->values = $other_options['values'];
     $this->message = $message;
   }
 

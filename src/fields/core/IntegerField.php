@@ -20,6 +20,11 @@ use WTForms\Widgets\Core\TextInput;
 class IntegerField extends Field
 {
   /**
+   * @var TextInput
+   */
+  public $widget;
+  
+  /**
    * IntegerField constructor.
    *
    * @param string $label

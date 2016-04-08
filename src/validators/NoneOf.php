@@ -21,13 +21,15 @@ class NoneOf extends AnyOf
   /**
    * NoneOf constructor.
    *
-   * @param array  $values                  A sequence of invalid inputs.
-   * @param string $message                 Error message to raise in case of a validation error. //TODO: User
-   *                                        interpolation
+   * @param string $message Error message to raise in case of a validation error.
+   *
+   * @todo User interpolation
+   *
+   * @param array  $other_options
    */
-  public function __construct(array $values, $message = "")
+  public function __construct($message = "", array $other_options = ['values' => []])
   {
-    parent::__construct($values, $message);
+    parent::__construct($other_options['values'], $message);
   }
 
   /**
