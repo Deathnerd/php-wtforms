@@ -19,8 +19,12 @@ class HelpersTest extends \PHPUnit_Framework_TestCase
                            "id"         => "some_id",
                            "class__"    => ["fa", "fa-envelope"],
                            "for"        => "another_id"]);
-    $expected = 'foo bar="baz" data-value="shazbot" id="some_id" class="fa fa-envelope" for="another_id"';
-    $this->assertEquals($expected, $actual);
+    $this->assertContains("foo", $actual);
+    $this->assertContains('bar="baz"', $actual);
+    $this->assertContains('data-value="shazbot"', $actual);
+    $this->assertContains('id="some_id"', $actual);
+    $this->assertContains('class="fa fa-envelope"', $actual);
+    $this->assertContains('for="another_id"', $actual);
   }
 
   public function testStartsWith()

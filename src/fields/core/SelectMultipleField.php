@@ -30,11 +30,12 @@ class SelectMultipleField extends SelectField
   public function __construct($label = "", array $options = ['validators' => [], 'choices' => []])
   {
     parent::__construct($label, $options);
-    $this->widget = $options['widget'] ?: new Select(true);
+    $this->widget = $options['widget'] ?: new Select();
     if (is_string($this->widget)) {
       $w = $this->widget;
-      $this->widget = new $w(true);
+      $this->widget = new $w();
     }
+    $this->widget->multiple = true;
   }
 
   /**
@@ -56,7 +57,7 @@ class SelectMultipleField extends SelectField
   /**
    * @param array|null $value
    */
-  public function processData(array $value)
+  public function processData($value)
   {
     if ($value) {
       foreach ($value as $v) {

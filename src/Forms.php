@@ -15,6 +15,8 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionProperty;
 use WTForms\Fields\Core\Field;
+use WTForms\Validators\Validator;
+use WTForms\Widgets\Core\Widget;
 
 
 class Forms
@@ -265,7 +267,6 @@ class Forms
       throw new \RuntimeException("Forms class has not been initialized!");
     }
     $annotated_object = new \ReflectionClass($class);
-
     // Set up the form annotation overrides
     try {
       $form = self::getFormProperties($annotated_object);
@@ -313,12 +314,21 @@ class Forms
       if ($class_annotation instanceof \WTForms\Annotations\Form) {
         $form = new \WTForms\Form([], $class_annotation->prefix, new $class_annotation->meta);
         $form->csrf = $class_annotation->csrf;
+
         return $form;
       }
     }
     throw new \Exception();
   }
 
+  /**
+   * Resolve a field annotation to the concrete Field object it represents
+   *
+   * @param Annotations\Field  $annotation
+   * @param ReflectionProperty $property
+   *
+   * @return mixed
+   */
   private static function resolveField(\WTForms\Annotations\Field $annotation, \ReflectionProperty $property)
   {
     /**
@@ -340,6 +350,12 @@ class Forms
     return new $concrete_class($annotation->label, $options);
   }
 
+  /**
+   * Resolve a Validator annotation attached to a field into the proper Validator object
+   * @param Annotations\Validators\ValidatorBase $validator_annotation
+   *
+   * @return Validator The Validator the Annotation resolved to
+   */
   private static function resolveFieldValidator(\WTForms\Annotations\Validators\ValidatorBase $validator_annotation)
   {
     $concrete_class = self::$registeredValidators[get_class($validator_annotation)];
@@ -353,6 +369,12 @@ class Forms
     return new $concrete_class($message, $options);
   }
 
+  /**
+   * Resolves a field's widget to a concrete widget object
+   * @param \ReflectionClass|string $widget
+   *
+   * @return Widget The new widget
+   */
   private static function resolveFieldWidget($widget)
   {
     return new $widget();

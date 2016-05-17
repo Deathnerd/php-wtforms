@@ -27,4 +27,6 @@ class SelectField extends SelectFieldBase
    * @var string
    */
   public $option_widget = 'WTForms\Widgets\Core\Option';
+
+  public $multiple = false;
 }

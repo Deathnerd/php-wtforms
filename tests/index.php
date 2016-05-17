@@ -6,38 +6,64 @@
  * Time: 5:27 PM
  */
 require_once("../vendor/autoload.php");
-use DebugBar\StandardDebugBar;
-use mindplay\annotations\AnnotationCache;
-use mindplay\annotations\Annotations;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\FileCacheReader;
 use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
 
-Annotations::$config['cache'] = new AnnotationCache(__DIR__ . "/runtime");
-$annotationManager = Annotations::getManager();
-$annotationManager->registry['stringField'] = 'WTForms\Fields\Core\Annotations\StringFieldAnnotation';
-$annotationManager->registry['form'] = 'WTForms\FormAnnotation';
-$annotationManager->registry['inputRequired'] = 'WTForms\Validators\Annotations\InputRequiredAnnotation';
-$annotated_helper = new AnnotatedHelper;
+$reader = new FileCacheReader(
+    new AnnotationReader(),
+    __DIR__ . "/../runtime",
+    $debug = true
+);
+$registry = new AnnotationRegistry();
+$registry->registerFile(__DIR__ . "/IndexTestForm.php");
+$registry->registerLoader(function ($class) {
 
-$debugbar = new StandardDebugBar();
-$debugbarRenderer = $debugbar->getJavascriptRenderer();
-$debugbar['time']->startMeasure('form_create', "Creating a form");
-$form = Forms::create($annotated_helper);
-$debugbar['time']->stopMeasure('form_create');
-?>
+});
+Forms::init($reader, $registry);
+$form = Forms::create(new \WTForms\Tests\IndexTestForm, $_POST);
+if ($_POST) {
+  $formisvalid = $form->validate();
+} ?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-  <?= $debugbarRenderer->renderHead() ?>
+  <style>
+    .green {
+      background-color: forestgreen;
+    }
+  </style>
 </head>
 <body>
-<form action="">
-  <?= $form['first_name']->label('Hey, Foo!') ?>
-  <?= $form['first_name'] ?>
-  <?= $form->first_name->label ?>
+<?
+if ($formisvalid) {
+  if ($form->name->data) { ?>
+    <p>Hi there, <?= $form->name->data ?>!</p>
+  <? }
+}
+if ($form->errors) { ?>
+  <div style="border: thin solid red; background-color: salmon">
+    <? foreach ($form->errors as $error) { ?>
+      <li><?= $error ?></li>
+    <? } ?>
+  </div>
+<? } ?>
+<form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+  <?= $form->name->label ?>
+  <?= $form->name ?>
+  <br>
+  <?= $form->wtforms_is_awesome->label("Damn, Felicia!", ['class' => 'green']) ?>
+  <?= $form->wtforms_is_awesome ?>
+  <br>
+  <?= $form->thing_uno->label ?>
+  <?= $form->thing_uno ?>
+  <br>
+  <?= $form->thing_dos->label ?>
+  <?= $form->thing_dos ?>
+  <input type="submit">
 </form>
-<?= $debugbarRenderer->render() ?>
 </body>
 </html>

@@ -12,6 +12,7 @@ use WTForms\DefaultMeta;
 use WTForms\Flags;
 use WTForms\Form;
 use WTForms\Validators\StopValidation;
+use WTForms\Validators\ValidationError;
 use WTForms\Validators\Validator;
 use WTForms\ValueError;
 use WTForms\Widgets\Core\Widget;
@@ -296,6 +297,13 @@ class Field implements \Iterator
       try {
         $v->__invoke($form, $this);
       } catch (StopValidation $e) {
+        $message = $e->getMessage();
+        if ($message != "") {
+          $form->errors[] = $message;
+        }
+
+        return true;
+      } catch (ValidationError $e) {
         $message = $e->getMessage();
         if ($message != "") {
           $form->errors[] = $message;

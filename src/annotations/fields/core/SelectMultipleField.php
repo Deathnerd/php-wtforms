@@ -11,4 +11,6 @@ namespace WTForms\Annotations\Fields\Core;
 /**
  * @Annotation
  */
-class SelectMultipleField extends SelectField{}
+class SelectMultipleField extends SelectField
+{
+}

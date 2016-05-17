@@ -69,7 +69,8 @@ abstract class SelectFieldBase extends Field implements \Iterator
         $opts['id'] = "{$this->id}-{$i}";
         $opt = new _Option($options[$i]['label'], $opts);
         $opt->process([], $options[$i]['value']);
-        $opt->checked = $options[$i]['selected'] || $options[$i]['checked'];
+        $opt->checked = (array_key_exists('selected', $options[$i]) && $options[$i]['selected'])
+            || (array_key_exists('checked', $options[$i]) && $options[$i]['checked']);
         $this->options[] = $opt;
       }
 

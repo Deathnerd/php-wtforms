@@ -29,7 +29,7 @@ class NoneOf extends AnyOf
    */
   public function __construct($message = "", array $other_options = ['values' => []])
   {
-    parent::__construct($other_options['values'], $message);
+    parent::__construct($message, $other_options);
   }
 
   /**

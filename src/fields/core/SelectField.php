@@ -53,7 +53,7 @@ class SelectField extends SelectFieldBase
     $this->data = $value;
   }
 
-  public function processFormData(array $valuelist = [])
+  public function processFormData(array $valuelist)
   {
     if (count($valuelist) != 0) {
       $this->data = $valuelist[0];

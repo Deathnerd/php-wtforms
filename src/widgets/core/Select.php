@@ -8,7 +8,7 @@
 
 namespace WTForms\Widgets\Core;
 
-use WTForms\Fields\Core\SelectFieldBase;
+use WTForms\Fields\Core\Field;
 
 /**
  * Renders a select field.
@@ -24,26 +24,16 @@ use WTForms\Fields\Core\SelectFieldBase;
  */
 class Select extends Widget
 {
-  protected $multiple = false;
+  public $multiple = false;
 
   /**
-   * Select constructor.
-   *
-   * @param bool $multiple
-   */
-  public function __construct($multiple = false)
-  {
-    $this->multiple = $multiple;
-  }
-
-  /**
-   * @param SelectFieldBase $field
-   * @param array           $options
+   * @param Field $field
+   * @param array $options
    *
    * @return string
    * @throws \WTForms\NotImplemented
    */
-  public function __invoke(SelectFieldBase $field, array $options = [])
+  public function __invoke(Field $field, array $options = [])
   {
     $options = array_merge(["id" => $field->id], $options);
     $options['name'] = $field->name;

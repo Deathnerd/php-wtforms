@@ -18,6 +18,7 @@ use WTForms\Forms;
 use WTForms\Tests\SupportingClasses\AnnotatedHelper;
 use WTForms\Tests\SupportingClasses\Helper;
 use WTForms\Widgets\Core\Option;
+use WTForms\Widgets\Core\Select;
 use WTForms\Widgets\Core\TextInput;
 
 class SelectFieldTest extends \PHPUnit_Framework_TestCase
@@ -50,8 +51,16 @@ class SelectFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('a', $this->form->select_a->data);
     $this->assertEquals(null, $this->form->select_b->data);
     $this->assertEquals(false, $this->form->validate());
-    $this->assertEquals('<select id="select_a" name="select_a"><option value="a" selected>hello</option><option value="btest">bye</option></select>', $this->form->select_a->__invoke());
-    $this->assertEquals('<select id="select_b" name="select_b"><option value="1">Item 1</option><option value="2">Item 2</option></select>', $this->form->select_b->__invoke());
+    $actual = $this->form->select_a->__invoke();
+    $this->assertContains('<select id="select_a" name="select_a">', $actual);
+    $this->assertContains('</select>', $actual);
+    $this->assertContains('<option value="a" selected>hello</option>', $actual);
+    $this->assertContains('<option value="btest">bye</option>', $actual);
+    $actual = $this->form->select_b->__invoke();
+    $this->assertContains('<select id="select_b" name="select_b">', $actual);
+    $this->assertContains('</select>', $actual);
+    $this->assertContains('<option value="1">Item 1</option>', $actual);
+    $this->assertContains('<option value="2">Item 2</option>', $actual);
   }
 
   public function testWithData()
@@ -67,9 +76,7 @@ class SelectFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue($first_option instanceof _Option);
     $actual = [];
     foreach ($this->form->select_a->options as $option) {
-      /**
-       * @var $option _Option
-       */
+      /** @var $option _Option */
       $actual[] = $option->__toString();
     }
     $expected = ['<option value="a" selected>hello</option>', '<option value="btest">bye</option>'];
@@ -77,6 +84,16 @@ class SelectFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue($first_option->widget instanceof Option);
     $this->assertTrue($this->form->select_b->options[0]->widget instanceof TextInput);
     $this->assertEquals('<option disabled value="a" selected>hello</option>', $first_option(["disabled" => true]));
+  }
+
+  public function testMultipleSelect()
+  {
+    $select = $this->form->select_multiple;
+    $this->assertTrue(is_subclass_of($select, 'WTForms\Fields\Core\SelectField'), "SelectMultiple failed assertion of being a SelectField");
+    /** @var $widget Select */
+    $widget = $select->widget;
+    $this->assertTrue($widget instanceof Select, "SelectMultiple failed assertion of being a Select class");
+    $this->assertTrue($widget->multiple, "SelectMultiple widget does not have a true multiple field");
   }
 
   public function testDefaultCoerce()

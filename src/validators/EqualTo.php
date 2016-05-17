@@ -31,7 +31,7 @@ class EqualTo extends Validator
    */
   public function __construct($message = "", array $other_options = ['fieldname' => ''])
   {
-    if (!$other_options['field_name']) {
+    if (!$other_options['fieldname']) {
       throw new \RuntimeException("EqualTo requires fieldname!");
     }
     $this->fieldname = $other_options['fieldname'];
