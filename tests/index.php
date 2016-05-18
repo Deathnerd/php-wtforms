@@ -21,6 +21,7 @@ $registry->registerFile(__DIR__ . "/IndexTestForm.php");
 $registry->registerLoader(function ($class) {
 
 });
+
 Forms::init($reader, $registry);
 $form = Forms::create(new \WTForms\Tests\IndexTestForm, $_POST);
 if ($_POST) {

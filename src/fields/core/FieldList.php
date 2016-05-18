@@ -8,6 +8,9 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Widgets\Core\ListWidget;
+use WTForms\Forms;
+
 /**
  * Encapsulate an ordered list of multiple instances of the same field type,
  * keeping data as a list.
@@ -15,29 +18,49 @@ namespace WTForms\Fields\Core;
  * >>> $authors = new FieldList(new StringField("name", [new DataRequired()]));
  * @package WTForms\Fields\Core
  */
-class FieldList extends Field
+class FieldList extends Field implements \Countable, \ArrayAccess
 {
+  /**
+   * @var integer
+   */
+  public $min_entries;
+  /**
+   * @var integer|null
+   */
+  public $max_entries;
+  /**
+   * @var Field
+   */
+  public $inner_field;
+  /**
+   * @var int
+   */
+  private $last_index;
+
   /**
    * Field constructor.
    *
    * @param string $label
-   * @param Field  $field
    * @param array  $options
    *
    * @throws \TypeError
    * @deprecated Not finished yet
    */
-  public function __construct($label, Field $field, array $options = ['min_entries' => 0, 'max_entries' => null])
+  public function __construct($label, array $options = ['min_entries' => 0, 'max_entries' => null])
   {
     parent::__construct($label, $options);
     if ($this->filters) {
       throw new \TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field");
     }
-    $this->unbound_field = $field;
+    $this->inner_field = $options['inner_field'];
     $this->min_entries = $options['min_entries'];
     $this->max_entries = $options['max_entries'];
     $this->prefix = $options['prefix'] ?: '';
     $this->last_index = -1;
+    // unset the data attribute because it'll be 
+    // overridden in the __get method to reflect the
+    // entries property
+    unset($this->data);
   }
 
   /**
@@ -67,22 +90,33 @@ class FieldList extends Field
     }
 
     $this->object_data = $data;
+
     if ($formdata) {
-      $indeces = sort(array_unique($this->extract_indeces($this->name, $formdata)));
+      $indices = array_unique($this->extract_indices($this->name, $formdata));
+      sort($indices);
       if ($this->max_entries) {
-        $indeces = array_slice($indeces, 0, $this->max_entries);
+        $indices = array_slice($indices, 0, $this->max_entries);
       }
 
-      foreach ($indeces as $index) {
-        $oboj_data = current($data);
-
+      $data_length = 0;
+      // First add formdata that map to indices
+      foreach ($indices as $index) {
+        if ($data_length >= count($data)) {
+          $obj_data = null;
+        } else {
+          $obj_data = $data[$data_length];
+        }
+        $this->add_entry($formdata, $obj_data, $index);
+        $data_length++;
       }
     } else {
+      // Or add data that maps to object data
       foreach ($data as $obj_data) {
         $this->add_entry($formdata, $obj_data);
       }
     }
-
+    // Pad out the entries until there is enough data
+    // to hit the minimum entries limit
     while (count($this->entries) < $this->min_entries) {
       $this->add_entry($formdata);
     }
@@ -98,12 +132,13 @@ class FieldList extends Field
    *
    * @return array
    */
-  private function extract_indeces($prefix, $formdata)
+  private function extract_indices($prefix, $formdata)
   {
     $offset = strlen($prefix) + 1;
     $ret = [];
+    // Array keys are in the form of "prefix-numeric_index-subfield_name"
     foreach (array_keys($formdata) as $k) {
-      if (strpos($k, $prefix)) {
+      if (strpos($k, $prefix) !== false) {
         $k = explode("-", substr($k, $offset), 2)[0];
         if (is_numeric($k)) {
           $ret[] = $k;
@@ -117,9 +152,9 @@ class FieldList extends Field
   /**
    * Processes an unbound field and inserts it as a field type in this field list
    *
-   * @param array $formdata
-   * @param null  $data
-   * @param null  $index
+   * @param array        $formdata
+   * @param mixed        $data
+   * @param null|integer $index
    *
    * @return Field
    */
@@ -131,15 +166,164 @@ class FieldList extends Field
     if ($index === null) {
       $index = $this->last_index + 1;
     }
+    $this->last_index = $index;
     $name = "$this->short_name-$index";
     $id = "$this->id-$index";
-    $field = $this->unbound_field;
-    $field = new $field("", ["name" => $name, "id" => $id, "meta" => $this->meta, "prefix" => $this->prefix]);
+    $field = $this->inner_field;
+    $field = Forms::resolveFieldForFieldList($field, ["name" => $name, "id" => $id, "meta" => $this->meta, "prefix" => $this->prefix]);
     $field->process($formdata, $data);
     $this->entries[] = $field;
 
     return $field;
   }
 
+  /**
+   * Create a new entry with optional default data.
+   *
+   * Entries added in thi sway will *not* receive formdata however, and can
+   * only receive object data
+   *
+   * @param mixed $data
+   *
+   * @return Field
+   */
+  public function append_entry($data = null)
+  {
+    return $this->add_entry([], $data);
+  }
 
+  /**
+   * Removes the last entry from the list and returns it
+   * @return mixed
+   */
+  public function pop_entry()
+  {
+    $entry = array_pop($this->entries);
+    $this->last_index -= 1;
+
+    return $entry;
+  }
+
+  /**
+   * Validate this FieldList.
+   *
+   * Note that the FieldList differs from normal field validation in
+   * that FieldList validates all its enclosed fields first before running any
+   * of its own validators.
+   *
+   * @param \WTForms\Form $form
+   * @param array         $extra_validators
+   *
+   * @return bool|void
+   */
+  public function validate($form, array $extra_validators = [])
+  {
+    $this->errors = [];
+
+    // Run validators on all entries within
+    foreach ($this->entries as $subfield) {
+      /**
+       * @var Field $subfield
+       */
+      if (!$subfield->validate($form)) {
+        $this->errors[] = $subfield->errors();
+      }
+    }
+    $validators = $this->validators;
+    foreach ($extra_validators as $validator) {
+      $validators[] = $validator;
+    }
+    $this->runValidationChain($form, $validators);
+
+    return count($this->errors) == 0;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function populateObj($obj, $name)
+  {
+    $values = $obj->$name;
+    if (!is_array($values)) {
+      $values = [];
+    }
+    $output = [];
+    $i = 0;
+    foreach ($this->entries as $field) {
+      /**
+       * @var Field $field
+       */
+      $fake_obj = new \stdClass();
+      $fake_obj->data = $values[$i];
+      $field->populateObj($fake_obj, 'data');
+      $output[] = $fake_obj->data;
+      $i++;
+    }
+    $obj->$name = $output;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function __get($name)
+  {
+    if ($name == "data") {
+      $ret = [];
+      foreach ($this->entries as $entry) {
+        $ret[] = $entry->data;
+      }
+
+      return $ret;
+    }
+
+    return parent::__get($name);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function count()
+  {
+    return count($this->entries);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function offsetExists($offset)
+  {
+    return isset($this->entries[$offset]);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function offsetGet($offset)
+  {
+    if (isset($this->entries[$offset])) {
+      return $this->entries[$offset];
+    }
+
+    return null;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function offsetSet($offset, $value)
+  {
+    if (is_null($offset)) {
+      $this->entries[] = $value;
+    } else {
+      $this->entries[$offset] = $value;
+    }
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function offsetUnset($offset)
+  {
+    unset($this->entries[$offset]);
+  }
 }

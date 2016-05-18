@@ -111,6 +111,10 @@ class Field implements \Iterator
    * @var array
    */
   public $attributes;
+  /**
+   * @var string|null
+   */
+  public $prefix;
 
   /**
    * Field constructor.
@@ -291,7 +295,7 @@ class Field implements \Iterator
    * @return bool True if the validation was stopped, False if otherwise
    * @throws \WTForms\NotImplemented
    */
-  private function runValidationChain(Form $form, array $validators)
+  protected function runValidationChain(Form $form, array $validators)
   {
     foreach ($validators as $v) {
       try {
@@ -420,7 +424,7 @@ class Field implements \Iterator
    * @param $obj
    * @param $name
    */
-  public function populateObj($obj, $name)
+  public function populateObj(&$obj, $name)
   {
     $obj->$name = $this->data;
   }

@@ -11,7 +11,7 @@ use WTForms\Annotations\Field;
 
 /**
  * @Annotation
- * @Target({"PROPERTY"})
+ * @Target({"PROPERTY", "ANNOTATION"})
  */
 class StringField extends Field
 {

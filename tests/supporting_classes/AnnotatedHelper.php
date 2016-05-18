@@ -14,7 +14,9 @@ use WTForms\Annotations\Fields\Core\SelectMultipleField;
 use WTForms\Annotations\Fields\Core\StringField;
 use WTForms\Annotations\Form;
 use WTForms\Annotations\Validators\AnyOf;
+use WTForms\Annotations\Validators\DataRequired;
 use WTForms\Annotations\Validators\InputRequired;
+use WTForms\Annotations\Fields\Core\FieldList;
 
 
 /**
@@ -71,4 +73,10 @@ class AnnotatedHelper
    * @SelectField(choices={{0,"Foo"},{1,"Bar"},{2,"Baz"}}, default=0, multiple=true)
    */
   public $select_multiple;
+
+  /**
+   * @var FieldList
+   * @FieldList(inner_field=@StringField(validators={@DataRequired}))
+   */
+  public $list_of_fields;
 }
