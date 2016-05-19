@@ -32,10 +32,10 @@ class FormField extends Field
   public function __construct($label, array $options)
   {
     if (!$options['form_class']) {
-      throw new \TypeError("FormField must have a form_class argument passed to it via the options array!");
+      throw new \TypeError("FormField must have a form_class property set!");
     }
 
-    $this->form_class = new \ReflectionClass($options['form_class']);
+    $this->form_class = $options['form_class'];
     $this->separator = $options['separator'] ?: "-";
     $this->_obj = null;
 
@@ -70,7 +70,114 @@ class FormField extends Field
     if (is_array($data)) {
       $this->form = Forms::createWithOptions($this->form_class, ["prefix" => $prefix], $formdata, $data);
     } else {
-      $this->form = Forms::createWithOptions($this->form_class, ["prefix" => $prefix], $formdata, [], [], $data);
+      $this->form = Forms::createWithOptions($this->form_class, ["prefix" => $prefix], $formdata, [], $data);
     }
   }
+
+  /**
+   * @inheritdoc
+   * @throws \TypeError
+   */
+  public function validate($form, array $extra_validators = [])
+  {
+    if ($extra_validators) {
+      throw new \TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
+    }
+
+    return $this->form->validate();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function populateObj($obj, $name)
+  {
+    $candidate = $obj->$name;
+    if (is_null($candidate)) {
+      if (is_null($this->_obj)) {
+        throw new \TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
+      }
+      $candidate = $this->_obj;
+      $obj->$name = $candidate;
+    }
+    $this->form->populateObj($candidate);
+  }
+
+  public function __get($name)
+  {
+    if (in_array($name, ["data", "errors"]) || property_exists($this->form, $name)) {
+      return $this->form->$name;
+    }
+
+    return parent::__get($name);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function current()
+  {
+    return current($this->form->fields);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function next()
+  {
+    next($this->form->fields);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function key()
+  {
+    return key($this->form->fields);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function valid()
+  {
+    $key = key($this->form->fields);
+
+    return ($key !== null && $key !== false);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function rewind()
+  {
+    reset($this->form->fields);
+  }
+
+  public function offsetExists($offset)
+  {
+    return array_key_exists($offset, $this->form->fields);
+  }
+
+  public function offsetGet($offset)
+  {
+    if (array_key_exists($offset, $this->form->fields)) {
+      return $this->form->fields[$offset];
+    }
+
+    return null;
+  }
+
+  public function offsetSet($offset, $value)
+  {
+    $this->form->fields[$offset] = $value;
+    $this->form->$offset = $value;
+  }
+
+  public function offsetUnset($offset)
+  {
+    unset($this->form->fields[$offset]);
+    $this->form->$offset = null;
+  }
+
 }

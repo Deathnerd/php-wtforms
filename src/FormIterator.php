@@ -71,6 +71,6 @@ trait FormIterator
    */
   public function rewind()
   {
-    rewind($this->fields);
+    reset($this->fields);
   }
 }

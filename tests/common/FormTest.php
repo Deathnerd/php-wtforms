@@ -60,6 +60,7 @@ class FormsTest extends \PHPUnit_Framework_TestCase
   {
     $form = Forms::create($this->annotated_helper);
     $this->assertEquals('foo', $form->prefix);
+    $this->assertEquals('foo-first_name', $form['first_name']->name);
     $this->assertAttributeInstanceOf('WTForms\Tests\SupportingClasses\FooMeta', 'meta', $form);
     $this->assertEquals(false, $form->csrf);
   }

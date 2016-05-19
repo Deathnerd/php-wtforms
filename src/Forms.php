@@ -52,6 +52,7 @@ class Forms
       'WTForms\Annotations\Fields\Core\DecimalField'        => 'WTForms\Fields\Core\DecimalField',
       'WTForms\Annotations\Fields\Core\FloatField'          => 'WTForms\Fields\Core\FloatField',
       'WTForms\Annotations\Fields\Core\FieldList'           => 'WTForms\Fields\Core\FieldList',
+      'WTForms\Annotations\Fields\Core\FormField'           => 'WTForms\Fields\Core\FormField',
       'WTForms\Annotations\Fields\Core\IntegerField'        => 'WTForms\Fields\Core\IntegerField',
       'WTForms\Annotations\Fields\Core\RadioField'          => 'WTForms\Fields\Core\RadioField',
       'WTForms\Annotations\Fields\Core\SelectField'         => 'WTForms\Fields\Core\SelectField',
@@ -303,7 +304,7 @@ class Forms
     return $form;
   }
 
-  public static function createWithOptions($class, array $options = [], $class, array $formdata = [], array $data = [], $obj = null)
+  public static function createWithOptions($class, array $options = [], array $formdata = [], array $data = [], $obj = null)
   {
     if (!self::$annotation_registry || !self::$annotation_reader ||
         !(self::$annotation_registry instanceof AnnotationRegistry) ||

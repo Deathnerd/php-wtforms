@@ -74,9 +74,9 @@ class AnnotatedHelper
    */
   public $select_multiple;
 
-  /**
-   * @var FieldList
-   * @FieldList(inner_field=@StringField(validators={@DataRequired}))
-   */
-  public $list_of_fields;
+//  /**
+//   * @var FieldList
+//   * @FieldList(inner_field=@StringField(validators={@DataRequired}))
+//   */
+//  public $list_of_fields;
 }

@@ -36,8 +36,11 @@ class Form implements \ArrayAccess, \Iterator
   public function __construct(array $fields = [], $prefix = "", $meta = null)
   {
     $this->fields = $fields;
+    if ($prefix && !str_contains("-_;:/.", substr($prefix, -1)))
+      $prefix .= "-";
     $this->prefix = $prefix;
     $this->meta = $meta;
+
   }
 
   /**

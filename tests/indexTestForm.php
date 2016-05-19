@@ -8,6 +8,7 @@
 
 namespace WTForms\Tests;
 
+use WTForms\Annotations\Fields\Core\BooleanField;
 use WTForms\Annotations\Fields\Core\SelectField;
 use WTForms\Annotations\Fields\Core\StringField;
 use WTForms\Annotations\Form;
@@ -53,4 +54,16 @@ class IndexTestForm
    * @StringField(label="... equal this thing")
    */
   public $thing_dos;
+
+  /**
+   * @var boolean
+   * @BooleanField
+   */
+  public $yet_another_thing;
+
+  /**
+   * @var boolean
+   * @BooleanField(label="And one more thing!")
+   */
+  public $and_one_more_thing;
 }

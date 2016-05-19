@@ -23,7 +23,7 @@ use WTForms\Tests\SupportingClasses\Helper;
 /**
  * @Form
  */
-class FieldListTestForm
+class TestForm
 {
   /**
    * @var FieldList
@@ -32,6 +32,29 @@ class FieldListTestForm
   public $a;
 }
 
+/**
+ * @Form
+ */
+class FChild
+{
+  /**
+   * @var string
+   * @StringField(validators={@DataRequired})
+   */
+  public $a;
+}
+
+/**
+ * @Form
+ */
+class TestEnclosedSubForm
+{
+  /**
+   * @var Form
+   * TODO: Enclosed SubForm test
+   */
+  public $a;
+}
 
 class FieldListTest extends \PHPUnit_Framework_TestCase
 {
@@ -58,7 +81,7 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
   public function testForm()
   {
     $data = ['foo', 'hi', 'rawr'];
-    $this->form = Forms::create(new FieldListTestForm, [], ["a" => $data]);
+    $this->form = Forms::create(new TestForm, [], ["a" => $data]);
     $a = $this->form->a;
     $this->assertEquals("hi", $a->entries[1]->data);
     $this->assertEquals("a-1", $a->entries[1]->name);
@@ -69,19 +92,19 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
                   "a-3" => ["yarg"],
                   "a-4" => [""],
                   "a-7" => ["mmm"]];
-    $this->form = Forms::create(new FieldListTestForm, $post_data);
+    $this->form = Forms::create(new TestForm, $post_data);
     $this->assertEquals(4, count($this->form->a->entries));
     $this->assertEquals(["bleh", "yarg", "", "mmm"], $this->form->a->data);
     $this->assertFalse($this->form->validate());
 
 
-    $this->form = Forms::create(new FieldListTestForm, $post_data, ["a" => $data]);
+    $this->form = Forms::create(new TestForm, $post_data, ["a" => $data]);
     $this->assertEquals(["bleh", "yarg", "", "mmm"], $this->form->a->data);
     $this->assertFalse($this->form->validate());
 
     // test for formdata precedence
     $post_data = ["a-0" => ["a"], "a-1" => ["b"]];
-    $this->form = Forms::create(new FieldListTestForm, $post_data, ["a" => $data]);
+    $this->form = Forms::create(new TestForm, $post_data, ["a" => $data]);
     $this->assertEquals(2, count($this->form->a->entries));
     $this->assertEquals($this->form->a->data, ["a", "b"]);
     $expected = [];

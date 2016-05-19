@@ -161,6 +161,7 @@ class Field implements \Iterator
       $this->render_kw['class'] = $options['class__'];
     }
     $this->render_kw = array_merge(array_merge($this->render_kw, $options['attributes']), $options['render_kw']);
+
     $this->default = $options['default'];
     $this->description = $options['description'];
     $this->filters = $options['filters'];
@@ -424,7 +425,7 @@ class Field implements \Iterator
    * @param $obj
    * @param $name
    */
-  public function populateObj(&$obj, $name)
+  public function populateObj($obj, $name)
   {
     $obj->$name = $this->data;
   }
@@ -443,4 +444,6 @@ class Field implements \Iterator
 
     return null;
   }
+
+
 }
