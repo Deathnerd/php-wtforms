@@ -26,26 +26,28 @@ class SelectField extends SelectFieldBase
    */
   public $choices = [];
 
-  public function __construct($label = "", array $options = ['validators' => [], 'choices' => []])
+  public function __construct(array $options = ['choices' => []], Form $form = null)
   {
-    $this->choices = $options['choices'];
-    parent::__construct($label, $options);
-    $this->widget = $options['widget'] ?: new Select();
-    if(is_string($this->widget)){
-      $w = $this->widget;
-      $this->widget = new $w();
+    if (array_key_exists('choices', $options)) {
+      $this->choices = $options['choices'];
+      unset($options['choices']);
+    } else {
+      $this->choices = [];
+    }
+    parent::__construct($options, $form);
+
+    if (array_key_exists('widget', $options)) {
+      $this->widget = $options['widget'];
+    } else {
+      $this->widget = new Select();
     }
   }
 
   public function getChoices()
   {
-    $t = [];
-    foreach ($this->choices as $x) {
-      list($value, $label) = $x;
-      $t[] = ["value" => $value, "label" => $label, "selected" => $value == $this->data];
+    foreach ($this->choices as list($label, $value)) {
+      yield [$value, $label, $value == $this->data];
     }
-
-    return $t;
   }
 
   public function processData($value)

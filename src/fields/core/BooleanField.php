@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\Widgets\Core\CheckboxInput;
 
 /**
@@ -30,19 +31,12 @@ class BooleanField extends Field
   public $data;
 
   /**
-   * Field constructor.
-   *
-   * @param string $label
-   * @param array  $options In addition to {@link Field}'s options, you may
-   *                       also pass an entry with key ``'false_values'`` which is a sequence of
-   *                       strings of what is considered a "false" value. Defaults are ``['false', '']``
-   *
-   * @throws \TypeError
+   * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
     $options = array_merge(["widget"=>new CheckboxInput()], $options);
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
     if (array_key_exists("false_values", $options) && is_array($options['false_values'])) {
       $this->false_values = $options['false_values'];
     }

@@ -10,6 +10,7 @@ namespace WTForms\Fields\Core;
 
 use DateTime;
 use Exception;
+use WTForms\Form;
 use WTForms\ValueError;
 
 /**
@@ -21,16 +22,18 @@ class DateTimeField extends Field
   /**
    * @var string
    */
-  public $format;
+  public $format = "Y-m-d H:M:S";
 
   /**
    * @inheritdoc
    */
-  public function __construct($label = '', array $options = '')
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
-    $options = array_merge(["format" => "Y-m-d H:M:S"], $options);
-    $this->format = $options['format'];
+    if (array_key_exists('format', $options)) {
+      $this->format = $options['format'];
+      unset($options['format']);
+    }
+    parent::__construct($options);
   }
 
 

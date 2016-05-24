@@ -38,8 +38,12 @@ class NumberInput extends Input
    */
   public function __invoke(Field $field, array $options = [])
   {
-    $options = array_merge(["step" => $this->step, "min" => $this->min, "max" => $this->max], $options);
-
+    foreach (['step', 'min', 'max'] as $option) {
+      if (!array_key_exists($option, $options) && $this->$option) {
+        $options[$option] = $this->$option;
+      }
+    }
+    
     return parent::__invoke($field, $options);
   }
 

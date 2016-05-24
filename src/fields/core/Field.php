@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use Itertools;
 use WTForms\DefaultMeta;
 use WTForms\Flags;
 use WTForms\Form;
@@ -119,13 +120,18 @@ class Field implements \Iterator
   /**
    * Field constructor.
    *
-   * @param string $label
-   * @param array  $options
+   * @param array $options
+   * @param Form  $form
    *
-   * @throws \TypeError
+   * @throws ValueError
    */
-  public function __construct($label = '', array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
+    if ($form) {
+      $this->form = $form;
+    } else {
+      $this->form = $this->resolveParentForm();
+    }
     $options = array_merge([
         "validators"  => [],
         "filters"     => [],
@@ -134,54 +140,64 @@ class Field implements \Iterator
         "default"     => null,
         "widget"      => null,
         "render_kw"   => [],
-        "form"        => null,
         "name"        => null,
         "prefix"      => '',
         "meta"        => new DefaultMeta(),
         "attributes"  => [],
         "label"       => null,
-        "class"       => null,
-        "class_"      => [],
-        "class__"     => [],
-        "value"       => null,
+        "class"       => null
     ], $options);
 
     if (array_key_exists('meta', $options) && !is_null($options['meta'])) {
       $this->meta = $options['meta'];
-    } else if (array_key_exists('form', $options) && !is_null($options['form'])) {
-      $this->meta = $options['form']->meta;
-    }
-    if (is_string($this->meta)) {
-      $this->meta = new $this->meta();
+      unset($options['meta']);
+    } else if (property_exists($this->form, "meta") && $this->form->meta instanceof DefaultMeta) {
+      $this->meta = $this->form->meta;
     }
 
-    if ($options['class_']) {
-      $this->render_kw['class'] = $options['class_'];
-    } elseif ($options['class__']) {
-      $this->render_kw['class'] = $options['class__'];
-    }
     $this->render_kw = array_merge(array_merge($this->render_kw, $options['attributes']), $options['render_kw']);
+    unset($options['attributes']);
+    unset($options['render_kw']);
+    if ($options['class']) {
+      $this->render_kw['class'] = $options['class'];
+    }
+    unset($options['class']);
+
 
     $this->default = $options['default'];
+    unset($options['default']);
     $this->description = $options['description'];
+    unset($options['description']);
     $this->filters = $options['filters'];
+    unset($options['filters']);
     $this->flags = new Flags();
-    $this->name = $options['prefix'] . $options['name'];
+    if ($options['prefix']) {
+      $prefix = $options['prefix'];
+    } elseif (!is_null($this->form)) {
+      $prefix = $this->form->prefix;
+    } else {
+      $prefix = "";
+    }
+    unset($options['prefix']);
+    $this->name = $prefix . $options['name'];
     $this->short_name = $options['name'];
+    unset($options['name']);
     $this->type = get_class();
     $this->validators = $options['validators'];
+    unset($options['validators']);
     $this->id = is_null($options['id']) ? $this->name : $options['id'];
-    $this->label = new Label($this->id, $label !== null ? $label : ucwords(str_replace("_", " ", $options['name'])));
-    $w = $options['widget'];
-    if ($w) {
-      if (is_object($w)) {
-        $this->widget = $w;
-      } else {
-        $this->widget = new $w();
-      }
+    unset($options['id']);
+    $label = $options['label'];
+    unset($options['label']);
+    $this->label = new Label($this->id, $label !== null ? $label : ucwords(str_replace("_", " ", $this->short_name)));
+    if ($options['widget']) {
+      $this->widget = $options['widget'];
     }
-
-    $t = $this->validators;
+    unset($options['widget']);
+    $t = [];
+    foreach ($this->validators as $v) {
+      $t[] = $v;
+    }
     $t[] = $this->widget;
     foreach ($t as $v) {
       if ($v->field_flags) {
@@ -189,6 +205,10 @@ class Field implements \Iterator
           $this->flags->$flag = true;
         }
       }
+    }
+    // If there are options left over, treat them as render keywords
+    if ($options) {
+      $this->render_kw = array_merge($this->render_kw, $options);
     }
   }
 
@@ -221,10 +241,8 @@ class Field implements \Iterator
   public function __call($name, $arguments)
   {
     if ($name == "label") {
-      if (count($arguments) == 2) {
-        return $this->label->__invoke($arguments[0], $arguments[1]);
-      } elseif (count($arguments) == 1) {
-        return $this->label->__invoke($arguments[0]);
+      if (count($arguments) > 0) {
+        return $this->label->__invoke($arguments);
       }
 
       return $this->label->__invoke();
@@ -294,7 +312,6 @@ class Field implements \Iterator
    * @param Validator[] $validators A sequence or iterable of validator callables
    *
    * @return bool True if the validation was stopped, False if otherwise
-   * @throws \WTForms\NotImplemented
    */
   protected function runValidationChain(Form $form, array $validators)
   {
@@ -442,6 +459,20 @@ class Field implements \Iterator
       return "";
     }
 
+    return null;
+  }
+
+  /**
+   * @return Form | null
+   */
+  private function resolveParentForm()
+  {
+    $backtrace = array_reverse(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4));
+    while ($stack = array_pop($backtrace)) {
+      if ($stack['object'] && $stack['object'] instanceof Form) {
+        return $stack['object'];
+      }
+    }
     return null;
   }
 

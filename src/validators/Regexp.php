@@ -27,14 +27,12 @@ class Regexp extends Validator
    * Assertion check is done here for a valid regular expression
    *
    * @param string $message Error message to raise in case of a validation error
-   * @param array  $other_options
-   *
-   * @internal param string $regex The regular expression string to use.
+   * @param array  $options
    */
-  public function __construct($message = "", array $other_options = ['regex' => ''])
+  public function __construct($message = "", array $options = ['regex' => ''])
   {
-    assert(filter_var($other_options['regex'], FILTER_VALIDATE_REGEXP), "Invalid regular expression passed to Regexp");
-    $this->regex = $other_options['regex'];
+    assert(preg_match($options['regex'], null) !== false, "Invalid regular expression passed to Regexp");
+    $this->regex = $options['regex'];
     $this->message = $message;
   }
 

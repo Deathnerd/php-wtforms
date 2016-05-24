@@ -26,7 +26,7 @@ class RangeInput extends Input
   {
     $options = array_merge(["step" => null], $options);
     $this->step = $options['step'];
-    parent::__construct("month");
+    parent::__construct("range");
   }
 
   /**

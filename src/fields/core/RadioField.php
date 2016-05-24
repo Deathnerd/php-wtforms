@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\Widgets\Core\ListWidget;
 use WTForms\Widgets\Core\RadioInput;
 
@@ -24,9 +25,9 @@ class RadioField extends SelectField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = ['validators'=>[], 'choices'=>[]])
+  public function __construct(array $options = ['choices' => []], Form $form = null)
   {
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
     $this->option_widget = new RadioInput();
     $this->widget = new ListWidget("ul", false);
   }

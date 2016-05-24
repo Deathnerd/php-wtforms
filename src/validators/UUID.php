@@ -24,7 +24,7 @@ class UUID extends Regexp
    */
   public function __construct($message = "")
   {
-    parent::__construct($message, ['regex' => '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$']);
+    parent::__construct($message, ['regex' => '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/']);
   }
 
   /**

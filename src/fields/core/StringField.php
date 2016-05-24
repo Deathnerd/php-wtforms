@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\Widgets;
 use WTForms\Widgets\Core\TextInput;
 
@@ -23,9 +24,9 @@ class StringField extends Field
    */
   public $widget;
 
-  public function __construct($label = '', array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
     $this->widget = new TextInput();
   }
 

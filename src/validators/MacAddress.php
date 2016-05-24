@@ -23,7 +23,7 @@ class MacAddress extends Validator
    *
    * @param string $message Error message to raise in case of a validation error.
    */
-  public function __construct($message = "", array $other_options = [])
+  public function __construct($message = "", array $options = [])
   {
     $this->message = $message;
   }

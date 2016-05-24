@@ -17,7 +17,7 @@ use WTForms\Forms;
 use WTForms\Tests\SupportingClasses\AnnotatedHelper;
 use WTForms\Tests\SupportingClasses\Helper;
 
-class LabelTest extends \PHPUnit_Framework_TestCase
+/*class LabelTest extends \PHPUnit_Framework_TestCase
 {
   protected $helper;
   protected $annotated_helper;
@@ -70,4 +70,4 @@ class LabelTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('<label for="last_name">Last Name</label>', $form['last_name']->label());
     $this->assertEquals('<label for="last_name"></label>', $form['last_name']->label(""));
   }
-}
+}*/

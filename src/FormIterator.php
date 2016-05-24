@@ -11,7 +11,6 @@ namespace WTForms;
 /**
  * Class FormIterator
  * @package WTForms
- * @property array|resource $fields
  */
 trait FormIterator
 {

@@ -56,7 +56,7 @@ class TestEnclosedSubForm
   public $a;
 }
 
-class FieldListTest extends \PHPUnit_Framework_TestCase
+/*class FieldListTest extends \PHPUnit_Framework_TestCase
 {
   protected $helper;
   protected $annotated_helper;
@@ -116,4 +116,4 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
     // Testing countable
     $this->assertEquals(count($this->form->a), 2);
   }
-}
+}*/

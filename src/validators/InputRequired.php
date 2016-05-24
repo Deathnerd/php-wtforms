@@ -31,9 +31,9 @@ class InputRequired extends Validator
    * InputRequired constructor.
    *
    * @param string $message Message to raise if validation fails
-   * @param array  $other_options
+   * @param array  $options
    */
-  public function __construct($message = "", array $other_options = [])
+  public function __construct($message = "", array $options = [])
   {
     $this->message = $message;
   }

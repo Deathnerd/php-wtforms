@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\HTML5;
 
+use WTForms\Form;
 use WTForms\Widgets\HTML5\DateInput;
 
 /**
@@ -19,9 +20,9 @@ class DateField extends \WTForms\Fields\Core\DateField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
     $this->widget = new DateInput();
   }
 }

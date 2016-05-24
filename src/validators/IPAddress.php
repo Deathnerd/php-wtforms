@@ -33,17 +33,17 @@ class IPAddress extends Validator
    * IPAddress constructor.
    *
    * @param string $message Error message to raise in case of a validation error.
-   * @param array  $other_options
+   * @param array  $options
    *
    * @throws ValueError If ip_type isn't a proper flag
    *
    */
-  public function __construct($message = "", array $other_options = ['ip_type' => FILTER_FLAG_IPV4])
+  public function __construct($message = "", array $options = ['ip_type' => FILTER_FLAG_IPV4])
   {
-    if (!in_array($other_options['ip_type'], [FILTER_FLAG_IPV4, FILTER_FLAG_IPV6])) {
+    if (!in_array($options['ip_type'], [FILTER_FLAG_IPV4, FILTER_FLAG_IPV6])) {
       throw new ValueError("IP Address Validator must have FILTER_FLAG_IPV4 OR FILTER_FLAG_IPV6 passed as first argument");
     }
-    $this->ip_type = $other_options['ip_type'];
+    $this->ip_type = $options['ip_type'];
     $this->message = $message;
   }
 

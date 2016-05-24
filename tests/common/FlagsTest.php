@@ -9,35 +9,32 @@
 namespace WTForms\Tests\Common;
 
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
+use WTForms\Fields\Core\StringField;
 use WTForms\Flags;
-use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
+use WTForms\Form;
+use WTForms\Validators\DataRequired;
+
+
+class FlagsTestForm extends Form
+{
+  /**
+   * Form constructor.
+   *
+   * @param array $options
+   */
+  public function __construct(array $options = [])
+  {
+    parent::__construct($options);
+    $this->a = new StringField(["validators" => [new DataRequired()]]);
+    $this->process($options);
+  }
+
+}
 
 class FlagsTest extends \PHPUnit_Framework_TestCase
 {
-  protected $annotated_helper;
-  protected $registry;
-  protected $reader;
-  protected $flags;
-  protected $form;
-
   public function setUp()
   {
-    $this->reader = new FileCacheReader(
-        new AnnotationReader(),
-        __DIR__ . "/../runtime",
-        $debug = true
-    );
-    $this->registry = new AnnotationRegistry();
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Foo.php");
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Bar.php");
-    $this->annotated_helper = new AnnotatedHelper;
-    Forms::init($this->reader, $this->registry);
-    $this->form = Forms::create($this->annotated_helper);
-    $this->flags = $this->form['first_name']->flags;
   }
 
   public function testFlags()
@@ -56,25 +53,29 @@ class FlagsTest extends \PHPUnit_Framework_TestCase
 
   public function testExistingValues()
   {
-    $this->assertEquals(true, $this->flags->required);
-    $this->assertTrue(property_exists($this->flags, 'required'));
-    $this->assertEquals(false, $this->flags->optional);
-    $this->assertTrue(property_exists($this->flags, 'optional'));
+    $form = new FlagsTestForm();
+    $flags = $form->a->flags;
+    $this->assertEquals(true, $flags->required);
+    $this->assertTrue(property_exists($flags, 'required'));
+    $this->assertEquals(false, $flags->optional);
+    $this->assertTrue(property_exists($flags, 'optional'));
   }
 
   public function testAssignment()
   {
-    $this->assertFalse(property_exists($this->flags, 'optional'));
-    $this->flags->optional = true;
-    $this->assertEquals(true, $this->flags->optional);
-    $this->assertTrue(property_exists($this->flags, 'optional'));
+    $flags = (new FlagsTestForm())->a->flags;
+    $this->assertFalse(property_exists($flags, 'optional'));
+    $flags->optional = true;
+    $this->assertEquals(true, $flags->optional);
+    $this->assertTrue(property_exists($flags, 'optional'));
   }
 
   public function testUnset()
   {
-    unset($this->flags->required);
-    $this->assertFalse(property_exists($this->flags, 'required'));
-    $this->assertEquals(false, $this->flags->required);
+    $flags = (new FlagsTestForm())->a->flags;
+    unset($flags->required);
+    $this->assertFalse(property_exists($flags, 'required'));
+    $this->assertEquals(false, $flags->required);
   }
 
 }

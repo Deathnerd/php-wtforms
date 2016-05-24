@@ -9,49 +9,45 @@
 namespace WTForms\Tests\Fields;
 
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
-use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
-use WTForms\Tests\SupportingClasses\Helper;
+use WTForms\Validators\AnyOf;
+use WTForms\Validators\InputRequired;
+
+/**
+ * @property StringField $a
+ */
+class GenericFieldTestForm extends Form
+{
+  /**
+   * @inheritdoc
+   */
+  public function __construct(array $options = [])
+  {
+    parent::__construct($options);
+    $this->a = new StringField(["attributes" => ["foo" => "bar"],
+                                "render_kw"  => ["readonly" => true],
+                                "validators" => [
+                                    new InputRequired("This input is required, yo"),
+                                    new AnyOf("You've gotta match these, guy %s", ["values" => [1, "foo", DIRECTORY_SEPARATOR]])
+                                ]]);
+    $this->process($options);
+  }
+
+}
 
 class GenericFieldTest extends \PHPUnit_Framework_TestCase
 {
-  protected $helper;
-  protected $annotated_helper;
-  protected $registry;
-  protected $reader;
-  /**
-   * @var Form
-   */
-  protected $form;
-  /**
-   * @var StringField
-   */
-  protected $field;
 
   public function setUp()
   {
-    $this->reader = new FileCacheReader(
-        new AnnotationReader(),
-        __DIR__ . "/../runtime",
-        $debug = true
-    );
-    $this->registry = new AnnotationRegistry();
-    $this->helper = new Helper;
-    $this->annotated_helper = new AnnotatedHelper;
-    Forms::init($this->reader, $this->registry);
-    $this->form = Forms::create($this->annotated_helper);
-    $this->field = $this->form->a;
   }
 
   public function testProcessData()
   {
-    $this->field->processFormData([42]);
-    $this->assertEquals(42, $this->field->data);
+    $form = new GenericFieldTestForm();
+    $form->a->processFormData([42]);
+    $this->assertEquals(42, $form->a->data);
   }
 
   /**
@@ -59,13 +55,37 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
    */
   public function testMetaAttribute()
   {
-    $this->assertEquals($this->form->a->meta, $this->field->meta);
+    $form = new GenericFieldTestForm();
+    $field = $form->a;
+    $this->assertEquals($form->a->meta, $field->meta);
   }
 
   public function testRenderKw()
   {
-    $this->assertEquals('<input id="a" type="text" value="hello" readonly foo="bar" name="a">', $this->form->a->__invoke());
-    $this->assertEquals('<input id="a" type="text" value="hello" readonly foo="baz" name="a">', $this->form->a->__invoke(['foo' => 'baz']));
-    $this->assertEquals('<input id="a" type="text" value="hello" foo="baz" other="hello" name="a">', $this->form->a->__invoke(['foo' => 'baz', 'readonly' => false, 'other' => 'hello']));
+    $form = new GenericFieldTestForm(["a" => "hello"]);
+    $output = $form->a->__invoke();
+    $this->assertContains('id="a"', $output);
+    $this->assertContains('type="text"', $output);
+    $this->assertContains('value="hello"', $output);
+    $this->assertContains('readonly', $output);
+    $this->assertContains('foo="bar"', $output);
+    $this->assertContains('name="a"', $output);
+
+    $output = $form->a->__invoke(['foo' => 'baz']);
+    $this->assertContains('id="a"', $output);
+    $this->assertContains('type="text"', $output);
+    $this->assertContains('value="hello"', $output);
+    $this->assertContains('readonly', $output);
+    $this->assertContains('foo="baz"', $output);
+    $this->assertContains('name="a"', $output);
+
+    $output = $form->a->__invoke(['foo' => 'baz', 'readonly' => false, 'other' => 'hello']);
+    $this->assertContains('id="a"', $output);
+    $this->assertContains('type="text"', $output);
+    $this->assertContains('value="hello"', $output);
+    $this->assertContains('foo="baz"', $output);
+    $this->assertContains('name="a"', $output);
+    $this->assertContains('other="hello"', $output);
+    $this->assertNotContains('readonly', $output);
   }
 }

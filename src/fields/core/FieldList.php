@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\Widgets\Core\ListWidget;
 use WTForms\Forms;
 
@@ -23,11 +24,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   /**
    * @var integer
    */
-  public $min_entries;
+  public $min_entries = 0;
   /**
    * @var integer|null
    */
-  public $max_entries;
+  public $max_entries = null;
   /**
    * @var Field
    */
@@ -35,28 +36,39 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   /**
    * @var int
    */
-  private $last_index;
+  private $last_index = -1;
 
   /**
    * Field constructor.
    *
-   * @param string $label
-   * @param array  $options
+   * @param Form  $form
+   * @param array $options
    *
    * @throws \TypeError
    * @deprecated Not finished yet
    */
-  public function __construct($label, array $options = ['min_entries' => 0, 'max_entries' => null])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
+    if (!array_key_exists('inner_field', $options)) {
+      throw new \TypeError("FieldList requires an inner_field declaration");
+    } elseif (!($options['inner_field'] instanceof Field)) {
+      throw new \TypeError(sprintf("FieldList requires an inner_field type subclassing Field; %s given", get_class($options['inner_field']) ?: gettype($options['inner_field'])));
+    } else {
+      $this->inner_field = $options['inner_field'];
+      unset($options['inner_field']);
+    }
     if ($this->filters) {
       throw new \TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field");
     }
-    $this->inner_field = $options['inner_field'];
-    $this->min_entries = $options['min_entries'];
-    $this->max_entries = $options['max_entries'];
-    $this->prefix = $options['prefix'] ?: '';
-    $this->last_index = -1;
+    if (array_key_exists('min_entries', $options)) {
+      $this->min_entries = $options['min_entries'];
+      unset($options['min_entries']);
+    }
+    if (array_key_exists('max_entries', $options)) {
+      $this->max_entries = $options['max_entries'];
+      unset($options['max_entries']);
+    }
+    parent::__construct($options, $form);
     // unset the data attribute because it'll be 
     // overridden in the __get method to reflect the
     // entries property

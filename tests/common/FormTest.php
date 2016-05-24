@@ -9,100 +9,156 @@
 namespace WTForms\Tests\Common;
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
-use Composer\Autoload\ClassLoader;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\StringField;
-use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
-use WTForms\Tests\SupportingClasses\Helper;
+use WTForms\Form;
+use WTForms\Validators\DataRequired;
 
-class FormsTest extends \PHPUnit_Framework_TestCase
+/**
+ * @property StringField a
+ * @property StringField b
+ * @property StringField c
+ */
+class TestForm extends Form
 {
-  protected $helper;
-  protected $annotated_helper;
-  protected $registry;
-  protected $reader;
-  
+  public $prefix = "Foo";
+
+  public function __construct(array $options = [])
+  {
+    parent::__construct($options);
+    $this->a = new StringField(["name"       => "a",
+                                "validators" => [new DataRequired()]]);
+    $this->b = new StringField(["name" => "b"]);
+    $this->c = new StringField(["name" => "c"]);
+    $this->process($options);
+  }
+}
+
+class FormTest extends \PHPUnit_Framework_TestCase
+{
   public function setUp()
   {
-    $this->reader = new FileCacheReader(
-        new AnnotationReader(),
-        __DIR__ . "/../runtime",
-        $debug = true
-    );
-    $this->registry = new AnnotationRegistry();
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Foo.php");
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Bar.php");
-    $this->registry->registerFile(__DIR__ . "/../../src/annotations/Extend.php");
-    $this->registry->registerFile(__DIR__ . "/../../src/annotations/Field.php");
-    $this->registry->registerFile(__DIR__ . "/../../src/annotations/Form.php");
-    $this->helper = new Helper;
-    $this->annotated_helper = new AnnotatedHelper;
-    Forms::init($this->reader, $this->registry);
   }
 
-  /**
-   * Should throw an error
-   * @expectedException \Doctrine\Common\Annotations\AnnotationException
-   */
-  public function testCreateNonAnnotated()
+  public function testFormCreation()
   {
-    $form = Forms::create($this->helper);
+    $form = new TestForm();
+    $this->assertEquals("Foo-", $form->prefix);
+    $this->assertTrue($form->a instanceof Field);
+    $this->assertTrue($form->a->form === $form);
+    $this->assertFalse($form->validate());
   }
 
-  /**
-   * Test for form annotation overrides
-   */
-  public function testCreateFormAnnotation()
+  public function testFieldUnset()
   {
-    $form = Forms::create($this->annotated_helper);
-    $this->assertEquals('foo', $form->prefix);
-    $this->assertEquals('foo-first_name', $form['first_name']->name);
-    $this->assertAttributeInstanceOf('WTForms\Tests\SupportingClasses\FooMeta', 'meta', $form);
-    $this->assertEquals(false, $form->csrf);
+    $form = new TestForm();
+    $this->assertNotNull($form->a);
+    $this->assertTrue($form->a instanceof Field && $form->a instanceof StringField);
+    unset($form->a);
+    $this->assertNull($form->a);
   }
 
-  /**
-   * Test for field annotations
-   */
-  public function testCreateFieldAnnotation()
+  public function testPostDataPopulate()
   {
-    $form = Forms::create($this->annotated_helper);
-    $this->assertNotEmpty($form->fields);
-    $this->assertTrue($form['first_name'] instanceof Field && $form['first_name'] instanceof StringField);
-    $this->assertEquals('<label for="fname">First Name</label>', $form['first_name']->label("First Name"));
+    $post_data = ["Foo-a" => ["foo"]];
+    $form = new TestForm(["formdata" => $post_data]);
+    $this->assertEquals("foo", $form->a->data);
+    $this->assertTrue($form->validate());
   }
 
-  /**
-   * Test for populated by Formdata
-   */
-  public function testPopulateByFormdata()
+  public function testExtraDataPopulate()
   {
-    $form = Forms::create($this->annotated_helper, ['first_name' => "Chester", 'last_name' => "Tester"]);
-    $this->assertEquals('Chester', $form['first_name']->value);
-    $this->assertNull($form['middle_name']);
+    $form = new TestForm(["a" => "foo"]);
+    $this->assertEquals("foo", $form->a->data);
+    $this->assertTrue($form->validate());
   }
 
-  /**
-   * Test for populated by Data
-   */
-  public function testPopulateByData()
+  public function testFormPropertySettingAndUnsetting()
   {
-    $form = Forms::create($this->annotated_helper, [], ['first_name' => "Chester", 'last_name' => "Tester"]);
-    $this->assertEquals('Chester', $form['first_name']->value);
-    $this->assertNull($form['middle_name']);
+    $form = new TestForm();
+    // Test assigning data to a field
+    $form->a = "foo";
+    $this->assertTrue($form->a instanceof StringField);
+    $this->assertEquals("foo", $form->a->data);
+    $form->a->data = "baz";
+    $this->assertEquals("baz", $form->a->data);
+
+    // test for non-field attribute assignment
+    $form->foo = "bar";
+    $this->assertObjectHasAttribute("foo", $form);
+    $this->assertEquals("bar", $form->foo);
+
+    // test unsetting dynamic form field assignment
+    unset($form->a);
+    $this->assertObjectNotHasAttribute("a", $form);
+    $this->assertNull($form->a);
+
+    // test unsetting non-field dynamic assignment
+    unset($form->foo);
+    $this->assertObjectNotHasAttribute("foo", $form);
+    $this->assertNull($form->foo);
   }
 
-  /**
-   * Test for populated by Object
-   */
-  public function testPopulateByObject()
+  public function testOrderedField()
   {
-    $form = Forms::create($this->annotated_helper, [], [], (object) ['first_name'=>"Chester", 'last_name'=>"Tester"]);
-    $this->assertEquals('Chester', $form['first_name']->value);
-    $this->assertNull($form['middle_name']);
+    $form = new TestForm();
+    $fields = [];
+    foreach ($form as $field) {
+      $fields[] = $field->name;
+    }
+    $this->assertTrue($fields[0] == "Foo-a");
+    $this->assertTrue($fields[1] == "Foo-b");
+    $this->assertTrue($fields[2] == "Foo-c");
+    unset($form->b);
+    $fields = [];
+    foreach ($form as $field) {
+      $fields[] = $field->name;
+    }
+    $this->assertTrue($fields[0] == "Foo-a");
+    $this->assertTrue($fields[1] == "Foo-c");
+  }
+
+  public function testFormSerialize()
+  {
+    $form = new TestForm();
+    $serialized = serialize($form);
+    $unserialized = unserialize($serialized);
+    $this->assertTrue($unserialized instanceof $form);
+    $this->assertEquals($form, $unserialized);
+  }
+
+  public function testPopulateObj()
+  {
+    $form = new TestForm(['a' => "foobar"]);
+    $obj = new \stdClass();
+    $obj->a = "baz";
+    $obj = $form->populateObj($obj);
+    $this->assertEquals("foobar", $obj->a);
+  }
+
+  public function testPopulateArray()
+  {
+    $form = new TestForm(['a' => "foobar"]);
+    $arr = ["a" => "baz"];
+    $arr = $form->populateArray($arr);
+    $this->assertEquals("foobar", $arr['a']);
+  }
+
+  public function testPopulate()
+  {
+    $form = new TestForm(["a" => "foobar"]);
+    $obj = new \stdClass();
+    $obj->a = "baz";
+    $arr = ["a" => "baz"];
+    $this->assertEquals("foobar", $form->populate($obj)->a);
+    $this->assertEquals("foobar", $form->populate($arr)["a"]);
+  }
+
+  public function testDataArg()
+  {
+    $form = new TestForm(["data" => ["a" => "foo"]]);
+    $this->assertEquals("foo", $form->a->data);
+    $form = new TestForm(["data" => ["a" => "foo"], "a" => "bar"]);
+    $this->assertEquals("bar", $form->a->data);
   }
 }

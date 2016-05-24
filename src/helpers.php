@@ -116,6 +116,7 @@ if (!function_exists('html_params')) {
   function html_params($options)
   {
     $params = [];
+    ksort($options);
     foreach ($options as $key => $value) {
       if (in_array($key, ['class_', 'class__', 'for_'])) {
         $key = str_replace("_", "", $key);
@@ -175,5 +176,105 @@ if (!function_exists('starts_with')) {
     }
 
     return strpos($haystack, $needle) === 0;
+  }
+}
+
+if (!class_exists('Itertools')) {
+  class Itertools
+  {
+    /**
+     * Make a generator that returns `$thing` over and over again.
+     * Runs indefinitely unless `$times` is
+     *
+     * @param mixed $thing
+     * @param null  $times
+     *
+     * @return Generator
+     */
+    public static function repeat($thing, $times = null)
+    {
+      if (is_null($times)) {
+        while (true) {
+          yield $thing;
+        }
+      }
+      assert(is_int($times) && $times > 0, '$times must be a positive integer if it is not null');
+      for ($i = 0; $i < $times; $i++) {
+        yield $thing;
+      }
+    }
+
+    /**
+     * @param array $iterables
+     *
+     * @return Generator
+     */
+    public static function chain(array $iterables)
+    {
+      for ($i = 0; $i < count($iterables); $i++) {
+        for ($j = 0; $j < count($iterables[$i]); $j++) {
+          yield $iterables[$i][$j];
+        }
+      }
+    }
+
+    /**
+     * @param int $start
+     * @param int $step
+     *
+     * @return Generator
+     */
+    public static function count($start = 0, $step = 1)
+    {
+      $n = $start;
+      while (true) {
+        yield $n;
+        $n += $step;
+      }
+    }
+
+    /**
+     * @param $iterable
+     *
+     * @return Generator
+     */
+    public static function cycle($iterable)
+    {
+      while (true) {
+        for ($i = 0; $i < count($iterable); $i++) {
+          yield $iterable[$i];
+        }
+      }
+    }
+
+    public static function iFilter(callable $predicate = null, Iterator $iterable)
+    {
+      if (is_null($predicate)) {
+        $predicate = function ($thing) {
+          return boolval($thing);
+        };
+      }
+      foreach ($iterable as $x) {
+        if ($predicate($x)) {
+          yield $x;
+        }
+      }
+    }
+
+    public static function iFilterFalse(callable $predicate = null, Iterator $iterable)
+    {
+      if (is_null($predicate)) {
+        $predicate = function ($thing) {
+          return boolval($thing);
+        };
+      }
+      foreach ($iterable as $x) {
+        if (!$predicate($x)) {
+          yield $x;
+        }
+      }
+    }
+
+
   }
 }

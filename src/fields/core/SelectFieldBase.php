@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\NotImplemented;
 use WTForms\Widgets\Core\Option;
 
@@ -31,13 +32,13 @@ abstract class SelectFieldBase extends Field implements \Iterator
   /**
    * SelectFieldBase constructor.
    *
-   * @param string $label
-   * @param array  $options
+   * @param Form  $form
+   * @param array $options
    */
-  public function __construct($label = "", array $options = ['validators' => [], 'option_widget' => null])
+  public function __construct(array $options = [], Form $form = null)
   {
-    $options = array_merge(['validators' => [], 'option_widget' => null], $options);
-    parent::__construct($label, $options);
+    $options = array_merge(['option_widget' => null], $options);
+    parent::__construct($options, $form);
     $this->option_widget = $options['option_widget'] ?: new Option();
     if (is_string($this->option_widget)) {
       $w = $this->option_widget;

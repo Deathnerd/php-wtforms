@@ -21,7 +21,7 @@ class IntegerField extends \WTForms\Fields\Core\IntegerField
    */
   public function __construct($label = "", array $options = [])
   {
-    parent::__construct($label, $options);
+    parent::__construct($options);
     $this->widget = new NumberInput(["step" => "1"]);
   }
 }

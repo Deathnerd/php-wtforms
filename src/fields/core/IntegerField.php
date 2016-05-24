@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\ValueError;
 use WTForms\Widgets\Core\TextInput;
 
@@ -23,16 +24,16 @@ class IntegerField extends Field
    * @var TextInput
    */
   public $widget;
-  
+
   /**
    * IntegerField constructor.
    *
-   * @param string $label
-   * @param array  $options
+   * @param Form  $form
+   * @param array $options
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
     $this->widget = new TextInput();
   }
 

@@ -14,14 +14,47 @@ use WTForms\Fields\Core\Field;
 /**
  * Class Form
  * @package WTForms
+ * @property array $data
+ * @property
  */
 class Form implements \ArrayAccess, \Iterator
 {
+  /**
+   * If this is set, every field of this form
+   * will have their name prefixed with this value
+   * e.g. "foo-bar"
+   * @var string
+   */
   public $prefix = "";
+  /**
+   * The input fields on the form
+   * @var array<Field>
+   */
   public $fields = [];
+  /**
+   * The errors produced when the form runs
+   * validation on its fields
+   * @var array
+   */
   public $errors = [];
+  /**
+   * The meta object used for binding fields,
+   * interacting with widgets, etc.
+   * @var DefaultMeta
+   */
   public $meta;
+  /**
+   * Will hold the CSRF validation implementation
+   * when it is complete
+   * @var object
+   */
   public $csrf;
+  /**
+   * Will hold the translations class when the
+   * translations are in place
+   * @var object
+   */
+  public $translations;
 
   use FormArrayable;
   use FormIterator;
@@ -29,17 +62,13 @@ class Form implements \ArrayAccess, \Iterator
   /**
    * Form constructor.
    *
-   * @param Field[]          $fields
-   * @param string           $prefix
-   * @param DefaultMeta|null $meta
+   * @param array $options
    */
-  public function __construct(array $fields = [], $prefix = "", $meta = null)
+  public function __construct(array $options = [])
   {
-    $this->fields = $fields;
-    if ($prefix && !str_contains("-_;:/.", substr($prefix, -1)))
-      $prefix .= "-";
-    $this->prefix = $prefix;
-    $this->meta = $meta;
+    if ($this->prefix && !str_contains("-_;:/.", substr($this->prefix, -1))) {
+      $this->prefix .= "-";
+    }
 
   }
 
@@ -86,27 +115,52 @@ class Form implements \ArrayAccess, \Iterator
     }
 
     // Return the field as a property
-    return $this->fields[$field_name];
+    return array_key_exists($field_name, $this->fields) ? $this->fields[$field_name] : null;
   }
 
   /**
    * Allow setting a field on the form as a property
    *
-   * @param string $field_name The name of the field to add to the current fields
-   * @param Field  $field      The field object to add
+   * @param string $name  The name of the field to add to the current fields
+   * @param mixed  $value The field object to add
    */
-  public function __set($field_name, Field $field)
+  public function __set($name, $value)
   {
-    $this->fields[$field_name] = $field;
+    if ($value instanceof Field) {
+      if (!$value->form) {
+        $value->form = $this;
+      }
+      if (!$value->prefix) {
+        $value->prefix = $this->prefix;
+      }
+      if (!$value->short_name) {
+        $value->short_name = $name;
+      }
+      if (!$value->name) {
+        $value->name = $value->prefix . $name;
+      }
+      if (!$value->id) {
+        $value->id = $value->name;
+      }
+      $this->fields[$name] = $value;
+    } elseif (array_key_exists($name, $this->fields)) {
+      $this->fields[$name]->data = $value;
+    } else {
+      $this->$name = $value;
+    }
   }
 
   /**
-   *
-   * @param string $field_name The name of the field to unset
+   * @param string $name The name of the field to unset
    */
-  public function __unset($field_name)
+  public function __unset($name)
   {
-    unset($this->fields[$field_name]);
+    if (array_key_exists($name, $this->fields)) {
+      unset($this->fields[$name]);
+    } else {
+      unset($this->$name);
+    }
+    
   }
 
   /**
@@ -175,5 +229,46 @@ class Form implements \ArrayAccess, \Iterator
     }
 
     return $array;
+  }
+
+  public function process(array $options)
+  {
+    if (array_key_exists("formdata", $options)) {
+      $formdata = $options['formdata'];
+      unset($options['formdata']);
+    } else {
+      $formdata = [];
+    }
+
+    if (array_key_exists("obj", $options)) {
+      $obj = $options['obj'];
+      unset($options['obj']);
+    } else {
+      $obj = null;
+    }
+
+    if (array_key_exists("data", $options)) {
+      $data = $options['data'];
+      unset($options['data']);
+    } else {
+      $data = [];
+    }
+
+    // If a field's value was declared by name in the options
+    // then it has precedence over its entry in the data
+    // dictionary
+    if ($data && is_array($data)) {
+      $options = array_merge($data, $options);
+    }
+
+    foreach ($this->fields as $name => $field) {
+      if ($obj && property_exists($obj, $name)) {
+        $field->process($formdata, $obj->{$name});
+      } elseif (array_key_exists($name, $options)) {
+        $field->process($formdata, $options[$name]);
+      } else {
+        $field->process($formdata);
+      }
+    }
   }
 }

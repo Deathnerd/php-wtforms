@@ -8,6 +8,8 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
+
 
 /**
  * Same as DateTimeField, except stores a date (actually still a DateTime,
@@ -16,11 +18,14 @@ namespace WTForms\Fields\Core;
  */
 class DateField extends DateTimeField
 {
+
+  public $format = "Y-m-d";
+  
   /**
    * @inheritdoc
    */
-  public function __construct($label = '', array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, array_merge(['format' => "Y-m-d"], $options));
+    parent::__construct($options, $form);
   }
 }

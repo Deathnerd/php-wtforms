@@ -21,9 +21,9 @@ class URL extends Validator
    * URL constructor.
    *
    * @param string $message Error message to raise in case of a validation error
-   * @param array  $other_options
+   * @param array  $options
    */
-  public function __construct($message = "", array $other_options = [])
+  public function __construct($message = "", array $options = [])
   {
     $this->message = $message;
   }

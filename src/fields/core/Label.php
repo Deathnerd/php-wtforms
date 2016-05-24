@@ -11,9 +11,22 @@ namespace WTForms\Fields\Core;
 
 class Label
 {
+  /**
+   * @var string The id of the field this label is for. Will be
+   *             rendered in the `for` attribute for the label
+   */
   public $field_id = "";
+  /**
+   * @var string The text for the label
+   */
   public $text = "";
 
+  /**
+   * Label constructor.
+   *
+   * @param string $field_id
+   * @param string $text
+   */
   public function __construct($field_id, $text)
   {
     $this->field_id = $field_id;
@@ -25,11 +38,18 @@ class Label
     return (string)$this->__invoke();
   }
 
-  public function __invoke($text = null, array $options = [])
+  /**
+   * @param array $options The options to pass to the tag when rendering
+   *
+   * @return string The rendered label
+   */
+  public function __invoke(array $options = [])
   {
-    $options = array_merge(["for" => $this->field_id], $options);
+    $options = array_merge(["for" => $this->field_id, "text" => $this->text], $options);
+    $text = $options['text'];
+    unset($options['text']);
 
-    return sprintf("<label %s>%s</label>", html_params($options), $text !== null ? $text : $this->text);
+    return sprintf("<label %s>%s</label>", html_params($options), $text);
   }
 
   public function __get($name)

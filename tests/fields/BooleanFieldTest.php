@@ -15,7 +15,7 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use WTForms\Forms;
 use WTForms\Tests\SupportingClasses\AnnotatedHelper;
 
-class BooleanFieldTest extends \PHPUnit_Framework_TestCase
+/*class BooleanFieldTest extends \PHPUnit_Framework_TestCase
 {
   protected $annotated_helper;
   protected $registry;
@@ -80,4 +80,4 @@ class BooleanFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals(true, $form['bool1']->data);
     $this->assertEquals(false, $form['bool2']->data);
   }
-}
+}*/

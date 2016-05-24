@@ -60,7 +60,7 @@ class F2
   public $a;
 }
 
-class FormFieldTest extends \PHPUnit_Framework_TestCase
+/*class FormFieldTest extends \PHPUnit_Framework_TestCase
 {
   protected $registry;
   protected $reader;
@@ -84,4 +84,4 @@ class FormFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals("", $form->a['b']->data);
     $this->assertTrue($form->validate());
   }
-}
+}*/

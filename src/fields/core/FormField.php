@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Form;
 use WTForms\Forms;
 
 /**
@@ -17,30 +18,19 @@ use WTForms\Forms;
 class FormField extends Field
 {
 
-  public $separator;
+  public $separator = "-";
   protected $form_class;
   private $_obj;
 
   /**
-   *
-   *
-   * @param string $label
-   * @param array  $options
-   *
+   * @inheritdoc
    * @throws \TypeError
    */
-  public function __construct($label, array $options)
+  public function __construct(array $options = [], Form $form = null)
   {
     if (!$options['form_class']) {
       throw new \TypeError("FormField must have a form_class property set!");
     }
-
-    $this->form_class = $options['form_class'];
-    $this->separator = $options['separator'] ?: "-";
-    $this->_obj = null;
-
-    parent::__construct($label, $options);
-
     if ($this->filters) {
       throw new \TypeError("FormField cannot take filters, as the encapsulated data is not mutable");
     }
@@ -48,6 +38,15 @@ class FormField extends Field
     if ($options['validators']) {
       throw new \TypeError("FormField does not accept any validators. Instead, define them on the enclosed form.");
     }
+
+    $this->form_class = $options['form_class'];
+    if (array_key_exists('separator', $options)) {
+      $this->separator = $options['separator'];
+      unset($options['separator']);
+    }
+    $this->_obj = null;
+
+    parent::__construct($options, $form);
   }
 
   /**
@@ -68,9 +67,9 @@ class FormField extends Field
     $prefix = $this->name . $this->separator;
 
     if (is_array($data)) {
-      $this->form = Forms::createWithOptions($this->form_class, ["prefix" => $prefix], $formdata, $data);
+      $this->form = new $this->form_class(["prefix" => $prefix, "formdata" => $formdata, "data" => $data]);
     } else {
-      $this->form = Forms::createWithOptions($this->form_class, ["prefix" => $prefix], $formdata, [], $data);
+      $this->form = new $this->form_class(["prefix" => $prefix, "formdata" => $formdata, "obj" => $data]);
     }
   }
 

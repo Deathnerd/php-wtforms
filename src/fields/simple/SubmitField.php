@@ -23,7 +23,7 @@ class SubmitField extends BooleanField
    */
   public function __construct($label = "", array $options = [])
   {
-    parent::__construct($label, $options);
+    parent::__construct($options);
     $this->widget = new SubmitInput();
   }
 

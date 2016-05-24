@@ -9,6 +9,7 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Fields\Core\SelectField;
 
 /**
  * Renders a select field.
@@ -27,8 +28,8 @@ class Select extends Widget
   public $multiple = false;
 
   /**
-   * @param Field $field
-   * @param array $options
+   * @param Field|SelectField $field
+   * @param array             $options
    *
    * @return string
    * @throws \WTForms\NotImplemented
@@ -42,8 +43,8 @@ class Select extends Widget
     }
 
     $html = sprintf("<select %s>", html_params($options));
-    foreach ($field->getChoices() as $choice) {
-      $html .= self::renderOption($choice["value"], $choice["label"], $choice["selected"]);
+    foreach ($field->getChoices() as list($value, $label, $selected)) {
+      $html .= self::renderOption($value, $label, $selected);
     }
     $html .= "</select>";
 

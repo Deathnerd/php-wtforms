@@ -49,12 +49,12 @@ class ListWidget extends Widget
   }
 
   /**
-   * @param Field $field
-   * @param array $options
+   * @param Field|mixed $field
+   * @param array       $options
    *
    * @return string
    */
-  public function __invoke(Field $field, $options = [])
+  public function __invoke($field, array $options = [])
   {
     $options = array_merge(["id" => $field->id], $options);
     $html = sprintf("<%s %s>", $this->html_tag, html_params($options));

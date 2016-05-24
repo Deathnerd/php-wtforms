@@ -8,9 +8,6 @@
 
 namespace WTForms;
 
-/**
- * @property $fields
- */
 trait FormArrayable
 {
   public function offsetExists($offset)

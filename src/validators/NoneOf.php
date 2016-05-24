@@ -19,17 +19,12 @@ use WTForms\Form;
 class NoneOf extends AnyOf
 {
   /**
-   * NoneOf constructor.
-   *
-   * @param string $message Error message to raise in case of a validation error.
-   *
-   * @todo User interpolation
-   *
-   * @param array  $other_options
+   * NoneOf Constructor
+   * @inheritdoc
    */
-  public function __construct($message = "", array $other_options = ['values' => []])
+  public function __construct($message = "", array $options = ['values' => []])
   {
-    parent::__construct($message, $other_options);
+    parent::__construct($message, $options);
   }
 
   /**
@@ -42,6 +37,8 @@ class NoneOf extends AnyOf
       $values_string = $this->formatter($this->values);
       if ($message == "") {
         $message = "Invalid value, can't be any of: $values_string.";
+      } else {
+        $message = sprintf($message, $values_string);
       }
       throw new ValidationError($message);
     }

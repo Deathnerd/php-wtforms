@@ -44,34 +44,6 @@ class DefaultMeta
   public $csrf_class = null;
 
   /**
-   * `wrap_formdata` allows doing custom wrappers of WTForms formdata.
-   *
-   * Unlike the original Python implementation, PHP doesn't have to use
-   * WSGI middleware to interact with the HTTP request and can instead access
-   * POST,GET, and other HTTP Response data directly. The original Python
-   * implemented a Webob wrapper, which is a PEP spec interface.
-   *
-   * This implementation instead is for interfacing with other frameworks
-   * and libraries such as Illuminate's Collection and (in the future)
-   * Laravel and Symfony type HTTPResponse objects.
-   *
-   * It takes in an iterable object and converts them to plain PHP arrays.
-   *
-   * Override if you need to implement your own wrapper.
-   * TODO: Accept Symfony HTTP Response objects
-   *
-   * @param Form         $form
-   * @param array|object $formdata
-   *
-   * @return array
-   */
-  public function wrap_formdata(/** @noinspection PhpUnusedParameterInspection */
-      Form $form, $formdata)
-  {
-    return $formdata;
-  }
-
-  /**
    * @param Field $field
    * @param array $render_kw
    *

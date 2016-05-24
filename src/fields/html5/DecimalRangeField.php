@@ -8,7 +8,6 @@
 
 namespace WTForms\Fields\HTML5;
 
-use WTForms\Fields\Core\DecimalField;
 use WTForms\Widgets\HTML5\RangeInput;
 
 /**
@@ -20,9 +19,9 @@ class DecimalRangeField extends DecimalField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [])
   {
-    parent::__construct($label, $options);
+    parent::__construct($options);
     $this->widget = new RangeInput(["step" => "any"]);
   }
 }

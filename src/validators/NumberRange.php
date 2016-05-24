@@ -33,17 +33,13 @@ class NumberRange extends Validator
    * NumberRange constructor.
    *
    * @param string $message Error message to raise in case of a validation error. // TODO: User interpolation
-   * @param array  $other_options
+   * @param array  $options
    *
-   * @internal                     param float|int $min The minimum required value of the number. If not provided,
-   *                               minimum value will not be checked
-   * @internal                     param float|int $max The maximum value of the number. If not provided, maximum
-   *                               value will not be checked
    */
-  public function __construct($message = "", array $other_options = ['min' => null, 'max' => null])
+  public function __construct($message = "", array $options = ['min' => null, 'max' => null])
   {
-    $this->min = $other_options['min'];
-    $this->max = $other_options['max'];
+    $this->min = $options['min'];
+    $this->max = $options['max'];
     $this->message = $message;
   }
 

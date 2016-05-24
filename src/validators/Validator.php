@@ -23,7 +23,7 @@ class Validator
    */
   public $field_flags = [];
 
-  public function __construct($message = "", array $other_options = [])
+  public function __construct($message = "", array $options = [])
   {
     throw new NotImplemented("Validator must have an overridden __construct method");
   }
