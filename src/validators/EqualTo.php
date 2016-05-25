@@ -22,12 +22,15 @@ class EqualTo extends Validator
   public $fieldname;
 
   /**
-   * TODO: Interpolation of other_label and other_name
-   *
+   * @var null|callable
+   */
+  private $user_formatter;
+
+  /**
    * @param string $message Error message to raise in case of a validation error.
    * @param array  $options
    *
-   * @internal param string $fieldname The name of the other field to compare to
+   * @throws \TypeError
    */
   public function __construct($message = "", array $options = ['fieldname' => ''])
   {
@@ -36,6 +39,14 @@ class EqualTo extends Validator
     }
     $this->fieldname = $options['fieldname'];
     $this->message = $message;
+    if (array_key_exists('formatter', $options)) {
+      if (!is_null($options['formatter']) && !is_callable($options['formatter'])) {
+        throw new \TypeError("Formatter must be a callable; " . gettype($options['formatter']) . " found");
+      }
+      $this->user_formatter = $options['formatter'];
+    } else {
+      $this->user_formatter = null;
+    }
   }
 
   /**
@@ -73,8 +84,8 @@ class EqualTo extends Validator
     }
 
     return [
-        "other_label" => property_exists($other, 'label') ? $other->label->text : $this->fieldname,
-        "other_name"  => $this->fieldname,
+        property_exists($other, 'label') ? $other->label->text : $this->fieldname,
+        $this->fieldname,
     ];
   }
 }

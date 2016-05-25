@@ -6,7 +6,7 @@
  * Time: 9:08 PM
  */
 
-namespace WTForms\Tests\validators;
+namespace WTForms\Tests\Validators;
 
 
 use WTForms\Form;
