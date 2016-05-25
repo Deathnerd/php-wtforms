@@ -36,7 +36,7 @@ class NumberInput extends Input
   /**
    * @inheritdoc
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     foreach (['step', 'min', 'max'] as $option) {
       if (!array_key_exists($option, $options) && $this->$option) {

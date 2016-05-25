@@ -44,7 +44,7 @@ class TableWidget extends Widget
    *
    * @return string
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     $html = "";
     $hidden = "";

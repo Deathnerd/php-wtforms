@@ -18,5 +18,9 @@
                 <file>../src/ValueError.php</file>
             </exclude>
         </whitelist>
+        <blacklist>
+            <directory suffix=".php">../tests</directory>
+            <directory suffix=".php">../vendor</directory>
+        </blacklist>
     </filter>
 </phpunit>

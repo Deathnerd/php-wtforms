@@ -35,7 +35,7 @@ class RangeInput extends Input
    *
    * @return string
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     return parent::__invoke($field, array_merge(["step" => $this->step], $options));
   }

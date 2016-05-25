@@ -43,7 +43,7 @@ class PasswordInput extends Input
    *
    * @return string
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     if ($this->hide_value) {
       $options['value'] = "";

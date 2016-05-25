@@ -21,7 +21,8 @@ use WTForms\Fields\Core\Field;
 class Option
 {
   public $field_flags = [];
-  public function __invoke(Field $field, array $options = [])
+
+  public function __invoke($field, array $options = [])
   {
     return Select::renderOption($field->value, $field->label->text, $field->checked, $options);
   }

@@ -30,25 +30,35 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
    */
   public function testAnyOfValuesFormatter()
   {
-    $any_of = new AnyOf("test %s", ["values" => [7, 8, 9]]);
-    $any_of(new Form(), new DummyField(['data' => 4]));
+    (new AnyOf("test %s", ["values" => [7, 8, 9]]))->__invoke(new Form(), new DummyField(['data' => 4]));
   }
 
   /**
    * @expectedException \WTForms\Validators\ValidationError
+   * @expectedExceptionMessage test 9::8::7
+   */
+  public function testAnyOfValuesFormatterOverride()
+  {
+    (new AnyOf("test %s", ["values" => [7, 8, 9], "formatter" => function ($values) {
+      return implode("::", array_reverse($values));
+    }]))->__invoke(new Form(), new DummyField(["data" => 4]));
+  }
+
+  /**
+   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedExceptionMessage Invalid value, must be one of: a, b, c
    */
   public function testAnyOfValueErrorExceptions1()
   {
-    $any_of = new AnyOf("", ["values" => ['a', 'b', 'c']]);
-    $this->assertNull($any_of(new Form(), new DummyField()));
+    (new AnyOf("", ["values" => ['a', 'b', 'c']]))->__invoke(new Form(), new DummyField());
   }
 
   /**
    * @expectedException \WTForms\Validators\ValidationError
+   * @expectedExceptionMessage Invalid value, must be one of: 1, 2, 3
    */
   public function testAnyOfValueErrorExceptions2()
   {
-    $any_of = new AnyOf("", ["values" => [1, 2, 3]]);
-    $this->assertNull($any_of(new Form(), new DummyField(['data' => 4])));
+    (new AnyOf("", ["values" => [1, 2, 3]]))->__invoke(new Form(), new DummyField(['data' => 4]));
   }
 }

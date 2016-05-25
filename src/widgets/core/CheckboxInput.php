@@ -33,7 +33,7 @@ class CheckboxInput extends Input
    *
    * @return string|void
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     if ($field->checked or $field->data) {
       $options['checked'] = true;

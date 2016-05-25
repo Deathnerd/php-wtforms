@@ -9,36 +9,8 @@
 namespace WTForms\Tests\Widgets;
 
 
-use WTForms\Fields\Core\Field;
-use WTForms\Form;
 use WTForms\Widgets\Core\Select;
-
-class DummyField extends Field
-{
-  public function __construct(array $options = [], Form $form = null)
-  {
-    parent::__construct($options, $form);
-    $this->label = $options['label'] ?: $this->label;
-    $this->data = $options['data'] ?: $this->data;
-    $this->type = $options['type'] ?: 'TextField';
-    $this->id = $options['id'] ?: $this->id;
-  }
-
-  public function __toString()
-  {
-    return $this->data;
-  }
-
-  public function __invoke($options = [])
-  {
-    return $this->data;
-  }
-
-  public function __call($name, $arguments)
-  {
-    return $this->data;
-  }
-}
+use WTForms\Tests\Widgets\DummyField;
 
 class SelectTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,6 +32,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
   {
     $this->assertEquals('<select id="" name="f"><option selected value="foo">lfoo</option><option value="bar">lbar</option></select>', (new Select())->__invoke($this->field));
     $this->assertEquals('<select id="" multiple name="f"><option selected value="foo">lfoo</option><option value="bar">lbar</option></select>', (new Select())->__invoke($this->field, ['multiple' => true]));
+    $widget = new Select();
+    $widget->multiple = true;
+    $this->assertEquals('<select id="" multiple name="f"><option selected value="foo">lfoo</option><option value="bar">lbar</option></select>', $widget($this->field));
   }
 
   public function testRenderOption()

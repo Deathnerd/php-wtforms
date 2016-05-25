@@ -33,7 +33,7 @@ class RadioInput extends Input
    *
    * @return string
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     if ($field->checked) {
       $options['checked'] = true;

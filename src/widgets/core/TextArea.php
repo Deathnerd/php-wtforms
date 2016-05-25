@@ -25,7 +25,7 @@ class TextArea extends Widget
    *
    * @return string
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     $options = array_merge(["id" => $field->id], $options);
     $options['name'] = $field->name;

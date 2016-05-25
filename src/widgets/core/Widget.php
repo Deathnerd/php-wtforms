@@ -20,12 +20,12 @@ class Widget
   public $field_flags = [];
 
   /**
-   * @param Field $field
-   * @param array $options
+   * @param Field|mixed $field
+   * @param array       $options
    *
    * @throws NotImplemented
    */
-  public function __invoke(Field $field, array $options = [])
+  public function __invoke($field, array $options = [])
   {
     throw new NotImplemented("Widget needs an __invoke method");
   }
