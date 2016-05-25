@@ -21,6 +21,6 @@ class URLInput extends Input
    */
   public function __construct()
   {
-    parent::__construct("tel");
+    parent::__construct("url");
   }
 }
