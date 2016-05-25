@@ -17,7 +17,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
 {
   public function testLength()
   {
-    $field = new DummyField("", ["data" => "foobar"]);
+    $field = new DummyField(["data" => "foobar"]);
     $length = new Length("", ['min' => 2, 'max' => 6]);
     $baseForm = new Form();
     $this->assertNull($length($baseForm, $field));

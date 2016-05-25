@@ -198,7 +198,9 @@ class Field implements \Iterator
     foreach ($this->validators as $v) {
       $t[] = $v;
     }
-    $t[] = $this->widget;
+    if ($this->widget instanceof Widget) {
+      $t[] = $this->widget;
+    }
     foreach ($t as $v) {
       if ($v->field_flags) {
         foreach ($v->field_flags as $flag) {
