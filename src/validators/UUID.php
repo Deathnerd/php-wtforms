@@ -39,10 +39,10 @@ class UUID extends Regexp
   {
     $message = $this->message;
     if (!$message) {
-      $message = "Invalid URL.";
+      $message = "Invalid UUID.";
     }
 
-    return parent::__invoke($form, $field, $message);
+    parent::__invoke($form, $field, $message);
   }
 
 }

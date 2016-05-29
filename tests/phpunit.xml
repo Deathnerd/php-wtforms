@@ -16,6 +16,7 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../src/fields</directory>
             <directory suffix=".php">../src/widgets</directory>
+            <directory suffix=".php">../src/validators</directory>
             <exclude>
                 <file>../src/NotImplemented.php</file>
                 <file>../src/ValueError.php</file>
