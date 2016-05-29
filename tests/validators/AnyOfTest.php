@@ -34,6 +34,33 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
+   * @expectedException \WTForms\TypeError
+   * @expectedExceptionMessage AnyOf validator expects an array of values!
+   */
+  public function testNoValues()
+  {
+    (new AnyOf("test %s"));
+  }
+
+  /**
+   * @expectedException \WTForms\TypeError
+   * @expectedExceptionMessage Values passed to AnyOf must be in the form of an array
+   */
+  public function testInvalidValues()
+  {
+    (new AnyOf("test %s", ["values" => 5]));
+  }
+
+  /**
+   * @expectedException \WTForms\TypeError
+   * @expectedExceptionMessage Formatter must be a callable; integer found
+   */
+  public function testInvalidFormatter()
+  {
+    (new AnyOf("test %s", ["values" => [1, 2, 3], "formatter" => 5]));
+  }
+
+  /**
    * @expectedException \WTForms\Validators\ValidationError
    * @expectedExceptionMessage test 9::8::7
    */

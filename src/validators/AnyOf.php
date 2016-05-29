@@ -10,6 +10,7 @@ namespace WTForms\Validators;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\TypeError;
 
 
 /**
@@ -37,21 +38,21 @@ class AnyOf extends Validator
    *                              The formatter takes in one argument: an array of the values that were passed in during
    *                              validator construction
    *
-   * @throws \TypeError
+   * @throws TypeError
    */
-  public function __construct($message = "", array $options = ['values' => [], 'formatter' => null])
+  public function __construct($message = "", array $options = ['formatter' => null])
   {
     if (!array_key_exists('values', $options)) {
-      throw new \TypeError("AnyOf validator expects an array of values!");
+      throw new TypeError("AnyOf validator expects an array of values!");
     }
 
     if (!is_array($options['values'])) {
-      throw new \TypeError("Values passed to AnyOf must be in the form of an array");
+      throw new TypeError("Values passed to AnyOf must be in the form of an array");
     }
 
     if (array_key_exists('formatter', $options)) {
       if (!is_null($options['formatter']) && !is_callable($options['formatter'])) {
-        throw new \TypeError("Formatter must be a callable; " . gettype($options['formatter']) . " found");
+        throw new TypeError("Formatter must be a callable; " . gettype($options['formatter']) . " found");
       }
       $this->user_formatter = $options['formatter'];
     } else {
