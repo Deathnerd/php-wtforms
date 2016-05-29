@@ -9,6 +9,7 @@
 namespace WTForms\Tests\Validators;
 
 
+use Whoops\Run;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\EqualTo;
@@ -33,6 +34,15 @@ class EqualToTest extends \PHPUnit_Framework_TestCase
       $triggered_validation_error = $e->getMessage();
     }
     $this->assertFalse($triggered_validation_error);
+  }
+
+  /**
+   * @expectedException \RuntimeException
+   * @expectedExceptionMessage EqualTo requires fieldname!
+   */
+  public function testNoFieldnameSupplied()
+  {
+    (new EqualTo("", []));
   }
 
   /**

@@ -22,11 +22,6 @@ class EqualTo extends Validator
   public $fieldname;
 
   /**
-   * @var null|callable
-   */
-  private $user_formatter;
-
-  /**
    * @param string $message Error message to raise in case of a validation error.
    * @param array  $options
    *
@@ -34,19 +29,11 @@ class EqualTo extends Validator
    */
   public function __construct($message = "", array $options = ['fieldname' => ''])
   {
-    if (!$options['fieldname']) {
+    if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
       throw new \RuntimeException("EqualTo requires fieldname!");
     }
     $this->fieldname = $options['fieldname'];
     $this->message = $message;
-    if (array_key_exists('formatter', $options)) {
-      if (!is_null($options['formatter']) && !is_callable($options['formatter'])) {
-        throw new \TypeError("Formatter must be a callable; " . gettype($options['formatter']) . " found");
-      }
-      $this->user_formatter = $options['formatter'];
-    } else {
-      $this->user_formatter = null;
-    }
   }
 
   /**
@@ -67,25 +54,12 @@ class EqualTo extends Validator
 
     if ($field->data != $other->data) {
       $message = $this->message;
-      list($other_label, $other_name) = $this->formatter($other);
+      $d = ["other_name"  => $this->fieldname,
+            "other_label" => property_exists($other, 'label') && property_exists($other->label, 'text') ? $other->label->text : $this->fieldname];
       if ($message == "") {
-        $message = sprintf("Field must be equal to %s", $other_name);
-      } else {
-        $message = sprintf($message, $other_name, $other_label);
+        $message = "Field must be equal to %(other_name)s";
       }
-      throw new ValidationError($message);
+      throw new ValidationError(vsprintf_named($message, $d));
     }
-  }
-
-  protected function formatter(Field $other)
-  {
-    if (!is_null($this->user_formatter) && is_callable($this->user_formatter)) {
-      return $this->user_formatter->__invoke($other);
-    }
-
-    return [
-        property_exists($other, 'label') ? $other->label->text : $this->fieldname,
-        $this->fieldname,
-    ];
   }
 }
