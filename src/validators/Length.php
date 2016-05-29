@@ -11,6 +11,8 @@ namespace WTForms\Validators;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\TypeError;
+use WTForms\ValueError;
 
 /**
  * Validates the length of a string
@@ -31,14 +33,21 @@ class Length extends Validator
   /**
    * Validates the length of a string.
    *
-   * @param string $message Error message to raise in case of a validation error. TODO: Implement user interpolation
+   * @param string $message Error message to raise in case of a validation error.
    * @param array  $options
+   *
+   * @throws TypeError
+   * @throws ValueError
    */
   public function __construct($message = "", array $options = ['min' => -1, 'max' => -1])
   {
     $options = array_merge(['min' => -1, 'max' => -1], $options);
-    assert(($options['min'] != -1 || $options['max'] != -1), "At least one of `min` or `max` must be specified");
-    assert(($options['max'] == -1 || $options['min'] <= $options['max']), "`min` cannot be more than `max`");
+    if (!($options['min'] != -1 || $options['max'] != -1)) {
+      throw new TypeError("At least one of min or max must be specified");
+    }
+    if (!($options['max'] == -1 || $options['min'] <= $options['max'])) {
+      throw new ValueError("min cannot be more than max");
+    }
     $this->min = $options['min'];
     $this->max = $options['max'];
     $this->message = $message;
@@ -76,8 +85,10 @@ class Length extends Validator
         } else {
           $message = "Field must be between {$this->min} and {$this->max} characters long.";
         }
-        throw new ValidationError($message);
+      } else {
+        $message = vsprintf_named($message, ["min" => $this->min, "max" => $this->max]);
       }
+      throw new ValidationError($message);
     }
   }
 }
