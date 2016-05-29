@@ -274,7 +274,29 @@ if (!class_exists('Itertools')) {
         }
       }
     }
+  }
+}
 
+if (!function_exists('vsprintf_named')) {
+  /**
+   * @param string $format The named format string to parse. These are in the style of Python's named string formatting
+   *                       things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'} returns a string of
+   *                       "Sally walks with Rick".
+   *
+   * @param  array $args   An associative array of values to map to the specified keys in the format string. For example,
+   *                       ["foo" => "Sally", "bar" => 5]
+   *
+   * @return string The result of formatting the string with the given named parameters
+   */
+  function vsprintf_named($format, $args)
+  {
+    preg_match_all('/%\((.*?)\)/', $format, $matches, PREG_SET_ORDER);
+    $values = array();
+    foreach ($matches as $match) {
+      $values[] = $args[$match[1]];
+    }
+    $format = preg_replace('/%\((.*?)\)/', '%', $format);
 
+    return vsprintf($format, $values);
   }
 }

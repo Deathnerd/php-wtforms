@@ -41,4 +41,11 @@ class HelpersTest extends \PHPUnit_Framework_TestCase
     $this->assertFalse(str_contains("_foobar", "periwinkle"));
     $this->assertFalse(str_contains("_foobar", null));
   }
+
+  public function testVsprintfNamed()
+  {
+    $this->assertEquals("Sally walks with Rick", vsprintf_named("%(foo)s walks with %(bar)s", ["foo" => "Sally", "bar" => "Rick"]));
+    $this->assertEquals("Sally has 5 cats.", vsprintf_named("%(foo)s has %(num)d cats.", ["foo" => "Sally", "num" => 5]));
+    $this->assertEquals("Sally is not a crazy cat lady; she's just going through a rough romantic period in her life", vsprintf_named("%(foo)s is not a crazy cat lady; she's just going through a rough romantic period in her life", ["foo" => "Sally"]));
+  }
 }
