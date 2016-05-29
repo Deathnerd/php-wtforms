@@ -22,19 +22,14 @@
   "autoload": {
     "psr-4": {
       "WTForms\\": "src/",
-      "WTForms\\Annotations\\": "src/annotations/",
-      "WTForms\\Annotations\\Fields\\Core\\": "src/annotations/fields/core/",
-      "WTForms\\Annotations\\Fields\\HTML5\\": "src/annotations/fields/html5/",
-      "WTForms\\Annotations\\Fields\\Simple\\": "src/annotations/fields/simple/",
-      "WTForms\\Annotations\\Validators\\": "src/annotations/validators/",
       "WTForms\\CSRF\\": "src/csrf/",
       "WTForms\\Fields\\": "src/fields/",
       "WTForms\\Fields\\Core\\": "src/fields/core/",
       "WTForms\\Fields\\HTML5\\": "src/fields/html5/",
       "WTForms\\Fields\\Simple\\": "src/fields/simple/",
       "WTForms\\Widgets\\": "src/widgets/",
-      "WTForms\\Widgets\\Core\\": "src/widgets/core",
-      "WTForms\\Widgets\\HTML5\\": "src/widgets/html5",
+      "WTForms\\Widgets\\Core\\": "src/widgets/core/",
+      "WTForms\\Widgets\\HTML5\\": "src/widgets/html5/",
       "WTForms\\Validators\\": "src/validators/"
     },
     "files": [
@@ -56,6 +51,7 @@
   },
   "require-dev": {
     "filp/whoops": "^2.1",
-    "maximebf/debugbar": "1.*"
+    "maximebf/debugbar": "1.*",
+    "mockery/mockery": "0.9.*"
   }
 }
