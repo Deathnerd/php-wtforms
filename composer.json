@@ -7,10 +7,6 @@
     {
       "type": "vcs",
       "url": "https://github.com/deathnerd/php-wtforms.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/deathnerd/php-annotations.git"
     }
   ],
   "authors": [
