@@ -20,6 +20,9 @@
             <exclude>
                 <file>../src/NotImplemented.php</file>
                 <file>../src/ValueError.php</file>
+                <file>../src/validators/ValidatorError.php</file>
+                <file>../src/validators/StopValidation.php</file>
+                <file>../src/validators/Validator.php</file>
             </exclude>
         </whitelist>
         <blacklist>

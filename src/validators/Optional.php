@@ -42,7 +42,7 @@ class Optional extends Validator
    * @param array  $options
    *
    */
-  public function __construct($message = "", array $options = ['strip_whitespace' => false])
+  public function __construct($message = "", array $options = ['strip_whitespace' => true])
   {
     $this->strip_whitespace = $options['strip_whitespace'];
   }
@@ -56,9 +56,9 @@ class Optional extends Validator
    */
   public function __invoke(Form $form, Field $field, $message = "")
   {
-    if (is_null($field->raw_data) || (is_string($field->raw_data[0] && $this->string_check($field->raw_data[0]) == ""))) {
+    if (is_null($field->raw_data) || (is_string($field->raw_data[0]) && $this->string_check($field->raw_data[0]) == "")) {
       $field->errors = [];
-      throw new StopValidation("");
+      throw new StopValidation();
     }
   }
 
