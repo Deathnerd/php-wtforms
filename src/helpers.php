@@ -279,6 +279,15 @@ if (!class_exists('Itertools')) {
 
 if (!function_exists('vsprintf_named')) {
   /**
+   * A helper function to emulate Python's support of named tokens in format strings. Much thanks to user Jon at
+   * StackOverflow for this function.
+   *
+   * Note: This function does not allow mixed non-named and named format tokens as this is meant to be used internally
+   * with PHP-WTForms and exposed indirectly only by a couple of validators.
+   *
+   * @see http://stackoverflow.com/questions/7435233/name-php-specifiers-in-printf-strings The StackOverflow question this snippet came from
+   * @see https://docs.python.org/2/library/stdtypes.html#string-formatting An overview of Python's named formatting tokens
+   *
    * @param string $format The named format string to parse. These are in the style of Python's named string formatting
    *                       things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'} returns a string of
    *                       "Sally walks with Rick".
