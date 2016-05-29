@@ -401,8 +401,8 @@ class Field implements \Iterator
     }
 
     foreach ($this->filters as $filter) {
-      /** @var $filter \WTForms\Interfaces\FilterInterface */
-      $this->data = $filter::run($data);
+      /** @var $filter callable */
+      $this->data = $filter($data);
     }
   }
 
