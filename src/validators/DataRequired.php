@@ -56,7 +56,7 @@ class DataRequired extends Validator
   {
     if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
       if ($this->message == "") {
-        $message = "This field is required";
+        $message = "This field is required.";
       } else {
         $message = $this->message;
       }
