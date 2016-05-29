@@ -13,10 +13,21 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\EqualTo;
 use WTForms\Validators\ValidationError;
+use \Mockery;
 
 class EqualToTest extends \PHPUnit_Framework_TestCase
 {
   public $form;
+
+  /**
+   * Tears down the fixture, for example, close a network connection.
+   * This method is called after a test is executed.
+   */
+  protected function tearDown()
+  {
+    Mockery::close();
+  }
+
 
   protected function setUp()
   {

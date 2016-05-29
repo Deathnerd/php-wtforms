@@ -19,11 +19,8 @@ class StringFieldTest extends \PHPUnit_Framework_TestCase
   {
     $string_field = new StringField(["name" => "string_field", 'widget' => new TextInput(), "data" => "Foobar"]);
     $string_field->process(["string_field" => "Shazbot!"]);
-    $actual = $string_field();
-    $this->assertContains('id="string_field"', $actual);
-    $this->assertContains('type="text"', $actual);
-    $this->assertContains('value="Shazbot!"', $actual);
-    $this->assertContains('name="string_field"', $actual);
+    $this->assertEquals('<input data="Foobar" id="string_field" name="string_field" type="text" value="Shazbot!">', $string_field());
+
     $string_field = new StringField(["name"   => "string_field",
                                      "id"     => "foobar",
                                      "meta"   => new FooMeta(),
@@ -32,11 +29,8 @@ class StringFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertAttributeInstanceOf('WTForms\Tests\SupportingClasses\FooMeta', 'meta', $string_field);
     $this->assertAttributeInstanceOf('WTForms\Fields\Core\Label', 'label', $string_field);
     $this->assertEquals("String Field", $string_field->label->text);
-    $actual = "$string_field";
-    $this->assertContains('id="foobar"', $actual);
-    $this->assertContains('type="text"', $actual);
-    $this->assertContains('value=""', $actual);
-    $this->assertContains('class="form-control"', $actual);
-    $this->assertContains('name="string_field"', $actual);
+    $this->assertEquals('<input class="form-control" id="foobar" name="string_field" type="text" value="">', "$string_field");
+
+    $this->assertNull($string_field->undefined_property);
   }
 }

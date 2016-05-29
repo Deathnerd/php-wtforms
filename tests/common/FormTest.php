@@ -9,6 +9,7 @@
 namespace WTForms\Tests\Common;
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
+use WTForms\DefaultMeta;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
@@ -25,10 +26,11 @@ class TestForm extends Form
 
   public function __construct(array $options = [])
   {
+    $this->meta = new DefaultMeta();
     parent::__construct($options);
     $this->a = new StringField(["name"       => "a",
                                 "validators" => [new DataRequired()]]);
-    $this->b = new StringField(["name" => "b"]);
+    $this->b = new StringField(["name" => "b"], $this);
     $this->c = new StringField(["name" => "c"]);
     $this->process($options);
   }
@@ -64,6 +66,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
     $form = new TestForm(["formdata" => $post_data]);
     $this->assertEquals("foo", $form->a->data);
     $this->assertTrue($form->validate());
+    $form->a->data = null;
+    $this->assertFalse($form->validate());
   }
 
   public function testExtraDataPopulate()

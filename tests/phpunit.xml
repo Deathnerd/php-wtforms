@@ -9,6 +9,9 @@
     <testsuite name="WTForms Field Tests">
         <directory>./fields</directory>
     </testsuite>
+    <testsuite name="WTForms Widgets Tests">
+        <directory>./widgets</directory>
+    </testsuite>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../src/fields</directory>

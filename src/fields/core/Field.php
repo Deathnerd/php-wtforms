@@ -148,11 +148,11 @@ class Field implements \Iterator
         "class"       => null
     ], $options);
 
-    if (array_key_exists('meta', $options) && !is_null($options['meta'])) {
+    if (!is_null($this->form) && property_exists($this->form, "meta") && $this->form->meta instanceof DefaultMeta) {
+      $this->meta = $this->form->meta;
+    } else if (array_key_exists('meta', $options) && !is_null($options['meta'])) {
       $this->meta = $options['meta'];
       unset($options['meta']);
-    } else if (property_exists($this->form, "meta") && $this->form->meta instanceof DefaultMeta) {
-      $this->meta = $this->form->meta;
     }
 
     $this->render_kw = array_merge(array_merge($this->render_kw, $options['attributes']), $options['render_kw']);
@@ -244,7 +244,7 @@ class Field implements \Iterator
   {
     if ($name == "label") {
       if (count($arguments) > 0) {
-        return $this->label->__invoke($arguments);
+        return $this->label->__invoke($arguments[0]);
       }
 
       return $this->label->__invoke();

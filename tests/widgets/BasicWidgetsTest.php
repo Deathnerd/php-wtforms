@@ -10,7 +10,6 @@ namespace WTForms\Tests\Widgets;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\Label;
-use WTForms\Fields\Core\RadioField;
 use WTForms\Form;
 use WTForms\Widgets\Core\CheckboxInput;
 use WTForms\Widgets\Core\FileInput;
@@ -29,10 +28,10 @@ class DummyField extends Field
   public function __construct(array $options = [], Form $form = null)
   {
     parent::__construct($options, $form);
-    $this->label = $options['label'] ?: $this->label;
-    $this->data = $options['data'] ?: $this->data;
-    $this->type = $options['type'] ?: 'TextField';
-    $this->id = $options['id'] ?: $this->id;
+    $this->label = array_key_exists('label', $options) ? $options['label'] : $this->label;
+    $this->data = array_key_exists('data', $options) ? $options['data'] : $this->data;
+    $this->type = array_key_exists('type', $options) ? $options['type'] : 'TextField';
+    $this->id = array_key_exists('id', $options) ? $options['id'] : $this->id;
   }
 
   public function __toString()
@@ -65,36 +64,26 @@ class BasicWidgetsTest extends \PHPUnit_Framework_TestCase
 
   public function testTextInput()
   {
-    $actual = (new TextInput)->__invoke($this->field);
-    $this->assertContains('id="id"', $actual);
-    $this->assertContains('type="text"', $actual);
-    $this->assertContains('value="foo"', $actual);
-    $this->assertContains('name="bar"', $actual);
+    $this->assertEquals('<input id="id" name="bar" type="text" value="foo">', (new TextInput)->__invoke($this->field));
   }
 
   public function testPasswordInput()
   {
-    $this->assertContains('type="password"', (new PasswordInput)->__invoke($this->field));
-    $this->assertContains('value=""', (new PasswordInput)->__invoke($this->field));
-    $this->assertContains('value="foo', (new PasswordInput(false))->__invoke($this->field));
+    $this->assertEquals('<input id="id" name="bar" type="password" value="">', (new PasswordInput)->__invoke($this->field));
+    $this->assertEquals('<input id="id" name="bar" type="password" value="foo">', (new PasswordInput(false))->__invoke($this->field));
   }
 
   public function testHiddenInput()
   {
-    $this->assertContains('type="hidden"', (new HiddenInput)->__invoke($this->field));
+    $this->assertEquals('<input id="id" name="bar" type="hidden" value="foo">', (new HiddenInput)->__invoke($this->field));
     $this->assertContains('hidden', (new HiddenInput)->field_flags);
   }
 
   public function testCheckboxInput()
   {
-    $actual = (new CheckboxInput)->__invoke($this->field, ["value" => "v"]);
-    $this->assertContains('checked', $actual);
-    $this->assertContains('id="id"', $actual);
-    $this->assertContains('name="bar"', $actual);
-    $this->assertContains('type="checkbox"', $actual);
-    $this->assertContains('value="v"', $actual);
+    $this->assertEquals('<input checked id="id" name="bar" type="checkbox" value="v">', (new CheckboxInput)->__invoke($this->field, ["value" => "v"]));
     $field2 = new DummyField(["data" => false]);
-    $this->assertNotContains("checked", (new CheckboxInput)->__invoke($field2));
+    $this->assertEquals('<input id="" name="" type="checkbox" value="">', (new CheckboxInput)->__invoke($field2));
   }
 
   public function testTextArea()
@@ -144,7 +133,6 @@ class BasicWidgetsTest extends \PHPUnit_Framework_TestCase
     $field->checked = true;
     $this->assertEquals('<option selected value="foobar">baz</option>', (new Option)->__invoke($field));
     $this->assertEquals('<option data-baz-bar="ohai" selected value="foobar">baz</option>', (new Option)->__invoke($field, ["data_baz-bar" => "ohai"]));;
-
   }
 
   protected function setUp()

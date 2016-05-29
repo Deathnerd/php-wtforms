@@ -45,9 +45,7 @@
     }
   },
   "require": {
-    "php": ">=5.4",
-    "doctrine/annotations": "1.2.7",
-    "doctrine/cache": "1.6.0"
+    "php": ">=5.4"
   },
   "require-dev": {
     "filp/whoops": "^2.1",

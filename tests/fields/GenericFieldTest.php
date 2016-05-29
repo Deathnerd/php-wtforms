@@ -9,10 +9,13 @@
 namespace WTForms\Tests\Fields;
 
 
+use Symfony\Component\Console\Input\StringInput;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
+use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\AnyOf;
 use WTForms\Validators\InputRequired;
+use WTForms\Widgets\Core\TextInput;
 
 /**
  * @property StringField $a
@@ -27,6 +30,7 @@ class GenericFieldTestForm extends Form
     parent::__construct($options);
     $this->a = new StringField(["attributes" => ["foo" => "bar"],
                                 "render_kw"  => ["readonly" => true],
+                                "class"      => "form-control",
                                 "validators" => [
                                     new InputRequired("This input is required, yo"),
                                     new AnyOf("You've gotta match these, guy %s", ["values" => [1, "foo", DIRECTORY_SEPARATOR]])
@@ -63,29 +67,31 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
   public function testRenderKw()
   {
     $form = new GenericFieldTestForm(["a" => "hello"]);
-    $output = $form->a->__invoke();
-    $this->assertContains('id="a"', $output);
-    $this->assertContains('type="text"', $output);
-    $this->assertContains('value="hello"', $output);
-    $this->assertContains('readonly', $output);
-    $this->assertContains('foo="bar"', $output);
-    $this->assertContains('name="a"', $output);
+    $this->assertEquals('<input class="form-control" foo="bar" id="a" name="a" readonly type="text" value="hello">', $form->a->__invoke());
+    $this->assertEquals('<input class="form-control" foo="baz" id="a" name="a" readonly type="text" value="hello">', $form->a->__invoke(['foo' => 'baz']));
+    $this->assertEquals('<input class="form-control" foo="baz" id="a" name="a" other="hello" type="text" value="hello">', $form->a->__invoke(['foo' => 'baz', 'readonly' => false, 'other' => 'hello']));
+  }
 
-    $output = $form->a->__invoke(['foo' => 'baz']);
-    $this->assertContains('id="a"', $output);
-    $this->assertContains('type="text"', $output);
-    $this->assertContains('value="hello"', $output);
-    $this->assertContains('readonly', $output);
-    $this->assertContains('foo="baz"', $output);
-    $this->assertContains('name="a"', $output);
+  public function testPrefix()
+  {
+    $field = new DummyField(["prefix" => "blah", "name" => "boo"]);
+    $this->assertEquals('<input id="blahboo" name="blahboo" type="text" value="">', (new TextInput)->__invoke($field));
+  }
 
-    $output = $form->a->__invoke(['foo' => 'baz', 'readonly' => false, 'other' => 'hello']);
-    $this->assertContains('id="a"', $output);
-    $this->assertContains('type="text"', $output);
-    $this->assertContains('value="hello"', $output);
-    $this->assertContains('foo="baz"', $output);
-    $this->assertContains('name="a"', $output);
-    $this->assertContains('other="hello"', $output);
-    $this->assertNotContains('readonly', $output);
+  /**
+   * @expectedException \BadMethodCallException
+   * @expectedExceptionMessage Method undefined_method not found on form!
+   */
+  public function testBadMethodCall()
+  {
+    $field = new DummyField(["prefix" => "blah", "name" => "boo"]);
+    $field->undefined_method();
+  }
+
+  public function testLabelMethodCall()
+  {
+    $field = new DummyField(["prefix" => "blah", "name" => "boo"]);
+    $this->assertEquals('<label for="blahboo">Boo</label>', $field->label());
+    $this->assertEquals('<label for="baz">Blah</label>', $field->label(["text" => "Blah", "for" => "baz"]));
   }
 }
