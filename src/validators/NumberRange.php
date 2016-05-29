@@ -32,12 +32,13 @@ class NumberRange extends Validator
   /**
    * NumberRange constructor.
    *
-   * @param string $message Error message to raise in case of a validation error. // TODO: User interpolation
+   * @param string $message Error message to raise in case of a validation error.
    * @param array  $options
    *
    */
   public function __construct($message = "", array $options = ['min' => null, 'max' => null])
   {
+    $options = array_merge(["min" => null, "max" => null], $options);
     $this->min = $options['min'];
     $this->max = $options['max'];
     $this->message = $message;
@@ -63,6 +64,8 @@ class NumberRange extends Validator
         } else {
           $message = "Number must be between {$this->min} and {$this->max}.";
         }
+      } else {
+        $message = vsprintf_named($message, ["min" => $this->min, "max" => $this->max]);
       }
       throw new ValidationError($message);
     }
