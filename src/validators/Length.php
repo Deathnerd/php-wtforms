@@ -9,10 +9,11 @@
 namespace WTForms\Validators;
 
 
+use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\TypeError;
-use WTForms\ValueError;
+use WTForms\Exceptions\TypeError;
+use WTForms\Exceptions\ValueError;
 
 /**
  * Validates the length of a string

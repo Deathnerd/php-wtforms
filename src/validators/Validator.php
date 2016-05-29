@@ -8,9 +8,9 @@
 
 namespace WTForms\Validators;
 
+use WTForms\Exceptions\NotImplemented;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\NotImplemented;
 
 class Validator
 {

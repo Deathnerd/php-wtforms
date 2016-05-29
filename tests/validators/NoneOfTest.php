@@ -23,7 +23,7 @@ class NoneOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Invalid value, can't be any of: a, b, c.
    */
   public function testNoneOf()
@@ -34,7 +34,7 @@ class NoneOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Y'all can't have these in your input: a, b, c.
    */
   public function testCustomErrorMessage()

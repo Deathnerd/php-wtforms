@@ -6,7 +6,7 @@
  * Time: 11:12 AM
  */
 
-namespace WTForms\Validators;
+namespace WTForms\Exceptions;
 
 
 /**

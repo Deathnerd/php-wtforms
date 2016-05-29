@@ -10,6 +10,7 @@ namespace WTForms\Validators;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Exceptions\StopValidation;
 
 /**
  * Checks the field's data is 'truthy' otherwise stops the validation chain.

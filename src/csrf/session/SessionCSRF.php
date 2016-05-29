@@ -12,7 +12,7 @@ use WTForms\CSRF\Core\CSRF;
 use WTForms\CSRF\Core\CSRFTokenField;
 use WTForms\DefaultMeta;
 use WTForms\Form;
-use WTForms\Validators\ValidationError;
+use WTForms\Exceptions\ValidationError;
 
 /**
  * @property int time_limit

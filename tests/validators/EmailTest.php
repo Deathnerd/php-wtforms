@@ -32,7 +32,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testNull()
   {
@@ -40,7 +40,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testNullString()
   {
@@ -48,7 +48,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testWhitespaceString()
   {
@@ -56,7 +56,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testFoo()
   {
@@ -64,7 +64,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException  \WTForms\Validators\ValidationError
+   * @expectedException  \WTForms\Exceptions\ValidationError
    */
   public function testJustSuffix()
   {
@@ -72,7 +72,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testFooAt()
   {
@@ -80,7 +80,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testAtSuffix()
   {
@@ -88,7 +88,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException  \WTForms\Validators\ValidationError
+   * @expectedException  \WTForms\Exceptions\ValidationError
    */
   public function testFooAtBar()
   {
@@ -96,7 +96,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testFooAtDotBarDotAb()
   {

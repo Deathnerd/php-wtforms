@@ -12,7 +12,7 @@ namespace WTForms\Tests\Validators;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\EqualTo;
-use WTForms\Validators\ValidationError;
+use WTForms\Exceptions\ValidationError;
 
 class EqualToTest extends \PHPUnit_Framework_TestCase
 {
@@ -45,7 +45,7 @@ class EqualToTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidFieldName()
   {
@@ -54,7 +54,7 @@ class EqualToTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testAnotherInvalidFieldName()
   {

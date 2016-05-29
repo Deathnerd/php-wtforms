@@ -9,7 +9,7 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\Form;
-use WTForms\ValueError;
+use WTForms\Exceptions\ValueError;
 use WTForms\Widgets;
 use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\Select;

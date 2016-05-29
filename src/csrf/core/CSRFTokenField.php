@@ -4,7 +4,7 @@ namespace WTForms\CSRF\Core;
 use WTForms;
 use WTForms\Fields\Core\HiddenField;
 use WTForms\Form;
-use WTForms\Validators\ValidationError;
+use WTForms\Exceptions\ValidationError;
 
 class CSRFTokenField extends HiddenField
 {

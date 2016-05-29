@@ -25,7 +25,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage test 7, 8, 9
    */
   public function testAnyOfValuesFormatter()
@@ -34,7 +34,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\TypeError
+   * @expectedException WTForms\Exceptions\TypeError
    * @expectedExceptionMessage AnyOf validator expects an array of values!
    */
   public function testNoValues()
@@ -43,7 +43,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\TypeError
+   * @expectedException WTForms\Exceptions\TypeError
    * @expectedExceptionMessage Values passed to AnyOf must be in the form of an array
    */
   public function testInvalidValues()
@@ -52,7 +52,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\TypeError
+   * @expectedException WTForms\Exceptions\TypeError
    * @expectedExceptionMessage Formatter must be a callable; integer found
    */
   public function testInvalidFormatter()
@@ -61,7 +61,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage test 9::8::7
    */
   public function testAnyOfValuesFormatterOverride()
@@ -72,7 +72,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Invalid value, must be one of: a, b, c
    */
   public function testAnyOfValueErrorExceptions1()
@@ -81,7 +81,7 @@ class AnyOfTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Invalid value, must be one of: 1, 2, 3
    */
   public function testAnyOfValueErrorExceptions2()

@@ -11,7 +11,7 @@ namespace WTForms\Fields\Core;
 use DateTime;
 use Exception;
 use WTForms\Form;
-use WTForms\ValueError;
+use WTForms\Exceptions\ValueError;
 
 /**
  * A text field which stores a `DateTime` matching a format

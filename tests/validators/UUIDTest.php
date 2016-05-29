@@ -30,7 +30,7 @@ class UUIDTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalid_1()
   {
@@ -38,7 +38,7 @@ class UUIDTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalid_2()
   {
@@ -46,7 +46,7 @@ class UUIDTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalid_3()
   {
@@ -54,7 +54,7 @@ class UUIDTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalid_4()
   {

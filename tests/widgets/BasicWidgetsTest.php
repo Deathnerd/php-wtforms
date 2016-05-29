@@ -116,7 +116,7 @@ class BasicWidgetsTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\NotImplemented
+   * @expectedException \WTForms\Exceptions\NotImplemented
    */
   public function testWidgetNotImplemented()
   {

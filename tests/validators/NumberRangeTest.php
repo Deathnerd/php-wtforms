@@ -29,7 +29,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Number must be at least 5.
    */
   public function testOnlyMin()
@@ -40,7 +40,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Number must be at most 50.
    */
   public function testOnlyMax()
@@ -51,7 +51,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Number must be between 5 and 10.
    */
   public function testNullInput()
@@ -60,7 +60,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Number must be between 5 and 10.
    */
   public function testZeroInput()
@@ -69,7 +69,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Number must be between 5 and 10.
    */
   public function testAboveMaxInput()
@@ -78,7 +78,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Number must be between 5 and 10.
    */
   public function testNegativeInput()
@@ -87,7 +87,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage foobar
    */
   public function testCustomErrorMessage()
@@ -96,7 +96,7 @@ class NumberRangeTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage 5 foobar 10
    */
   public function testCustomErrorMessageFormatting()

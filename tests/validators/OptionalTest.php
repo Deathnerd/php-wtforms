@@ -9,10 +9,10 @@
 namespace WTForms\Tests\Validators;
 
 
+use WTForms\Exceptions\StopValidation;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\Optional;
-use WTForms\Validators\StopValidation;
 
 class OptionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +24,7 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    */
   public function testOptional()
   {
@@ -51,7 +51,7 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    */
   public function testWhitespaceStripping()
   {

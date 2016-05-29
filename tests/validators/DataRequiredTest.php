@@ -9,10 +9,10 @@
 namespace WTForms\Tests\Validators;
 
 
+use WTForms\Exceptions\StopValidation;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\DataRequired;
-use WTForms\Validators\StopValidation;
 
 class DataRequiredTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +34,7 @@ class DataRequiredTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    */
   public function testEmptyString()
   {
@@ -43,7 +43,7 @@ class DataRequiredTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    * @expectedExceptionMessage This field is required.
    */
   public function testEmptyWhitespaceString()
@@ -69,7 +69,7 @@ class DataRequiredTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    * @expectedExceptionMessage foo
    */
   public function testCustomErrorMessage()

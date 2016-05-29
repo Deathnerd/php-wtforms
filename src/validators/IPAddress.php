@@ -9,9 +9,10 @@
 namespace WTForms\Validators;
 
 
+use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\ValueError;
+use WTForms\Exceptions\ValueError;
 
 /**
  * Validates an IP Address

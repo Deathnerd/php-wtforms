@@ -17,17 +17,11 @@
             <directory suffix=".php">../src/fields</directory>
             <directory suffix=".php">../src/widgets</directory>
             <directory suffix=".php">../src/validators</directory>
-            <exclude>
-                <file>../src/NotImplemented.php</file>
-                <file>../src/ValueError.php</file>
-                <file>../src/validators/ValidatorError.php</file>
-                <file>../src/validators/StopValidation.php</file>
-                <file>../src/validators/Validator.php</file>
-            </exclude>
         </whitelist>
         <blacklist>
             <directory suffix=".php">../tests</directory>
             <directory suffix=".php">../vendor</directory>
+            <directory suffix=".php">../src/exceptions</directory>
         </blacklist>
     </filter>
 </phpunit>

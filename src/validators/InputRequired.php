@@ -8,6 +8,7 @@
 
 namespace WTForms\Validators;
 
+use WTForms\Exceptions\StopValidation;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
 

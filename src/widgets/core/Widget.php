@@ -8,8 +8,8 @@
 
 namespace WTForms\Widgets\Core;
 
+use WTForms\Exceptions\NotImplemented;
 use WTForms\Fields\Core\Field;
-use WTForms\NotImplemented;
 
 /**
  * Just so I can have type hinting for widgets

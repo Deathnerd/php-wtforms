@@ -23,7 +23,7 @@ class InputRequiredTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    * @expectedExceptionMessage This field is required.
    */
   public function testInputRequired()
@@ -35,7 +35,7 @@ class InputRequiredTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\StopValidation
+   * @expectedException \WTForms\Exceptions\StopValidation
    * @expectedExceptionMessage foo
    */
   public function testCustomMessage()

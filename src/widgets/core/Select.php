@@ -32,7 +32,6 @@ class Select extends Widget
    * @param array             $options
    *
    * @return string
-   * @throws \WTForms\NotImplemented
    */
   public function __invoke($field, array $options = [])
   {

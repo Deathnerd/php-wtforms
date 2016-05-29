@@ -33,7 +33,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\ValueError
+   * @expectedException \WTForms\Exceptions\ValueError
    */
   public function testInvalidIPType()
   {
@@ -41,7 +41,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV4_1()
   {
@@ -49,7 +49,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV4_2()
   {
@@ -57,7 +57,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV4_3()
   {
@@ -65,7 +65,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV4_4()
   {
@@ -73,7 +73,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV6_1()
   {
@@ -81,7 +81,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV6_2()
   {
@@ -89,7 +89,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV6_3()
   {
@@ -97,7 +97,7 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    */
   public function testInvalidIPV6_4()
   {

@@ -36,7 +36,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\TypeError
+   * @expectedException \WTForms\Exceptions\TypeError
    * @expectedExceptionMessage At least one of min or max must be specified
    */
   public function testInvalidMinOrMax()
@@ -45,7 +45,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\ValueError
+   * @expectedException \WTForms\Exceptions\ValueError
    * @expectedExceptionMessage min cannot be more than max
    */
   public function testMinMoreThanMax()
@@ -54,7 +54,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field must be at least 7 characters long.
    */
   public function testInvalid_1()
@@ -63,7 +63,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field cannot be longer than 5 characters long.
    */
   public function testInvalid_2()
@@ -72,7 +72,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage 2 and 5
    */
   public function testUserFormatting()
@@ -81,7 +81,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field must be at least 8 characters long.
    */
   public function testDefaultMinMessage()
@@ -90,7 +90,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field cannot be longer than 5 characters long.
    */
   public function testDefaultMaxMessage()
@@ -99,7 +99,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field must be between 2 and 5 characters long.
    */
   public function testDefaultBetweenMessage()
@@ -108,7 +108,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field must be at least 1 character long.
    */
   public function testSingularDefaultMinMessage()
@@ -118,7 +118,7 @@ class LengthTest extends \PHPUnit_Framework_TestCase
   }
 
   /**
-   * @expectedException \WTForms\Validators\ValidationError
+   * @expectedException \WTForms\Exceptions\ValidationError
    * @expectedExceptionMessage Field cannot be longer than 1 character long.
    */
   public function testSingularDefaultMaxMessage()

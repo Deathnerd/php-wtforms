@@ -9,6 +9,7 @@
 namespace WTForms\Validators;
 
 
+use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
 

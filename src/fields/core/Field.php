@@ -8,14 +8,13 @@
 
 namespace WTForms\Fields\Core;
 
-use Itertools;
 use WTForms\DefaultMeta;
 use WTForms\Flags;
 use WTForms\Form;
-use WTForms\Validators\StopValidation;
-use WTForms\Validators\ValidationError;
+use WTForms\Exceptions\StopValidation;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Validators\Validator;
-use WTForms\ValueError;
+use WTForms\Exceptions\ValueError;
 use WTForms\Widgets\Core\Widget;
 
 /**

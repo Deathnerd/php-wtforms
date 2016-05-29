@@ -6,7 +6,7 @@
  * Time: 2:08 PM
  */
 
-namespace WTForms;
+namespace WTForms\Exceptions;
 
 
 class TypeError extends \Exception

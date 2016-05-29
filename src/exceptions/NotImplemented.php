@@ -6,7 +6,7 @@
  * Time: 10:27 PM
  */
 
-namespace WTForms;
+namespace WTForms\Exceptions;
 
 use Exception;
 

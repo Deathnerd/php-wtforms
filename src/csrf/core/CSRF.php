@@ -11,7 +11,7 @@ namespace WTForms\CSRF\Core;
 
 use WTForms\Form;
 use WTForms\NotImplemented;
-use WTForms\Validators\ValidationError;
+use WTForms\Exceptions\ValidationError;
 
 abstract class CSRF
 {
