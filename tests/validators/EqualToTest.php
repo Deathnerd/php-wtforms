@@ -9,7 +9,6 @@
 namespace WTForms\Tests\Validators;
 
 
-use Whoops\Run;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\EqualTo;
