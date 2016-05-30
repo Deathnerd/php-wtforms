@@ -9,8 +9,9 @@
 namespace WTForms\Fields\Core;
 
 
-use WTForms\Form;
+use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
+use WTForms\Form;
 use WTForms\Widgets\Core\Select;
 
 /**
@@ -30,7 +31,7 @@ class SelectMultipleField extends SelectField
   public function __construct(array $options = ['choices' => []], Form $form = null)
   {
     parent::__construct($options, $form);
-    $this->widget = array_key_exists('widget', $options) ? $options['widget'] : new Select();
+    $this->widget = new Select();
     $this->widget->multiple = true;
   }
 
@@ -41,9 +42,8 @@ class SelectMultipleField extends SelectField
    */
   public function getChoices()
   {
-    foreach ($this->choices as $value => $label) {
-      $selected = $this->data !== null && in_array($value, $this->data);
-      yield ["value" => $value, "label" => $label, "selected" => $selected];
+    foreach ($this->choices as list($value, $label)) {
+      yield [$value, $label, $this->data !== null && in_array($value, $this->data)];
     }
   }
 
@@ -52,25 +52,38 @@ class SelectMultipleField extends SelectField
    */
   public function processData($value)
   {
-    if ($value) {
-      foreach ($value as $v) {
-        $this->data[] = strval($v);
+    try {
+      if (!is_array($value)) {
+        throw new TypeError;
       }
+      $d = [];
+      foreach ($value as $v) {
+        $d[] = $this->coerce->__invoke($v);
+      }
+    } catch (ValueError $e) {
+      $d = null;
+    } catch (TypeError $e) {
+      $d = null;
     }
+    $this->data = $d;
   }
 
   public function processFormData(array $valuelist)
   {
-    if ($valuelist) {
+    try {
+      $d = [];
       foreach ($valuelist as $v) {
-        $this->data[] = strval($v);
+        $d[] = $this->coerce->__invoke($v);
       }
+    } catch (ValueError $e) {
+      throw new ValueError('Invalid choice(s): one or more data inputs could not be coerced');
     }
+    $this->data = $d;
   }
 
   public function preValidate(Form $form)
   {
-    if ($this->data !== null) {
+    if ($this->data) {
       $values = [];
       foreach ($this->choices as $c) {
         $values[] = $c[0];
