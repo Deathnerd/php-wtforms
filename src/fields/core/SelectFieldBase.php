@@ -8,8 +8,8 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Exceptions\NotImplemented;
 use WTForms\Form;
-use WTForms\NotImplemented;
 use WTForms\Widgets\Core\Option;
 
 /**
@@ -27,7 +27,6 @@ abstract class SelectFieldBase extends Field implements \Iterator
    */
   public $option_widget;
 
-  private $options = [];
 
   /**
    * SelectFieldBase constructor.
@@ -38,12 +37,9 @@ abstract class SelectFieldBase extends Field implements \Iterator
   public function __construct(array $options = [], Form $form = null)
   {
     $options = array_merge(['option_widget' => null], $options);
-    parent::__construct($options, $form);
     $this->option_widget = $options['option_widget'] ?: new Option();
-    if (is_string($this->option_widget)) {
-      $w = $this->option_widget;
-      $this->option_widget = new $w();
-    }
+    unset($options['option_widget']);
+    parent::__construct($options, $form);
   }
 
   /**
@@ -60,18 +56,16 @@ abstract class SelectFieldBase extends Field implements \Iterator
   public function __get($name)
   {
     if ($name == "options") {
-      if ($this->options) {
-        return $this->options;
-      }
       $this->options = [];
       $opts = ['widget' => $this->option_widget, 'name' => $this->name, 'form' => $this->form, 'meta' => $this->meta];
-      $options = $this->getChoices();
-      for ($i = 0; $i < count($options); $i++) {
+      $i = 0;
+      foreach ($this->getChoices() as list($value, $label, $selected)) {
         $opts['id'] = "{$this->id}-{$i}";
-        $opt = new _Option($options[$i]['label'], $opts);
-        $opt->process([], $options[$i]['value']);
-        $opt->checked = (array_key_exists('selected', $options[$i]) && $options[$i]['selected'])
-            || (array_key_exists('checked', $options[$i]) && $options[$i]['checked']);
+        $opts['label'] = $label;
+        $i++;
+        $opt = new _Option($opts);
+        $opt->process([], $value);
+        $opt->checked = $selected;
         $this->options[] = $opt;
       }
 

@@ -9,91 +9,110 @@
 namespace WTForms\Tests\Fields;
 
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
+use WTForms\Exceptions\TypeError;
+use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\_Option;
+use WTForms\Fields\Core\SelectField;
+use WTForms\Fields\Core\SelectFieldBase;
 use WTForms\Form;
-use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
-use WTForms\Tests\SupportingClasses\Helper;
 use WTForms\Widgets\Core\Option;
-use WTForms\Widgets\Core\Select;
 use WTForms\Widgets\Core\TextInput;
 
-/*class SelectFieldTest extends \PHPUnit_Framework_TestCase
+class SelectFieldBaseTestClass extends SelectFieldBase
 {
-  protected $helper;
-  protected $annotated_helper;
-  protected $registry;
-  protected $reader;
 
-  protected $form;
+}
 
-  public function setUp()
+class SelectFieldTest extends \PHPUnit_Framework_TestCase
+{
+  /**
+   * @var Form
+   */
+  public $form;
+
+  protected function setUp()
   {
-    $this->reader = new FileCacheReader(
-        new AnnotationReader(),
-        __DIR__ . "/../runtime",
-        $debug = true
-    );
-    $this->registry = new AnnotationRegistry();
-    $this->helper = new Helper;
-    $this->annotated_helper = new AnnotatedHelper;
-    Forms::init($this->reader, $this->registry);
-    $this->form = Forms::create($this->annotated_helper);
+    $form = new Form();
+    $form->a = new SelectField(["choices" => [["a", "hello"], ["btest", "bye"]],
+                                "default" => "a"]);
+    $form->b = new SelectField(["choices"       => [[1, "Item 1"], [2, "Item 2"]],
+                                "coerce"        => function ($x) {
+                                  if (!is_numeric($x)) {
+                                    throw new ValueError;
+                                  }
+
+                                  return intval($x);
+                                },
+                                "option_widget" => new TextInput
+    ]);
+    $form->c = new SelectField(["default" => "c"]);
+    $form->d = new SelectField(["choices" => [["d", "hiya"]],
+                                "coerce"  => function ($x) {
+                                  if ($x == "hiya") {
+                                    throw new TypeError;
+                                  }
+
+                                  return $x;
+                                }]);
+    $form->process([]);
+    $this->form = $form;
   }
 
   public function testDefaults()
   {
-    $this->assertEquals('a', $this->form->select_a->data);
-    $this->assertEquals(null, $this->form->select_b->data);
-    $this->assertEquals(false, $this->form->validate());
-    $actual = $this->form->select_a->__invoke();
-    $this->assertContains('<select id="select_a" name="select_a">', $actual);
-    $this->assertContains('</select>', $actual);
-    $this->assertContains('<option value="a" selected>hello</option>', $actual);
-    $this->assertContains('<option value="btest">bye</option>', $actual);
-    $actual = $this->form->select_b->__invoke();
-    $this->assertContains('<select id="select_b" name="select_b">', $actual);
-    $this->assertContains('</select>', $actual);
-    $this->assertContains('<option value="1">Item 1</option>', $actual);
-    $this->assertContains('<option value="2">Item 2</option>', $actual);
+    $this->assertEquals('a', $this->form->a->data);
+    $this->assertEquals(null, $this->form->b->data);
+    $this->assertFalse($this->form->validate());
+    $this->assertEquals('<select id="a" name="a"><option selected value="a">hello</option><option value="btest">bye</option></select>', $this->form->a->__toString());
+    $this->assertEquals($this->form->a->__toString(), $this->form->a->__invoke());
+    $this->assertEquals($this->form->a->__toString(), "{$this->form->a}");
+    $this->assertEquals('<select id="b" name="b"><option value="1">Item 1</option><option value="2">Item 2</option></select>', $this->form->b->__toString());
+    $this->assertEquals(0, count($this->form->c->options));
+    $this->form->process(["d" => "hiya"]);
+    $this->assertFalse($this->form->validate());
   }
 
   public function testWithData()
   {
-    $form = Forms::create($this->annotated_helper, ["select_a" => ["btest"]]);
-    $this->assertEquals("btest", $form->select_a->data);
-    $this->assertEquals('<select id="select_a" name="select_a"><option value="a">hello</option><option value="btest" selected>bye</option></select>', $form->select_a->__invoke());
+    $this->form->process(["formdata" => ["a" => ["btest"]]]);
+    $this->assertEquals("btest", $this->form->a->data);
+    $this->assertEquals('<select id="a" name="a"><option value="a">hello</option><option selected value="btest">bye</option></select>', $this->form->a->__toString());
+  }
+
+  public function testValueCoercion()
+  {
+    $this->form->process(["formdata" => ["b" => ["2"]]]);
+    $this->assertTrue(2 === $this->form->b->data);
+    $this->assertTrue($this->form->b->validate($this->form));
+
+    $this->setUp();
+    $this->form->process(["formdata" => ["b" => ["b"]]]);
+    $this->assertEquals(null, $this->form->b->data);
+    $this->assertFalse($this->form->b->validate($this->form));
   }
 
   public function testIterableOptions()
   {
-    $first_option = $this->form->select_a->options[0];
+    $options = $this->form->a->options;
+    $first_option = $options[0];
     $this->assertTrue($first_option instanceof _Option);
-    $actual = [];
-    foreach ($this->form->select_a->options as $option) {
-      $actual[] = $option->__toString();
+    $text_options = [];
+    foreach ($this->form->a->options as $option) {
+      $text_options[] = "$option";
     }
-    $expected = ['<option value="a" selected>hello</option>', '<option value="btest">bye</option>'];
-    $this->assertTrue(count(array_intersect($actual, $expected)) == 2);
+    $this->assertEquals(['<option selected value="a">hello</option>', '<option value="btest">bye</option>'], $text_options);
     $this->assertTrue($first_option->widget instanceof Option);
-    $this->assertTrue($this->form->select_b->options[0]->widget instanceof TextInput);
-    $this->assertEquals('<option disabled value="a" selected>hello</option>', $first_option(["disabled" => true]));
+    $this->assertTrue($this->form->b->options[0]->widget instanceof TextInput);
+    $this->assertEquals('<option disabled selected value="a">hello</option>', $first_option(["disabled" => true]));
   }
 
-  public function testMultipleSelect()
+  /**
+   * @expectedException \WTForms\Exceptions\NotImplemented
+   */
+  public function testSelectFieldBase()
   {
-    $select = $this->form->select_multiple;
-    $this->assertTrue(is_subclass_of($select, 'WTForms\Fields\Core\SelectField'), "SelectMultiple failed assertion of being a SelectField");
-    $widget = $select->widget;
-    $this->assertTrue($widget instanceof Select, "SelectMultiple failed assertion of being a Select class");
-    $this->assertTrue($widget->multiple, "SelectMultiple widget does not have a true multiple field");
+    $field = new SelectFieldBaseTestClass();
+    $this->assertEmpty($field->value);
+    $field->getChoices();
   }
-
-  public function testDefaultCoerce()
-  {
-    // TODO THIS
-  }
-}*/
+}

@@ -128,6 +128,9 @@ class Field implements \Iterator
   {
     if ($form) {
       $this->form = $form;
+    } elseif (array_key_exists("form", $options)) {
+      $this->form = $options['form'];
+      unset($options['form']);
     } else {
       $this->form = $this->resolveParentForm();
     }
@@ -455,7 +458,7 @@ class Field implements \Iterator
 
   public function __get($name)
   {
-    if (in_array($name, ["value"])) {
+    if ($name == "value") {
       if ($this->raw_data) {
         return $this->raw_data[0];
       } elseif ($this->data !== null) {

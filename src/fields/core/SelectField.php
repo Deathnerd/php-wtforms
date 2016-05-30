@@ -8,8 +8,9 @@
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Form;
+use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
+use WTForms\Form;
 use WTForms\Widgets;
 use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\Select;
@@ -26,6 +27,11 @@ class SelectField extends SelectFieldBase
    */
   public $choices = [];
 
+  /**
+   * @var callable|null
+   */
+  public $coerce;
+
   public function __construct(array $options = ['choices' => []], Form $form = null)
   {
     if (array_key_exists('choices', $options)) {
@@ -34,37 +40,52 @@ class SelectField extends SelectFieldBase
     } else {
       $this->choices = [];
     }
-    parent::__construct($options, $form);
-
-    if (array_key_exists('widget', $options)) {
-      $this->widget = $options['widget'];
+    if (array_key_exists('coerce', $options)) {
+      $this->coerce = $options['coerce'];
+      unset($options['coerce']);
     } else {
+      $this->coerce = function ($x) {
+        return $x;
+      };
+    }
+    parent::__construct($options, $form);
+    if (!$this->widget) {
       $this->widget = new Select();
     }
   }
 
   public function getChoices()
   {
-    foreach ($this->choices as list($label, $value)) {
+    foreach ($this->choices as list($value, $label)) {
       yield [$value, $label, $value == $this->data];
     }
   }
 
   public function processData($value)
   {
-    $this->data = $value;
+    try {
+      $this->data = $this->coerce->__invoke($value);
+    } catch (ValueError $e) {
+      $this->data = null;
+    } catch (TypeError $e) {
+      $this->data = null;
+    }
   }
 
   public function processFormData(array $valuelist)
   {
-    if (count($valuelist) != 0) {
-      $this->data = $valuelist[0];
+    if ($valuelist) {
+      try {
+        $this->data = $this->coerce->__invoke($valuelist[0]);
+      } catch (ValueError $e) {
+        throw new ValueError("Invalid choice: could not coerce");
+      }
     }
   }
 
   public function preValidate(Form $form)
   {
-    foreach ($this->choices as $v => $_) {
+    foreach ($this->choices as list($v, $_)) {
       if ($this->data == $v) {
         return;
       }
