@@ -54,10 +54,6 @@ class Label
 
   public function __get($name)
   {
-    if ($name == "for") {
-      return $this->field_id;
-    }
-
-    return $this->$name;
+    return $name == "for" ? $this->field_id : $this->$name;
   }
 }
