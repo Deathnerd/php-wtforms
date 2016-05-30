@@ -9,12 +9,12 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\DefaultMeta;
-use WTForms\Flags;
-use WTForms\Form;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValidationError;
-use WTForms\Validators\Validator;
 use WTForms\Exceptions\ValueError;
+use WTForms\Flags;
+use WTForms\Form;
+use WTForms\Validators\Validator;
 use WTForms\Widgets\Core\Widget;
 
 /**
@@ -274,8 +274,9 @@ class Field implements \Iterator
     try {
       $this->preValidate($form);
     } catch (StopValidation $e) {
-      if (!empty($e->args) && $e->args[0]) {
-        $this->errors[] = $e->getMessage();
+      $message = $e->getMessage();
+      if ($message != "") {
+        $this->errors[] = $message;
       }
       $stop_validation = true;
     } catch (ValueError $e) {
@@ -322,14 +323,14 @@ class Field implements \Iterator
       } catch (StopValidation $e) {
         $message = $e->getMessage();
         if ($message != "") {
-          $form->errors[] = $message;
+          $this->errors[] = $message;
         }
 
         return true;
       } catch (ValidationError $e) {
         $message = $e->getMessage();
         if ($message != "") {
-          $form->errors[] = $message;
+          $this->errors[] = $message;
         }
 
         return true;
@@ -478,6 +479,7 @@ class Field implements \Iterator
         return $stack['object'];
       }
     }
+
     return null;
   }
 

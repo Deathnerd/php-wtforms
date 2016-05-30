@@ -9,7 +9,6 @@
 namespace WTForms\Tests\Fields;
 
 
-use Symfony\Component\Console\Input\StringInput;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
@@ -37,7 +36,6 @@ class GenericFieldTestForm extends Form
                                 ]]);
     $this->process($options);
   }
-
 }
 
 class GenericFieldTest extends \PHPUnit_Framework_TestCase
@@ -93,5 +91,32 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
     $field = new DummyField(["prefix" => "blah", "name" => "boo"]);
     $this->assertEquals('<label for="blahboo">Boo</label>', $field->label());
     $this->assertEquals('<label for="baz">Blah</label>', $field->label(["text" => "Blah", "for" => "baz"]));
+  }
+
+  public function testPopulateObj()
+  {
+    $field = new DummyField(["name" => "blah", "data" => "foobar"]);
+    $obj = new \stdClass();
+    $obj->blah = "baz";
+    $this->assertEquals("baz", $obj->blah);
+    $field->populateObj($obj, "blah");
+    $this->assertEquals("foobar", $obj->blah);
+  }
+
+  public function testInvokableDefault()
+  {
+    $field = new DummyField(["default" => function () {
+      return "foobar";
+    }, "name"                          => "blah"]);
+    $field->process([]);
+    $this->assertTrue(is_callable($field->default));
+    $this->assertEquals("foobar", $field->data);
+  }
+
+  public function testGetRawData()
+  {
+    $field = new DummyField(["name" => "blah"]);
+    $field->process(["blah" => ["foobar"]]);
+    $this->assertEquals("foobar", $field->value);
   }
 }

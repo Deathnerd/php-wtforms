@@ -37,9 +37,6 @@ class TestForm extends Form
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
-  public function setUp()
-  {
-  }
 
   public function testFormCreation()
   {
