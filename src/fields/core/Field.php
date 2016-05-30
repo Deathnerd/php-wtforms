@@ -400,9 +400,13 @@ class Field implements \Iterator
       }
     }
 
-    foreach ($this->filters as $filter) {
-      /** @var $filter callable */
-      $this->data = $filter($data);
+    try {
+      foreach ($this->filters as $filter) {
+        /** @var $filter callable */
+        $this->data = $filter($data);
+      }
+    } catch (ValueError $e) {
+      $this->process_errors[] = $e->getMessage();
     }
   }
 

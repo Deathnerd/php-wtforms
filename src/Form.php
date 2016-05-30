@@ -80,12 +80,15 @@ class Form implements \ArrayAccess, \Iterator
   public function validate()
   {
     $this->errors = [];
+    $success = true;
     foreach ($this->fields as $name => $field) {
       /** @var $field Field */
-      $field->validate($this);
+      if (!$field->validate($this)) {
+        $success = false;
+      }
     }
 
-    return count($this->errors) === 0;
+    return $success && count($this->errors) === 0;
   }
 
 

@@ -7,7 +7,6 @@
  */
 
 namespace WTForms\Tests\Common;
-require_once(__DIR__ . '/../../vendor/autoload.php');
 
 use WTForms\DefaultMeta;
 use WTForms\Fields\Core\Field;
