@@ -25,7 +25,7 @@ use WTForms\Widgets\Core\Widget;
  */
 class Field implements \Iterator
 {
-  use \WTForms\Fields\Core\FieldIterator;
+  use FieldIterator;
 
   /**
    * @var Form
