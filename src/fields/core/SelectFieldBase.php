@@ -82,6 +82,10 @@ class _Option extends Field
 
   public function __get($name)
   {
-    return $this->data;
+    if (is_bool($this->data)) {
+      return $this->data ? "true" : "false";
+    }
+
+    return strval($this->data);
   }
 }
