@@ -8,76 +8,64 @@
 
 namespace WTForms\Tests\Fields;
 
+use WTForms\Fields\Core\BooleanField;
+use WTForms\Form;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
-use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
-
-/*class BooleanFieldTest extends \PHPUnit_Framework_TestCase
+class BooleanFieldTest extends \PHPUnit_Framework_TestCase
 {
-  protected $annotated_helper;
-  protected $registry;
-  protected $reader;
-  protected $object;
-
+  /**
+   * @var Form
+   */
+  public $form;
   public function setUp()
   {
-    $this->reader = new FileCacheReader(
-        new AnnotationReader(),
-        __DIR__ . "/../runtime",
-        $debug = true
-    );
-    $this->registry = new AnnotationRegistry();
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Foo.php");
-    $this->registry->registerFile(__DIR__ . "/../supporting_classes/Bar.php");
-    $this->annotated_helper = new AnnotatedHelper;
-    Forms::init($this->reader, $this->registry);
-    $this->object = new \stdClass();
-    $this->object->bool1 = null;
-    $this->object->bool2 = true;
+    $form = new Form();
+    $form->bool1 = new BooleanField();
+    $form->bool2 = new BooleanField(["default" => true, "false_values" => []]);
+    $form->process([]);
+    $this->form = $form;
   }
 
   public function testDefaults()
   {
-    $form = Forms::create($this->annotated_helper);
-    $this->assertEquals([], $form['bool1']->raw_data);
-    $this->assertEquals(false, $form['bool1']->data);
-    $this->assertEquals(true, $form['bool2']->data);
+    $this->assertEquals([], $this->form->bool1->raw_data);
+    $this->assertEquals(false, $this->form->bool1->data);
+    $this->assertEquals(true, $this->form->bool2->data);
   }
 
   public function testRendering()
   {
-    $form = Forms::create($this->annotated_helper, ["bool2" => "x"]);
-    $this->assertEquals('<input id="bool1" type="checkbox" value="y" name="bool1">', $form['bool1']->__invoke());
-    $this->assertEquals('<input id="bool2" type="checkbox" value="x" checked name="bool2">', $form['bool2']->__invoke());
-    $this->assertEquals(["x"], $form['bool2']->raw_data);
+    $this->form->process(["formdata" => ["bool2" => ["x"]]]);
+    $this->assertEquals('<input id="bool1" name="bool1" type="checkbox" value="y">', $this->form->bool1->__invoke());
+    $this->assertEquals('<input checked id="bool2" name="bool2" type="checkbox" value="x">', $this->form->bool2->__invoke());
+    $this->assertEquals(["x"], $this->form->bool2->raw_data);
   }
 
   public function testWithPostData()
   {
-    $form = Forms::create($this->annotated_helper, ["bool1" => ['a']]);
-    $this->assertEquals(['a'], $form['bool1']->raw_data);
-    $this->assertEquals(true, $form['bool1']->data);
+    $this->form->process(["formdata" => ["bool1" => ["a"]]]);
+    $this->assertEquals(['a'], $this->form->bool1->raw_data);
+    $this->assertEquals(true, $this->form->bool1->data);
 
-    $form = Forms::create($this->annotated_helper, ["bool1" => ["false"], "bool2" => ["false"]]);
-    $this->assertEquals(false, $form['bool1']->data);
-    $this->assertEquals(true, $form['bool2']->data);
+    $this->form->process(["formdata" => ["bool1" => ["false"], "bool2" => ["false"]]]);
+    $this->assertEquals(false, $this->form->bool1->data);
+    $this->assertEquals(true, $this->form->bool2->data);
   }
 
   public function testWithObjectData()
   {
-    $form = Forms::create($this->annotated_helper, [], [], $this->object);
-    $this->assertEquals(false, $form['bool1']->data);
-    $this->assertEquals(true, empty($form['bool1']->raw_data));
-    $this->assertEquals(true, $form['bool2']->data);
+    $this->assertEquals(false, $this->form->bool1->data);
+    $this->assertEquals(true, empty($this->form->bool1->raw_data));
+    $this->assertEquals(true, $this->form->bool2->data);
   }
 
   public function testWithObjectAndPostData()
   {
-    $form = Forms::create($this->annotated_helper, ["bool1"=>["y"]], [], $this->object);
-    $this->assertEquals(true, $form['bool1']->data);
-    $this->assertEquals(false, $form['bool2']->data);
+    $obj = new \stdClass();
+    $obj->bool1 = null;
+    $obj->bool2 = true;
+    $this->form->process(["formdata" => ["bool1" => ["y"]], "obj" => $obj]);
+    $this->assertEquals(true, $this->form->bool1->data);
+    $this->assertEquals(false, $this->form->bool2->data);
   }
-}*/
+}
