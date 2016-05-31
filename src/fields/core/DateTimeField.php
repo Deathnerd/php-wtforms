@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\Core;
 
+use Carbon\Carbon;
 use DateTime;
 use Exception;
 use WTForms\Form;
@@ -23,7 +24,7 @@ class DateTimeField extends Field
   /**
    * @var string
    */
-  public $format = "Y-m-d H:M:S";
+  public $format = "%Y-%m-%d %H:%i:%s";
 
   /**
    * @inheritdoc
@@ -35,20 +36,28 @@ class DateTimeField extends Field
       unset($options['format']);
     }
     $this->widget = new TextInput();
+    $this->carbon_format = preg_replace('/%/', '', $this->format);
     parent::__construct($options);
   }
 
 
   public function __get($name)
   {
-    if(in_array($name, ["value"])){
+    if ($name == "value") {
       if ($this->raw_data) {
         return implode(" ", $this->raw_data);
       }
 
-      return $this->data instanceof DateTime ? $this->data->format($this->format) : '';
+      if ($this->data instanceof Carbon) {
+        return $this->data->formatLocalized($this->carbon_format);
+      } elseif ($this->data instanceof \DateTime) {
+        return Carbon::instance($this->data)->formatLocalized($this->carbon_format);
+      } else {
+        return '';
+      }
     }
-    return null;
+
+    return parent::__get($name);
   }
 
   /**
@@ -61,7 +70,7 @@ class DateTimeField extends Field
     if ($valuelist) {
       $date_str = implode(" ", $valuelist);
       try {
-        $this->data = new DateTime($date_str);
+        $this->data = Carbon::createFromFormat($this->carbon_format, $date_str);
       } catch (Exception $e) {
         $this->data = null;
         throw new ValueError("Not a valid datetime value.");

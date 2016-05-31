@@ -44,7 +44,7 @@ class StringField extends Field
 
   public function __get($name)
   {
-    if (in_array($name, ["value"])) {
+    if ($name == "value") {
       return $this->data ?: "";
     }
 
