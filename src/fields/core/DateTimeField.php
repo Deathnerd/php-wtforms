@@ -12,6 +12,7 @@ use DateTime;
 use Exception;
 use WTForms\Form;
 use WTForms\Exceptions\ValueError;
+use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field which stores a `DateTime` matching a format
@@ -33,6 +34,7 @@ class DateTimeField extends Field
       $this->format = $options['format'];
       unset($options['format']);
     }
+    $this->widget = new TextInput();
     parent::__construct($options);
   }
 
