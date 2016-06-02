@@ -25,6 +25,7 @@ class DateTimeField extends Field
    * @var string
    */
   public $format = "%Y-%m-%d %H:%i:%s";
+  public $carbon_format = "Y-m-d H:i:s";
 
   /**
    * @inheritdoc
@@ -49,9 +50,10 @@ class DateTimeField extends Field
       }
 
       if ($this->data instanceof Carbon) {
-        return $this->data->formatLocalized($this->carbon_format);
+        return $this->data->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
       } elseif ($this->data instanceof \DateTime) {
-        return Carbon::instance($this->data)->formatLocalized($this->carbon_format);
+        return Carbon::instance($this->data)
+                     ->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
       } else {
         return '';
       }
@@ -73,7 +75,7 @@ class DateTimeField extends Field
         $this->data = Carbon::createFromFormat($this->carbon_format, $date_str);
       } catch (Exception $e) {
         $this->data = null;
-        throw new ValueError("Not a valid datetime value.");
+        throw new ValueError("Not a valid datetime value");
       }
     }
   }
