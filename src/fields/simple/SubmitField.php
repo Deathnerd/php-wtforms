@@ -9,6 +9,7 @@
 namespace WTForms\Fields\Simple;
 
 use WTForms\Fields\Core\BooleanField;
+use WTForms\Form;
 use WTForms\Widgets\Core\SubmitInput;
 
 /**
@@ -21,7 +22,7 @@ class SubmitField extends BooleanField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
     parent::__construct($options);
     $this->widget = new SubmitInput();
