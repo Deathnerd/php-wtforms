@@ -203,9 +203,9 @@ class Field implements \Iterator
     if ($this->widget instanceof Widget) {
       $t[] = $this->widget;
     }
-    foreach ($t as $v) {
-      if ($v->field_flags) {
-        foreach ($v->field_flags as $flag) {
+    foreach ($t as $x) {
+      if ($x->field_flags) {
+        foreach ($x->field_flags as $flag) {
           $this->flags->$flag = true;
         }
       }
@@ -268,7 +268,7 @@ class Field implements \Iterator
    *
    * @return bool
    */
-  public function validate($form, array $extra_validators = [])
+  public function validate(Form $form, array $extra_validators = [])
   {
     $this->errors = $this->process_errors;
     $stop_validation = false;

@@ -45,7 +45,6 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * @param array $options
    *
    * @throws \TypeError
-   * @deprecated Not finished yet
    */
   public function __construct(array $options = [], Form $form = null)
   {
@@ -181,9 +180,14 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     $this->last_index = $index;
     $name = "$this->short_name-$index";
     $id = "$this->id-$index";
-    $field = $this->inner_field;
-    $field = Forms::resolveFieldForFieldList($field, ["name" => $name, "id" => $id, "meta" => $this->meta, "prefix" => $this->prefix]);
+
+    $field = clone $this->inner_field;
+    $field->meta = $this->meta;
+    $field->prefix = $this->prefix;
+    $field->name = $name;
+    $field->id = $id;
     $field->process($formdata, $data);
+
     $this->entries[] = $field;
 
     return $field;
@@ -228,7 +232,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    *
    * @return bool|void
    */
-  public function validate($form, array $extra_validators = [])
+  public function validate(Form $form, array $extra_validators = [])
   {
     $this->errors = [];
 
@@ -238,7 +242,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
        * @var Field $subfield
        */
       if (!$subfield->validate($form)) {
-        $this->errors[] = $subfield->errors();
+        $this->errors[] = $subfield->errors;
       }
     }
     $validators = $this->validators;

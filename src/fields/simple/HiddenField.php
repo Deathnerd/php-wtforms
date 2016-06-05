@@ -9,6 +9,7 @@
 namespace WTForms\Fields\Simple;
 
 use WTForms\Fields\Core\StringField;
+use WTForms\Form;
 use WTForms\Widgets\Core\HiddenInput;
 
 /**
@@ -22,9 +23,9 @@ class HiddenField extends StringField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
     $this->widget = new HiddenInput();
+    parent::__construct($options, $form);
   }
 }

@@ -26,8 +26,10 @@ class StringField extends Field
 
   public function __construct(array $options = [], Form $form = null)
   {
+    if (!$this->widget) {
+      $this->widget = new TextInput();
+    }
     parent::__construct($options, $form);
-    $this->widget = new TextInput();
   }
 
   /**

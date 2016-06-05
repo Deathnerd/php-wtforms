@@ -6,7 +6,7 @@
  * Time: 4:17 PM
  */
 
-namespace WTForms\widgets\core;
+namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
 
@@ -19,7 +19,7 @@ use WTForms\Fields\Core\Field;
  * Hidden fields will not be displayed with a row, instead the field will be
  * pushed into a subsequent table row to ensure XHTML validity. Hidden fields
  * at the end of the field list will appear outside the table.
- * @package WTForms\widgets\core
+ * @package WTForms\Widgets\Core
  */
 class TableWidget extends Widget
 {

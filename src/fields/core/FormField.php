@@ -9,13 +9,14 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\Form;
-use WTForms\Forms;
+use WTForms\Exceptions\TypeError;
+use WTForms\Widgets\Core\TableWidget;
 
 /**
  * Encapsulate a form as a field into another form
  * @package WTForms\Fields\Core
  */
-class FormField extends Field
+class FormField extends Field implements \ArrayAccess
 {
 
   public $separator = "-";
@@ -28,18 +29,19 @@ class FormField extends Field
    */
   public function __construct(array $options = [], Form $form = null)
   {
-    if (!$options['form_class']) {
-      throw new \TypeError("FormField must have a form_class property set!");
+    if (!array_key_exists('form_class', $options)) {
+      throw new TypeError("FormField must have a form_class property set!");
     }
-    if ($this->filters) {
-      throw new \TypeError("FormField cannot take filters, as the encapsulated data is not mutable");
+    if (array_key_exists('filters', $options)) {
+      throw new TypeError("FormField cannot take filters, as the encapsulated data is not mutable");
     }
 
-    if ($options['validators']) {
-      throw new \TypeError("FormField does not accept any validators. Instead, define them on the enclosed form.");
+    if (array_key_exists('validators', $options)) {
+      throw new TypeError("FormField does not accept any validators. Instead, define them on the enclosed form.");
     }
 
     $this->form_class = $options['form_class'];
+    unset($options['form_class']);
     if (array_key_exists('separator', $options)) {
       $this->separator = $options['separator'];
       unset($options['separator']);
@@ -47,6 +49,7 @@ class FormField extends Field
     $this->_obj = null;
 
     parent::__construct($options, $form);
+    $this->widget = new TableWidget();
   }
 
   /**
@@ -77,7 +80,7 @@ class FormField extends Field
    * @inheritdoc
    * @throws \TypeError
    */
-  public function validate($form, array $extra_validators = [])
+  public function validate(Form $form, array $extra_validators = [])
   {
     if ($extra_validators) {
       throw new \TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
@@ -106,6 +109,9 @@ class FormField extends Field
   {
     if (in_array($name, ["data", "errors"]) || property_exists($this->form, $name)) {
       return $this->form->$name;
+    }
+    if (array_key_exists($name, $this->form->fields)) {
+      return $this->form[$name];
     }
 
     return parent::__get($name);
@@ -145,9 +151,6 @@ class FormField extends Field
     return ($key !== null && $key !== false);
   }
 
-  /**
-   * @inheritdoc
-   */
   public function rewind()
   {
     reset($this->form->fields);
