@@ -24,8 +24,8 @@ class TextAreaField extends StringField
    */
   public function __construct(array $options = [], Form $form = null)
   {
+    $options = array_merge(['widget' => new TextArea()], $options);
     parent::__construct($options, $form);
-    $this->widget = new TextArea();
   }
 
 }

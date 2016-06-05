@@ -26,9 +26,7 @@ class StringField extends Field
 
   public function __construct(array $options = [], Form $form = null)
   {
-    if (!$this->widget) {
-      $this->widget = new TextInput();
-    }
+    $options = array_merge(["widget" => new TextInput()], $options);
     parent::__construct($options, $form);
   }
 

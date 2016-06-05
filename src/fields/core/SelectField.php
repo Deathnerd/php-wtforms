@@ -48,10 +48,8 @@ class SelectField extends SelectFieldBase
         return $x;
       };
     }
+    $options = array_merge(["widget" => new Select()], $options);
     parent::__construct($options, $form);
-    if (!$this->widget) {
-      $this->widget = new Select();
-    }
   }
 
   public function getChoices()

@@ -36,9 +36,9 @@ class DateTimeField extends Field
       $this->format = $options['format'];
       unset($options['format']);
     }
-    $this->widget = new TextInput();
     $this->carbon_format = preg_replace('/%/', '', $this->format);
-    parent::__construct($options);
+    $options = array_merge(["widget" => new TextInput()], $options);
+    parent::__construct($options, $form);
   }
 
 

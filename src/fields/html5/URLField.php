@@ -9,6 +9,7 @@
 namespace WTForms\Fields\HTML5;
 
 use WTForms\Fields\Core\StringField;
+use WTForms\Form;
 use WTForms\Widgets\HTML5\URLInput;
 
 /**
@@ -20,9 +21,9 @@ class URLField extends StringField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
-    $this->widget = new URLInput();
+    $options = array_merge(["widget" => new URLInput()], $options);
+    parent::__construct($options, $form);
   }
 }

@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\HTML5;
 
+use WTForms\Form;
 use WTForms\Widgets\HTML5\NumberInput;
 
 /**
@@ -19,10 +20,10 @@ class DecimalField extends \WTForms\Fields\Core\DecimalField
   /**
    * @inheritdoc
    */
-  public function __construct($label = "", array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($label, $options);
-    $this->widget = new NumberInput(["step" => '1']);
+    $options = array_merge(["widget" => new NumberInput(["step" => '1'])], $options);
+    parent::__construct($options, $form);
   }
 
 }

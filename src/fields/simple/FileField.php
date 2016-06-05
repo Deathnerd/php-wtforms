@@ -26,7 +26,7 @@ class FileField extends StringField
    */
   public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($options);
-    $this->widget = new FileInput();
+    $options = array_merge(["widget" => new FileInput()], $options);
+    parent::__construct($options, $form);
   }
 }

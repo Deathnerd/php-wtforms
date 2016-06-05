@@ -8,8 +8,8 @@
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Form;
 use WTForms\Exceptions\TypeError;
+use WTForms\Form;
 use WTForms\Widgets\Core\TableWidget;
 
 /**
@@ -48,8 +48,8 @@ class FormField extends Field implements \ArrayAccess
     }
     $this->_obj = null;
 
+    $options = array_merge(["widget" => new TableWidget()], $options);
     parent::__construct($options, $form);
-    $this->widget = new TableWidget();
   }
 
   /**

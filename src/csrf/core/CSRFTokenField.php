@@ -34,7 +34,7 @@ class CSRFTokenField extends HiddenField
     unset($options['csrf_impl']);
     $label = $options['label'];
     unset($options['label']);
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
   }
 
   /**

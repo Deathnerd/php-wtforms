@@ -8,6 +8,7 @@
 
 namespace WTForms\Fields\HTML5;
 
+use WTForms\Form;
 use WTForms\Widgets\HTML5\DateTimeLocalInput;
 
 /**
@@ -19,10 +20,10 @@ class DateTimeLocalField extends DateTimeField
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
-    parent::__construct($options);
-    $this->widget = new DateTimeLocalInput();
+    $options = array_merge(["widgets" => new DateTimeLocalInput()], $options);
+    parent::__construct($options, $form);
   }
 
 }
