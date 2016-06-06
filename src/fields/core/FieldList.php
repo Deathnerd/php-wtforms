@@ -94,6 +94,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    */
   public function process($formdata, $data = null)
   {
+    //@codeCoverageIgnoreStart
     $this->entries = [];
     if (is_null($data) || !$data) {
       if (is_callable($this->default)) {
@@ -102,6 +103,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         $data = $this->default;
       }
     }
+    //@codeCoverageIgnoreEnd
 
     $this->object_data = $data;
 
@@ -303,7 +305,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       return $ret;
     }
 
-    return parent::__get($name);
+    return parent::__get($name); //@codeCoverageIgnore
   }
 
   /**
@@ -315,7 +317,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function offsetExists($offset)
   {
@@ -323,7 +325,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function offsetGet($offset)
   {
@@ -335,7 +337,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function offsetSet($offset, $value)
   {
@@ -347,7 +349,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function offsetUnset($offset)
   {

@@ -114,11 +114,11 @@ class FormField extends Field implements \ArrayAccess
       return $this->form[$name];
     }
 
-    return parent::__get($name);
+    return parent::__get($name); // @codeCoverageIgnore
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function current()
   {
@@ -126,7 +126,7 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function next()
   {
@@ -134,7 +134,7 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function key()
   {
@@ -142,7 +142,7 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
-   * @inheritdoc
+   * @codeCoverageIgnore
    */
   public function valid()
   {
@@ -151,16 +151,25 @@ class FormField extends Field implements \ArrayAccess
     return ($key !== null && $key !== false);
   }
 
+  /**
+   * @codeCoverageIgnore
+   */
   public function rewind()
   {
     reset($this->form->fields);
   }
 
+  /**
+   * @codeCoverageIgnore
+   */
   public function offsetExists($offset)
   {
     return array_key_exists($offset, $this->form->fields);
   }
 
+  /**
+   * @codeCoverageIgnore
+   */
   public function offsetGet($offset)
   {
     if (array_key_exists($offset, $this->form->fields)) {
@@ -170,12 +179,18 @@ class FormField extends Field implements \ArrayAccess
     return null;
   }
 
+  /**
+   * @codeCoverageIgnore
+   */
   public function offsetSet($offset, $value)
   {
     $this->form->fields[$offset] = $value;
     $this->form->$offset = $value;
   }
 
+  /**
+   * @codeCoverageIgnore
+   */
   public function offsetUnset($offset)
   {
     unset($this->form->fields[$offset]);

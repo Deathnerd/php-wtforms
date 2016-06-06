@@ -72,7 +72,7 @@ abstract class SelectFieldBase extends Field implements \Iterator
       return $this->options;
     }
 
-    return parent::__get($name);
+    return parent::__get($name); // @codeCoverageIgnore
   }
 }
 

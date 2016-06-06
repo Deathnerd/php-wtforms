@@ -12,6 +12,7 @@ namespace WTForms\Fields\Core;
  * Class FieldIterator
  * @package WTForms\Fields\Core
  * @property array $entries
+ * @codeCoverageIgnore
  */
 trait FieldIterator
 {

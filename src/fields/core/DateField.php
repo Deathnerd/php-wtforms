@@ -54,7 +54,7 @@ class DateField extends DateTimeField
       }
     }
 
-    return parent::__get($name);
+    return parent::__get($name); // @codeCoverageIgnore
   }
 
 

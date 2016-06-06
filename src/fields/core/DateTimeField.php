@@ -55,11 +55,11 @@ class DateTimeField extends Field
         return Carbon::instance($this->data)
                      ->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
       } else {
-        return '';
+        return ''; // @codeCoverageIgnore
       }
     }
 
-    return parent::__get($name);
+    return parent::__get($name); // @codeCoverageIgnore
   }
 
   /**
