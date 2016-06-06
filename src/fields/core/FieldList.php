@@ -8,9 +8,11 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Exceptions\AssertionError;
+use WTForms\Exceptions\IndexError;
+use WTForms\Exceptions\TypeError;
 use WTForms\Form;
 use WTForms\Widgets\Core\ListWidget;
-use WTForms\Forms;
 
 /**
  * Encapsulate an ordered list of multiple instances of the same field type,
@@ -44,20 +46,20 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * @param Form  $form
    * @param array $options
    *
-   * @throws \TypeError
+   * @throws TypeError
    */
   public function __construct(array $options = [], Form $form = null)
   {
     if (!array_key_exists('inner_field', $options)) {
-      throw new \TypeError("FieldList requires an inner_field declaration");
+      throw new TypeError("FieldList requires an inner_field declaration");
     } elseif (!($options['inner_field'] instanceof Field)) {
-      throw new \TypeError(sprintf("FieldList requires an inner_field type subclassing Field; %s given", get_class($options['inner_field']) ?: gettype($options['inner_field'])));
+      throw new TypeError(sprintf("FieldList requires an inner_field type subclassing Field; %s given", get_class($options['inner_field']) ?: gettype($options['inner_field'])));
     } else {
       $this->inner_field = $options['inner_field'];
       unset($options['inner_field']);
     }
-    if ($this->filters) {
-      throw new \TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field");
+    if (array_key_exists('filters', $options)) {
+      throw new TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field");
     }
     if (array_key_exists('min_entries', $options)) {
       $this->min_entries = $options['min_entries'];
@@ -67,6 +69,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       $this->max_entries = $options['max_entries'];
       unset($options['max_entries']);
     }
+    $options = array_merge(["widget" => new ListWidget()], $options);
     parent::__construct($options, $form);
     // unset the data attribute because it'll be 
     // overridden in the __get method to reflect the
@@ -103,7 +106,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     $this->object_data = $data;
 
     if ($formdata) {
-      $indices = array_unique($this->extract_indices($this->name, $formdata));
+      $indices = array_unique($this->extractIndices($this->name, $formdata));
       sort($indices);
       if ($this->max_entries) {
         $indices = array_slice($indices, 0, $this->max_entries);
@@ -117,19 +120,21 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         } else {
           $obj_data = $data[$data_length];
         }
-        $this->add_entry($formdata, $obj_data, $index);
+        $this->addEntry($formdata, $obj_data, $index);
         $data_length++;
       }
     } else {
       // Or add data that maps to object data
-      foreach ($data as $obj_data) {
-        $this->add_entry($formdata, $obj_data);
+      if (is_array($data)) {
+        foreach ($data as $obj_data) {
+          $this->addEntry($formdata, $obj_data);
+        }
       }
     }
     // Pad out the entries until there is enough data
     // to hit the minimum entries limit
     while (count($this->entries) < $this->min_entries) {
-      $this->add_entry($formdata);
+      $this->addEntry($formdata);
     }
   }
 
@@ -143,7 +148,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    *
    * @return array
    */
-  private function extract_indices($prefix, $formdata)
+  private function extractIndices($prefix, $formdata)
   {
     $offset = strlen($prefix) + 1;
     $ret = [];
@@ -168,11 +173,13 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * @param null|integer $index
    *
    * @return Field
+   * @throws AssertionError
    */
-  private function add_entry($formdata = [], $data = null, $index = null)
+  private function addEntry($formdata = [], $data = null, $index = null)
   {
-    assert(!$this->max_entries || count($this->entries) < $this->max_entries,
-        "You cannot have more than max_entries entries in the FieldList");
+    if (!(!$this->max_entries || count($this->entries) < $this->max_entries)) {
+      throw new AssertionError("You cannot have more than max_entries entries in the FieldList");
+    }
 
     if ($index === null) {
       $index = $this->last_index + 1;
@@ -203,17 +210,21 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    *
    * @return Field
    */
-  public function append_entry($data = null)
+  public function appendEntry($data = null)
   {
-    return $this->add_entry([], $data);
+    return $this->addEntry([], $data);
   }
 
   /**
    * Removes the last entry from the list and returns it
    * @return mixed
+   * @throws IndexError
    */
-  public function pop_entry()
+  public function popEntry()
   {
+    if (count($this->entries) == 0) {
+      throw new IndexError;
+    }
     $entry = array_pop($this->entries);
     $this->last_index -= 1;
 

@@ -20,6 +20,7 @@ use WTForms\Widgets\Core\Widget;
 /**
  * Field base class
  * @property  boolean    $checked
+ * @property  mixed      $data
  * @package WTForms\Fields
  * @property null|string value
  */
@@ -31,10 +32,6 @@ class Field implements \Iterator
    * @var Form
    */
   public $form;
-  /**
-   * @var mixed
-   */
-  public $data;
   /**
    * @var array
    */
@@ -337,6 +334,13 @@ class Field implements \Iterator
         }
 
         return true;
+      } catch (ValueError $e) {
+        $message = $e->getMessage();
+        if ($message != "") {
+          $this->errors[] = $message;
+        }
+
+        return true;
       }
     }
 
@@ -469,6 +473,13 @@ class Field implements \Iterator
     }
 
     return null;
+  }
+
+  public function __clone()
+  {
+    /*if(is_callable($this->default)){
+      $this->default = $this->default->bindTo($this);
+    }*/
   }
 
   /**

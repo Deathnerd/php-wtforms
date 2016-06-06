@@ -78,12 +78,12 @@ class FormField extends Field implements \ArrayAccess
 
   /**
    * @inheritdoc
-   * @throws \TypeError
+   * @throws TypeError
    */
   public function validate(Form $form, array $extra_validators = [])
   {
     if ($extra_validators) {
-      throw new \TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
+      throw new TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
     }
 
     return $this->form->validate();
@@ -97,7 +97,7 @@ class FormField extends Field implements \ArrayAccess
     $candidate = $obj->$name;
     if (is_null($candidate)) {
       if (is_null($this->_obj)) {
-        throw new \TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
+        throw new TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
       }
       $candidate = $this->_obj;
       $obj->$name = $candidate;
