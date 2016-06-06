@@ -22,7 +22,7 @@ class DateTimeLocalField extends DateTimeField
    */
   public function __construct(array $options = [], Form $form = null)
   {
-    $options = array_merge(["widgets" => new DateTimeLocalInput()], $options);
+    $options = array_merge(["widget" => new DateTimeLocalInput()], $options);
     parent::__construct($options, $form);
   }
 
