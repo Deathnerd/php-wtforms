@@ -8,10 +8,12 @@
 
 namespace WTForms\Fields\Core;
 
+use Carbon\Carbon;
 use DateTime;
 use Exception;
 use WTForms\Form;
 use WTForms\Exceptions\ValueError;
+use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field which stores a `DateTime` matching a format
@@ -22,7 +24,8 @@ class DateTimeField extends Field
   /**
    * @var string
    */
-  public $format = "Y-m-d H:M:S";
+  public $format = "%Y-%m-%d %H:%i:%s";
+  public $carbon_format = "Y-m-d H:i:s";
 
   /**
    * @inheritdoc
@@ -33,20 +36,30 @@ class DateTimeField extends Field
       $this->format = $options['format'];
       unset($options['format']);
     }
-    parent::__construct($options);
+    $this->carbon_format = preg_replace('/%/', '', $this->format);
+    $options = array_merge(["widget" => new TextInput()], $options);
+    parent::__construct($options, $form);
   }
 
 
   public function __get($name)
   {
-    if(in_array($name, ["value"])){
+    if ($name == "value") {
       if ($this->raw_data) {
         return implode(" ", $this->raw_data);
       }
 
-      return $this->data instanceof DateTime ? $this->data->format($this->format) : '';
+      if ($this->data instanceof Carbon) {
+        return $this->data->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
+      } elseif ($this->data instanceof \DateTime) {
+        return Carbon::instance($this->data)
+                     ->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
+      } else {
+        return ''; // @codeCoverageIgnore
+      }
     }
-    return null;
+
+    return parent::__get($name); // @codeCoverageIgnore
   }
 
   /**
@@ -59,10 +72,10 @@ class DateTimeField extends Field
     if ($valuelist) {
       $date_str = implode(" ", $valuelist);
       try {
-        $this->data = new DateTime($date_str);
+        $this->data = Carbon::createFromFormat($this->carbon_format, $date_str);
       } catch (Exception $e) {
         $this->data = null;
-        throw new ValueError("Not a valid datetime value.");
+        throw new ValueError("Not a valid datetime value");
       }
     }
   }

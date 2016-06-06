@@ -8,8 +8,8 @@
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Form;
-
+use Carbon\Carbon;
+use WTForms\Exceptions\ValueError;
 
 /**
  * Same as DateTimeField, except stores a date (actually still a DateTime,
@@ -18,14 +18,44 @@ use WTForms\Form;
  */
 class DateField extends DateTimeField
 {
+  public $format = "%Y-%m-%d";
 
-  public $format = "Y-m-d";
-  
   /**
-   * @inheritdoc
+   * @param array $valuelist
+   *
+   * @throws ValueError
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function processFormData(array $valuelist)
   {
-    parent::__construct($options, $form);
+    if ($valuelist) {
+      $date_str = implode(" ", $valuelist);
+      try {
+        $this->data = Carbon::createFromFormat($this->carbon_format, $date_str)->startOfDay();
+      } catch (\Exception $e) {
+        $this->data = null;
+        throw new ValueError("Not a valid date value");
+      }
+    }
   }
+
+  public function __get($name)
+  {
+    if ($name == "value") {
+      if ($this->raw_data) {
+        return implode(" ", $this->raw_data);
+      }
+
+      if ($this->data instanceof \Carbon\Carbon) {
+        return $this->data->startOfDay()->formatLocalized($this->format);
+      } elseif ($this->data instanceof \DateTime) {
+        return \Carbon\Carbon::instance($this->data)->startOfDay()->formatLocalized($this->format);
+      } else {
+        return '';
+      }
+    }
+
+    return parent::__get($name); // @codeCoverageIgnore
+  }
+
+
 }

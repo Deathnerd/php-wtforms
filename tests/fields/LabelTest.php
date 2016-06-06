@@ -9,33 +9,12 @@
 namespace WTForms\Tests\Fields;
 
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\FileCacheReader;
 use WTForms\Fields\Core\Label;
-use WTForms\Forms;
-use WTForms\Tests\SupportingClasses\AnnotatedHelper;
-use WTForms\Tests\SupportingClasses\Helper;
+use WTForms\Fields\Core\StringField;
+use WTForms\Form;
 
-/*class LabelTest extends \PHPUnit_Framework_TestCase
+class LabelTest extends \PHPUnit_Framework_TestCase
 {
-  protected $helper;
-  protected $annotated_helper;
-  protected $registry;
-  protected $reader;
-
-  public function setUp()
-  {
-    $this->reader = new FileCacheReader(
-        new AnnotationReader(),
-        __DIR__ . "/../runtime",
-        $debug = true
-    );
-    $this->registry = new AnnotationRegistry();
-    $this->helper = new Helper;
-    $this->annotated_helper = new AnnotatedHelper;
-    Forms::init($this->reader, $this->registry);
-  }
 
   public function testDefaultLabelOptions()
   {
@@ -46,12 +25,14 @@ use WTForms\Tests\SupportingClasses\Helper;
   public function testLabelInvokeWithOptions()
   {
     $label = new Label("foobar", "Foo Bar");
-    $actual = $label("Shazbot", ["class"      => ["form", "form-label"],
-                                 "baz"        => true,
-                                 "data-color" => "red",
-                                 "id"         => "foobar_label"]);
-    $expected = '<label for="foobar" class="form form-label" baz data-color="red" id="foobar_label">Shazbot</label>';
+    $actual = $label(["class"      => ["form", "form-label"],
+                      "text"       => "Shazbot",
+                      "baz"        => true,
+                      "data-color" => "red",
+                      "id"         => "foobar_label"]);
+    $expected = '<label baz class="form form-label" data-color="red" for="foobar" id="foobar_label">Shazbot</label>';
     $this->assertEquals($expected, $actual);
+    $this->assertEquals("foobar", $label->for);
   }
 
   public function testLabelToString()
@@ -65,9 +46,11 @@ use WTForms\Tests\SupportingClasses\Helper;
 
   public function testAutoLabel()
   {
-    $form = Forms::create($this->annotated_helper);
+    $form = new Form();
+    $form->first_name = new StringField(["name" => "fname", "label" => "First Name"]);
+    $form->last_name = new StringField(["name" => "last_name"]);
     $this->assertEquals('<label for="fname">First Name</label>', $form['first_name']->label());
     $this->assertEquals('<label for="last_name">Last Name</label>', $form['last_name']->label());
-    $this->assertEquals('<label for="last_name"></label>', $form['last_name']->label(""));
+    $this->assertEquals('<label for="last_name"></label>', $form['last_name']->label(["text" => ""]));
   }
-}*/
+}

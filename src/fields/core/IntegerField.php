@@ -8,8 +8,8 @@
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Form;
 use WTForms\Exceptions\ValueError;
+use WTForms\Form;
 use WTForms\Widgets\Core\TextInput;
 
 /**
@@ -33,8 +33,8 @@ class IntegerField extends Field
    */
   public function __construct(array $options = [], Form $form = null)
   {
+    $options = array_merge(["widget" => new TextInput()], $options);
     parent::__construct($options, $form);
-    $this->widget = new TextInput();
   }
 
   public function processFormData(array $valuelist)

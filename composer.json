@@ -42,10 +42,7 @@
     }
   },
   "require": {
-    "php": ">=5.5"
-  },
-  "require-dev": {
-    "filp/whoops": "^2.1",
-    "maximebf/debugbar": "1.*"
+    "php": ">=5.5",
+    "nesbot/carbon": ">=1.18 <2.0.0"
   }
 }

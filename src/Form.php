@@ -66,10 +66,12 @@ class Form implements \ArrayAccess, \Iterator
    */
   public function __construct(array $options = [])
   {
+    if (array_key_exists('prefix', $options)) {
+      $this->prefix = $options['prefix'];
+    }
     if ($this->prefix && !str_contains("-_;:/.", substr($this->prefix, -1))) {
       $this->prefix .= "-";
     }
-
   }
 
   /**
@@ -83,7 +85,7 @@ class Form implements \ArrayAccess, \Iterator
     $success = true;
     foreach ($this->fields as $name => $field) {
       /** @var $field Field */
-      if (!$field->validate($this)) {
+      if (!$field->validate($this) || !$this->runExtraValidators($name)) {
         $success = false;
       }
     }
@@ -163,7 +165,7 @@ class Form implements \ArrayAccess, \Iterator
     } else {
       unset($this->$name);
     }
-    
+
   }
 
   /**
@@ -198,12 +200,13 @@ class Form implements \ArrayAccess, \Iterator
    *
    * @return object The object with the data from the form replacing values for members of the object
    */
-  public function populateObj($obj)
+  public function populateObj(&$obj)
   {
     foreach ($this->fields as $field_name => $field) {
-      if (property_exists($obj, $field_name) && $field->data) {
-        $obj->$field_name = $field->data;
-      }
+      /**
+       * @var Field $field
+       */
+      $field->populateObj($obj, $field_name);
     }
 
     return $obj;
@@ -273,5 +276,18 @@ class Form implements \ArrayAccess, \Iterator
         $field->process($formdata);
       }
     }
+  }
+
+  private function runExtraValidators($name)
+  {
+    if ((method_exists($this, "validate_$name") && !call_user_func([$this, "validate_$name"]))) {
+      return false;
+    }
+    $uc_name = ucfirst($name);
+    if ((method_exists($this, "validate$uc_name") && !call_user_func([$this, "validate$uc_name"]))) {
+      return false;
+    }
+
+    return true;
   }
 }

@@ -8,11 +8,12 @@
 
 namespace WTForms\CSRF\Session;
 
+use Carbon\Carbon;
 use WTForms\CSRF\Core\CSRF;
 use WTForms\CSRF\Core\CSRFTokenField;
 use WTForms\DefaultMeta;
-use WTForms\Form;
 use WTForms\Exceptions\ValidationError;
+use WTForms\Form;
 
 /**
  * @property int time_limit
@@ -69,7 +70,7 @@ class SessionCSRF extends CSRF
     }
 
     if ($this->time_limit) {
-      $expires = strftime(self::TIME_FORMAT, $this->now()->getTimestamp() + $this->time_limit);
+      $expires = $this->now()->addSeconds($this->time_limit)->format(self::TIME_FORMAT);
       $csrf_build = sprintf("%s%s", $_SESSION[$this->session_key], $expires);
     } else {
       $expires = '';
@@ -77,7 +78,7 @@ class SessionCSRF extends CSRF
     }
     $hmac_csrf = hash_hmac('sha1', $csrf_build, $meta->csrf_secret);
 
-    return sprintf("%s##%s", $expires, $hmac_csrf);
+    return "$expires##$hmac_csrf";
   }
 
   /**
@@ -86,7 +87,7 @@ class SessionCSRF extends CSRF
    */
   public function now()
   {
-    return new \DateTime();
+    return Carbon::now();
   }
 
   /**
@@ -118,19 +119,13 @@ class SessionCSRF extends CSRF
     }
 
     if ($this->time_limit) {
-      $now_formatted = strftime(self::TIME_FORMAT, $this->now()->getTimestamp());
+      $now_formatted = $this->now()->format(self::TIME_FORMAT);
       if ((new \DateTime($now_formatted)) > (new \DateTime($expires))) {
         throw new ValidationError("CSRF token expired");
       }
     }
   }
 
-  /**
-   * @param $name string
-   *
-   * @return mixed
-   * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
-   */
   function __get($name)
   {
     if ($name == "time_limit") {

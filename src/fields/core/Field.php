@@ -20,6 +20,7 @@ use WTForms\Widgets\Core\Widget;
 /**
  * Field base class
  * @property  boolean    $checked
+ * @property  mixed      $data
  * @package WTForms\Fields
  * @property null|string value
  */
@@ -31,10 +32,6 @@ class Field implements \Iterator
    * @var Form
    */
   public $form;
-  /**
-   * @var mixed
-   */
-  public $data;
   /**
    * @var array
    */
@@ -203,9 +200,9 @@ class Field implements \Iterator
     if ($this->widget instanceof Widget) {
       $t[] = $this->widget;
     }
-    foreach ($t as $v) {
-      if ($v->field_flags) {
-        foreach ($v->field_flags as $flag) {
+    foreach ($t as $x) {
+      if ($x->field_flags) {
+        foreach ($x->field_flags as $flag) {
           $this->flags->$flag = true;
         }
       }
@@ -268,7 +265,7 @@ class Field implements \Iterator
    *
    * @return bool
    */
-  public function validate($form, array $extra_validators = [])
+  public function validate(Form $form, array $extra_validators = [])
   {
     $this->errors = $this->process_errors;
     $stop_validation = false;
@@ -331,6 +328,13 @@ class Field implements \Iterator
 
         return true;
       } catch (ValidationError $e) {
+        $message = $e->getMessage();
+        if ($message != "") {
+          $this->errors[] = $message;
+        }
+
+        return true;
+      } catch (ValueError $e) {
         $message = $e->getMessage();
         if ($message != "") {
           $this->errors[] = $message;
@@ -469,6 +473,13 @@ class Field implements \Iterator
     }
 
     return null;
+  }
+
+  public function __clone()
+  {
+    /*if(is_callable($this->default)){
+      $this->default = $this->default->bindTo($this);
+    }*/
   }
 
   /**

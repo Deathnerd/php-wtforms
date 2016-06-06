@@ -8,7 +8,7 @@
 
 namespace WTForms\Tests\Widgets;
 
-use WTForms\widgets\core\TableWidget;
+use WTForms\Widgets\Core\TableWidget;
 
 class TableWidgetTest extends \PHPUnit_Framework_TestCase
 {

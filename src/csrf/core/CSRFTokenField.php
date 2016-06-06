@@ -2,7 +2,7 @@
 namespace WTForms\CSRF\Core;
 
 use WTForms;
-use WTForms\Fields\Core\HiddenField;
+use WTForms\Fields\Simple\HiddenField;
 use WTForms\Form;
 use WTForms\Exceptions\ValidationError;
 
@@ -23,8 +23,9 @@ class CSRFTokenField extends HiddenField
    * CSRFTokenField constructor.
    *
    * @param array $options
+   * @param Form  $form
    */
-  public function __construct(array $options = [])
+  public function __construct(array $options = [], Form $form = null)
   {
     $defaults = ['label' => 'CSRF Token', 'csrf_impl', 'WTForms\CSRF\Core\CSRF'];
     $options = array_merge($defaults, $options);
@@ -32,9 +33,7 @@ class CSRFTokenField extends HiddenField
     $c = $options['csrf_impl'];
     $this->csrf_impl = new $c();
     unset($options['csrf_impl']);
-    $label = $options['label'];
-    unset($options['label']);
-    parent::__construct($label, $options);
+    parent::__construct($options, $form);
   }
 
   /**
@@ -74,7 +73,7 @@ class CSRFTokenField extends HiddenField
    * @param      $formdata
    * @param null $data
    *
-   * @throws WTForms\NotImplemented
+   * @throws WTForms\Exceptions\NotImplemented
    */
   public function process($formdata, $data = null)
   {

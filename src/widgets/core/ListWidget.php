@@ -9,6 +9,7 @@
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Fields\Core\SelectFieldBase;
 
 /**
  * Renders a list of fields as `ul` or `ol` list.
@@ -58,6 +59,9 @@ class ListWidget extends Widget
   {
     $options = array_merge(["id" => $field->id], $options);
     $html = sprintf("<%s %s>", $this->html_tag, html_params($options));
+    if ($field instanceof SelectFieldBase) {
+      $field = $field->options;
+    }
     foreach ($field as $subfield) {
       if ($this->prefix_label) {
         $html .= sprintf("<li>%s %s</li>", $subfield->label, $subfield());

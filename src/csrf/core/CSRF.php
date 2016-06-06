@@ -9,22 +9,21 @@
 namespace WTForms\CSRF\Core;
 
 
-use WTForms\Form;
-use WTForms\NotImplemented;
+use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\ValidationError;
+use WTForms\Form;
 
 abstract class CSRF
 {
   /**
    * @var string
    */
-  public $field_class = "CSRFTokenField";
+  public $field_class = '\WTForms\CSRF\Core\CSRFTokenField';
 
   public function setupForm(Form $form)
   {
     $meta = $form->meta;
     $field_name = $meta->csrf_field_name;
-    // TODO: This might not work... Look into a better way to pass $this and dynamically call an object
     $unbound_field = new ${$this->field_class}(['label' => 'CSRF Token', 'csrf_impl' => $this]);
 
     return [[$field_name, $unbound_field]];
@@ -41,7 +40,7 @@ abstract class CSRF
    * @param CSRFTokenField $csrf_token_field The field which is being used for CSRF
    *
    * @return string
-   * @throws NotImplemented
+   * @throws \WTForms\Exceptions\NotImplemented
    */
   public function generateCSRFToken(/** @noinspection PhpUnusedParameterInspection */
       CSRFTokenField $csrf_token_field)

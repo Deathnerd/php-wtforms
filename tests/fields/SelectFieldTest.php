@@ -106,6 +106,16 @@ class SelectFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals('<option disabled selected value="a">hello</option>', $first_option(["disabled" => true]));
   }
 
+  public function testDefaultCoerce()
+  {
+    $this->form->a = new SelectField(["choices" => [["a", "Foo"]]]);
+    $this->form->process(["formdata" => ["a" => []]]);
+    $this->assertFalse($this->form->validate());
+    $this->assertNull($this->form->a->data);
+    $this->assertEquals(1, count($this->form->a->errors));
+    $this->assertEquals(["Not a valid choice"], $this->form->a->errors);
+  }
+
   /**
    * @expectedException \WTForms\Exceptions\NotImplemented
    */

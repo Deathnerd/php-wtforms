@@ -26,8 +26,8 @@ class StringField extends Field
 
   public function __construct(array $options = [], Form $form = null)
   {
+    $options = array_merge(["widget" => new TextInput()], $options);
     parent::__construct($options, $form);
-    $this->widget = new TextInput();
   }
 
   /**
@@ -44,7 +44,7 @@ class StringField extends Field
 
   public function __get($name)
   {
-    if (in_array($name, ["value"])) {
+    if ($name == "value") {
       return $this->data ?: "";
     }
 
