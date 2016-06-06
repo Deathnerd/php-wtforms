@@ -283,7 +283,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
        * @var Field $field
        */
       $fake_obj = new \stdClass();
-      $fake_obj->data = $values[$i];
+      $fake_obj->data = @$values[$i];
       $field->populateObj($fake_obj, 'data');
       $output[] = $fake_obj->data;
       $i++;
