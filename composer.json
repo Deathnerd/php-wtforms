@@ -20,6 +20,7 @@
       "WTForms\\": "src/",
       "WTForms\\CSRF\\": "src/csrf/",
       "WTForms\\CSRF\\Session\\": "src/csrf/session/",
+      "WTForms\\CSRF\\Core\\": "src/csrf/core/",
       "WTForms\\Exceptions\\": "src/exceptions/",
       "WTForms\\Fields\\": "src/fields/",
       "WTForms\\Fields\\Core\\": "src/fields/core/",
