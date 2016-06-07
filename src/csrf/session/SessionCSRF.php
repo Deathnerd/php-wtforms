@@ -145,6 +145,4 @@ class SessionCSRF extends CSRF
 
     return null;
   }
-
-
 }

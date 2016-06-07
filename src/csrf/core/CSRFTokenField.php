@@ -42,10 +42,7 @@ class CSRFTokenField extends HiddenField
    */
   public function __get($name)
   {
-    if (in_array($name, ['value'])) {
-      return $this->current_token;
-    }
-    return null;
+    return $name == "value" ? $this->current_token : null;
   }
 
   /**

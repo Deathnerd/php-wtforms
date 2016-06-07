@@ -12,19 +12,25 @@
     <testsuite name="WTForms Widgets Tests">
         <directory>./tests/widgets</directory>
     </testsuite>
+    <testsuite name="WTForms CSRF Tests">
+        <directory>./tests/csrf</directory>
+    </testsuite>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/fields</directory>
             <directory suffix=".php">./src/widgets</directory>
             <directory suffix=".php">./src/validators</directory>
+            <directory suffix=".php">./src/csrf/core</directory>
+            <directory suffix=".php">./src/csrf/session</directory>
             <file>./src/Form.php</file>
             <file>./src/helpers.php</file>
             <file>./src/Flags.php</file>
+            <file>./src/DefaultMeta.php</file>
+            <exclude>
+                <directory>./tests</directory>
+                <directory>./vendor</directory>
+                <directory>./src/exceptions</directory>
+            </exclude>
         </whitelist>
-        <blacklist>
-            <directory suffix=".php">./tests</directory>
-            <directory suffix=".php">./vendor</directory>
-            <directory suffix=".php">./src/exceptions</directory>
-        </blacklist>
     </filter>
 </phpunit>
