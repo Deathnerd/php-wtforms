@@ -8,6 +8,7 @@
 
 namespace WTForms;
 
+use WTForms\CSRF\Session\SessionCSRF;
 use WTForms\Fields;
 use WTForms\Fields\Core\Field;
 
@@ -49,7 +50,7 @@ class DefaultMeta
    *
    * @return mixed
    */
-  public function render_field(Field $field, $render_kw = [])
+  public function renderField(Field $field, $render_kw = [])
   {
     $other_kw = property_exists($field, 'render_kw') ? $field->render_kw : null;
     if (!is_null($other_kw)) {
@@ -58,5 +59,24 @@ class DefaultMeta
     $widget = $field->widget;
 
     return $widget($field, $render_kw);
+  }
+
+  /**
+   * Build a CSRF implementation. This is called once per form instance
+   * The default implementation builds the class referenced to by
+   * {@link csrf_class} with zero arguments. If {@link csrf_class} is ``null``,
+   * will instead use the default implementation {@link \WTForms\CSRF\Session\SessionCSRF}.
+   *
+   * @param Form $form The form
+   *
+   * @return object|SessionCSRF A CSRF representation
+   */
+  public function buildCSRF(Form $form)
+  {
+    if (!is_null($this->csrf_class)) {
+      return (new \ReflectionClass($this->csrf_class))->newInstance();
+    }
+
+    return new SessionCSRF();
   }
 }
