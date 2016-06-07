@@ -33,6 +33,9 @@ class TableWidgetTest extends \PHPUnit_Framework_TestCase
             "type" => 'HiddenField'
         ])
     ];
-    $this->assertEquals('<table id="hai"><tr><th>lfoo</th><td>hidden1foo</td></tr><tr><th>lbar</th><td>bar</td></tr></table>hidden2', (new TableWidget())->__invoke($field));
+    $this->assertEquals('<table id="hai">' .
+        '<tr><th>lfoo</th><td>hidden1foo</td></tr>' .
+        '<tr><th>lbar</th><td>bar</td></tr>' .
+        '</table>hidden2', (new TableWidget())->__invoke($field));
   }
 }

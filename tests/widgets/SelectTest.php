@@ -10,7 +10,6 @@ namespace WTForms\Tests\Widgets;
 
 
 use WTForms\Widgets\Core\Select;
-use WTForms\Tests\Widgets\DummyField;
 
 class SelectTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,11 +29,20 @@ class SelectTest extends \PHPUnit_Framework_TestCase
 
   public function testBasic()
   {
-    $this->assertEquals('<select id="" name="f"><option selected value="foo">lfoo</option><option value="bar">lbar</option></select>', (new Select())->__invoke($this->field));
-    $this->assertEquals('<select id="" multiple name="f"><option selected value="foo">lfoo</option><option value="bar">lbar</option></select>', (new Select())->__invoke($this->field, ['multiple' => true]));
+    $this->assertEquals('<select id="" name="f">' .
+        '<option selected value="foo">lfoo</option>' .
+        '<option value="bar">lbar</option>' .
+        '</select>', (new Select())->__invoke($this->field));
+    $this->assertEquals('<select id="" multiple name="f">' .
+        '<option selected value="foo">lfoo</option>' .
+        '<option value="bar">lbar</option>' .
+        '</select>', (new Select())->__invoke($this->field, ['multiple' => true]));
     $widget = new Select();
     $widget->multiple = true;
-    $this->assertEquals('<select id="" multiple name="f"><option selected value="foo">lfoo</option><option value="bar">lbar</option></select>', $widget($this->field));
+    $this->assertEquals('<select id="" multiple name="f">' .
+        '<option selected value="foo">lfoo</option>' .
+        '<option value="bar">lbar</option>' .
+        '</select>', $widget($this->field));
   }
 
   public function testRenderOption()

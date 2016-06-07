@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit>
+    <testsuite name='WTForms Validators Test'>
+        <directory>./tests/validators</directory>
+    </testsuite>
+    <testsuite name="WTForms Common Tests">
+        <directory>./tests/common</directory>
+    </testsuite>
+    <testsuite name="WTForms Field Tests">
+        <directory>./tests/fields</directory>
+    </testsuite>
+    <testsuite name="WTForms Widgets Tests">
+        <directory>./tests/widgets</directory>
+    </testsuite>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src/fields</directory>
+            <directory suffix=".php">./src/widgets</directory>
+            <directory suffix=".php">./src/validators</directory>
+        </whitelist>
+        <blacklist>
+            <directory suffix=".php">./tests</directory>
+            <directory suffix=".php">./vendor</directory>
+            <directory suffix=".php">./src/exceptions</directory>
+        </blacklist>
+    </filter>
+</phpunit>

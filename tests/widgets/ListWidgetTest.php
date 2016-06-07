@@ -36,8 +36,14 @@ class ListWidgetTest extends \PHPUnit_Framework_TestCase
             ]
         )
     ];
-    $this->assertEquals('<ul id="hai"><li>lfoo foo</li><li>lbar bar</li></ul>', (new ListWidget())->__invoke($field));
+    $this->assertEquals('<ul id="hai">' .
+        '<li>lfoo foo</li>' .
+        '<li>lbar bar</li>' .
+        '</ul>', (new ListWidget())->__invoke($field));
     $widget = new ListWidget("ol", false);
-    $this->assertEquals('<ol id="hai"><li>foo lfoo</li><li>bar lbar</li></ol>', $widget->__invoke($field));
+    $this->assertEquals('<ol id="hai">' .
+        '<li>foo lfoo</li>' .
+        '<li>bar lbar</li>' .
+        '</ol>', $widget->__invoke($field));
   }
 }
