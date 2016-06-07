@@ -98,7 +98,7 @@ class Form implements \ArrayAccess, \Iterator
     $success = true;
     foreach ($this->fields as $name => $field) {
       /** @var $field Field */
-      if (!$field->validate($this) || !$this->runExtraValidators($name)) {
+      if (!($field->validate($this) && $this->runExtraValidators($name))) {
         $success = false;
       }
     }

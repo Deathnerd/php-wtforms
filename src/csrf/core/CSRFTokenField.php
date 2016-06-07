@@ -62,7 +62,7 @@ class CSRFTokenField extends HiddenField
    */
   public function preValidate(Form $form)
   {
-    $this->csrf_impl->validateCSRFToken($form, $this);
+    $this->csrf_impl->validate_csrf_token($form, $this);
   }
 
   /**

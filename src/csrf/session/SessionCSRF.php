@@ -28,7 +28,7 @@ class SessionCSRF extends CSRF
   /**
    * @var string
    */
-  public $session_key = "CSRF";
+  public $session_key = "csrf";
   /**
    * @var DefaultMeta
    */
@@ -62,16 +62,17 @@ class SessionCSRF extends CSRF
     if (!$meta->csrf_secret) {
       throw new \Exception("Must set `csrf_secret` on class Meta for SessionCSRF to work");
     }
-    if (!$meta->csrf_context) {
-      throw new TypeError("Must provide a session-like object as CSRF context");
+    if (is_null($_SESSION)) {
+      throw new TypeError("Must must have an active session to use SessionCSRF");
     }
 
-    if (!in_array($_SESSION, $this->session_key)) {
+    if (!array_key_exists($this->session_key, $_SESSION)) {
       $_SESSION[$this->session_key] = sha1(openssl_random_pseudo_bytes(64));
     }
 
     if ($this->time_limit) {
       $expires = $this->now()->addSeconds($this->time_limit)->format(str_replace('%', '', self::TIME_FORMAT));
+      $this->now()->subSeconds($this->time_limit);
       $csrf_build = sprintf("%s%s", $_SESSION[$this->session_key], $expires);
     } else {
       $expires = '';
@@ -93,7 +94,7 @@ class SessionCSRF extends CSRF
    *
    * @throws ValidationError
    */
-  public function validateCSRFToken(Form $form, CSRFTokenField $field)
+  public function validate_csrf_token(Form $form, CSRFTokenField $field)
   {
     $meta = $this->form_meta;
     if (!$field->data || !str_contains($field->data, "##")) {
@@ -120,6 +121,8 @@ class SessionCSRF extends CSRF
   /**
    * Get the current time. used for test mocking/overriding mainly.
    * @return Carbon
+   *
+   * @codeCoverageIgnore
    */
   public function now()
   {
@@ -135,12 +138,8 @@ class SessionCSRF extends CSRF
 
       return $this->now()->diff((new \DateTime(strtotime("+30 minutes"))));
     } elseif ($name == "session") {
-      $context = (array)$this->form_meta->csrf_context;
-      if (array_key_exists('session', $context)) {
-        return $context['session'];
-      }
-
-      return $this->form_meta->csrf_context;
+      
+      return $_SESSION['session'];
     }
 
     return null;

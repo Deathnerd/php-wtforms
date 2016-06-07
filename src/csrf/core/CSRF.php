@@ -59,7 +59,7 @@ class CSRF
    *
    * @throws ValidationError
    */
-  public function validateCSRFToken(/** @noinspection PhpUnusedParameterInspection */
+  public function validate_csrf_token(/** @noinspection PhpUnusedParameterInspection */
       Form $form, CSRFTokenField $field)
   {
     if ($field->current_token !== $field->data) {
