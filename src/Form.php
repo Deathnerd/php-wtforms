@@ -57,8 +57,8 @@ class Form implements \ArrayAccess, \Iterator
   /**
    * Form constructor.
    * TODO: Detail options for Form
-   * 
-*@param array $options
+   *
+   * @param array $options
    */
   public function __construct(array $options = [])
   {
@@ -66,6 +66,14 @@ class Form implements \ArrayAccess, \Iterator
     // of key=>value pairs mapping to properties on this form's meta object
     if (array_key_exists('meta', $options) && is_array($options['meta'])) {
       $this->meta->updateValues($options['meta']);
+    }
+
+    // if CSRF is enabled on the Meta field, then generate a CSRF field
+    // automagically and attach it to the form
+    if ($this->meta->csrf) {
+      $this->csrf = $this->meta->buildCSRF($this);
+      list($csrf_name, $csrf_field) = $this->csrf->setupForm($this);
+      $this->__set($csrf_name, $csrf_field);
     }
 
     if (array_key_exists('prefix', $options)) {

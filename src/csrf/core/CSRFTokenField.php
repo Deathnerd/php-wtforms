@@ -30,8 +30,7 @@ class CSRFTokenField extends HiddenField
     $defaults = ['label' => 'CSRF Token', 'csrf_impl', 'WTForms\CSRF\Core\CSRF'];
     $options = array_merge($defaults, $options);
 
-    $c = $options['csrf_impl'];
-    $this->csrf_impl = new $c();
+    $this->csrf_impl = (new \ReflectionClass($options['csrf_impl']))->newInstance();
     unset($options['csrf_impl']);
     parent::__construct($options, $form);
   }

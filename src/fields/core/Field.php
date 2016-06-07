@@ -281,6 +281,8 @@ class Field implements \Iterator
       $stop_validation = true;
     } catch (ValueError $e) {
       $this->errors[] = $e->getMessage();
+    } catch (ValidationError $e) {
+      $this->errors[] = $e->getMessage();
     }
 
     if (!$stop_validation) {

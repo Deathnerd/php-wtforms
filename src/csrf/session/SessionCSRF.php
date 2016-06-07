@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use WTForms\CSRF\Core\CSRF;
 use WTForms\CSRF\Core\CSRFTokenField;
 use WTForms\DefaultMeta;
+use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 
@@ -23,7 +24,7 @@ class SessionCSRF extends CSRF
   /**
    * @var string
    */
-  const TIME_FORMAT = "YmdHMS";
+  const TIME_FORMAT = "%Y%m%d%H%i%s";
   /**
    * @var string
    */
@@ -53,7 +54,7 @@ class SessionCSRF extends CSRF
    *
    * @return string
    * @throws \Exception
-   * @throws \TypeError
+   * @throws TypeError
    */
   public function generateCSRFToken(CSRFTokenField $csrf_token_field)
   {
@@ -62,7 +63,7 @@ class SessionCSRF extends CSRF
       throw new \Exception("Must set `csrf_secret` on class Meta for SessionCSRF to work");
     }
     if (!$meta->csrf_context) {
-      throw new \TypeError("Must provide a session-like object as CSRF context");
+      throw new TypeError("Must provide a session-like object as CSRF context");
     }
 
     if (!in_array($_SESSION, $this->session_key)) {
@@ -70,7 +71,7 @@ class SessionCSRF extends CSRF
     }
 
     if ($this->time_limit) {
-      $expires = $this->now()->addSeconds($this->time_limit)->format(self::TIME_FORMAT);
+      $expires = $this->now()->addSeconds($this->time_limit)->format(str_replace('%', '', self::TIME_FORMAT));
       $csrf_build = sprintf("%s%s", $_SESSION[$this->session_key], $expires);
     } else {
       $expires = '';
@@ -79,15 +80,6 @@ class SessionCSRF extends CSRF
     $hmac_csrf = hash_hmac('sha1', $csrf_build, $meta->csrf_secret);
 
     return "$expires##$hmac_csrf";
-  }
-
-  /**
-   * Get the current time. used for test mocking/overriding mainly.
-   * @return \DateTime
-   */
-  public function now()
-  {
-    return Carbon::now();
   }
 
   /**
@@ -110,8 +102,7 @@ class SessionCSRF extends CSRF
 
     list($expires, $hmac_csrf) = explode("##", $field->data);
 
-    // TODO: Probably not correct. $_SESSION['csrf'] is a string I think
-    $check_val = strval($_SESSION[$this->session_key] + $expires);
+    $check_val = strval($_SESSION[$this->session_key] . $expires);
 
     $hmac_compare = hash_hmac('sha1', $check_val, $meta->csrf_secret);
     if ($hmac_compare !== $hmac_csrf) {
@@ -119,11 +110,20 @@ class SessionCSRF extends CSRF
     }
 
     if ($this->time_limit) {
-      $now_formatted = $this->now()->format(self::TIME_FORMAT);
+      $now_formatted = $this->now()->format(str_replace('%', '', self::TIME_FORMAT));
       if ((new \DateTime($now_formatted)) > (new \DateTime($expires))) {
         throw new ValidationError("CSRF token expired");
       }
     }
+  }
+
+  /**
+   * Get the current time. used for test mocking/overriding mainly.
+   * @return Carbon
+   */
+  public function now()
+  {
+    return Carbon::now();
   }
 
   function __get($name)
@@ -133,7 +133,7 @@ class SessionCSRF extends CSRF
         return $this->form_meta->csrf_time_limit;
       }
 
-      return $this->now()->diff((new \DateTime(strtotime("+30 days"))));
+      return $this->now()->diff((new \DateTime(strtotime("+30 minutes"))));
     } elseif ($name == "session") {
       $context = (array)$this->form_meta->csrf_context;
       if (array_key_exists('session', $context)) {

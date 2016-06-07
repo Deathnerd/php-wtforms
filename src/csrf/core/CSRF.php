@@ -13,7 +13,7 @@ use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 
-abstract class CSRF
+class CSRF
 {
   /**
    * @var string
@@ -24,9 +24,9 @@ abstract class CSRF
   {
     $meta = $form->meta;
     $field_name = $meta->csrf_field_name;
-    $unbound_field = new ${$this->field_class}(['label' => 'CSRF Token', 'csrf_impl' => $this]);
+    $unbound_field = (new \ReflectionClass($this->field_class))->newInstance(['label' => 'CSRF Token', 'csrf_impl' => $this]);
 
-    return [[$field_name, $unbound_field]];
+    return [$field_name, $unbound_field];
   }
 
   /**
