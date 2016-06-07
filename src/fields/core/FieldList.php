@@ -254,7 +254,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       /**
        * @var Field $subfield
        */
-      if (!$subfield->validate($form)) {
+      if (!$subfield->validate($form, $extra_validators)) {
         $this->errors[] = $subfield->errors;
       }
     }

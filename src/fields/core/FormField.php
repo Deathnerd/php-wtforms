@@ -70,9 +70,9 @@ class FormField extends Field implements \ArrayAccess
     $prefix = $this->name . $this->separator;
 
     if (is_array($data)) {
-      $this->form = new $this->form_class(["prefix" => $prefix, "formdata" => $formdata, "data" => $data]);
+      $this->form = (new \ReflectionClass($this->form_class))->newInstance(["prefix" => $prefix, "formdata" => $formdata, "data" => $data]);
     } else {
-      $this->form = new $this->form_class(["prefix" => $prefix, "formdata" => $formdata, "obj" => $data]);
+      $this->form = (new \ReflectionClass($this->form_class))->newInstance(["prefix" => $prefix, "formdata" => $formdata, "obj" => $data]);
     }
   }
 

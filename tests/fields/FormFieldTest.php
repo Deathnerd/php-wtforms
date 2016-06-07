@@ -49,7 +49,7 @@ class FormFieldTest extends \PHPUnit_Framework_TestCase
     $this->f1->process([]);
 
     $this->f2 = new Form();
-    $this->f2->a = new FormField(["form_class" => '\WTForms\Tests\Fields\F', "separator" => "::"]);
+    $this->f2->a = new FormField(["form_class" => new F, "separator" => "::"]);
     $this->f2->process([]);
   }
 
