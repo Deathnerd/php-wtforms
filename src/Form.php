@@ -70,7 +70,7 @@ class Form implements \ArrayAccess, \Iterator
 
     // if CSRF is enabled on the Meta field, then generate a CSRF field
     // automagically and attach it to the form
-    if ($this->meta->csrf) {
+    if ($this->meta && $this->meta->csrf) {
       $this->csrf = $this->meta->buildCSRF($this);
       list($csrf_name, $csrf_field) = $this->csrf->setupForm($this);
       if (!$csrf_field->csrf_impl->form_meta) {
