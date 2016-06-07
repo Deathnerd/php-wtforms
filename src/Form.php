@@ -73,6 +73,9 @@ class Form implements \ArrayAccess, \Iterator
     if ($this->meta->csrf) {
       $this->csrf = $this->meta->buildCSRF($this);
       list($csrf_name, $csrf_field) = $this->csrf->setupForm($this);
+      if (!$csrf_field->csrf_impl->form_meta) {
+        $csrf_field->csrf_impl->form_meta = $this->meta;
+      }
       $this->__set($csrf_name, $csrf_field);
     }
 
