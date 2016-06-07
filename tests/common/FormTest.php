@@ -161,4 +161,18 @@ class FormTest extends \PHPUnit_Framework_TestCase
     $form = new TestForm(["data" => ["a" => "foo"], "a" => "bar"]);
     $this->assertEquals("bar", $form->a->data);
   }
+
+  public function testUpdateMeta()
+  {
+    $form = new TestForm(["meta" => ["csrf_secret" => "shhhdonttell"]]);
+    $this->assertEquals("shhhdonttell", $form->meta->csrf_secret);
+  }
+
+  public function testFormErrors()
+  {
+    $form = new TestForm();
+    $this->assertFalse($form->validate());
+    $this->assertNotEmpty($form->errors);
+    $this->assertEquals(["a" => ["This field is required."]], $form->errors);
+  }
 }

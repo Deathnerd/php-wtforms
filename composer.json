@@ -37,6 +37,7 @@
     "psr-4": {
       "WTForms\\Tests\\": "tests/",
       "WTForms\\Tests\\Common\\": "tests/common/",
+      "WTForms\\Tests\\CSRF\\": "tests/csrf/",
       "WTForms\\Tests\\Fields\\": "tests/fields/",
       "WTForms\\Tests\\SupportingClasses\\": "tests/supporting_classes/"
     }

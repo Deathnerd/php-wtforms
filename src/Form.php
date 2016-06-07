@@ -15,6 +15,7 @@ use WTForms\Fields\Core\Field;
  * Class Form
  * @package WTForms
  * @property array $data
+ * @property array $errors
  * @property
  */
 class Form implements \ArrayAccess, \Iterator
@@ -31,12 +32,6 @@ class Form implements \ArrayAccess, \Iterator
    * @var array<Field>
    */
   public $fields = [];
-  /**
-   * The errors produced when the form runs
-   * validation on its fields
-   * @var array
-   */
-  public $errors = [];
   /**
    * The meta object used for binding fields,
    * interacting with widgets, etc.
@@ -61,11 +56,18 @@ class Form implements \ArrayAccess, \Iterator
 
   /**
    * Form constructor.
-   *
-   * @param array $options
+   * TODO: Detail options for Form
+   * 
+*@param array $options
    */
   public function __construct(array $options = [])
   {
+    // Update the meta values for this form's meta object with a user-supplied array
+    // of key=>value pairs mapping to properties on this form's meta object
+    if (array_key_exists('meta', $options) && is_array($options['meta'])) {
+      $this->meta->updateValues($options['meta']);
+    }
+
     if (array_key_exists('prefix', $options)) {
       $this->prefix = $options['prefix'];
     }
@@ -81,7 +83,7 @@ class Form implements \ArrayAccess, \Iterator
    */
   public function validate()
   {
-    $this->errors = [];
+    $this->_errors = [];
     $success = true;
     foreach ($this->fields as $name => $field) {
       /** @var $field Field */
@@ -90,7 +92,7 @@ class Form implements \ArrayAccess, \Iterator
       }
     }
 
-    return $success && count($this->errors) === 0;
+    return $success && count($this->_errors) === 0;
   }
 
 
@@ -108,15 +110,15 @@ class Form implements \ArrayAccess, \Iterator
 
       return $ret_val;
     } elseif ($field_name == "errors") {
-      if ($this->errors) {
+      if (!$this->_errors) {
         foreach ($this->fields as $name => $field) {
           if ($field->errors) {
-            $this->errors[$name] = $field->errors;
+            $this->_errors[$name] = $field->errors;
           }
         }
       }
 
-      return $this->errors;
+      return $this->_errors;
     }
 
     // Return the field as a property
@@ -163,7 +165,7 @@ class Form implements \ArrayAccess, \Iterator
     if (array_key_exists($name, $this->fields)) {
       unset($this->fields[$name]);
     } else {
-      unset($this->$name);
+      unset($this->$name); // @codeCoverageIgnore
     }
 
   }
@@ -186,7 +188,7 @@ class Form implements \ArrayAccess, \Iterator
     if (is_array($data)) {
       return $this->populateArray($data);
     }
-    throw new \RuntimeException(sprintf("Form::populate accepts only an array or an object as input; %s given.", gettype($data)));
+    throw new \RuntimeException(sprintf("Form::populate accepts only an array or an object as input; %s given.", gettype($data))); //@codeCoverageIgnore
   }
 
   /**

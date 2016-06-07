@@ -17,6 +17,9 @@
             <directory suffix=".php">./src/fields</directory>
             <directory suffix=".php">./src/widgets</directory>
             <directory suffix=".php">./src/validators</directory>
+            <file>./src/Form.php</file>
+            <file>./src/helpers.php</file>
+            <file>./src/Flags.php</file>
         </whitelist>
         <blacklist>
             <directory suffix=".php">./tests</directory>

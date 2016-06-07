@@ -19,12 +19,7 @@ class Flags
 {
   public function __get($name)
   {
-    if (starts_with($name, "_") && property_exists($this, $name)) {
-      return $this->$name;
-    } elseif(property_exists($this, $name)){
-      return $this->$name;
-    }
-    return $this->$name = false;
+    return property_exists($this, $name) ? $this->$name : $this->$name = false;
   }
 
   public function __set($name, $value)

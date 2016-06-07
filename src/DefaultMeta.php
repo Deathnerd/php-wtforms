@@ -79,4 +79,16 @@ class DefaultMeta
 
     return new SessionCSRF();
   }
+
+  /**
+   * Given an associative array of values, update values on this `Meta` instance.
+   *
+   * @param array $values
+   */
+  public function updateValues(array $values = [])
+  {
+    foreach ($values as $key => $value) {
+      $this->$key = $value;
+    }
+  }
 }

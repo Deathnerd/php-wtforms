@@ -236,7 +236,7 @@ class Field implements \Iterator
    */
   public function __invoke($options = [])
   {
-    return $this->meta->render_field($this, $options);
+    return $this->meta->renderField($this, $options);
   }
 
   public function __call($name, $arguments)

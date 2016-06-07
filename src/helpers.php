@@ -162,6 +162,7 @@ if (!function_exists('starts_with')) {
    * @param string          $haystack The string to search in
    * @param string|string[] $needle   The string(s) to search for in the haystack
    *
+   * @codeCoverageIgnore
    * @return bool
    */
   function starts_with($haystack, $needle)
@@ -180,6 +181,9 @@ if (!function_exists('starts_with')) {
 }
 
 if (!class_exists('Itertools')) {
+  /**
+   * @codeCoverageIgnore
+   */
   class Itertools
   {
     /**
