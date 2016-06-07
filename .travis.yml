@@ -7,4 +7,4 @@ php:
 install:
   - composer install
 
-script: phpunit --configuration ./tests/phpunit.xml  --bootstrap ./vendor/autoload.php
+script: phpunit --configuration ./phpunit.xml  --bootstrap ./vendor/autoload.php
