@@ -48,7 +48,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    *
    * @throws TypeError
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     if (!array_key_exists('inner_field', $options)) {
       throw new TypeError("FieldList requires an inner_field declaration");
@@ -70,7 +70,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       unset($options['max_entries']);
     }
     $options = array_merge(["widget" => new ListWidget()], $options);
-    parent::__construct($options, $form);
+    parent::__construct($options);
     // unset the data attribute because it'll be 
     // overridden in the __get method to reflect the
     // entries property

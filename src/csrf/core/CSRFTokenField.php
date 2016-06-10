@@ -25,7 +25,7 @@ class CSRFTokenField extends HiddenField
    * @param array $options
    * @param Form  $form
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $defaults = ['label' => 'CSRF Token', 'csrf_impl', 'WTForms\CSRF\Core\CSRF'];
     $options = array_merge($defaults, $options);
@@ -38,6 +38,7 @@ class CSRFTokenField extends HiddenField
   /**
    * We want to always return the current token on render, regardless of
    * whether a good or bad token was passed
+   * @internal
    * @return string
    */
   public function __get($name)

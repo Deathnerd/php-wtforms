@@ -32,7 +32,7 @@ class SelectField extends SelectFieldBase
    */
   public $coerce;
 
-  public function __construct(array $options = ['choices' => []], Form $form = null)
+  public function __construct(array $options = ['choices' => []])
   {
     if (array_key_exists('choices', $options)) {
       $this->choices = $options['choices'];

@@ -30,7 +30,7 @@ class StringFieldTest extends \PHPUnit_Framework_TestCase
     $this->assertAttributeInstanceOf('WTForms\Fields\Core\Label', 'label', $string_field);
     $this->assertEquals("String Field", $string_field->label->text);
     $this->assertEquals('<input class="form-control" id="foobar" name="string_field" type="text" value="">', "$string_field");
-
+    
     $this->assertNull($string_field->undefined_property);
   }
 }

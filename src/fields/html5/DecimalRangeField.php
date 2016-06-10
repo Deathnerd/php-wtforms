@@ -20,7 +20,7 @@ class DecimalRangeField extends DecimalField
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $options = array_merge(["widget" => new RangeInput(["step" => "any"])], $options);
     parent::__construct($options, $form);

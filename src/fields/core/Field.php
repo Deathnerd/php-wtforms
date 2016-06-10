@@ -21,8 +21,11 @@ use WTForms\Widgets\Core\Widget;
  * Field base class
  * @property  boolean    $checked
  * @property  mixed      $data
+ * @property null|string $value
+ *
+ * @method string label(array $options)
+ *
  * @package WTForms\Fields
- * @property null|string value
  */
 class Field implements \Iterator
 {
@@ -117,15 +120,11 @@ class Field implements \Iterator
    * Field constructor.
    *
    * @param array $options
-   * @param Form  $form
    *
-   * @throws ValueError
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
-    if ($form) {
-      $this->form = $form;
-    } elseif (array_key_exists("form", $options)) {
+    if (array_key_exists("form", $options)) {
       $this->form = $options['form'];
       unset($options['form']);
     } else {
@@ -462,6 +461,9 @@ class Field implements \Iterator
     $obj->$name = $this->data;
   }
 
+  /**
+   * @internal
+   */
   public function __get($name)
   {
     if ($name == "value") {
@@ -476,14 +478,7 @@ class Field implements \Iterator
 
     return null;
   }
-
-  public function __clone()
-  {
-    /*if(is_callable($this->default)){
-      $this->default = $this->default->bindTo($this);
-    }*/
-  }
-
+  
   /**
    * @return Form | null
    */

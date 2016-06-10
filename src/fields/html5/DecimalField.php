@@ -20,7 +20,7 @@ class DecimalField extends \WTForms\Fields\Core\DecimalField
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $options = array_merge(["widget" => new NumberInput(["step" => '1'])], $options);
     parent::__construct($options, $form);

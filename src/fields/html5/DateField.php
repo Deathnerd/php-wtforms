@@ -20,7 +20,7 @@ class DateField extends \WTForms\Fields\Core\DateField
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $options = array_merge(["widget" => new DateInput()], $options);
     parent::__construct($options, $form);

@@ -28,7 +28,7 @@ class SelectMultipleField extends SelectField
    */
   public $data;
 
-  public function __construct(array $options = ['choices' => []], Form $form = null)
+  public function __construct(array $options = ['choices' => []])
   {
     $options = array_merge(["widget" => new Select()], $options);
     parent::__construct($options, $form);

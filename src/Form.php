@@ -106,7 +106,9 @@ class Form implements \ArrayAccess, \Iterator
     return $success && count($this->_errors) === 0;
   }
 
-
+  /**
+   * @internal
+   */
   public function __get($field_name)
   {
     /*
@@ -139,6 +141,7 @@ class Form implements \ArrayAccess, \Iterator
   /**
    * Allow setting a field on the form as a property
    *
+   * @internal
    * @param string $name  The name of the field to add to the current fields
    * @param mixed  $value The field object to add
    */

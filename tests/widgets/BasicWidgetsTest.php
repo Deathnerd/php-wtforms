@@ -25,9 +25,9 @@ use WTForms\Widgets\Core\Widget;
 
 class DummyField extends Field
 {
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
-    parent::__construct($options, $form);
+    parent::__construct($options);
     $this->label = array_key_exists('label', $options) ? $options['label'] : $this->label;
     $this->data = array_key_exists('data', $options) ? $options['data'] : $this->data;
     $this->type = array_key_exists('type', $options) ? $options['type'] : 'TextField';

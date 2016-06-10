@@ -38,6 +38,9 @@ class DateField extends DateTimeField
     }
   }
 
+  /**
+   * @inheritdoc
+   */
   public function __get($name)
   {
     if ($name == "value") {

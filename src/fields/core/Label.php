@@ -52,6 +52,13 @@ class Label
     return sprintf("<label %s>%s</label>", html_params($options), $text);
   }
 
+  /**
+   * @internal
+   *
+   * @param $name
+   *
+   * @return string
+   */
   public function __get($name)
   {
     return $name == "for" ? $this->field_id : $this->$name;

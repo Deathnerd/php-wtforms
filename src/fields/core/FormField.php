@@ -27,7 +27,7 @@ class FormField extends Field implements \ArrayAccess
    * @inheritdoc
    * @throws \TypeError
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     if (!array_key_exists('form_class', $options)) {
       throw new TypeError("FormField must have a form_class property set!");
@@ -49,7 +49,7 @@ class FormField extends Field implements \ArrayAccess
     $this->_obj = null;
 
     $options = array_merge(["widget" => new TableWidget()], $options);
-    parent::__construct($options, $form);
+    parent::__construct($options);
   }
 
   /**
@@ -105,6 +105,9 @@ class FormField extends Field implements \ArrayAccess
     $this->form->populateObj($candidate);
   }
 
+  /**
+   * @inheritdoc
+   */
   public function __get($name)
   {
     if (in_array($name, ["data", "errors"]) || property_exists($this->form, $name)) {

@@ -25,7 +25,7 @@ class RadioField extends SelectField
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = ['choices' => []], Form $form = null)
+  public function __construct(array $options = ['choices' => []])
   {
     $options = array_merge(["widget" => new ListWidget("ul", false), "option_widget" => new RadioInput()], $options);
     parent::__construct($options, $form);

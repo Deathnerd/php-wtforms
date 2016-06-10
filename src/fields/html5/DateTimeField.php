@@ -23,7 +23,7 @@ class DateTimeField extends \WTForms\Fields\Core\DateTimeField
    * @param array $options
    * @param Form  $form
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $options = array_merge(["widget" => new DateTimeInput()], $options);
     parent::__construct($options, $form);

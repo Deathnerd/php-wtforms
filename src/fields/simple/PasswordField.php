@@ -24,7 +24,7 @@ class PasswordField extends StringField
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $options = array_merge(["widget" => new PasswordInput()], $options);
     parent::__construct($options, $form);

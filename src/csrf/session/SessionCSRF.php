@@ -129,7 +129,12 @@ class SessionCSRF extends CSRF
     return Carbon::now();
   }
 
-  function __get($name)
+  /**
+   * @param $name
+   * @internal
+   * @return bool|\DateInterval|null|string
+   */
+  public function __get($name)
   {
     if ($name == "time_limit") {
       if (property_exists($this->form_meta, "csrf_time_limit")) {

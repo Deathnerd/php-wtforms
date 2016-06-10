@@ -25,12 +25,12 @@ class DateTimeField extends Field
    * @var string
    */
   public $format = "%Y-%m-%d %H:%i:%s";
-  public $carbon_format = "Y-m-d H:i:s";
+  private $carbon_format = "Y-m-d H:i:s";
 
   /**
    * @inheritdoc
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     if (array_key_exists('format', $options)) {
       $this->format = $options['format'];
@@ -38,10 +38,13 @@ class DateTimeField extends Field
     }
     $this->carbon_format = preg_replace('/%/', '', $this->format);
     $options = array_merge(["widget" => new TextInput()], $options);
-    parent::__construct($options, $form);
+    parent::__construct($options);
   }
 
 
+  /**
+   * @inheritdoc
+   */
   public function __get($name)
   {
     if ($name == "value") {

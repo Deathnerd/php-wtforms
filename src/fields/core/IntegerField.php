@@ -31,10 +31,10 @@ class IntegerField extends Field
    * @param Form  $form
    * @param array $options
    */
-  public function __construct(array $options = [], Form $form = null)
+  public function __construct(array $options = [])
   {
     $options = array_merge(["widget" => new TextInput()], $options);
-    parent::__construct($options, $form);
+    parent::__construct($options);
   }
 
   public function processFormData(array $valuelist)
