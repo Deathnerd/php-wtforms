@@ -16,12 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class TelInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("tel");
-  }
-
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("tel");
+    }
 }

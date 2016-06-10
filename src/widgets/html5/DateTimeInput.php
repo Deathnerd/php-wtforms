@@ -16,11 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class DateTimeInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("datetime");
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("datetime");
+    }
 }

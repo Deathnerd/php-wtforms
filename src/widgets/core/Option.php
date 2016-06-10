@@ -8,8 +8,6 @@
 
 namespace WTForms\Widgets\Core;
 
-use WTForms\Fields\Core\Field;
-
 /**
  * Renders the individual option from a select field.
  *
@@ -20,10 +18,10 @@ use WTForms\Fields\Core\Field;
  */
 class Option
 {
-  public $field_flags = [];
+    public $field_flags = [];
 
-  public function __invoke($field, array $options = [])
-  {
-    return Select::renderOption($field->value, $field->label->text, $field->checked, $options);
-  }
+    public function __invoke($field, array $options = [])
+    {
+        return Select::renderOption($field->value, $field->label->text, $field->checked, $options);
+    }
 }

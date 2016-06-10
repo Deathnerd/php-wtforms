@@ -18,27 +18,27 @@ use WTForms\Fields\Core\Field;
  */
 class CheckboxInput extends Input
 {
-  /**
-   * CheckboxInput constructor.
-   */
-  public function __construct()
-  {
-    parent::__construct("checkbox");
-  }
-
-
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string|void
-   */
-  public function __invoke($field, array $options = [])
-  {
-    if ($field->checked or $field->data) {
-      $options['checked'] = true;
+    /**
+     * CheckboxInput constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct("checkbox");
     }
 
-    return parent::__invoke($field, $options);
-  }
+
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string|void
+     */
+    public function __invoke($field, array $options = [])
+    {
+        if ($field->checked or $field->data) {
+            $options['checked'] = true;
+        }
+
+        return parent::__invoke($field, $options);
+    }
 }

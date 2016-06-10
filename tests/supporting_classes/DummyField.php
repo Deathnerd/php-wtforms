@@ -12,24 +12,24 @@ use WTForms\Form;
 
 class DummyField extends Field
 {
-  /**
-   * @var array
-   */
-  public $errors;
-  /**
-   * @var mixed
-   */
-  public $data;
-  /**
-   * @var mixed
-   */
-  public $raw_data;
+    /**
+     * @var array
+     */
+    public $errors;
+    /**
+     * @var mixed
+     */
+    public $data;
+    /**
+     * @var mixed
+     */
+    public $raw_data;
 
-  public function __construct(array $options = [])
-  {
-    parent::__construct($options);
-    $this->data = array_key_exists('data', $options) ? $options['data'] : null;
-    $this->errors = array_key_exists('errors', $options) ? $options['errors'] : [];
-    $this->raw_data = array_key_exists('raw_data', $options) ? $options['raw_data'] : null;
-  }
+    public function __construct(array $options = [])
+    {
+        parent::__construct($options);
+        $this->data = array_key_exists('data', $options) ? $options['data'] : null;
+        $this->errors = array_key_exists('errors', $options) ? $options['errors'] : [];
+        $this->raw_data = array_key_exists('raw_data', $options) ? $options['raw_data'] : null;
+    }
 }

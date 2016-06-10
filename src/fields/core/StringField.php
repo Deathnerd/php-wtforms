@@ -8,7 +8,6 @@
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Form;
 use WTForms\Widgets;
 use WTForms\Widgets\Core\TextInput;
 
@@ -19,38 +18,38 @@ use WTForms\Widgets\Core\TextInput;
  */
 class StringField extends Field
 {
-  /**
-   * @var TextInput
-   */
-  public $widget;
+    /**
+     * @var TextInput
+     */
+    public $widget;
 
-  public function __construct(array $options = [])
-  {
-    $options = array_merge(["widget" => new TextInput()], $options);
-    parent::__construct($options);
-  }
-
-  /**
-   * @param array $valuelist
-   */
-  public function processFormData(array $valuelist)
-  {
-    if ($valuelist) {
-      $this->data = $valuelist[0];
-    } else {
-      $this->data = '';
-    }
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function __get($name)
-  {
-    if ($name == "value") {
-      return $this->data ?: "";
+    public function __construct(array $options = [])
+    {
+        $options = array_merge(["widget" => new TextInput()], $options);
+        parent::__construct($options);
     }
 
-    return null;
-  }
+    /**
+     * @param array $valuelist
+     */
+    public function processFormData(array $valuelist)
+    {
+        if ($valuelist) {
+            $this->data = $valuelist[0];
+        } else {
+            $this->data = '';
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __get($name)
+    {
+        if ($name == "value") {
+            return $this->data ?: "";
+        }
+
+        return null;
+    }
 }

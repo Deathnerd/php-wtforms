@@ -19,26 +19,26 @@ use WTForms\Fields\Core\Field;
  */
 class RadioInput extends Input
 {
-  /**
-   * RadioInput constructor.
-   */
-  public function __construct()
-  {
-    parent::__construct("radio");
-  }
-
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
-  {
-    if ($field->checked) {
-      $options['checked'] = true;
+    /**
+     * RadioInput constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct("radio");
     }
 
-    return parent::__invoke($field, $options);
-  }
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string
+     */
+    public function __invoke($field, array $options = [])
+    {
+        if ($field->checked) {
+            $options['checked'] = true;
+        }
+
+        return parent::__invoke($field, $options);
+    }
 }

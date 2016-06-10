@@ -8,7 +8,6 @@
 
 namespace WTForms\Fields\HTML5;
 
-use WTForms\Form;
 use WTForms\Widgets\HTML5\NumberInput;
 
 /**
@@ -17,12 +16,12 @@ use WTForms\Widgets\HTML5\NumberInput;
  */
 class IntegerField extends \WTForms\Fields\Core\IntegerField
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct(array $options = [])
-  {
-    $options = array_merge(["widget" => new NumberInput(["step" => "1"])], $options);
-    parent::__construct($options);
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $options = [])
+    {
+        $options = array_merge(["widget" => new NumberInput(["step" => "1"])], $options);
+        parent::__construct($options);
+    }
 }

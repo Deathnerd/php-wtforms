@@ -16,11 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class MonthInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("month");
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("month");
+    }
 }

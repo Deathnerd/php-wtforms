@@ -13,13 +13,13 @@ use WTForms\Form;
 
 class HiddenFieldTest extends \PHPUnit_Framework_TestCase
 {
-  public function testHiddenField()
-  {
-    $form = new Form();
-    $form->a = new HiddenField(["default" => "LE DEFAULT"]);
-    $form->process([]);
-    $this->assertEquals('<input id="a" name="a" type="hidden" value="LE DEFAULT">', "$form->a");
-    $this->assertTrue($form->a->flags->hidden);
-  }
+    public function testHiddenField()
+    {
+        $form = new Form();
+        $form->a = new HiddenField(["default" => "LE DEFAULT"]);
+        $form->process([]);
+        $this->assertEquals('<input id="a" name="a" type="hidden" value="LE DEFAULT">', "$form->a");
+        $this->assertTrue($form->a->flags->hidden);
+    }
 
 }

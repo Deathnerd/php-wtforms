@@ -16,11 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class ColorInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("color");
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("color");
+    }
 }

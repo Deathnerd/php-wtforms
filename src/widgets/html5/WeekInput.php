@@ -16,11 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class WeekInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("week");
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("week");
+    }
 }

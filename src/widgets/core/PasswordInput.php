@@ -21,34 +21,34 @@ use WTForms\Fields\Core\Field;
  */
 class PasswordInput extends Input
 {
-  /**
-   * @var bool
-   */
-  public $hide_value;
+    /**
+     * @var bool
+     */
+    public $hide_value;
 
-  /**
-   * PasswordInput constructor.
-   *
-   * @param bool $hide_value
-   */
-  public function __construct($hide_value = true)
-  {
-    parent::__construct("password");
-    $this->hide_value = $hide_value;
-  }
-
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
-  {
-    if ($this->hide_value) {
-      $options['value'] = "";
+    /**
+     * PasswordInput constructor.
+     *
+     * @param bool $hide_value
+     */
+    public function __construct($hide_value = true)
+    {
+        parent::__construct("password");
+        $this->hide_value = $hide_value;
     }
 
-    return parent::__invoke($field, $options);
-  }
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string
+     */
+    public function __invoke($field, array $options = [])
+    {
+        if ($this->hide_value) {
+            $options['value'] = "";
+        }
+
+        return parent::__invoke($field, $options);
+    }
 }

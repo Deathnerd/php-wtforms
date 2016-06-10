@@ -16,12 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class SearchInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("search");
-  }
-
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("search");
+    }
 }

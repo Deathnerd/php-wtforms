@@ -15,34 +15,34 @@ use WTForms\Validators\URL;
 
 class URLTest extends \PHPUnit_Framework_TestCase
 {
-  public $form;
-  public $url;
+    public $form;
+    public $url;
 
-  protected function setUp()
-  {
-    $this->form = new Form();
-    $this->url = new URL;
-  }
+    protected function setUp()
+    {
+        $this->form = new Form();
+        $this->url = new URL;
+    }
 
-  public function testURL()
-  {
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar.dk"])));
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar.dk/"])));
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar.museum/foobar"])));
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://127.0.0.1/foobar"])));
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://127.0.0.1:9000/fake"])));
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://localhost/foobar"])));
-    $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar"])));
-  }
+    public function testURL()
+    {
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar.dk"])));
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar.dk/"])));
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar.museum/foobar"])));
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://127.0.0.1/foobar"])));
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://127.0.0.1:9000/fake"])));
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://localhost/foobar"])));
+        $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar"])));
+    }
 
-  /**
-   * @expectedException \WTForms\Exceptions\ValidationError
-   * @expectedExceptionMessage foo
-   */
-  public function testNoProtocolAndCustomMessage()
-  {
-    $this->url = new URL("foo");
-    $this->url->__invoke($this->form, new DummyField(["data" => "foobar.dk"]));
-  }
+    /**
+     * @expectedException \WTForms\Exceptions\ValidationError
+     * @expectedExceptionMessage foo
+     */
+    public function testNoProtocolAndCustomMessage()
+    {
+        $this->url = new URL("foo");
+        $this->url->__invoke($this->form, new DummyField(["data" => "foobar.dk"]));
+    }
 
 }

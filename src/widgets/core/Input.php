@@ -10,7 +10,6 @@ namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
 
-
 /**
  * Render a basic ``<input>`` field
  *
@@ -22,36 +21,38 @@ use WTForms\Fields\Core\Field;
  */
 class Input extends Widget
 {
-  /**
-   * @var string
-   */
-  public $input_type;
+    /**
+     * @var string
+     */
+    public $input_type;
 
-  /**
-   * @param string $input_type If passed, will add ``type="$input_type"`` to the
-   *                           html attributes for this input
-   */
-  public function __construct($input_type = "")
-  {
-    if ($input_type !== "") {
-      $this->input_type = $input_type;
+    /**
+     * @param string $input_type If passed, will add ``type="$input_type"`` to the
+     *                           html attributes for this input
+     */
+    public function __construct($input_type = "")
+    {
+        if ($input_type !== "") {
+            $this->input_type = $input_type;
+        }
     }
-  }
 
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
-  {
-    $defaults = ["id"    => $field->id,
-                 "type"  => $this->input_type,
-                 "value" => $field->value];
-    $options = array_merge($defaults, $options);
-    $options['name'] = $field->name;
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string
+     */
+    public function __invoke($field, array $options = [])
+    {
+        $defaults = [
+            "id"    => $field->id,
+            "type"  => $this->input_type,
+            "value" => $field->value
+        ];
+        $options = array_merge($defaults, $options);
+        $options['name'] = $field->name;
 
-    return sprintf("<input %s>", html_params($options));
-  }
+        return sprintf("<input %s>", html_params($options));
+    }
 }

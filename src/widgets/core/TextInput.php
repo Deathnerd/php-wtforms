@@ -16,8 +16,8 @@ namespace WTForms\Widgets\Core;
  */
 class TextInput extends Input
 {
-  public function __construct()
-  {
-    parent::__construct("text");
-  }
+    public function __construct()
+    {
+        parent::__construct("text");
+    }
 }

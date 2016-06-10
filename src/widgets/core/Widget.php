@@ -17,16 +17,16 @@ use WTForms\Fields\Core\Field;
  */
 class Widget
 {
-  public $field_flags = [];
+    public $field_flags = [];
 
-  /**
-   * @param Field|mixed $field
-   * @param array       $options
-   *
-   * @throws NotImplemented
-   */
-  public function __invoke($field, array $options = [])
-  {
-    throw new NotImplemented("Widget needs an __invoke method");
-  }
+    /**
+     * @param Field|mixed $field
+     * @param array       $options
+     *
+     * @throws NotImplemented
+     */
+    public function __invoke($field, array $options = [])
+    {
+        throw new NotImplemented("Widget needs an __invoke method");
+    }
 }

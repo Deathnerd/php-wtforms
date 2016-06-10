@@ -9,7 +9,6 @@
 namespace WTForms\Fields\HTML5;
 
 use WTForms\Fields\Core\StringField;
-use WTForms\Form;
 use WTForms\Widgets\HTML5\EmailInput;
 
 /**
@@ -18,12 +17,12 @@ use WTForms\Widgets\HTML5\EmailInput;
  */
 class EmailField extends StringField
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct(array $options = [])
-  {
-    $options = array_merge(["widget" => new EmailInput()], $options);
-    parent::__construct($options, $form);
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $options = [])
+    {
+        $options = array_merge(["widget" => new EmailInput()], $options);
+        parent::__construct($options);
+    }
 }

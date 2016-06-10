@@ -17,19 +17,18 @@ use WTForms\Fields\Core\Field;
  */
 class FileInput extends Widget
 {
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
-  {
-    $options = array_merge(["id" => $field->id], $options);
-    $options['name'] = $field->name;
-    $options['type'] = "file";
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string
+     */
+    public function __invoke($field, array $options = [])
+    {
+        $options = array_merge(["id" => $field->id], $options);
+        $options['name'] = $field->name;
+        $options['type'] = "file";
 
-    return sprintf("<input %s>", html_params($options));
-  }
-
+        return sprintf("<input %s>", html_params($options));
+    }
 }

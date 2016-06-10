@@ -8,9 +8,9 @@
 
 namespace WTForms\Validators;
 
+use WTForms\Exceptions\StopValidation;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\Exceptions\StopValidation;
 
 /**
  * Checks the field's data is 'truthy' otherwise stops the validation chain.
@@ -30,39 +30,39 @@ use WTForms\Exceptions\StopValidation;
 class DataRequired extends Validator
 {
 
-  /**
-   * @var array
-   */
-  public $field_flags = ['required'];
+    /**
+     * @var array
+     */
+    public $field_flags = ['required'];
 
-  /**
-   * DataRequired constructor.
-   *
-   * @param string $message Error message to raise in case of a validation error
-   * @param array  $options
-   */
-  public function __construct($message = "", array $options = [])
-  {
-    $this->message = $message;
-  }
-
-  /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
-   * @throws StopValidation
-   */
-  public function __invoke(Form $form, Field $field, $message = "")
-  {
-    if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
-      if ($this->message == "") {
-        $message = "This field is required.";
-      } else {
-        $message = $this->message;
-      }
-      $field->errors = [];
-      throw new StopValidation($message);
+    /**
+     * DataRequired constructor.
+     *
+     * @param string $message Error message to raise in case of a validation error
+     * @param array  $options
+     */
+    public function __construct($message = "", array $options = [])
+    {
+        $this->message = $message;
     }
-  }
+
+    /**
+     * @param Form   $form
+     * @param Field  $field
+     * @param string $message
+     *
+     * @throws StopValidation
+     */
+    public function __invoke(Form $form, Field $field, $message = "")
+    {
+        if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
+            if ($this->message == "") {
+                $message = "This field is required.";
+            } else {
+                $message = $this->message;
+            }
+            $field->errors = [];
+            throw new StopValidation($message);
+        }
+    }
 }
