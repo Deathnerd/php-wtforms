@@ -18,47 +18,46 @@ use WTForms\Exceptions\ValueError;
  */
 class DateField extends DateTimeField
 {
-  public $format = "%Y-%m-%d";
+    public $format = "%Y-%m-%d";
 
-  /**
-   * @param array $valuelist
-   *
-   * @throws ValueError
-   */
-  public function processFormData(array $valuelist)
-  {
-    if ($valuelist) {
-      $date_str = implode(" ", $valuelist);
-      try {
-        $this->data = Carbon::createFromFormat($this->carbon_format, $date_str)->startOfDay();
-      } catch (\Exception $e) {
-        $this->data = null;
-        throw new ValueError("Not a valid date value");
-      }
-    }
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function __get($name)
-  {
-    if ($name == "value") {
-      if ($this->raw_data) {
-        return implode(" ", $this->raw_data);
-      }
-
-      if ($this->data instanceof \Carbon\Carbon) {
-        return $this->data->startOfDay()->formatLocalized($this->format);
-      } elseif ($this->data instanceof \DateTime) {
-        return \Carbon\Carbon::instance($this->data)->startOfDay()->formatLocalized($this->format);
-      } else {
-        return '';
-      }
+    /**
+     * @param array $valuelist
+     *
+     * @throws ValueError
+     */
+    public function processFormData(array $valuelist)
+    {
+        if ($valuelist) {
+            $date_str = implode(" ", $valuelist);
+            try {
+                $this->data = Carbon::createFromFormat($this->carbon_format, $date_str)->startOfDay();
+            } catch (\Exception $e) {
+                $this->data = null;
+                throw new ValueError("Not a valid date value");
+            }
+        }
     }
 
-    return parent::__get($name); // @codeCoverageIgnore
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __get($name)
+    {
+        if ($name == "value") {
+            if ($this->raw_data) {
+                return implode(" ", $this->raw_data);
+            }
 
+            if ($this->data instanceof \Carbon\Carbon) {
+                return $this->data->startOfDay()->formatLocalized($this->format);
+            } elseif ($this->data instanceof \DateTime) {
+                return \Carbon\Carbon::instance($this->data)->startOfDay()->formatLocalized($this->format);
+            } else {
+                return '';
+            }
+        }
 
+        return parent::__get($name); // @codeCoverageIgnore
+    }
 }
+

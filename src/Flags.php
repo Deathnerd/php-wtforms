@@ -17,19 +17,19 @@ namespace WTForms;
  */
 class Flags
 {
-  /**
-   * @internal
-   */
-  public function __get($name)
-  {
-    return property_exists($this, $name) ? $this->$name : $this->$name = false;
-  }
+    /**
+     * @internal
+     */
+    public function __get($name)
+    {
+        return property_exists($this, $name) ? $this->$name : $this->$name = false;
+    }
 
-  /**
-   * @internal
-   */
-  public function __set($name, $value)
-  {
-    $this->$name = $value;
-  }
+    /**
+     * @internal
+     */
+    public function __set($name, $value)
+    {
+        $this->$name = $value;
+    }
 }

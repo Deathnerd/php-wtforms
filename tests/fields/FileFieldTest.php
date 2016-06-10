@@ -14,11 +14,11 @@ use WTForms\Form;
 
 class FileFieldTest extends \PHPUnit_Framework_TestCase
 {
-  public function testFileField()
-  {
-    $form = new Form();
-    $form->a = new FileField(["default" => "LE DEFAULT"]);
-    $form->process([]);
-    $this->assertEquals('<input id="a" name="a" type="file">', "$form->a");
-  }
+    public function testFileField()
+    {
+        $form = new Form();
+        $form->a = new FileField(["default" => "LE DEFAULT"]);
+        $form->process([]);
+        $this->assertEquals('<input id="a" name="a" type="file">', "$form->a");
+    }
 }

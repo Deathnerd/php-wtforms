@@ -15,43 +15,45 @@ use WTForms\Validators\Regexp;
 
 class RegexpTest extends \PHPUnit_Framework_TestCase
 {
-  public $form;
+    public $form;
 
-  protected function setUp()
-  {
-    $this->form = new Form();
-  }
+    protected function setUp()
+    {
+        $this->form = new Form();
+    }
 
-  public function testRegexp()
-  {
-    $this->assertEquals('a', (new Regexp("", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => "a"])));
-    $this->assertEquals('A', (new Regexp("", ["regex" => "/^a/i"]))->__invoke($this->form, new DummyField(["data" => "ABcd"])));
-  }
+    public function testRegexp()
+    {
+        $this->assertEquals('a',
+            (new Regexp("", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => "a"])));
+        $this->assertEquals('A',
+            (new Regexp("", ["regex" => "/^a/i"]))->__invoke($this->form, new DummyField(["data" => "ABcd"])));
+    }
 
-  /**
-   * @expectedException \WTForms\Exceptions\ValidationError
-   * @expectedExceptionMessage Invalid Input.
-   */
-  public function testInvalidData()
-  {
-    (new Regexp("", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => "foo"]));
-  }
+    /**
+     * @expectedException \WTForms\Exceptions\ValidationError
+     * @expectedExceptionMessage Invalid Input.
+     */
+    public function testInvalidData()
+    {
+        (new Regexp("", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => "foo"]));
+    }
 
-  /**
-   * @expectedException \WTForms\Exceptions\ValidationError
-   * @expectedExceptionMessage Invalid Input.
-   */
-  public function testNullData()
-  {
-    (new Regexp("", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => null]));
-  }
+    /**
+     * @expectedException \WTForms\Exceptions\ValidationError
+     * @expectedExceptionMessage Invalid Input.
+     */
+    public function testNullData()
+    {
+        (new Regexp("", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => null]));
+    }
 
-  /**
-   * @expectedException \WTForms\Exceptions\ValidationError
-   * @expectedExceptionMessage foo
-   */
-  public function testCustomMessage()
-  {
-    (new Regexp("foo", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => "f"]));
-  }
+    /**
+     * @expectedException \WTForms\Exceptions\ValidationError
+     * @expectedExceptionMessage foo
+     */
+    public function testCustomMessage()
+    {
+        (new Regexp("foo", ["regex" => "/^a/"]))->__invoke($this->form, new DummyField(["data" => "f"]));
+    }
 }

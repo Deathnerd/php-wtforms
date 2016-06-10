@@ -8,7 +8,6 @@
 
 namespace WTForms\Widgets\HTML5;
 
-use WTForms\Fields\Core\Field;
 use WTForms\Widgets\Core\Input;
 
 /**
@@ -17,34 +16,34 @@ use WTForms\Widgets\Core\Input;
  */
 class NumberInput extends Input
 {
-  public $min;
-  public $max;
-  public $step;
+    public $min;
+    public $max;
+    public $step;
 
-  /**
-   * @inheritdoc
-   */
-  public function __construct(array $options = ["step" => null, "min" => null, "max" => null])
-  {
-    $options = array_merge(["step" => null, "min" => null, "max" => null], $options);
-    $this->step = $options['step'];
-    $this->min = $options['min'];
-    $this->max = $options['max'];
-    parent::__construct("number");
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function __invoke($field, array $options = [])
-  {
-    foreach (['step', 'min', 'max'] as $option) {
-      if (!array_key_exists($option, $options) && $this->$option) {
-        $options[$option] = $this->$option;
-      }
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $options = ["step" => null, "min" => null, "max" => null])
+    {
+        $options = array_merge(["step" => null, "min" => null, "max" => null], $options);
+        $this->step = $options['step'];
+        $this->min = $options['min'];
+        $this->max = $options['max'];
+        parent::__construct("number");
     }
-    
-    return parent::__invoke($field, $options);
-  }
 
+    /**
+     * @inheritdoc
+     */
+    public function __invoke($field, array $options = [])
+    {
+        foreach (['step', 'min', 'max'] as $option) {
+            if (!array_key_exists($option, $options) && $this->$option) {
+                $options[$option] = $this->$option;
+            }
+        }
+
+        return parent::__invoke($field, $options);
+    }
 }
+

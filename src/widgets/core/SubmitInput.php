@@ -20,22 +20,22 @@ use WTForms\Fields\Core\Field;
  */
 class SubmitInput extends Input
 {
-  /**
-   * SubmitInput constructor.
-   */
-  public function __construct()
-  {
-    parent::__construct("submit");
-  }
+    /**
+     * SubmitInput constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct("submit");
+    }
 
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
-  {
-    return parent::__invoke($field, array_merge(["value" => $field->label->text], $options));
-  }
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string
+     */
+    public function __invoke($field, array $options = [])
+    {
+        return parent::__invoke($field, array_merge(["value" => $field->label->text], $options));
+    }
 }

@@ -14,11 +14,11 @@ use WTForms\Form;
 
 class TextAreaFieldTest extends \PHPUnit_Framework_TestCase
 {
-  public function testTextAreaField()
-  {
-    $form = new Form();
-    $form->a = new TextAreaField(["default" => "LE DEFAULT"]);
-    $form->process([]);
-    $this->assertEquals('<textarea id="a" name="a">LE DEFAULT</textarea>', "$form->a");
-  }
+    public function testTextAreaField()
+    {
+        $form = new Form();
+        $form->a = new TextAreaField(["default" => "LE DEFAULT"]);
+        $form->process([]);
+        $this->assertEquals('<textarea id="a" name="a">LE DEFAULT</textarea>', "$form->a");
+    }
 }

@@ -8,7 +8,6 @@
 
 namespace WTForms\Fields\HTML5;
 
-use WTForms\Form;
 use WTForms\Widgets\HTML5\DateTimeInput;
 
 /**
@@ -17,15 +16,15 @@ use WTForms\Widgets\HTML5\DateTimeInput;
  */
 class DateTimeField extends \WTForms\Fields\Core\DateTimeField
 {
-  /**
-   * DateTimeField constructor.
-   *
-   * @param array $options
-   * @param Form  $form
-   */
-  public function __construct(array $options = [])
-  {
-    $options = array_merge(["widget" => new DateTimeInput()], $options);
-    parent::__construct($options, $form);
-  }
+    /**
+     * DateTimeField constructor.
+     *
+     * @param array $options
+     *   $form
+     */
+    public function __construct(array $options = [])
+    {
+        $options = array_merge(["widget" => new DateTimeInput()], $options);
+        parent::__construct($options);
+    }
 }

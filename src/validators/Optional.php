@@ -21,50 +21,52 @@ use WTForms\Form;
  */
 class Optional extends Validator
 {
-  /**
-   * @var array
-   */
-  public $field_flags = ['optional'];
+    /**
+     * @var array
+     */
+    public $field_flags = ['optional'];
 
-  /**
-   * @var callable
-   */
-  public $string_check;
+    /**
+     * @var callable
+     */
+    public $string_check;
 
-  /**
-   * @var bool
-   */
-  private $strip_whitespace;
+    /**
+     * @var bool
+     */
+    private $strip_whitespace;
 
-  /**
-   * Optional constructor.
-   *
-   * @param string $message
-   * @param array  $options
-   *
-   */
-  public function __construct($message = "", array $options = ['strip_whitespace' => true])
-  {
-    $this->strip_whitespace = $options['strip_whitespace'];
-  }
-
-  /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
-   * @throws StopValidation
-   */
-  public function __invoke(Form $form, Field $field, $message = "")
-  {
-    if (is_null($field->raw_data) || (is_string($field->raw_data[0]) && $this->string_check($field->raw_data[0]) == "")) {
-      $field->errors = [];
-      throw new StopValidation();
+    /**
+     * Optional constructor.
+     *
+     * @param string $message
+     * @param array  $options
+     *
+     */
+    public function __construct($message = "", array $options = ['strip_whitespace' => true])
+    {
+        $this->strip_whitespace = $options['strip_whitespace'];
     }
-  }
 
-  private function string_check($string)
-  {
-    return ($this->strip_whitespace) ? trim($string) : $string;
-  }
+    /**
+     * @param Form   $form
+     * @param Field  $field
+     * @param string $message
+     *
+     * @throws StopValidation
+     */
+    public function __invoke(Form $form, Field $field, $message = "")
+    {
+        if (is_null($field->raw_data)
+            || (is_string($field->raw_data[0]) && $this->stringCheck($field->raw_data[0]) == "")
+        ) {
+            $field->errors = [];
+            throw new StopValidation();
+        }
+    }
+
+    private function stringCheck($string)
+    {
+        return ($this->strip_whitespace) ? trim($string) : $string;
+    }
 }

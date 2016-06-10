@@ -16,11 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class EmailInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("email");
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("email");
+    }
 }

@@ -9,7 +9,6 @@
 namespace WTForms\Fields\Simple;
 
 use WTForms\Fields\Core\BooleanField;
-use WTForms\Form;
 use WTForms\Widgets\Core\SubmitInput;
 
 /**
@@ -19,13 +18,13 @@ use WTForms\Widgets\Core\SubmitInput;
  */
 class SubmitField extends BooleanField
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct(array $options = [])
-  {
-    $options = array_merge(["widget" => new SubmitInput()], $options);
-    parent::__construct($options, $form);
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $options = [])
+    {
+        $options = array_merge(["widget" => new SubmitInput()], $options);
+        parent::__construct($options);
+    }
 
 }

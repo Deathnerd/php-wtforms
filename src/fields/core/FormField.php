@@ -19,185 +19,193 @@ use WTForms\Widgets\Core\TableWidget;
 class FormField extends Field implements \ArrayAccess
 {
 
-  public $separator = "-";
-  protected $form_class;
-  private $_obj;
+    public $separator = "-";
+    protected $form_class;
+    private $_obj;
 
-  /**
-   * @inheritdoc
-   * @throws \TypeError
-   */
-  public function __construct(array $options = [])
-  {
-    if (!array_key_exists('form_class', $options)) {
-      throw new TypeError("FormField must have a form_class property set!");
-    }
-    if (array_key_exists('filters', $options)) {
-      throw new TypeError("FormField cannot take filters, as the encapsulated data is not mutable");
-    }
+    /**
+     * @inheritdoc
+     * @throws \TypeError
+     */
+    public function __construct(array $options = [])
+    {
+        if (!array_key_exists('form_class', $options)) {
+            throw new TypeError("FormField must have a form_class property set!");
+        }
+        if (array_key_exists('filters', $options)) {
+            throw new TypeError("FormField cannot take filters, as the encapsulated data is not mutable");
+        }
 
-    if (array_key_exists('validators', $options)) {
-      throw new TypeError("FormField does not accept any validators. Instead, define them on the enclosed form.");
-    }
+        if (array_key_exists('validators', $options)) {
+            throw new TypeError("FormField does not accept any validators. Instead, define them on the enclosed form.");
+        }
 
-    $this->form_class = $options['form_class'];
-    unset($options['form_class']);
-    if (array_key_exists('separator', $options)) {
-      $this->separator = $options['separator'];
-      unset($options['separator']);
-    }
-    $this->_obj = null;
+        $this->form_class = $options['form_class'];
+        unset($options['form_class']);
+        if (array_key_exists('separator', $options)) {
+            $this->separator = $options['separator'];
+            unset($options['separator']);
+        }
+        $this->_obj = null;
 
-    $options = array_merge(["widget" => new TableWidget()], $options);
-    parent::__construct($options);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function process($formdata, $data = null)
-  {
-    if (is_null($data) || !$data) {
-      if (is_callable($this->default)) {
-        $data = $this->default->__invoke();
-      } else {
-        $data = $this->default;
-      }
-      $this->_obj = $data;
+        $options = array_merge(["widget" => new TableWidget()], $options);
+        parent::__construct($options);
     }
 
-    $this->object_data = $data;
-    $prefix = $this->name . $this->separator;
+    /**
+     * @inheritdoc
+     */
+    public function process($formdata, $data = null)
+    {
+        if (is_null($data) || !$data) {
+            if (is_callable($this->default)) {
+                $data = $this->default->__invoke();
+            } else {
+                $data = $this->default;
+            }
+            $this->_obj = $data;
+        }
 
-    if (is_array($data)) {
-      $this->form = (new \ReflectionClass($this->form_class))->newInstance(["prefix" => $prefix, "formdata" => $formdata, "data" => $data]);
-    } else {
-      $this->form = (new \ReflectionClass($this->form_class))->newInstance(["prefix" => $prefix, "formdata" => $formdata, "obj" => $data]);
-    }
-  }
+        $this->object_data = $data;
+        $prefix = $this->name . $this->separator;
 
-  /**
-   * @inheritdoc
-   * @throws TypeError
-   */
-  public function validate(Form $form, array $extra_validators = [])
-  {
-    if ($extra_validators) {
-      throw new TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
-    }
-
-    return $this->form->validate();
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function populateObj($obj, $name)
-  {
-    $candidate = $obj->$name;
-    if (is_null($candidate)) {
-      if (is_null($this->_obj)) {
-        throw new TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
-      }
-      $candidate = $this->_obj;
-      $obj->$name = $candidate;
-    }
-    $this->form->populateObj($candidate);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function __get($name)
-  {
-    if (in_array($name, ["data", "errors"]) || property_exists($this->form, $name)) {
-      return $this->form->$name;
-    }
-    if (array_key_exists($name, $this->form->fields)) {
-      return $this->form[$name];
+        if (is_array($data)) {
+            $this->form = (new \ReflectionClass($this->form_class))->newInstance([
+                "prefix"   => $prefix,
+                "formdata" => $formdata,
+                "data"     => $data
+            ]);
+        } else {
+            $this->form = (new \ReflectionClass($this->form_class))->newInstance([
+                "prefix"   => $prefix,
+                "formdata" => $formdata,
+                "obj"      => $data
+            ]);
+        }
     }
 
-    return parent::__get($name); // @codeCoverageIgnore
-  }
+    /**
+     * @inheritdoc
+     * @throws TypeError
+     */
+    public function validate(Form $form, array $extra_validators = [])
+    {
+        if ($extra_validators) {
+            throw new TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
+        }
 
-  /**
-   * @codeCoverageIgnore
-   */
-  public function current()
-  {
-    return current($this->form->fields);
-  }
-
-  /**
-   * @codeCoverageIgnore
-   */
-  public function next()
-  {
-    next($this->form->fields);
-  }
-
-  /**
-   * @codeCoverageIgnore
-   */
-  public function key()
-  {
-    return key($this->form->fields);
-  }
-
-  /**
-   * @codeCoverageIgnore
-   */
-  public function valid()
-  {
-    $key = key($this->form->fields);
-
-    return ($key !== null && $key !== false);
-  }
-
-  /**
-   * @codeCoverageIgnore
-   */
-  public function rewind()
-  {
-    reset($this->form->fields);
-  }
-
-  /**
-   * @codeCoverageIgnore
-   */
-  public function offsetExists($offset)
-  {
-    return array_key_exists($offset, $this->form->fields);
-  }
-
-  /**
-   * @codeCoverageIgnore
-   */
-  public function offsetGet($offset)
-  {
-    if (array_key_exists($offset, $this->form->fields)) {
-      return $this->form->fields[$offset];
+        return $this->form->validate();
     }
 
-    return null;
-  }
+    /**
+     * @inheritdoc
+     */
+    public function populateObj($obj, $name)
+    {
+        $candidate = $obj->$name;
+        if (is_null($candidate)) {
+            if (is_null($this->_obj)) {
+                throw new TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
+            }
+            $candidate = $this->_obj;
+            $obj->$name = $candidate;
+        }
+        $this->form->populateObj($candidate);
+    }
 
-  /**
-   * @codeCoverageIgnore
-   */
-  public function offsetSet($offset, $value)
-  {
-    $this->form->fields[$offset] = $value;
-    $this->form->$offset = $value;
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __get($name)
+    {
+        if (in_array($name, ["data", "errors"]) || property_exists($this->form, $name)) {
+            return $this->form->$name;
+        }
+        if (array_key_exists($name, $this->form->fields)) {
+            return $this->form[$name];
+        }
 
-  /**
-   * @codeCoverageIgnore
-   */
-  public function offsetUnset($offset)
-  {
-    unset($this->form->fields[$offset]);
-    $this->form->$offset = null;
-  }
+        return parent::__get($name); // @codeCoverageIgnore
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function current()
+    {
+        return current($this->form->fields);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function next()
+    {
+        next($this->form->fields);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function key()
+    {
+        return key($this->form->fields);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function valid()
+    {
+        $key = key($this->form->fields);
+
+        return ($key !== null && $key !== false);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function rewind()
+    {
+        reset($this->form->fields);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->form->fields);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function offsetGet($offset)
+    {
+        if (array_key_exists($offset, $this->form->fields)) {
+            return $this->form->fields[$offset];
+        }
+
+        return null;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->form->fields[$offset] = $value;
+        $this->form->$offset = $value;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->form->fields[$offset]);
+        $this->form->$offset = null;
+    }
 
 }

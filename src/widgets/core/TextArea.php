@@ -19,17 +19,17 @@ use WTForms\Fields\Core\Field;
  */
 class TextArea extends Widget
 {
-  /**
-   * @param Field $field
-   * @param array $options
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
-  {
-    $options = array_merge(["id" => $field->id], $options);
-    $options['name'] = $field->name;
+    /**
+     * @param Field $field
+     * @param array $options
+     *
+     * @return string
+     */
+    public function __invoke($field, array $options = [])
+    {
+        $options = array_merge(["id" => $field->id], $options);
+        $options['name'] = $field->name;
 
-    return sprintf("<textarea %s>%s</textarea>", html_params($options), e($field->value));
-  }
+        return sprintf("<textarea %s>%s</textarea>", html_params($options), e($field->value));
+    }
 }

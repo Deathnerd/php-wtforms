@@ -9,7 +9,6 @@
 namespace WTForms\Fields\Simple;
 
 use WTForms\Fields\Core\StringField;
-use WTForms\Form;
 use WTForms\Widgets\Core\PasswordInput;
 
 /**
@@ -21,12 +20,12 @@ use WTForms\Widgets\Core\PasswordInput;
  */
 class PasswordField extends StringField
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct(array $options = [])
-  {
-    $options = array_merge(["widget" => new PasswordInput()], $options);
-    parent::__construct($options, $form);
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $options = [])
+    {
+        $options = array_merge(["widget" => new PasswordInput()], $options);
+        parent::__construct($options);
+    }
 }

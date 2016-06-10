@@ -16,11 +16,11 @@ use WTForms\Widgets\Core\Input;
  */
 class URLInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
-  public function __construct()
-  {
-    parent::__construct("url");
-  }
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct("url");
+    }
 }
