@@ -288,8 +288,8 @@ class Field implements \Iterator
         }
 
         if (!$stop_validation) {
-            $stop_validation = $this->runValidationChain($form, $this->validators)
-                && $this->runValidationChain($form, $extra_validators);
+            $stop_validation = $this->runValidationChain($form, array_merge($this->validators, $extra_validators));
+//                && $this->runValidationChain($form, $extra_validators);
         }
 
         // Call post_validate
@@ -324,7 +324,11 @@ class Field implements \Iterator
     {
         foreach ($validators as $v) {
             try {
-                $v->__invoke($form, $this);
+                if (is_array($v)) {
+                    call_user_func($v, $form, $this);
+                } else {
+                    $v->__invoke($form, $this);
+                }
             } catch (StopValidation $e) {
                 $message = $e->getMessage();
                 if ($message != "") {

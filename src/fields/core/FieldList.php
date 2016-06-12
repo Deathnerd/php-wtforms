@@ -53,7 +53,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         if (!array_key_exists('inner_field', $options)) {
             throw new TypeError("FieldList requires an inner_field declaration");
         } elseif (!($options['inner_field'] instanceof Field)) {
-            $type = get_class($options['inner_field']) ?: gettype($options['inner_field']);
+            $type = is_object($options['inner_field']) ? get_class($options['inner_field']) : gettype($options['inner_field']);
             throw new TypeError(sprintf("FieldList requires an inner_field type subclassing Field; %s given", $type));
         } else {
             $this->inner_field = $options['inner_field'];
@@ -255,15 +255,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
             /**
              * @var Field $subfield
              */
-            if (!$subfield->validate($form, $extra_validators)) {
+            if (!$subfield->validate($form)) {
                 $this->errors[] = $subfield->errors;
             }
         }
-        $validators = $this->validators;
-        foreach ($extra_validators as $validator) {
-            $validators[] = $validator;
-        }
-        $this->runValidationChain($form, $validators);
+        $this->runValidationChain($form, array_merge($this->validators, $extra_validators));
 
         return count($this->errors) == 0;
     }

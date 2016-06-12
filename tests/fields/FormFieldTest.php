@@ -139,14 +139,14 @@ class FormFieldTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * TODO: THIS
      * @expectedException \WTForms\Exceptions\TypeError
+     * @expectedExceptionMessage FormField does not accept in-line validators, as it gets errors from the enclosed form.
      */
-    /*public function testNoExtraValidators()
+    public function testNoExtraValidators()
     {
       $form = new C();
       $form->validate();
-    }*/
+    }
 }
 
 class C extends Form

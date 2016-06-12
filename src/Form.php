@@ -103,7 +103,7 @@ class Form implements \ArrayAccess, \Iterator
         $success = true;
         foreach ($this->fields as $name => $field) {
             /** @var $field Field */
-            if (!($field->validate($this) && $this->runExtraValidators($name))) {
+            if (!$field->validate($this, $this->getExtraValidatorFor($name))) {
                 $success = false;
             }
         }
@@ -111,17 +111,9 @@ class Form implements \ArrayAccess, \Iterator
         return $success && count($this->_errors) === 0;
     }
 
-    private function runExtraValidators($name)
+    private function getExtraValidatorFor($name)
     {
-        if (method_exists($this, "validate_$name") && !call_user_func([$this, "validate_$name"])) {
-            return false;
-        }
-        $uc_name = ucfirst($name);
-        if (method_exists($this, "validate$uc_name") && !call_user_func([$this, "validate$uc_name"])) {
-            return false;
-        }
-
-        return true;
+        return method_exists($this, "validate_$name") ? [[$this, "validate_$name"]] : [];
     }
 
     /**
@@ -182,8 +174,8 @@ class Form implements \ArrayAccess, \Iterator
             if (!$value->id) {
                 $value->id = $value->name;
             }
-            $this->process($this->options);
             $this->fields[$name] = $value;
+            $this->process($this->options);
         } elseif (array_key_exists($name, $this->fields)) {
             $this->fields[$name]->data = $value;
         } else {

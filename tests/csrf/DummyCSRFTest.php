@@ -26,7 +26,6 @@ class F extends Form
         $this->meta = new FMeta();
         parent::__construct($options);
         $this->a = new StringField();
-        $this->process($options);
     }
 
 }

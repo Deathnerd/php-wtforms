@@ -9,6 +9,7 @@
 namespace WTForms\Tests\Common;
 
 use WTForms\DefaultMeta;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
@@ -33,6 +34,13 @@ class TestForm extends Form
         ]);
         $this->b = new StringField(["name" => "b"], $this);
         $this->c = new StringField(["name" => "c"]);
+    }
+
+    public function validate_c(Form $form, Field $field)
+    {
+        if ($field->data == "error") {
+            throw new ValidationError("C has data!");
+        }
     }
 }
 
@@ -184,6 +192,12 @@ class FormTest extends \PHPUnit_Framework_TestCase
     public function testInvalidPopulateArgument()
     {
         (new TestForm())->populate("foo");
+    }
 
+    public function testExtraValidator()
+    {
+        $form = new TestForm(["formdata" => ["Foo-c" => ["error"]]]);
+        $this->assertFalse($form->validate());
+        $this->assertEquals(["C has data!"], $form->errors["c"]);
     }
 }

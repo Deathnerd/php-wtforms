@@ -234,9 +234,8 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
     {
         $data = ["foo", "hi", "rawr"];
         $obj = (object)["a" => $data];
-        $form = new Form();
+        $form = new Form(["obj" => $obj]);
         $form->a = new FieldList(["inner_field" => $this->t]);
-        $form->process(["obj" => $obj]);
         $this->assertEquals(3, count($form->a->entries));
 
         // Pretend to submit the form unchanged
@@ -245,6 +244,24 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
         // check if data still the same
         $this->assertEquals(3, count($form->a->entries));
         $this->assertEquals($data, $form->a->data);
+    }
+
+    /**
+     * @expectedException \WTForms\Exceptions\TypeError
+     * @expectedExceptionMessage FieldList requires an inner_field declaration
+     */
+    public function testNoInnerFieldArgument()
+    {
+        (new FieldList());
+    }
+
+    /**
+     * @expectedException \WTForms\Exceptions\TypeError
+     * @expectedExceptionMessage FieldList requires an inner_field type subclassing Field; string given
+     */
+    public function testImproperInnerFieldArgument()
+    {
+        (new FieldList(["inner_field" => '\WTForms\Fields\Core\StringField']));
     }
 }
 
