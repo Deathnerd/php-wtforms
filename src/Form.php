@@ -9,6 +9,7 @@
 namespace WTForms;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Fields\Core\Label;
 
 /**
  * Declarative Form base class.
@@ -173,6 +174,9 @@ class Form implements \ArrayAccess, \Iterator
             }
             if (!$value->id) {
                 $value->id = $value->name;
+            }
+            if (!$value->label->text) {
+                $value->label = new Label($value->id, ucwords(str_replace("_", " ", $value->short_name)));
             }
             $this->fields[$name] = $value;
             $this->process($this->options);

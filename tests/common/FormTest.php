@@ -200,4 +200,15 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($form->validate());
         $this->assertEquals(["C has data!"], $form->errors["c"]);
     }
+
+    public function testAutoLabel()
+    {
+        $form = new Form();
+        $form->first_name = new StringField();
+        $form->foo_bar = new StringField([
+            "label" => "foo baz"
+        ]);
+        $this->assertEquals("First Name", $form->first_name->label->text);
+        $this->assertEquals("foo baz", $form->foo_bar->label->text);
+    }
 }
