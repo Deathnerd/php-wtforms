@@ -48,7 +48,7 @@ class InputRequired extends Validator
      */
     public function __invoke(Form $form, Field $field = null, $message = "")
     {
-        if (is_null($field->raw_data) || !$field->raw_data[0]) {
+        if (is_null($field->raw_data) || (!empty($field->raw_data) && !$field->raw_data[0])) {
             if ($this->message == "") {
                 $message = "This field is required.";
             } else {
