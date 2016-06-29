@@ -29,7 +29,7 @@ class TestForm extends Form
         $this->meta = new DefaultMeta();
         parent::__construct($options);
         $this->a = new StringField([
-            "name"       => "a",
+            "name" => "a",
             "validators" => [new DataRequired()]
         ]);
         $this->b = new StringField(["name" => "b"], $this);
@@ -219,4 +219,19 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("First Name", $form->first_name->label->text);
         $this->assertEquals("foo baz", $form->foo_bar->label->text);
     }
+
+    public function testCreateMethod()
+    {
+        $form = new TestForm();
+        $form->process(["formdata" => ["Foo-c" => ["error"]]]);
+
+        $form2 = TestForm::create(["formdata" => ["Foo-c" => ["error"]]]);
+        $this->assertInstanceOf('\WTForms\Form', $form);
+        $this->assertInstanceOf('\WTForms\Form', $form2);
+        $this->assertFalse($form->validate());
+        $this->assertFalse($form2->validate());
+        $this->assertEquals(["C has data!"], $form2->errors["c"]);
+        $this->assertEquals($form->errors, $form2->errors);
+    }
+
 }

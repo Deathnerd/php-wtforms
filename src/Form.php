@@ -154,8 +154,8 @@ class Form implements \ArrayAccess, \Iterator
      *
      * @internal
      *
-     * @param string $name  The name of the field to add to the current fields
-     * @param mixed  $value The field object to add
+     * @param string $name The name of the field to add to the current fields
+     * @param mixed $value The field object to add
      */
     public function __set($name, $value)
     {
@@ -309,5 +309,21 @@ class Form implements \ArrayAccess, \Iterator
                 $field->process($formdata);
             }
         }
+    }
+
+    /**
+     * A convenience method to get around having to manually call the {@link process} function after form
+     * instantiation. All this does internally is instantiate a new instance of the form with the given options,
+     * processes those options, and returns the form ready to go.
+     *
+     * @param array $options The options to be passed to the constructor of the form
+     *                       and the process function
+     * @return static The form all ready to go!
+     */
+    public static function create(array $options = [])
+    {
+        $form = new static($options);
+        $form->process($options);
+        return $form;
     }
 }
