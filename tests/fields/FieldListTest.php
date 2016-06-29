@@ -234,8 +234,9 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
     {
         $data = ["foo", "hi", "rawr"];
         $obj = (object)["a" => $data];
-        $form = new Form(["obj" => $obj]);
+        $form = new Form();
         $form->a = new FieldList(["inner_field" => $this->t]);
+        $form->process(["obj" => $obj]);
         $this->assertEquals(3, count($form->a->entries));
 
         // Pretend to submit the form unchanged

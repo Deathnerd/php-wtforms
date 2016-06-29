@@ -179,7 +179,6 @@ class Form implements \ArrayAccess, \Iterator
                 $value->label = new Label($value->id, ucwords(str_replace("_", " ", $value->short_name)));
             }
             $this->fields[$name] = $value;
-            $this->process($this->options);
         } elseif (array_key_exists($name, $this->fields)) {
             $this->fields[$name]->data = $value;
         } else {
@@ -271,7 +270,7 @@ class Form implements \ArrayAccess, \Iterator
         return $array;
     }
 
-    public function process(array $options)
+    public function process(array $options = ["formdata" => [], "data" => []])
     {
         if (array_key_exists("formdata", $options)) {
             $formdata = $options['formdata'];

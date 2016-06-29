@@ -68,7 +68,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
     public function testPostDataPopulate()
     {
         $post_data = ["Foo-a" => ["foo"]];
-        $form = new TestForm(["formdata" => $post_data]);
+        $form = new TestForm();
+        $form->process(["formdata" => $post_data]);
         $this->assertEquals("foo", $form->a->data);
         $this->assertTrue($form->validate());
         $form->a->data = null;
@@ -77,7 +78,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testExtraDataPopulate()
     {
-        $form = new TestForm(["a" => "foo"]);
+        $form = new TestForm();
+        $form->process(["a" => "foo"]);
         $this->assertEquals("foo", $form->a->data);
         $this->assertTrue($form->validate());
     }
@@ -138,7 +140,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testPopulateObj()
     {
-        $form = new TestForm(['a' => "foobar"]);
+        $form = new TestForm();
+        $form->process(['a' => "foobar"]);
         $obj = new \stdClass();
         $obj->a = "baz";
         $obj = $form->populateObj($obj);
@@ -147,7 +150,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testPopulateArray()
     {
-        $form = new TestForm(['a' => "foobar"]);
+        $form = new TestForm();
+        $form->process(['a' => "foobar"]);
         $arr = ["a" => "baz"];
         $arr = $form->populateArray($arr);
         $this->assertEquals("foobar", $arr['a']);
@@ -155,7 +159,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testPopulate()
     {
-        $form = new TestForm(["a" => "foobar"]);
+        $form = new TestForm();
+        $form->process(["a" => "foobar"]);
         $obj = new \stdClass();
         $obj->a = "baz";
         $arr = ["a" => "baz"];
@@ -165,9 +170,11 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testDataArg()
     {
-        $form = new TestForm(["data" => ["a" => "foo"]]);
+        $form = new TestForm();
+        $form->process(["data" => ["a" => "foo"]]);
         $this->assertEquals("foo", $form->a->data);
-        $form = new TestForm(["data" => ["a" => "foo"], "a" => "bar"]);
+        $form = new TestForm();
+        $form->process(["data" => ["a" => "foo"], "a" => "bar"]);
         $this->assertEquals("bar", $form->a->data);
     }
 
@@ -196,7 +203,8 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
     public function testExtraValidator()
     {
-        $form = new TestForm(["formdata" => ["Foo-c" => ["error"]]]);
+        $form = new TestForm();
+        $form->process(["formdata" => ["Foo-c" => ["error"]]]);
         $this->assertFalse($form->validate());
         $this->assertEquals(["C has data!"], $form->errors["c"]);
     }

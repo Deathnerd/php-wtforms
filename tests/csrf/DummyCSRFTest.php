@@ -37,12 +37,13 @@ class DummyCSRFTest extends \PHPUnit_Framework_TestCase
      */
     public function testBaseClass()
     {
-        (new F(["meta" => ["csrf_class" => new CSRF]]));
+        (new F(["meta" => ["csrf_class" => new CSRF]]))->process([]);
     }
 
     public function testBasicImpl()
     {
         $form = new F();
+        $form->process();
         $field_names = [];
         foreach ($form as $name => $field) {
             $field_names[] = $name;
@@ -50,7 +51,8 @@ class DummyCSRFTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('csrf_token', $field_names);
         $this->assertFalse($form->validate());
         $this->assertEquals('dummytoken', $form->csrf_token->value);
-        $form = new F(["formdata" => ["csrf_token" => "dummytoken"]]);
+        $form = new F();
+        $form->process(["formdata" => ["csrf_token" => "dummytoken"]]);
         $this->assertTrue($form->validate());
     }
 
@@ -78,7 +80,8 @@ class DummyCSRFTest extends \PHPUnit_Framework_TestCase
     public function testNoPopulate()
     {
         $obj = (object)["a" => null, "csrf_token" => null];
-        $form = new F(["a" => "test", "csrf_token" => "dummytoken"]);
+        $form = new F(["csrf_token" => "dummytoken"]);
+        $form->process(["a" => "test"]);
         $form->populateObj($obj);
         $this->assertNull($obj->csrf_token);
         $this->assertEquals('test', $obj->a);

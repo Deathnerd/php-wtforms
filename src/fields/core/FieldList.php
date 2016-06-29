@@ -72,10 +72,6 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         }
         $options = array_merge(["widget" => new ListWidget()], $options);
         parent::__construct($options);
-        // unset the data attribute because it'll be
-        // overridden in the __get method to reflect the
-        // entries property
-        unset($this->data);
     }
 
     /**
