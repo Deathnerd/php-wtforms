@@ -310,4 +310,11 @@ class Form implements \ArrayAccess, \Iterator
             }
         }
     }
+
+    public static function create(array $options = [])
+    {
+        $form = new static($options);
+        $form->process($options);
+        return $form;
+    }
 }
