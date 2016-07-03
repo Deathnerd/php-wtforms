@@ -6,12 +6,10 @@ DOCUMENTATION
 
 TESTS
 ======
-- Quirks
-    - SessionCSRF acting strangly outside of PHPUnit tests
+
 
 FEATURES
 ==========
-- Field Translations (easy, but need .mo files)
 - Annotations layer
 - i18n
 
