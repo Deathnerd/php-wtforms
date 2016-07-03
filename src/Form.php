@@ -154,8 +154,8 @@ class Form implements \ArrayAccess, \Iterator
      *
      * @internal
      *
-     * @param string $name The name of the field to add to the current fields
-     * @param mixed $value The field object to add
+     * @param string $name  The name of the field to add to the current fields
+     * @param mixed  $value The field object to add
      */
     public function __set($name, $value)
     {
@@ -169,12 +169,8 @@ class Form implements \ArrayAccess, \Iterator
             if (!$value->short_name) {
                 $value->short_name = $name;
             }
-            if (!$value->name) {
-                $value->name = $value->prefix . $name;
-            }
-            if (!$value->id) {
-                $value->id = $value->name;
-            }
+            $value->name = $value->prefix . $name;
+            $value->id = $value->name;
             if (!$value->label->text) {
                 $value->label = new Label($value->id, ucwords(str_replace("_", " ", $value->short_name)));
             }
@@ -318,12 +314,21 @@ class Form implements \ArrayAccess, \Iterator
      *
      * @param array $options The options to be passed to the constructor of the form
      *                       and the process function
+     *
      * @return static The form all ready to go!
      */
     public static function create(array $options = [])
     {
         $form = new static($options);
         $form->process($options);
+
         return $form;
     }
+
+    /*public function __clone()
+    {
+        foreach ($this->fields as $field_name => $field) {
+            $this->fields[$field_name] = clone $field;
+        }
+    }*/
 }

@@ -29,8 +29,8 @@ class TestForm extends Form
         $this->meta = new DefaultMeta();
         parent::__construct($options);
         $this->a = new StringField([
-            "name" => "a",
-            "validators" => [new DataRequired()]
+            "name"       => "a",
+            "validators" => [new DataRequired()],
         ]);
         $this->b = new StringField(["name" => "b"], $this);
         $this->c = new StringField(["name" => "c"]);
@@ -214,7 +214,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $form = new Form();
         $form->first_name = new StringField();
         $form->foo_bar = new StringField([
-            "label" => "foo baz"
+            "label" => "foo baz",
         ]);
         $this->assertEquals("First Name", $form->first_name->label->text);
         $this->assertEquals("foo baz", $form->foo_bar->label->text);

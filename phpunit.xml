@@ -15,11 +15,15 @@
     <testsuite name="WTForms CSRF Tests">
         <directory>./tests/csrf</directory>
     </testsuite>
+    <testsuite name="WTForms Quirks Tests">
+        <directory>./tests/quirks</directory>
+    </testsuite>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/fields</directory>
             <directory suffix=".php">./src/widgets</directory>
             <directory suffix=".php">./src/validators</directory>
+            <directory suffix=".php">./src/quirks</directory>
             <directory suffix=".php">./src/csrf/core</directory>
             <directory suffix=".php">./src/csrf/session</directory>
             <file>./src/Form.php</file>

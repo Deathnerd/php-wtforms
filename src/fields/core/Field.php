@@ -22,8 +22,9 @@ use WTForms\Widgets\Core\Widget;
  * @property  boolean    $checked
  * @property  mixed      $data
  * @property null|string $value
+ * @property array       $errors
  *
- * @method string label(array $options)
+ * @method string label(array $options = [])
  *
  * @package WTForms\Fields
  */
@@ -35,10 +36,6 @@ class Field implements \Iterator
      * @var Form
      */
     public $form;
-    /**
-     * @var array
-     */
-    public $errors = [];
     /**
      * @var array
      */
@@ -143,8 +140,10 @@ class Field implements \Iterator
             "meta"        => new DefaultMeta(),
             "attributes"  => [],
             "label"       => null,
-            "class"       => null
+            "class"       => null,
         ], $options);
+
+        $this->constructor_options = $options;
 
         if (!is_null($this->form) && property_exists($this->form, "meta") && $this->form->meta instanceof DefaultMeta) {
             $this->meta = $this->form->meta;
@@ -212,6 +211,13 @@ class Field implements \Iterator
         // If there are options left over, treat them as render keywords
         if ($options) {
             $this->render_kw = array_merge($this->render_kw, $options);
+        }
+    }
+
+    public function __clone()
+    {
+        if (is_callable($this->default)) {
+            $this->default = $this->default->bindTo($this);
         }
     }
 
@@ -386,7 +392,6 @@ class Field implements \Iterator
     {
         $this->process_errors = [];
         if ($data === null) {
-            // Should work... See example at: http://php.net/manual/en/language.oop5.magic.php#object.invoke
             if (is_callable($this->default)) {
                 $data = $this->default->__invoke();
             } else {

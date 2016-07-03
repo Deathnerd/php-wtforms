@@ -1,5 +1,6 @@
 <?php
 /**
+ * Beyond this line, lie dragons... Enter at your own risk
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 5/17/2016
@@ -20,8 +21,8 @@ class FormField extends Field implements \ArrayAccess
 {
 
     public $separator = "-";
-    protected $form_class;
-    private $_obj;
+    public $form_class;
+    private $obj;
 
     /**
      * @inheritdoc
@@ -46,7 +47,7 @@ class FormField extends Field implements \ArrayAccess
             $this->separator = $options['separator'];
             unset($options['separator']);
         }
-        $this->_obj = null;
+        $this->obj = null;
 
         $options = array_merge(["widget" => new TableWidget()], $options);
         parent::__construct($options);
@@ -63,23 +64,27 @@ class FormField extends Field implements \ArrayAccess
             } else {
                 $data = $this->default;
             }
-            $this->_obj = $data;
+            $this->obj = $data;
         }
 
         $this->object_data = $data;
         $prefix = $this->name . $this->separator;
 
+        /**
+         * @var $form_class Form
+         */
+        $form_class = $this->form_class;
         if (is_array($data)) {
-            $this->form = (new \ReflectionClass($this->form_class))->newInstance([
+            $this->form = $form_class::create([
                 "prefix"   => $prefix,
                 "formdata" => $formdata,
-                "data"     => $data
+                "data"     => $data,
             ]);
         } else {
-            $this->form = (new \ReflectionClass($this->form_class))->newInstance([
+            $this->form = $form_class::create([
                 "prefix"   => $prefix,
                 "formdata" => $formdata,
-                "obj"      => $data
+                "obj"      => $data,
             ]);
         }
     }
@@ -91,7 +96,8 @@ class FormField extends Field implements \ArrayAccess
     public function validate(Form $form, array $extra_validators = [])
     {
         if ($extra_validators) {
-            throw new TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
+            throw new TypeError('FormField does not accept in-line validators,' .
+                ' as it gets errors from the enclosed form.');
         }
 
         return $this->form->validate();
@@ -104,10 +110,11 @@ class FormField extends Field implements \ArrayAccess
     {
         $candidate = $obj->$name;
         if (is_null($candidate)) {
-            if (is_null($this->_obj)) {
-                throw new TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
+            if (is_null($this->obj)) {
+                throw new TypeError('populate_obj: cannot find a value to populate ' .
+                    'from the provided obj or input data/defaults');
             }
-            $candidate = $this->_obj;
+            $candidate = $this->obj;
             $obj->$name = $candidate;
         }
         $this->form->populateObj($candidate);

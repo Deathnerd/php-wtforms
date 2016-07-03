@@ -9,7 +9,6 @@
 namespace WTForms\CSRF\Session;
 
 use Carbon\Carbon;
-use Carbon\CarbonInterval;
 use WTForms\CSRF\Core\CSRF;
 use WTForms\CSRF\Core\CSRFTokenField;
 use WTForms\DefaultMeta;
@@ -142,7 +141,7 @@ class SessionCSRF extends CSRF
             if (property_exists($this->form_meta, "csrf_time_limit")) {
                 return $this->form_meta->csrf_time_limit;
             }
-            
+
             return 1800; // 30 minutes in seconds
         } elseif ($name == "session") {
 

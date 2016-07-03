@@ -33,8 +33,8 @@ class GenericFieldTestForm extends Form
             "class"      => "form-control",
             "validators" => [
                 new InputRequired("This input is required, yo"),
-                new AnyOf("You've gotta match these, guy %s", ["values" => [1, "foo", DIRECTORY_SEPARATOR]])
-            ]
+                new AnyOf("You've gotta match these, guy %s", ["values" => [1, "foo", DIRECTORY_SEPARATOR]]),
+            ],
         ]);
         $this->process($options);
     }
@@ -67,19 +67,19 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
     public function testRenderKw()
     {
         $form = new GenericFieldTestForm(["a" => "hello"]);
-        $this->assertEquals('<input class="form-control" foo="bar" id="a" name="a" readonly type="text" value="hello">',
-            $form->a->__invoke());
-        $this->assertEquals('<input class="form-control" foo="baz" id="a" name="a" readonly type="text" value="hello">',
-            $form->a->__invoke(['foo' => 'baz']));
-        $this->assertEquals('<input class="form-control" foo="baz" id="a" name="a" other="hello" type="text" value="hello">',
-            $form->a->__invoke(['foo' => 'baz', 'readonly' => false, 'other' => 'hello']));
+        $expected = '<input class="form-control" foo="bar" id="a" name="a" readonly type="text" value="hello">';
+        $this->assertEquals($expected, $form->a->__invoke());
+        $expected = '<input class="form-control" foo="baz" id="a" name="a" readonly type="text" value="hello">';
+        $this->assertEquals($expected, $form->a->__invoke(['foo' => 'baz']));
+        $expected = '<input class="form-control" foo="baz" id="a" name="a" other="hello" type="text" value="hello">';
+        $this->assertEquals($expected, $form->a->__invoke(['foo' => 'baz', 'readonly' => false, 'other' => 'hello']));
     }
 
     public function testPrefix()
     {
         $field = new DummyField(["prefix" => "blah", "name" => "boo"]);
-        $this->assertEquals('<input id="blahboo" name="blahboo" type="text" value="">',
-            (new TextInput)->__invoke($field));
+        $expected = '<input id="blahboo" name="blahboo" type="text" value="">';
+        $this->assertEquals($expected, (new TextInput)->__invoke($field));
     }
 
     /**
@@ -115,7 +115,7 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
             "default" => function () {
                 return "foobar";
             },
-            "name"    => "blah"
+            "name"    => "blah",
         ]);
         $field->process([]);
         $this->assertTrue(is_callable($field->default));
@@ -127,5 +127,21 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
         $field = new DummyField(["name" => "blah"]);
         $field->process(["blah" => ["foobar"]]);
         $this->assertEquals("foobar", $field->value);
+    }
+
+    public function testClonedInvokableDefault()
+    {
+        $field = new DummyField([
+            "default" => function () {
+                return "foobar";
+            },
+            "name"    => "blah",
+        ]);
+        $field->process([]);
+        $this->assertTrue(is_callable($field->default));
+        $cloned_field = clone $field;
+        $this->assertTrue(is_callable($cloned_field->default));
+        $this->assertEquals("foobar", $field->data);
+        $this->assertEquals("foobar", $field->default->__invoke());
     }
 }

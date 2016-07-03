@@ -1,5 +1,6 @@
 <?php
 /**
+ * Beyond this line lie dragons... Enter at your own risk
  * Created by PhpStorm.
  * User: Wes
  * Date: 2/6/2016
@@ -28,32 +29,49 @@ class FieldList extends Field implements \Countable, \ArrayAccess
      */
     public $min_entries = 0;
     /**
-     * @var integer|null
+     * @var integer|null Used internally as an upper bound for how many subfields
+     *                   the field list is allowed to generate.
+     *                      !!!! WARNING !!!!
+     *                   This should be manipulated only via the constructor as
+     *                   there are assertion checks to make sure this is always
+     *                   greater than or equal to {@link min_entries}. Undefined
+     *                   and untested behavior may occur if this is manipulated
+     *                   otherwise. This is kept public purely for testing purposes
+     *                   only.
      */
     public $max_entries = null;
     /**
-     * @var Field
+     * @var Field The field class that will be used to generate subfields
      */
     public $inner_field;
     /**
-     * @var int
+     * @var int Used internally to keep track of the last index generated
+     *          for the subfields. Also used for testing purposes. This
+     *          should not be used for any other purposes
      */
-    private $last_index = -1;
+    public $last_index = -1;
 
     /**
-     * Field constructor.
+     * FieldList constructor
      *
-     *   $form
-     * @param array $options
+     * @param array $options Accepts
      *
      * @throws TypeError
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = ["inner_field" => null,
+                                                  "max_entries" => null,
+                                                  "min_entries" => 0])
     {
-        if (!array_key_exists('inner_field', $options)) {
+        if (!array_key_exists('inner_field', $options) || is_null($options['inner_field'])) {
             throw new TypeError("FieldList requires an inner_field declaration");
         } elseif (!($options['inner_field'] instanceof Field)) {
-            $type = is_object($options['inner_field']) ? get_class($options['inner_field']) : gettype($options['inner_field']);
+            //@codeCoverageIgnoreStart
+            if (is_object($options['inner_field'])) {
+                $type = get_class($options['inner_field']);
+            } else {
+                $type = gettype($options['inner_field']);
+            }
+            //@codeCoverageIgnoreEnd
             throw new TypeError(sprintf("FieldList requires an inner_field type subclassing Field; %s given", $type));
         } else {
             $this->inner_field = $options['inner_field'];
@@ -138,7 +156,8 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     }
 
     /**
-     * Yield indices of any keys with given prefix.
+     * Yield indices of any keys with given prefix. Keys are in the format
+     * of: prefix-numeric_index-subfield_name
      *
      * $formdata must be an object which will produce keys when iterated.
      *
@@ -168,7 +187,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
      * Processes an unbound field and inserts it as a field type in this field list
      *
      * @param array        $formdata
-     * @param mixed        $data
+     * @param null|array   $data
      * @param null|integer $index
      *
      * @return Field
@@ -186,12 +205,22 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         $this->last_index = $index;
         $name = "$this->short_name-$index";
         $id = "$this->id-$index";
+        // I feel so dirty... There's gotta be a better way - Deathnerd
+        $inner_field_options = $this->inner_field->constructor_options;
+        $inner_field_options['meta'] = $this->meta;
+        $inner_field_options['prefix'] = $this->prefix;
+        $inner_field_options['name'] = $name;
+        $inner_field_options['id'] = $id;
+        if ($this->inner_field instanceof FormField) {
+            $inner_field_options['form_class'] = $this->inner_field->form_class;
+            unset($inner_field_options['filters']);
+            unset($inner_field_options['validators']);
+        }
 
-        $field = clone $this->inner_field;
-        $field->meta = $this->meta;
-        $field->prefix = $this->prefix;
-        $field->name = $name;
-        $field->id = $id;
+        /**
+         * @var $field Field
+         */
+        $field = new $this->inner_field($inner_field_options);
         $field->process($formdata, $data);
 
         $this->entries[] = $field;
@@ -202,7 +231,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     /**
      * Create a new entry with optional default data.
      *
-     * Entries added in thi sway will *not* receive formdata however, and can
+     * Entries added in this way will *not* receive formdata however, and can
      * only receive object data
      *
      * @param mixed $data
