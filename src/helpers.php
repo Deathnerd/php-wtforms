@@ -121,7 +121,7 @@ if (!function_exists('html_params')) {
             if (in_array($key, ['class_', 'class__', 'for_'])) {
                 $key = str_replace("_", "", $key);
             } elseif (starts_with($key, "data_")) {
-                $key = preg_replace('/_/', '-', $key, 1);
+                $key = preg_replace('/_/', '-', $key);
             }
             if ($value === true) {
                 $params[] = $key;
