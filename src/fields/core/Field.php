@@ -147,12 +147,11 @@ class Field implements \Iterator
 
         if (!is_null($this->form) && property_exists($this->form, "meta") && $this->form->meta instanceof DefaultMeta) {
             $this->meta = $this->form->meta;
-        } else {
-            if (array_key_exists('meta', $options) && !is_null($options['meta'])) {
-                $this->meta = $options['meta'];
-                unset($options['meta']);
-            }
+        } elseif (array_key_exists('meta', $options) && !is_null($options['meta'])) {
+            $this->meta = $options['meta'];
         }
+        // Always unset meta
+        unset($options['meta']);
 
         $this->render_kw = array_merge(array_merge($this->render_kw, $options['attributes']), $options['render_kw']);
         unset($options['attributes']);
