@@ -7,10 +7,7 @@ DOCUMENTATION
 TESTS
 ======
 - Quirks
-    - FormField inside FieldList
-        - Index numbering
-        - Validation
-    - FieldList index numbering
+    - SessionCSRF acting strangly outside of PHPUnit tests
 
 FEATURES
 ==========
