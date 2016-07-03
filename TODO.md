@@ -1,66 +1,24 @@
-Document optional arguments
+DOCUMENTATION
+==============
+- Document optional arguments
+- ReadTheDocs documentation
+- Quick Start tutorial
 
 TESTS
 ======
-- Filters
-- Fields
-    - Select (in progress)
-    - Select Multiple
-    - Radio
-    - Text
-    - Hidden
-    - TextArea
-    - Password
-    - File
-    - Integer
-    - Decimal
-    - Float
-    - Date
-    - DateTime
-    - Submit
-    - Form
-    - Field List
-    - HTML5 Fields
-- Validators
-    - Email
-    - Any Of (in progress)
-    - Length (in progress)
-    - Equal To
-    - IP Address
-    - MAC Address
-    - None Of
-    - Number Range
-    - Optional
-    - Regexp
-    - URL
-    - UUID
-- Widgets
-    - List
-    - Input
-    - Text
-    - Password
-    - Hidden
-    - Checkbox
-    - Radio
-    - TextArea
-    - Select
-    - HTML5
-- Form
-    - Forms::create
-- General
-    - Field Meta override
-- CSRF
-- i18n
+- Quirks
+    - FormField inside FieldList
+        - Index numbering
+        - Validation
+    - FieldList index numbering
 
 FEATURES
 ==========
-- CSRF (in progress)
-- Form caching
-- Field List field
-- FormField
 - Field Translations (easy, but need .mo files)
-- Callback support
-    - Filters
-    - PreValidate
-    - PostValidate
-    - Message formatters
+- Annotations layer
+- i18n
+
+STANDARDIZATION
+===============
+- PSR-2 Compliance (ongoing)
+- Options array default normalization (ongoing)
