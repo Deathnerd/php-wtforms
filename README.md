@@ -35,6 +35,7 @@ use WTForms\Fields\Core\StringField;
 use WTForms\Validators\InputRequired;
 use WTForms\Validators\Length;
 use WTForms\Validators\Regexp;
+use MyNamespace\Validators\NotContains;
 
 class LogInForm extends Form {
     public function __construct(array $options = [])
@@ -43,13 +44,66 @@ class LogInForm extends Form {
         $this->username = new StringField(["validators"=>[
             new InputRequired("You must provide a username"),
             new Length("Usernames must be between %(min) and %(max) characters long", ["min"=>3, "max"=>10]),
-            new Regexp("Usernames may not contain the following characters: ;-/@", ["regex"=>'/^((?!;\\-\\/@).)*$/'])
+            new NotContains("Usernames may not contain the following characters: ;-/@", ["invalid_members"=>[";","-","/","@"]])
         ]]);
         $this->password = new PasswordField(["validators"=>[
             new InputRequired("Can't log in without a password!"),
             new Length("Passwords must be at least %(min) characters in length", ["min"=>5])
         ]]);
         $this->submit = new SubmitField(["label"=>"Submit"]);
+    }
+}
+```
+###NotContains.php
+```php
+<?php
+namespace MyNamespace\Validators;
+
+use WTForms\Validators\Validator;
+use WTForms\Form;
+use WTForms\Fields\Core\Field;
+use WTForms\Exceptions\ValidationError;
+
+class NotContains extends Validator
+{
+    /**
+     * @var string|array
+     */
+    public $invalid_members;
+
+    /**
+     * @param string $message Error message to raise in case of a validation error
+     * @param array  $options
+     */
+    public function __construct($message = "", array $options = ['invalid_members' => []])
+    {
+        assert(!empty($options['invalid_members']), "Doesn't make sense to not have any invalid members");
+        $this->invalid_members = $options['invalid_members'];
+        $this->message = $message;
+    }
+
+    /**
+     * @param Form   $form
+     * @param Field  $field
+     * @param string $message
+     *
+     * @return mixed True if the field passed validation, a Validation Error if otherwise
+     * @throws ValidationError
+     */
+    public function __invoke(Form $form, Field $field, $message = "")
+    {
+        if (strlen($field->data) != strlen(str_replace($this->invalid_members, "", $field->data))) {
+            if ($message == "") {
+                if ($this->message == "") {
+                    $message = "Invalid Input.";
+                } else {
+                    $message = $this->message;
+                }
+            }
+            throw new ValidationError($message);
+        }
+
+        return true;
     }
 }
 ```
@@ -78,22 +132,18 @@ if ($_POST) {
     <title>LogIn Form</title>
 </head>
 <body>
-<?php
-if ($form->errors) {
-    ?>
+<?php if ($form->errors) { ?>
     <ul class="errors">
         <?php
         foreach ($form->errors as $field_name => $errors) {
             foreach ($errors as $field_error) { ?>
                 <li><?= $field_name ?> - <?= $field_error ?></li>
-                <?
+                <?php
             }
         }
         ?>
     </ul>
-    <?php
-}
-?>
+<?php } ?>
 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
     <?= $form->username->label ?>
     <?= $form->username ?>
