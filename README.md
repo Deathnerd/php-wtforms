@@ -43,12 +43,12 @@ class LogInForm extends Form {
         parent::__construct($options);
         $this->username = new StringField(["validators"=>[
             new InputRequired("You must provide a username"),
-            new Length("Usernames must be between %(min) and %(max) characters long", ["min"=>3, "max"=>10]),
+            new Length("Usernames must be between %(min)d and %(max)d characters long", ["min"=>3, "max"=>10]),
             new NotContains("Usernames may not contain the following characters: ;-/@", ["invalid_members"=>[";","-","/","@"]])
         ]]);
         $this->password = new PasswordField(["validators"=>[
             new InputRequired("Can't log in without a password!"),
-            new Length("Passwords must be at least %(min) characters in length", ["min"=>5])
+            new Length("Passwords must be at least %(min)d characters in length", ["min"=>5])
         ]]);
         $this->submit = new SubmitField(["label"=>"Submit"]);
     }
