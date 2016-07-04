@@ -7,10 +7,19 @@ I do not take credit for the idea behind WTForms or anything related to its orig
 # Install
 Add the following line to the `require` portion of your `composer.json`
 ```json
-"deathnerd/php-wtforms":"dev-master 0.5.*"
+"deathnerd/php-wtforms":"0.5.0"
+```
+or if you're feeling froggy, pull in the cutting edge master release
+```json
+"deathnerd/php-wtforms":"dev-master"
 ```
 or run the following command from your favorite terminal
-`composer require deathnerd/php-wtforms:dev-master 0.5.*`
+`composer require deathnerd/php-wtforms:0.5.0`
+for the stable version and 
+`compser require deathnerd/php-wtforms:dev-master`
+for the bleeding edge dev release.
+
+Note: The dev-master version is not guaranteed to be stable.
 
 # Quick Start
 To create a simple login-form it's as simple as this:
