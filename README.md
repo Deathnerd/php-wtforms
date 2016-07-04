@@ -28,7 +28,7 @@ use WTForms\Validators\Length;
 use WTForms\Validators\Regexp;
 
 class LogInForm extends Form {
-    public function __construct(array $options)
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
         $this->username = new StringField(["validators"=>[
