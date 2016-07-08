@@ -33,7 +33,10 @@ class DateField extends DateTimeField
                 $this->data = Carbon::createFromFormat($this->carbon_format, $date_str)->startOfDay();
             } catch (\Exception $e) {
                 $this->data = null;
-                throw new ValueError("Not a valid date value");
+                // Do not create a process error if this is an optional field
+                if (!empty($date_str) && !$this->flags->optional) {
+                    throw new ValueError("Not a valid date value");
+                }
             }
         }
     }

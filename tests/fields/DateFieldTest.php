@@ -9,10 +9,11 @@
 namespace WTForms\Tests\Fields;
 
 
+use Carbon\Carbon;
 use WTForms\Fields\Core\DateField;
 use WTForms\Fields\Core\DateTimeField;
 use WTForms\Form;
-use Carbon\Carbon;
+use WTForms\Validators\Optional;
 
 class DateFieldTest extends \PHPUnit_Framework_TestCase
 {
@@ -58,6 +59,14 @@ class DateFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($this->form->a->errors));
         $this->assertEquals(1, count($this->form->b->errors));
         $this->assertEquals('Not a valid date value', $this->form->a->process_errors[0]);
+    }
+
+    public function testNoProcessErrorForOptionalFlag()
+    {
+        $form = new Form();
+        $form->a = new DateField(["validators" => [new Optional()]]);
+        $form->process(["formdata" => ["a" => [""]]]);
+        $this->assertEmpty($form->a->process_errors);
     }
 
     protected function setUp()
