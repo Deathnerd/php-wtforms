@@ -2,7 +2,7 @@
   "name": "deathnerd/php-wtforms",
   "description": "A PHP rewrite of the fantastic Python library WTForms",
   "type": "library",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "GPL-2.0",
   "authors": [
     {

@@ -26,22 +26,26 @@ class Form implements \ArrayAccess, \Iterator
      * @var string
      */
     public $prefix = "";
+
     /**
      * The input fields on the form
      * @var array<Field>
      */
     public $fields = [];
+
     /**
      * The meta object used for binding fields,
      * interacting with widgets, etc.
      * @var DefaultMeta
      */
     public $meta;
+
     /**
      * The CSRF implementation for this form
      * @var object
      */
     public $csrf;
+
     /**
      * Will hold the translations class when the
      * translations are in place
@@ -50,13 +54,13 @@ class Form implements \ArrayAccess, \Iterator
     public $translations;
 
     /**
-     * The options passed to the form upon construction. A copy is kept
-     * for populating a field via the {@link __get} magic method via its
-     * `process` method.
-     * @var array
+     * Implements the Arrayable interface for the form
      */
-    private $options;
     use FormArrayable;
+
+    /**
+     * Implements the Iterable interface for the form
+     */
     use FormIterator;
 
     /**
@@ -67,7 +71,6 @@ class Form implements \ArrayAccess, \Iterator
      */
     public function __construct(array $options = [])
     {
-        $this->options = $options;
         // Update the meta values for this form's meta object with a user-supplied array
         // of key=>value pairs mapping to properties on this form's meta object
         if (array_key_exists('meta', $options) && is_array($options['meta'])) {
@@ -88,6 +91,7 @@ class Form implements \ArrayAccess, \Iterator
         if (array_key_exists('prefix', $options)) {
             $this->prefix = $options['prefix'];
         }
+        // Normalize the end of the prefix to contain only one dash
         if ($this->prefix && !str_contains("-_;:/.", substr($this->prefix, -1))) {
             $this->prefix .= "-";
         }
@@ -112,6 +116,16 @@ class Form implements \ArrayAccess, \Iterator
         return $success && count($this->_errors) === 0;
     }
 
+    /**
+     * Extracts the names of extra validators defined on the `Form`. Searches for
+     * functions with the pattern `validate_$name` where `$name` is the field name
+     * defined on the `Form` object.
+     *
+     * @param $name string The name of the field to get an extra validator for
+     *
+     * @return array The names of extra validators defined on this form to be called
+     *                by the field when executing validation
+     */
     private function getExtraValidatorFor($name)
     {
         return method_exists($this, "validate_$name") ? [[$this, "validate_$name"]] : [];
@@ -159,13 +173,19 @@ class Form implements \ArrayAccess, \Iterator
      */
     public function __set($name, $value)
     {
+        // Setting up a new field
         if ($value instanceof Field) {
+            // Check for form object reference. This is needed for
+            // accessing meta objects and other global objects
             if (!$value->form) {
                 $value->form = $this;
             }
+            // Make sure the prefix for the field is proper. These
+            // are essential for Form Fields and Field Lists
             if (!$value->prefix) {
                 $value->prefix = $this->prefix;
             }
+
             if (!$value->short_name) {
                 $value->short_name = $name;
             }
@@ -291,7 +311,7 @@ class Form implements \ArrayAccess, \Iterator
 
         // If a field's value was declared by name in the options
         // then it has precedence over its entry in the data
-        // dictionary
+        // array
         if ($data && is_array($data)) {
             $options = array_merge($data, $options);
         }
@@ -324,11 +344,4 @@ class Form implements \ArrayAccess, \Iterator
 
         return $form;
     }
-
-    /*public function __clone()
-    {
-        foreach ($this->fields as $field_name => $field) {
-            $this->fields[$field_name] = clone $field;
-        }
-    }*/
 }
