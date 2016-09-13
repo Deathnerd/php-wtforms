@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/Deathnerd/php-wtforms.svg?branch=master)](https://travis-ci.org/Deathnerd/php-wtforms)
+
+[![codecov](https://codecov.io/gh/Deathnerd/php-wtforms/branch/master/graph/badge.svg)](https://codecov.io/gh/Deathnerd/php-wtforms)
 # php-wtforms
 A PHP rewrite of the fantastic Python library WTForms. 
 
@@ -7,14 +9,14 @@ I do not take credit for the idea behind WTForms or anything related to its orig
 # Install
 Add the following line to the `require` portion of your `composer.json`
 ```json
-"deathnerd/php-wtforms":"0.5.0"
+"deathnerd/php-wtforms":"0.5.2"
 ```
 or if you're feeling froggy, pull in the cutting edge master release
 ```json
 "deathnerd/php-wtforms":"dev-master"
 ```
 or run the following command from your favorite terminal
-`composer require deathnerd/php-wtforms:0.5.0`
+`composer require deathnerd/php-wtforms:0.5.2`
 for the stable version and 
 `compser require deathnerd/php-wtforms:dev-master`
 for the bleeding edge dev release.
