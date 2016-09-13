@@ -8,3 +8,6 @@ install:
   - composer install
 
 script: phpunit --configuration ./phpunit.xml  --bootstrap ./vendor/autoload.php
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

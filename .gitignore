@@ -5,3 +5,4 @@ vendor/
 tests/runtime/
 phpunit-*.phar
 notes.md
+tests/_reports
