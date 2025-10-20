@@ -1,8 +1,23 @@
-# Created by .ignore support plugin (hsz.mobi)
-.idea/
-composer.phar
+# Vendor
 vendor/
-tests/runtime/
-phpunit-*.phar
-notes.md
-tests/_reports
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test reports
+tests/_reports/
+.phpunit.result.cache
+
+# Composer
+composer.phar
+
+# Environment
+.env
+.env.*

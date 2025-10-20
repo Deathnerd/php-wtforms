@@ -1,0 +1,53 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+ROADMAP.md
+TODO.md
+LICENSE
+
+# IDE files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vendor (will be installed in container)
+vendor/
+
+# Test reports
+tests/_reports/
+tests/_output/
+coverage/
+.phpunit.result.cache
+
+# Composer lock (conditionally - keep for production, ignore for dev)
+# composer.lock
+
+# CI/CD
+.travis.yml
+.github/
+
+# Docker files (don't copy into container)
+docker/
+docker-compose*.yml
+.dockerignore
+
+# Defects directory (development artifacts)
+defects/
+
+# Environment files
+.env
+.env.*
+
+# Build artifacts
+*.log
+*.cache

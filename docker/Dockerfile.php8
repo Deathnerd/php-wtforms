@@ -1,0 +1,43 @@
+FROM php:8.2-cli
+
+LABEL maintainer="php-wtforms-dev"
+LABEL description="PHP 8.2 development environment for php-wtforms library"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libzip-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-install zip
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /app
+
+# Copy composer files
+COPY composer.json composer.lock* ./
+
+# Install dependencies (may need adjustments for PHP 8 compatibility)
+RUN composer install --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs || true
+
+# Copy application code
+COPY . .
+
+# Generate autoloader
+RUN composer dump-autoload --optimize || true
+
+# Set proper permissions
+RUN chown -R www-data:www-data /app
+
+# Switch to non-root user
+USER www-data
+
+# Default command runs tests
+CMD ["./vendor/bin/phpunit", "--no-coverage"]

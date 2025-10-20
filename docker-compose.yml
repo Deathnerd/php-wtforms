@@ -1,0 +1,55 @@
+name: php-wtforms
+
+services:
+  # PHP 5.6 - Original target version
+  php56:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: php-wtforms:php56
+    container_name: php-wtforms-php56
+    volumes:
+      - .:/app
+      - composer_cache_56:/tmp/composer
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer
+    command: tail -f /dev/null  # Keep container running for interactive use
+
+  # PHP 7.4 - Modern stable version
+  php74:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php7
+    image: php-wtforms:php74
+    container_name: php-wtforms-php74
+    volumes:
+      - .:/app
+      - composer_cache_74:/tmp/composer
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer
+    command: tail -f /dev/null
+
+  # PHP 8.2 - Latest version (experimental)
+  php82:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php8
+    image: php-wtforms:php82
+    container_name: php-wtforms-php82
+    volumes:
+      - .:/app
+      - composer_cache_82:/tmp/composer
+    environment:
+      - COMPOSER_CACHE_DIR=/tmp/composer
+    command: tail -f /dev/null
+
+volumes:
+  composer_cache_56:
+    name: php-wtforms_composer_56
+  composer_cache_74:
+    name: php-wtforms_composer_74
+  composer_cache_82:
+    name: php-wtforms_composer_82
