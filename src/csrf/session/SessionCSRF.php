@@ -17,7 +17,7 @@ use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 
 /**
- * @property int time_limit
+ * @property int $time_limit
  */
 class SessionCSRF extends CSRF
 {
@@ -133,7 +133,7 @@ class SessionCSRF extends CSRF
      * @param $name
      *
      * @internal
-     * @return bool|\DateInterval|null|string
+     * @return bool|\DateInterval|int|null|string
      */
     public function __get($name)
     {

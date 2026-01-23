@@ -30,12 +30,12 @@ trait FieldIterator
     /**
      * Move forward to next element
      * @link  http://php.net/manual/en/iterator.next.php
-     * @return Field Any returned value is ignored.
+     * @return void Any returned value is ignored.
      * @since 5.0.0
      */
     public function next()
     {
-        return next($this->entries);
+        next($this->entries);
     }
 
     /**

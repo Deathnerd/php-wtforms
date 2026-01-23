@@ -32,7 +32,7 @@ class Regexp extends Validator
      */
     public function __construct($message = "", array $options = ['regex' => ''])
     {
-        assert(preg_match($options['regex'], null) !== false, "Invalid regular expression passed to Regexp");
+        assert(preg_match($options['regex'], '') !== false, "Invalid regular expression passed to Regexp");
         $this->regex = $options['regex'];
         $this->message = $message;
     }

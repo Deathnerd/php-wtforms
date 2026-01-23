@@ -27,7 +27,7 @@ trait FormArrayable
      *
      * @param $offset
      *
-     * @return null
+     * @return \WTForms\Fields\Core\Field|null
      */
     public function offsetGet($offset)
     {

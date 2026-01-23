@@ -21,12 +21,12 @@ use WTForms\Form;
 class NumberRange extends Validator
 {
     /**
-     * @var float|int
+     * @var float|int|null
      */
     public $min;
 
     /**
-     * @var float|int
+     * @var float|int|null
      */
     public $max;
 

@@ -26,7 +26,7 @@ class AnyOf extends Validator
     public $values;
 
     /**
-     * @var callable
+     * @var callable|null
      */
     private $user_formatter;
 
@@ -97,7 +97,7 @@ class AnyOf extends Validator
     protected function formatter(array $values)
     {
         if (!is_null($this->user_formatter) && is_callable($this->user_formatter)) {
-            return $this->user_formatter->__invoke($values);
+            return ($this->user_formatter)($values);
         }
 
         return implode(", ", $values);

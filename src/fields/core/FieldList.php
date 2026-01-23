@@ -113,7 +113,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         $this->entries = [];
         if (is_null($data) || !$data) {
             if (is_callable($this->default)) {
-                $data = $this->default->__invoke();
+                $data = ($this->default)();
             } else {
                 $data = $this->default;
             }
@@ -218,7 +218,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         }
 
         /**
-         * @var $field Field
+         * @var Field $field
          */
         $field = new $this->inner_field($inner_field_options);
         $field->process($formdata, $data);

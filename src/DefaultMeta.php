@@ -32,7 +32,7 @@ class DefaultMeta
      */
     public $csrf = false;
     /**
-     * @var null
+     * @var string|null
      */
     public $csrf_secret = null;
     /**

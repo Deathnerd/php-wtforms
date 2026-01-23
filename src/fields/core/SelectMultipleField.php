@@ -28,6 +28,11 @@ class SelectMultipleField extends SelectField
      */
     public $data;
 
+    /**
+     * @var \WTForms\Widgets\Core\Select
+     */
+    public $widget;
+
     public function __construct(array $options = ['choices' => []])
     {
         $options = array_merge(["widget" => new Select()], $options);
@@ -58,7 +63,7 @@ class SelectMultipleField extends SelectField
             }
             $d = [];
             foreach ($value as $v) {
-                $d[] = $this->coerce->__invoke($v);
+                $d[] = ($this->coerce)($v);
             }
         } catch (ValueError $e) {
             $d = null;
@@ -73,7 +78,7 @@ class SelectMultipleField extends SelectField
         try {
             $d = [];
             foreach ($valuelist as $v) {
-                $d[] = $this->coerce->__invoke($v);
+                $d[] = ($this->coerce)($v);
             }
         } catch (ValueError $e) {
             throw new ValueError('Invalid choice(s): one or more data inputs could not be coerced');

@@ -52,6 +52,9 @@ class SelectField extends SelectFieldBase
         parent::__construct($options);
     }
 
+    /**
+     * @return \Generator
+     */
     public function getChoices()
     {
         foreach ($this->choices as list($value, $label)) {
@@ -62,7 +65,7 @@ class SelectField extends SelectFieldBase
     public function processData($value)
     {
         try {
-            $this->data = $this->coerce->__invoke($value);
+            $this->data = ($this->coerce)($value);
         } catch (ValueError $e) {
             $this->data = null;
         } catch (TypeError $e) {
@@ -74,7 +77,7 @@ class SelectField extends SelectFieldBase
     {
         if ($valuelist) {
             try {
-                $this->data = $this->coerce->__invoke($valuelist[0]);
+                $this->data = ($this->coerce)($valuelist[0]);
             } catch (ValueError $e) {
                 throw new ValueError("Invalid choice: could not coerce");
             }

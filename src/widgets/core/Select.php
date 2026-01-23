@@ -10,6 +10,7 @@ namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\SelectField;
+use WTForms\Fields\Core\SelectFieldBase;
 
 /**
  * Renders a select field.
@@ -28,8 +29,8 @@ class Select extends Widget
     public $multiple = false;
 
     /**
-     * @param Field|SelectField $field
-     * @param array             $options
+     * @param SelectFieldBase $field
+     * @param array           $options
      *
      * @return string
      */

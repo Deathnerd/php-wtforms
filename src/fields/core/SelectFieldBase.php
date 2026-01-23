@@ -74,7 +74,7 @@ abstract class SelectFieldBase extends Field implements \Iterator
     /**
      * Provides data for choice widget rendering. Must return an array
      * of `[value,label,selected]` tuples
-     * @return array
+     * @return iterable
      * @throws NotImplemented
      */
     public function getChoices()

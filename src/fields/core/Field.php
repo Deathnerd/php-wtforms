@@ -41,7 +41,7 @@ class Field implements \Iterator
      */
     public $process_errors = [];
     /**
-     * @var array
+     * @var array|null
      */
     public $raw_data = [];
     /**
@@ -97,7 +97,7 @@ class Field implements \Iterator
      */
     public $name = '';
     /**
-     * @var Flags[]
+     * @var Flags
      */
     public $flags;
     /**
@@ -112,6 +112,12 @@ class Field implements \Iterator
      * @var string|null
      */
     public $prefix;
+
+    /**
+     * Options passed to constructor, used for cloning fields in FieldList
+     * @var array
+     */
+    public $constructor_options = [];
 
     /**
      * Field constructor.
@@ -215,7 +221,7 @@ class Field implements \Iterator
 
     public function __clone()
     {
-        if (is_callable($this->default)) {
+        if ($this->default instanceof \Closure) {
             $this->default = $this->default->bindTo($this);
         }
     }
@@ -320,8 +326,8 @@ class Field implements \Iterator
     /**
      * Run a validation chain, stopping if any validator raises StopValidation
      *
-     * @param Form        $form       The form instance this field belongs to
-     * @param Validator[] $validators A sequence or iterable of validator callables
+     * @param Form                   $form       The form instance this field belongs to
+     * @param (Validator|callable)[] $validators A sequence or iterable of validator callables
      *
      * @return bool True if the validation was stopped, False if otherwise
      */
@@ -332,7 +338,7 @@ class Field implements \Iterator
                 if (is_array($v)) {
                     call_user_func($v, $form, $this);
                 } else {
-                    $v->__invoke($form, $this);
+                    $v($form, $this);
                 }
             } catch (StopValidation $e) {
                 $message = $e->getMessage();
@@ -392,7 +398,7 @@ class Field implements \Iterator
         $this->process_errors = [];
         if ($data === null) {
             if (is_callable($this->default)) {
-                $data = $this->default->__invoke();
+                $data = ($this->default)();
             } else {
                 $data = $this->default;
             }
@@ -423,7 +429,7 @@ class Field implements \Iterator
 
         try {
             foreach ($this->filters as $filter) {
-                /** @var $filter callable */
+                /** @var callable $filter */
                 $this->data = $filter($data);
             }
         } catch (ValueError $e) {

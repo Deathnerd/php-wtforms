@@ -60,7 +60,7 @@ class FormField extends Field implements \ArrayAccess
     {
         if (is_null($data) || !$data) {
             if (is_callable($this->default)) {
-                $data = $this->default->__invoke();
+                $data = ($this->default)();
             } else {
                 $data = $this->default;
             }
@@ -71,7 +71,7 @@ class FormField extends Field implements \ArrayAccess
         $prefix = $this->name . $this->separator;
 
         /**
-         * @var $form_class Form
+         * @var Form $form_class
          */
         $form_class = $this->form_class;
         if (is_array($data)) {

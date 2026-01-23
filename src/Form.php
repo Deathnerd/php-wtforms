@@ -54,6 +54,12 @@ class Form implements \ArrayAccess, \Iterator
     public $translations;
 
     /**
+     * Cached errors from validation
+     * @var array
+     */
+    protected $_errors = [];
+
+    /**
      * Implements the Arrayable interface for the form
      */
     use FormArrayable;
@@ -107,7 +113,7 @@ class Form implements \ArrayAccess, \Iterator
         $this->_errors = [];
         $success = true;
         foreach ($this->fields as $name => $field) {
-            /** @var $field Field */
+            /** @var Field $field */
             if (!$field->validate($this, $this->getExtraValidatorFor($name))) {
                 $success = false;
             }

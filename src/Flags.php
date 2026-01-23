@@ -14,11 +14,15 @@ namespace WTForms;
  *
  * Accessing a non-existing attribute returns false for its value
  * @package WTForms
+ *
+ * @property bool $required
+ * @property bool $optional
  */
 class Flags
 {
     /**
      * @internal
+     * @return bool
      */
     public function __get($name)
     {
