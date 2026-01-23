@@ -12,14 +12,14 @@ namespace WTForms\Tests\Fields;
 use WTForms\Fields\Core\FloatField;
 use WTForms\Form;
 
-class FloatFieldTest extends \PHPUnit_Framework_TestCase
+class FloatFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $form = new Form();
         $form->a = new FloatField();

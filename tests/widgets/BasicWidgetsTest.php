@@ -50,14 +50,14 @@ class DummyField extends Field
     }
 }
 
-class BasicWidgetsTest extends \PHPUnit_Framework_TestCase
+class BasicWidgetsTest extends \PHPUnit\Framework\TestCase
 {
     private $field;
 
     public function testInputType()
     {
         $a = new Input();
-        $this->assertAttributeEmpty("input_type", $a);
+        $this->assertEmpty($a->input_type);
         $b = new Input("test");
         $this->assertEquals("test", $b->input_type);
     }
@@ -122,11 +122,9 @@ class BasicWidgetsTest extends \PHPUnit_Framework_TestCase
             (new SubmitInput)->__invoke($this->field));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\NotImplemented
-     */
     public function testWidgetNotImplemented()
     {
+        $this->expectException(\WTForms\Exceptions\NotImplemented::class);
         (new Widget)->__invoke($this->field);
     }
 
@@ -143,7 +141,7 @@ class BasicWidgetsTest extends \PHPUnit_Framework_TestCase
             (new Option)->__invoke($field, ["data_baz-bar" => "ohai"]));;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->field = new DummyField(['data' => 'foo', 'name' => 'bar', 'label' => 'label', 'id' => 'id']);
     }

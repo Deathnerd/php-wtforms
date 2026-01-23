@@ -46,7 +46,7 @@ class G extends Form
 }
 
 
-class DefaultMetaTest extends \PHPUnit_Framework_TestCase
+class DefaultMetaTest extends \PHPUnit\Framework\TestCase
 {
     public function testBasic()
     {

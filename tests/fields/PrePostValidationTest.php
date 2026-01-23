@@ -38,7 +38,7 @@ class PrePostTestField extends StringField
     }
 }
 
-class PrePostValidationTest extends \PHPUnit_Framework_TestCase
+class PrePostValidationTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testPreStop()

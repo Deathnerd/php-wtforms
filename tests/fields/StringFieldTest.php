@@ -13,7 +13,7 @@ use WTForms\Fields\Core\StringField;
 use WTForms\Tests\SupportingClasses\FooMeta;
 use WTForms\Widgets\Core\TextInput;
 
-class StringFieldTest extends \PHPUnit_Framework_TestCase
+class StringFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstruct()
     {
@@ -29,8 +29,8 @@ class StringFieldTest extends \PHPUnit_Framework_TestCase
             "class_" => "form-control",
             'widget' => new TextInput()
         ]);
-        $this->assertAttributeInstanceOf('WTForms\Tests\SupportingClasses\FooMeta', 'meta', $string_field);
-        $this->assertAttributeInstanceOf('WTForms\Fields\Core\Label', 'label', $string_field);
+        $this->assertInstanceOf('WTForms\Tests\SupportingClasses\FooMeta', $string_field->meta);
+        $this->assertInstanceOf('WTForms\Fields\Core\Label', $string_field->label);
         $this->assertEquals("String Field", $string_field->label->text);
         $this->assertEquals('<input class="form-control" id="foobar" name="string_field" type="text" value="">',
             "$string_field");

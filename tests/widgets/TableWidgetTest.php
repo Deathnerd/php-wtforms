@@ -10,7 +10,7 @@ namespace WTForms\Tests\Widgets;
 
 use WTForms\Widgets\Core\TableWidget;
 
-class TableWidgetTest extends \PHPUnit_Framework_TestCase
+class TableWidgetTest extends \PHPUnit\Framework\TestCase
 {
     public function testBasic()
     {

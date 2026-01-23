@@ -14,20 +14,18 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\Optional;
 
-class OptionalTest extends \PHPUnit_Framework_TestCase
+class OptionalTest extends \PHPUnit\Framework\TestCase
 {
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     */
     public function testOptional()
     {
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         $optional = new Optional();
         $this->assertNull($optional($this->form, new DummyField(["data" => "foobar", "raw_data" => ["foobar"]])));
         $this->assertContains("optional", $optional->field_flags);
@@ -51,11 +49,9 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
             "Optional did not throw a StopValidation error in OptionalTest::testErrorClobbering");
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     */
     public function testWhitespaceStripping()
     {
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         $field = new DummyField(["data" => "  ", "raw_data" => ["  "]]);
         $optional = new Optional("", ["strip_whitespace" => false]);
         $this->assertNull($optional($this->form, $field));

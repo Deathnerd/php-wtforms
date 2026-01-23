@@ -34,7 +34,7 @@ class ProcessMethodsField extends Field
 }
 
 
-class ProcessMethodsTest extends \PHPUnit_Framework_TestCase
+class ProcessMethodsTest extends \PHPUnit\Framework\TestCase
 {
     private function initField($value)
     {

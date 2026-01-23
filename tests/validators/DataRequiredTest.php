@@ -14,13 +14,13 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\DataRequired;
 
-class DataRequiredTest extends \PHPUnit_Framework_TestCase
+class DataRequiredTest extends \PHPUnit\Framework\TestCase
 {
 
     public $form;
     public $field;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
         $this->field = new DummyField(["data" => "foobar"]);
@@ -33,21 +33,17 @@ class DataRequiredTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("required", $data_required->field_flags);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     */
     public function testEmptyString()
     {
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         $this->field->data = "";
         (new DataRequired)->__invoke($this->form, $this->field);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     * @expectedExceptionMessage This field is required.
-     */
     public function testEmptyWhitespaceString()
     {
+        $this->expectExceptionMessage("This field is required.");
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         $this->field->data = "  ";
         (new DataRequired)->__invoke($this->form, $this->field);
     }
@@ -69,12 +65,10 @@ class DataRequiredTest extends \PHPUnit_Framework_TestCase
             "DataRequired did not throw a StopValidation error in DataRequiredTest::testErrorClobbering");
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     * @expectedExceptionMessage foo
-     */
     public function testCustomErrorMessage()
     {
+        $this->expectExceptionMessage("foo");
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         $this->field->data = "";
         (new DataRequired("foo"))->__invoke($this->form, $this->field);
     }

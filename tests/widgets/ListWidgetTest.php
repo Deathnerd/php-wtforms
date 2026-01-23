@@ -15,7 +15,7 @@ use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 use WTForms\Widgets\Core\ListWidget;
 
-class ListWidgetTest extends \PHPUnit_Framework_TestCase
+class ListWidgetTest extends \PHPUnit\Framework\TestCase
 {
     public function testBasic()
     {

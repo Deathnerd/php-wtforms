@@ -12,7 +12,7 @@ namespace WTForms\Tests\Fields;
 use WTForms\Fields\Core\IntegerField;
 use WTForms\Form;
 
-class IntegerFieldTest extends \PHPUnit_Framework_TestCase
+class IntegerFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testIntegerField()
     {

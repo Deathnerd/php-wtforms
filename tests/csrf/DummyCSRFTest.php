@@ -30,13 +30,11 @@ class F extends Form
 
 }
 
-class DummyCSRFTest extends \PHPUnit_Framework_TestCase
+class DummyCSRFTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException \WTForms\Exceptions\NotImplemented
-     */
     public function testBaseClass()
     {
+        $this->expectException(\WTForms\Exceptions\NotImplemented::class);
         (new F(["meta" => ["csrf_class" => new CSRF]]))->process([]);
     }
 

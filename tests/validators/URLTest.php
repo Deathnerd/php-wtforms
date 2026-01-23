@@ -13,12 +13,12 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\URL;
 
-class URLTest extends \PHPUnit_Framework_TestCase
+class URLTest extends \PHPUnit\Framework\TestCase
 {
     public $form;
     public $url;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
         $this->url = new URL;
@@ -35,12 +35,10 @@ class URLTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->url->__invoke($this->form, new DummyField(["data" => "http://foobar"])));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     * @expectedExceptionMessage foo
-     */
     public function testNoProtocolAndCustomMessage()
     {
+        $this->expectExceptionMessage("foo");
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         $this->url = new URL("foo");
         $this->url->__invoke($this->form, new DummyField(["data" => "foobar.dk"]));
     }

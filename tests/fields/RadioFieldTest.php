@@ -13,14 +13,14 @@ use WTForms\Exceptions\TypeError;
 use WTForms\Fields\Core\RadioField;
 use WTForms\Form;
 
-class RadioFieldTest extends \PHPUnit_Framework_TestCase
+class RadioFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $form = new Form();
         $form->a = new RadioField([

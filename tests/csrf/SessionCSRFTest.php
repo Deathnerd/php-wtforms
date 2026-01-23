@@ -86,23 +86,20 @@ class Pinned extends FF
     }
 }
 
-class SessionCSRFTest extends \PHPUnit_Framework_TestCase
+class SessionCSRFTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     */
     public function testVariousFailures_1()
     {
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
+        // Session must be active first before we can destroy it
         session_destroy();
         new FF();
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Must set `csrf_secret` on class Meta for SessionCSRF to work
-     */
     public function testVariousFailures_2()
     {
+        $this->expectExceptionMessage("Must set `csrf_secret` on class Meta for SessionCSRF to work");
+        $this->expectException(\Exception::class);
         new FF(["meta" => ["csrf_secret" => null]]);
     }
 
@@ -178,13 +175,18 @@ class SessionCSRFTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($form->validate());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (session_status() == PHP_SESSION_ACTIVE) {
             session_destroy();
         }
-        @session_start();
+        session_start();
     }
 
-
+    protected function tearDown(): void
+    {
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+    }
 }

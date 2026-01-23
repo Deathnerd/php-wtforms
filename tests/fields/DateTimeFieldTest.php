@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use WTForms\Fields\Core\DateTimeField;
 use WTForms\Form;
 
-class DateTimeFieldTest extends \PHPUnit_Framework_TestCase
+class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
@@ -41,7 +41,7 @@ class DateTimeFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("2008-05-05 04:30:00", $this->form->a->value);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $form = new Form();
         $form->a = new DateTimeField();

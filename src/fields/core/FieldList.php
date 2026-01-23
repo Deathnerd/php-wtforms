@@ -132,7 +132,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
             $data_length = 0;
             // First add formdata that map to indices
             foreach ($indices as $index) {
-                if ($data_length >= count($data)) {
+                if (!is_array($data) || $data_length >= count($data)) {
                     $obj_data = null;
                 } else {
                     $obj_data = $data[$data_length];

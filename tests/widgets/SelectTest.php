@@ -11,12 +11,12 @@ namespace WTForms\Tests\Widgets;
 
 use WTForms\Widgets\Core\Select;
 
-class SelectTest extends \PHPUnit_Framework_TestCase
+class SelectTest extends \PHPUnit\Framework\TestCase
 {
 
     public $field;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->field = new DummyField([
             "data" => [

@@ -13,14 +13,14 @@ use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\SelectMultipleField;
 use WTForms\Form;
 
-class SelectMultipleFieldTest extends \PHPUnit_Framework_TestCase
+class SelectMultipleFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $form = new Form();
         $form->a = new SelectMultipleField([

@@ -15,14 +15,14 @@ use WTForms\Form;
 use WTForms\Validators\AnyOf;
 use WTForms\Validators\InputRequired;
 
-class FormFieldInFieldListTest extends \PHPUnit_Framework_TestCase
+class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ParentForm
      */
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = ParentForm::create([]);
     }

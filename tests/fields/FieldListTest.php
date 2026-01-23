@@ -29,14 +29,14 @@ class FChild extends Form
 
 }
 
-class FieldListTest extends \PHPUnit_Framework_TestCase
+class FieldListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StringField
      */
     public $t;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->t = new StringField(["validators" => [new DataRequired()]]);
     }
@@ -84,13 +84,10 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($form->a));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage populate_obj: cannot find a value to populate from the provided obj or input
-     *                           data/defaults
-     */
     public function testEnclosedSubform()
     {
+        $this->expectExceptionMessage("populate_obj: cannot find a value to populate from the provided obj or input data/defaults");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         $form = new Form();
         $form->a = new FieldList([
             "inner_field" => new FormField([
@@ -128,11 +125,9 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * @expectedException \WTForms\Exceptions\IndexError
-     */
     public function testEntryManagement()
     {
+        $this->expectException(\WTForms\Exceptions\IndexError::class);
         $form = new Form();
         $form->a = new FieldList(["inner_field" => $this->t]);
         $form->process(["a" => ["hello", "bye"]]);
@@ -149,12 +144,10 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
         $a->popEntry();
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\AssertionError
-     * @expectedExceptionMessage You cannot have more than max_entries entries in the FieldList
-     */
     public function testMinMaxEntries()
     {
+        $this->expectExceptionMessage("You cannot have more than max_entries entries in the FieldList");
+        $this->expectException(\WTForms\Exceptions\AssertionError::class);
         $form = new Form();
         $form->a = new FieldList(["inner_field" => $this->t, "min_entries" => 1, "max_entries" => 3]);
         $form->process([]);
@@ -165,12 +158,10 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
         $form->process(["a" => $big_input]);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\AssertionError
-     * @expectedExceptionMessage You cannot have more than max_entries entries in the FieldList
-     */
     public function testMinMaxEntriesForAppend()
     {
+        $this->expectExceptionMessage("You cannot have more than max_entries entries in the FieldList");
+        $this->expectException(\WTForms\Exceptions\AssertionError::class);
         $form = new Form();
         $form->a = new FieldList(["inner_field" => $this->t, "min_entries" => 1, "max_entries" => 3]);
         $form->process([
@@ -212,12 +203,10 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([["This field is required."]], $form->a->errors);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FieldList does not accept any filters. Instead, define them on the enclosed field
-     */
     public function testNoFilters()
     {
+        $this->expectExceptionMessage("FieldList does not accept any filters. Instead, define them on the enclosed field");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         $f = new FieldList([
             "inner_field" => $this->t,
             "filters"     => [
@@ -247,21 +236,17 @@ class FieldListTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($data, $form->a->data);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FieldList requires an inner_field declaration
-     */
     public function testNoInnerFieldArgument()
     {
+        $this->expectExceptionMessage("FieldList requires an inner_field declaration");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         (new FieldList());
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FieldList requires an inner_field type subclassing Field; string given
-     */
     public function testImproperInnerFieldArgument()
     {
+        $this->expectExceptionMessage("FieldList requires an inner_field type subclassing Field; string given");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         (new FieldList(["inner_field" => '\WTForms\Fields\Core\StringField']));
     }
 }

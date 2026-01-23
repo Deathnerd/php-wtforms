@@ -31,9 +31,9 @@ class FlagsTestForm extends Form
 
 }
 
-class FlagsTest extends \PHPUnit_Framework_TestCase
+class FlagsTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
     }
 
@@ -42,11 +42,11 @@ class FlagsTest extends \PHPUnit_Framework_TestCase
         $flags = new Flags();
         $flags->foo = true;
         $flags->_bar = false;
-        $this->assertObjectHasAttribute("foo", $flags);
-        $this->assertObjectNotHasAttribute("_foo", $flags);
+        $this->assertObjectHasProperty("foo", $flags);
+        $this->assertObjectNotHasProperty("_foo", $flags);
         $this->assertTrue($flags->foo);
-        $this->assertObjectHasAttribute("_bar", $flags);
-        $this->assertObjectNotHasAttribute("bar", $flags);
+        $this->assertObjectHasProperty("_bar", $flags);
+        $this->assertObjectNotHasProperty("bar", $flags);
         $this->assertFalse($flags->_bar);
         $this->assertFalse($flags->foo == $flags->_foo);
     }

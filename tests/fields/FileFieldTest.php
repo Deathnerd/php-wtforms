@@ -12,7 +12,7 @@ namespace WTForms\Tests\Fields;
 use WTForms\Fields\Simple\FileField;
 use WTForms\Form;
 
-class FileFieldTest extends \PHPUnit_Framework_TestCase
+class FileFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testFileField()
     {

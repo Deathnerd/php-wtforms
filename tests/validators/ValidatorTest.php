@@ -21,24 +21,20 @@ class ValidatorOverride extends Validator
 
 }
 
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
 
-    /**
-     * @expectedException \WTForms\Exceptions\NotImplemented
-     * @expectedExceptionMessage Validator must have an overridden __construct method
-     */
     public function testNotOverriddenConstructor()
     {
+        $this->expectExceptionMessage("Validator must have an overridden __construct method");
+        $this->expectException(\WTForms\Exceptions\NotImplemented::class);
         new Validator;
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\NotImplemented
-     * @expectedExceptionMessage Validator must have an overridden __invoke method
-     */
     public function testNotOverriddenInvoke()
     {
+        $this->expectExceptionMessage("Validator must have an overridden __invoke method");
+        $this->expectException(\WTForms\Exceptions\NotImplemented::class);
         (new ValidatorOverride)->__invoke(new Form(), new DummyField());
     }
 }

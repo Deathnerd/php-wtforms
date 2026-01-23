@@ -13,7 +13,7 @@ use WTForms\Fields\Core\Label;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 
-class LabelTest extends \PHPUnit_Framework_TestCase
+class LabelTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testDefaultLabelOptions()

@@ -10,7 +10,7 @@ namespace WTForms\Tests\Widgets;
 
 use WTForms\Widgets\HTML5;
 
-class HTML5Test extends \PHPUnit_Framework_TestCase
+class HTML5Test extends \PHPUnit\Framework\TestCase
 {
     public $field;
 
@@ -113,7 +113,7 @@ class HTML5Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<input id="id" name="bar" type="week" value="42">', $week($this->field));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->field = new \WTForms\Tests\SupportingClasses\DummyField(['data' => '42', 'name' => 'bar', 'id' => 'id']);
     }

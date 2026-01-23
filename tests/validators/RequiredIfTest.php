@@ -12,14 +12,14 @@ use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 use WTForms\Validators\RequiredIf;
 
-class RequiredIfTest extends \PHPUnit_Framework_TestCase
+class RequiredIfTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     protected $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
     }

@@ -1,46 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<phpunit>
-    <testsuite name='WTForms Validators Test'>
-        <directory>./tests/validators</directory>
-    </testsuite>
-    <testsuite name="WTForms Common Tests">
-        <directory>./tests/common</directory>
-    </testsuite>
-    <testsuite name="WTForms Field Tests">
-        <directory>./tests/fields</directory>
-    </testsuite>
-    <testsuite name="WTForms Widgets Tests">
-        <directory>./tests/widgets</directory>
-    </testsuite>
-    <testsuite name="WTForms CSRF Tests">
-        <directory>./tests/csrf</directory>
-    </testsuite>
-    <testsuite name="WTForms Quirks Tests">
-        <directory>./tests/quirks</directory>
-    </testsuite>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="WTForms Test Suite">
+            <directory>./tests/validators</directory>
+            <directory>./tests/common</directory>
+            <directory>./tests/fields</directory>
+            <directory>./tests/widgets</directory>
+            <directory>./tests/csrf</directory>
+            <directory>./tests/quirks</directory>
+        </testsuite>
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">./src/fields</directory>
             <directory suffix=".php">./src/widgets</directory>
             <directory suffix=".php">./src/validators</directory>
-            <directory suffix=".php">./src/quirks</directory>
-            <directory suffix=".php">./src/csrf/core</directory>
-            <directory suffix=".php">./src/csrf/session</directory>
+            <directory suffix=".php">./src/csrf</directory>
             <file>./src/Form.php</file>
             <file>./src/helpers.php</file>
             <file>./src/Flags.php</file>
             <file>./src/DefaultMeta.php</file>
-            <exclude>
-                <directory>./tests</directory>
-                <directory>./vendor</directory>
-                <directory>./src/exceptions</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-clover" target="./tests/_reports/clover.xml"/>
-        <log type="coverage-html" target="./tests/_reports/coverage" charset="UTF-8" yui="true" highlight="true"
-             lowUpperBound="35" highLowerBound="70"/>
-        <log type="testdox-text" target="./tests/_reports/testdox/executed.txt"/>
-    </logging>
+        </include>
+        <exclude>
+            <directory>./tests</directory>
+            <directory>./vendor</directory>
+            <directory>./src/exceptions</directory>
+        </exclude>
+        <report>
+            <clover outputFile="./tests/_reports/clover.xml"/>
+            <html outputDirectory="./tests/_reports/coverage"/>
+            <text outputFile="./tests/_reports/testdox/executed.txt"/>
+        </report>
+    </coverage>
 </phpunit>

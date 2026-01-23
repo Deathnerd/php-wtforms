@@ -15,7 +15,7 @@ use WTForms\Fields\Core\DateTimeField;
 use WTForms\Form;
 use WTForms\Validators\Optional;
 
-class DateFieldTest extends \PHPUnit_Framework_TestCase
+class DateFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
@@ -69,7 +69,7 @@ class DateFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($form->a->process_errors);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $form = new Form();
         $form->a = new DateField();

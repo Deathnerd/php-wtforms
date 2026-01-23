@@ -23,14 +23,14 @@ class SelectFieldBaseTestClass extends SelectFieldBase
 
 }
 
-class SelectFieldTest extends \PHPUnit_Framework_TestCase
+class SelectFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $form = new Form();
         $form->a = new SelectField([
@@ -125,11 +125,9 @@ class SelectFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(["Not a valid choice"], $this->form->a->errors);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\NotImplemented
-     */
     public function testSelectFieldBase()
     {
+        $this->expectException(\WTForms\Exceptions\NotImplemented::class);
         $field = new SelectFieldBaseTestClass();
         $this->assertEmpty($field->value);
         $field->getChoices();

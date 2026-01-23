@@ -40,10 +40,10 @@ class GenericFieldTestForm extends Form
     }
 }
 
-class GenericFieldTest extends \PHPUnit_Framework_TestCase
+class GenericFieldTest extends \PHPUnit\Framework\TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
     }
 
@@ -82,12 +82,10 @@ class GenericFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, (new TextInput)->__invoke($field));
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Method undefined_method not found on form!
-     */
     public function testBadMethodCall()
     {
+        $this->expectExceptionMessage("Method undefined_method not found on form!");
+        $this->expectException(\BadMethodCallException::class);
         $field = new DummyField(["prefix" => "blah", "name" => "boo"]);
         $field->undefined_method();
     }

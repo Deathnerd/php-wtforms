@@ -11,7 +11,7 @@ namespace WTForms\Test\Fields;
 use WTForms\Fields\Simple\HiddenField;
 use WTForms\Form;
 
-class HiddenFieldTest extends \PHPUnit_Framework_TestCase
+class HiddenFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testHiddenField()
     {

@@ -13,14 +13,14 @@ use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 
-class FiltersTest extends \PHPUnit_Framework_TestCase
+class FiltersTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
         $this->form->a = new StringField([

@@ -13,11 +13,11 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\IPAddress;
 
-class IPAddressTest extends \PHPUnit_Framework_TestCase
+class IPAddressTest extends \PHPUnit\Framework\TestCase
 {
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
     }
@@ -32,78 +32,60 @@ class IPAddressTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValueError
-     */
     public function testInvalidIPType()
     {
+        $this->expectException(\WTForms\Exceptions\ValueError::class);
         $ip_address = new IPAddress("", ["ip_type" => 123]);
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV4_1()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress)->__invoke($this->form, new DummyField(["data" => "abc.0.0.1"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV4_2()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress)->__invoke($this->form, new DummyField(["data" => "1278.0.0.1"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV4_3()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress)->__invoke($this->form, new DummyField(["data" => "127.0.0.abc"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV4_4()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress)->__invoke($this->form, new DummyField(["data" => "900.200.100.75"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV6_1()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress("", ["ip_type" => FILTER_FLAG_IPV6]))->__invoke($this->form,
             new DummyField(["data" => "abc.0.0.1"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV6_2()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress("", ["ip_type" => FILTER_FLAG_IPV6]))->__invoke($this->form,
             new DummyField(["data" => "abcd:1234::123::1"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV6_3()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress("", ["ip_type" => FILTER_FLAG_IPV6]))->__invoke($this->form,
             new DummyField(["data" => "1:2:3:4:5:6:7:8:9"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalidIPV6_4()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new IPAddress("", ["ip_type" => FILTER_FLAG_IPV6]))->__invoke($this->form,
             new DummyField(["data" => "abcd::1ffff"]));
     }

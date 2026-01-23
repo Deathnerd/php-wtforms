@@ -44,7 +44,7 @@ class TestForm extends Form
     }
 }
 
-class FormTest extends \PHPUnit_Framework_TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
 
     public function testFormCreation()
@@ -96,17 +96,17 @@ class FormTest extends \PHPUnit_Framework_TestCase
 
         // test for non-field attribute assignment
         $form->foo = "bar";
-        $this->assertObjectHasAttribute("foo", $form);
+        $this->assertObjectHasProperty("foo", $form);
         $this->assertEquals("bar", $form->foo);
 
         // test unsetting dynamic form field assignment
         unset($form->a);
-        $this->assertObjectNotHasAttribute("a", $form);
+        $this->assertObjectNotHasProperty("a", $form);
         $this->assertNull($form->a);
 
         // test unsetting non-field dynamic assignment
         unset($form->foo);
-        $this->assertObjectNotHasAttribute("foo", $form);
+        $this->assertObjectNotHasProperty("foo", $form);
         $this->assertNull($form->foo);
     }
 
@@ -192,12 +192,10 @@ class FormTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(["a" => ["This field is required."]], $form->errors);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Form::populate accepts only an array or an object as input; string given.
-     */
     public function testInvalidPopulateArgument()
     {
+        $this->expectExceptionMessage("Form::populate accepts only an array or an object as input; string given.");
+        $this->expectException(\InvalidArgumentException::class);
         (new TestForm())->populate("foo");
     }
 

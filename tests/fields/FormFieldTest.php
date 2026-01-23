@@ -31,7 +31,7 @@ class F extends Form
 
 }
 
-class FormFieldTest extends \PHPUnit_Framework_TestCase
+class FormFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
@@ -42,7 +42,7 @@ class FormFieldTest extends \PHPUnit_Framework_TestCase
      */
     public $f2;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->f1 = new Form();
         $this->f1->a = new FormField(["form_class" => '\WTForms\Tests\Fields\F']);
@@ -106,30 +106,24 @@ class FormFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($form->validate());
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FormField must have a form_class property set!
-     */
     public function testNoFormClass()
     {
+        $this->expectExceptionMessage("FormField must have a form_class property set!");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         (new FormField());
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FormField does not accept any validators. Instead, define them on the enclosed form.
-     */
     public function testNoValidators()
     {
+        $this->expectExceptionMessage("FormField does not accept any validators. Instead, define them on the enclosed form.");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         (new FormField(["form_class" => '\WTForms\Tests\Fields\F', "validators" => [new DataRequired()]]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FormField cannot take filters, as the encapsulated data is not mutable
-     */
     public function testNoFilters()
     {
+        $this->expectExceptionMessage("FormField cannot take filters, as the encapsulated data is not mutable");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
         (new FormField([
             "form_class" => '\WTForms\Tests\Fields\F',
             "filters"    => function ($x) {
@@ -138,13 +132,11 @@ class FormFieldTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\TypeError
-     * @expectedExceptionMessage FormField does not accept in-line validators, as it gets errors from the enclosed form.
-     */
     public function testNoExtraValidators()
     {
-      $form = new C();
+        $this->expectExceptionMessage("FormField does not accept in-line validators, as it gets errors from the enclosed form.");
+        $this->expectException(\WTForms\Exceptions\TypeError::class);
+        $form = new C();
       $form->validate();
     }
 }

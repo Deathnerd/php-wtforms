@@ -12,7 +12,7 @@ namespace WTForms\Tests\Fields;
 use WTForms\Fields\Simple\TextAreaField;
 use WTForms\Form;
 
-class TextAreaFieldTest extends \PHPUnit_Framework_TestCase
+class TextAreaFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testTextAreaField()
     {

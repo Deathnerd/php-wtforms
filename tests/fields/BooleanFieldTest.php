@@ -11,14 +11,14 @@ namespace WTForms\Tests\Fields;
 use WTForms\Fields\Core\BooleanField;
 use WTForms\Form;
 
-class BooleanFieldTest extends \PHPUnit_Framework_TestCase
+class BooleanFieldTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
      */
     public $form;
 
-    public function setUp()
+    public function setUp(): void
     {
         $form = new Form();
         $form->bool1 = new BooleanField();

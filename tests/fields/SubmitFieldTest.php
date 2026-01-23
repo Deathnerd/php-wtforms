@@ -12,7 +12,7 @@ namespace WTForms\Tests\Fields;
 use WTForms\Fields\Simple\SubmitField;
 use WTForms\Form;
 
-class SubmitFieldTest extends \PHPUnit_Framework_TestCase
+class SubmitFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testSubmitField()
     {

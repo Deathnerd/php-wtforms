@@ -13,33 +13,29 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\InputRequired;
 
-class InputRequiredTest extends \PHPUnit_Framework_TestCase
+class InputRequiredTest extends \PHPUnit\Framework\TestCase
 {
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     * @expectedExceptionMessage This field is required.
-     */
     public function testInputRequired()
     {
+        $this->expectExceptionMessage("This field is required.");
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         $input_required = new InputRequired;
         $this->assertNull($input_required($this->form, new DummyField(["data" => "foobar", "raw_data" => ["foobar"]])));
         $this->assertContains("required", $input_required->field_flags);
         $input_required($this->form, new DummyField(["data" => "", "raw_data" => [""]]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\StopValidation
-     * @expectedExceptionMessage foo
-     */
     public function testCustomMessage()
     {
+        $this->expectExceptionMessage("foo");
+        $this->expectException(\WTForms\Exceptions\StopValidation::class);
         (new InputRequired("foo"))->__invoke($this->form, new DummyField(["data" => "", "raw_data" => [""]]));
     }
 }

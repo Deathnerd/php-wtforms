@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use WTForms\Fields\HTML5;
 use WTForms\Form;
 
-class HTML5FieldsTest extends \PHPUnit_Framework_TestCase
+class HTML5FieldsTest extends \PHPUnit\Framework\TestCase
 {
     public function testHTML5Fields()
     {

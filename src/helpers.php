@@ -150,6 +150,9 @@ if (!function_exists('str_contains')) {
      */
     function str_contains($haystack, $needle)
     {
+        if ($needle === null || $needle === '') {
+            return false;
+        }
         return strpos($haystack, $needle) !== false;
     }
 }

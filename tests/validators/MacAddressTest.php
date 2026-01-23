@@ -13,11 +13,11 @@ use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\MacAddress;
 
-class MacAddressTest extends \PHPUnit_Framework_TestCase
+class MacAddressTest extends \PHPUnit\Framework\TestCase
 {
     public $form;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->form = new Form();
     }
@@ -28,35 +28,27 @@ class MacAddressTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($mac_address($this->form, new DummyField(["data" => "01:23:45:67:ab:CD"])));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalid_1()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new MacAddress)->__invoke($this->form, new DummyField(["data" => "00:00:00:00:00"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalid_2()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new MacAddress)->__invoke($this->form, new DummyField(["data" => "01:23:45:67:89:"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalid_3()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new MacAddress)->__invoke($this->form, new DummyField(["data" => "01:23:45:67:89:gh"]));
     }
 
-    /**
-     * @expectedException \WTForms\Exceptions\ValidationError
-     */
     public function testInvalid_4()
     {
+        $this->expectException(\WTForms\Exceptions\ValidationError::class);
         (new MacAddress)->__invoke($this->form, new DummyField(["data" => "123:23:45:67:89:00"]));
     }
 }

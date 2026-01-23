@@ -12,7 +12,7 @@ use WTForms\Fields\Simple\PasswordField;
 use WTForms\Form;
 use WTForms\Widgets\Core\PasswordInput;
 
-class PasswordFieldTest extends \PHPUnit_Framework_TestCase
+class PasswordFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function testPasswordField()
     {
