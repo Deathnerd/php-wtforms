@@ -1,0 +1,18 @@
+{
+  "name": "php-wtforms Multi-PHP",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "php56",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "composer install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "xdebug.php-debug"
+      ],
+      "settings": {
+        "php.executablePath": "/usr/local/bin/php"
+      }
+    }
+  }
+}

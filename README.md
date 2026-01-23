@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/Deathnerd/php-wtforms.svg?branch=master)](https://travis-ci.org/Deathnerd/php-wtforms)
-
-[![codecov](https://codecov.io/gh/Deathnerd/php-wtforms/branch/master/graph/badge.svg)](https://codecov.io/gh/Deathnerd/php-wtforms)
 # php-wtforms
 A PHP rewrite of the fantastic Python library WTForms. 
 
