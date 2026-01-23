@@ -1,7 +1,7 @@
 {
   "name": "php-wtforms Multi-PHP",
   "dockerComposeFile": "docker-compose.yml",
-  "service": "php56",
+  "service": "php74",
   "workspaceFolder": "/workspace",
   "postCreateCommand": "composer install",
   "customizations": {

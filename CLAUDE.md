@@ -4,22 +4,53 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-php-wtforms is a PHP port of Python's WTForms library - a declarative forms framework for defining, validating, rendering, and handling web forms. Current version: 0.5.2, requires PHP >= 5.5.
+php-wtforms is a PHP port of Python's WTForms library - a declarative forms framework for defining, validating, rendering, and handling web forms. Requires PHP >= 7.4.
 
 ## Commands
 
+### Using Docker (recommended)
+
 ```bash
+# Run tests on PHP 7.4
+docker-compose -f .devcontainer/docker-compose.yml run --rm php74 vendor/bin/phpunit
+
+# Run tests on PHP 5.6 (legacy baseline)
+docker-compose -f .devcontainer/docker-compose.yml run --rm php56 vendor/bin/phpunit
+
+# Run with coverage
+docker-compose -f .devcontainer/docker-compose.yml run --rm -e XDEBUG_MODE=coverage php74 vendor/bin/phpunit --coverage-html tests/_reports/coverage/
+
 # Install dependencies
+docker-compose -f .devcontainer/docker-compose.yml run --rm php74 composer install
+```
+
+### Local PHP
+
+```bash
 composer install
+vendor/bin/phpunit
+```
 
-# Run all tests
-phpunit --configuration ./phpunit.xml --bootstrap ./vendor/autoload.php
+## Static Analysis (PHPStan)
 
-# Run a specific test file
-phpunit --configuration ./phpunit.xml --bootstrap ./vendor/autoload.php tests/fields/StringFieldTest.php
+```bash
+# Run PHPStan (level 5)
+docker-compose -f .devcontainer/docker-compose.yml run --rm php74 vendor/bin/phpstan analyse --memory-limit=512M
 
-# Run tests with coverage (outputs to tests/_reports/)
-phpunit --configuration ./phpunit.xml --bootstrap ./vendor/autoload.php --coverage-html tests/_reports/coverage/
+# Export errors to JSON for analysis
+docker-compose -f .devcontainer/docker-compose.yml run --rm php74 vendor/bin/phpstan analyse --memory-limit=512M --error-format=json 2>/dev/null > phpstan-errors.json
+
+# Parse and summarize errors
+uv run scripts/parse_phpstan.py phpstan-errors.json
+
+# View errors grouped by type
+uv run scripts/parse_phpstan.py phpstan-errors.json --by-identifier
+
+# View specific error type
+uv run scripts/parse_phpstan.py phpstan-errors.json --by-identifier property.notFound
+
+# View errors grouped by file
+uv run scripts/parse_phpstan.py phpstan-errors.json --by-file
 ```
 
 ## Architecture
@@ -66,7 +97,7 @@ class LoginForm extends Form {
 
 ## Testing
 
-Tests mirror source structure in `tests/`. Supporting test fixtures are in `tests/supporting_classes/`. PHPUnit 4.8.x is used.
+Tests mirror source structure in `tests/`. Supporting test fixtures are in `tests/supporting_classes/`. PHPUnit 9.x is used. Bootstrap file `tests/bootstrap.php` handles output buffering for session tests.
 
 ## Future Direction
 
