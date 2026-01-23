@@ -19,8 +19,10 @@ use WTForms\Widgets\Core\Widget;
 
 /**
  * Field base class
+ *
+ * @template TData
  * @property  boolean    $checked
- * @property  mixed      $data
+ * @property  TData      $data
  * @property null|string $value
  * @property array       $errors
  *

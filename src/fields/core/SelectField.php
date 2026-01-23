@@ -15,6 +15,12 @@ use WTForms\Widgets;
 use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\Select;
 
+/**
+ * Select field with coercible values.
+ *
+ * @extends SelectFieldBase<mixed>
+ * @package WTForms\Fields\Core
+ */
 class SelectField extends SelectFieldBase
 {
     /**

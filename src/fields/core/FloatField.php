@@ -11,6 +11,12 @@ namespace WTForms\Fields\Core;
 use WTForms\Exceptions\ValueError;
 use WTForms\Widgets\Core\TextInput;
 
+/**
+ * A text field, except all input is coerced to a float.
+ *
+ * @extends Field<float|null>
+ * @package WTForms\Fields
+ */
 class FloatField extends Field
 {
     /**

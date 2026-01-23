@@ -14,6 +14,8 @@ use WTForms\Widgets\Core\TextInput;
 /**
  * This field is the base for most of the more complicated fields, and
  * represents an ``<input type="text">``.
+ *
+ * @extends Field<string>
  * @package WTForms\Fields
  */
 class StringField extends Field

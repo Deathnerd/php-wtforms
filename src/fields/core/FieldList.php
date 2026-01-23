@@ -20,6 +20,8 @@ use WTForms\Widgets\Core\ListWidget;
  * keeping data as a list.
  *
  * >>> $authors = new FieldList(new StringField("name", [new DataRequired()]));
+ *
+ * @extends Field<array>
  * @package WTForms\Fields\Core
  */
 class FieldList extends Field implements \Countable, \ArrayAccess

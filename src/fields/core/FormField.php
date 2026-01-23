@@ -15,6 +15,8 @@ use WTForms\Widgets\Core\TableWidget;
 
 /**
  * Encapsulate a form as a field into another form
+ *
+ * @extends Field<array>
  * @package WTForms\Fields\Core
  */
 class FormField extends Field implements \ArrayAccess

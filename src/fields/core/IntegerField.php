@@ -13,8 +13,9 @@ use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field, except all input is coerced to an integer. Erroneous input
- * is ignored and will nto be accepted as a value
+ * is ignored and will not be accepted as a value.
  *
+ * @extends Field<int|null>
  * @package WTForms\Fields
  */
 class IntegerField extends Field

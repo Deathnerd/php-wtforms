@@ -16,6 +16,8 @@ use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field which stores a `DateTime` matching a format
+ *
+ * @extends Field<\Carbon\Carbon|\DateTime|null>
  * @package WTForms\Fields\Core
  */
 class DateTimeField extends Field

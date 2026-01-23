@@ -15,6 +15,7 @@ use WTForms\Widgets\Core\CheckboxInput;
  * ``default``-option. Any value for ``default``, e.g. ``default="checked"`` puts
  * ``checked`` into the html-element and sets the ``data`` to ``true``
  *
+ * @extends Field<bool>
  * @package WTForms\Fields
  */
 class BooleanField extends Field

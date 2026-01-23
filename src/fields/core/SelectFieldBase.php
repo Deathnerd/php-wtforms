@@ -17,6 +17,8 @@ use WTForms\Widgets\Core\Option;
  * This isn't a field, but an abstract base class for fields which want to
  * provide this functionality.
  *
+ * @template TData
+ * @extends Field<TData>
  * @property array $options
  * @package WTForms\Fields\Core
  */

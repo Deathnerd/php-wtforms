@@ -292,6 +292,25 @@ class Form implements \ArrayAccess, \Iterator
         return $array;
     }
 
+    /**
+     * Creates a new instance of the given class and populates it with form data.
+     *
+     * This is the preferred method for type-safe population of DTOs/entities.
+     *
+     * @template T of object
+     * @param class-string<T> $class The fully-qualified class name to instantiate
+     * @return T The populated object
+     */
+    public function populateTo(string $class): object
+    {
+        $obj = new $class();
+        foreach ($this->fields as $field_name => $field) {
+            $field->populateObj($obj, $field_name);
+        }
+
+        return $obj;
+    }
+
     public function process(array $options = ["formdata" => [], "data" => []])
     {
         if (array_key_exists("formdata", $options)) {
