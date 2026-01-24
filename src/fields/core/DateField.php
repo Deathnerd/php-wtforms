@@ -52,9 +52,9 @@ class DateField extends DateTimeField
             }
 
             if ($this->data instanceof \Carbon\Carbon) {
-                return $this->data->startOfDay()->formatLocalized($this->format);
+                return $this->data->startOfDay()->format($this->carbon_format);
             } elseif ($this->data instanceof \DateTime) {
-                return \Carbon\Carbon::instance($this->data)->startOfDay()->formatLocalized($this->format);
+                return \Carbon\Carbon::instance($this->data)->startOfDay()->format($this->carbon_format);
             } else {
                 return '';
             }

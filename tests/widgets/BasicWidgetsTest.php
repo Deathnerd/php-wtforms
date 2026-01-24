@@ -39,12 +39,12 @@ class DummyField extends Field
         return $this->data;
     }
 
-    public function __invoke($options = [])
+    public function __invoke(array $options = [])
     {
         return $this->data;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         return $this->data;
     }

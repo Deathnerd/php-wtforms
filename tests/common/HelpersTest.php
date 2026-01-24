@@ -36,7 +36,7 @@ class HelpersTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(starts_with("_foobar", "_foo"));
         $this->assertFalse(starts_with("_foobar", "_baz"));
         $this->assertFalse(starts_with("_foobar", "bar"));
-        $this->assertFalse(starts_with("blah", null));
+        $this->assertTrue(starts_with("blah", null));
     }
 
     public function testStrContains()

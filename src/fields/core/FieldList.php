@@ -106,10 +106,10 @@ class FieldList extends Field implements \Countable, \ArrayAccess
      * special advanced processing, such as when a field encapsulates many
      * inputs.
      *
-     * @param            $formdata
+     * @param array $formdata
      * @param null|mixed $data
      */
-    public function process($formdata, $data = null)
+    public function process(array $formdata, $data = null)
     {
         //@codeCoverageIgnoreStart
         $this->entries = [];
@@ -271,9 +271,9 @@ class FieldList extends Field implements \Countable, \ArrayAccess
      * @param \WTForms\Form $form
      * @param array         $extra_validators
      *
-     * @return bool|void
+     * @return bool
      */
-    public function validate(Form $form, array $extra_validators = [])
+    public function validate(Form $form, array $extra_validators = []): bool
     {
         $this->errors = [];
 
@@ -294,7 +294,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     /**
      * @inheritdoc
      */
-    public function populateObj($obj, $name)
+    public function populateObj(object $obj, string $name)
     {
         $values = $obj->$name;
         if (!is_array($values)) {

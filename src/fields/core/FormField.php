@@ -58,7 +58,7 @@ class FormField extends Field implements \ArrayAccess
     /**
      * @inheritdoc
      */
-    public function process($formdata, $data = null)
+    public function process(array $formdata, $data = null)
     {
         if (is_null($data) || !$data) {
             if (is_callable($this->default)) {
@@ -95,7 +95,7 @@ class FormField extends Field implements \ArrayAccess
      * @inheritdoc
      * @throws TypeError
      */
-    public function validate(Form $form, array $extra_validators = [])
+    public function validate(Form $form, array $extra_validators = []): bool
     {
         if ($extra_validators) {
             throw new TypeError('FormField does not accept in-line validators,' .
@@ -108,7 +108,7 @@ class FormField extends Field implements \ArrayAccess
     /**
      * @inheritdoc
      */
-    public function populateObj($obj, $name)
+    public function populateObj(object $obj, string $name)
     {
         $candidate = $obj->$name;
         if (is_null($candidate)) {

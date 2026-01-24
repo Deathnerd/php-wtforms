@@ -28,7 +28,7 @@ class PrePostTestField extends StringField
         }
     }
 
-    public function postValidate(Form $form, $stop_validation)
+    public function postValidate(Form $form, bool $stop_validation)
     {
         if ($this->data == "p") {
             throw new ValueError("Post");

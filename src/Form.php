@@ -226,10 +226,11 @@ class Form implements \ArrayAccess, \Iterator
      * Under the hood it calls {@link populateObj} or {@link populateArray}
      * depending on what was passed into the function.
      *
-     * @param array|object $data
+     * @template T of object
+     * @param array|T $data
      *
+     * @return array|T The result of populating the object or array passed
      * @throws \InvalidArgumentException If something besides an object or an array were passed
-     * @return array|object The result of populating the object or array passed
      */
     public function populate($data)
     {
@@ -251,16 +252,14 @@ class Form implements \ArrayAccess, \Iterator
      * This is a destructive operation. If a field exists on this form
      * that has the same name as a property on the object, it WILL BE OVERWRITTEN.
      *
-     * @param object $obj The object to populate
+     * @template T of object
+     * @param T $obj The object to populate
      *
-     * @return object The object with the data from the form replacing values for members of the object
+     * @return T The object with the data from the form replacing values for members of the object
      */
-    public function populateObj(&$obj)
+    public function populateObj(object &$obj): object
     {
         foreach ($this->fields as $field_name => $field) {
-            /**
-             * @var Field $field
-             */
             $field->populateObj($obj, $field_name);
         }
 

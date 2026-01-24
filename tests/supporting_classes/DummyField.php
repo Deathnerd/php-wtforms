@@ -23,7 +23,7 @@ class DummyField extends Field
     /**
      * @var mixed
      */
-    public $raw_data;
+    public ?array $raw_data;
 
     public function __construct(array $options = [])
     {

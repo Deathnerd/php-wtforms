@@ -49,7 +49,7 @@ class CSRFTokenField extends HiddenField
     /**
      * Don't populate objects with CSRF Token
      */
-    public function populateObj($obj, $name)
+    public function populateObj(object $obj, string $name)
     {
         return $obj;
     }
@@ -67,12 +67,12 @@ class CSRFTokenField extends HiddenField
     }
 
     /**
-     * @param      $formdata
+     * @param array $formdata
      * @param null $data
      *
      * @throws WTForms\Exceptions\NotImplemented
      */
-    public function process($formdata, $data = null)
+    public function process(array $formdata, $data = null)
     {
         parent::process($formdata, $data);
         $this->current_token = $this->csrf_impl->generateCSRFToken($this);

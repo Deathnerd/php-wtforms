@@ -9,6 +9,7 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\DefaultMeta;
+use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Exceptions\ValueError;
@@ -41,11 +42,11 @@ class Field implements \Iterator
     /**
      * @var array
      */
-    public $process_errors = [];
+    public array $process_errors = [];
     /**
      * @var array|null
      */
-    public $raw_data = [];
+    public ?array $raw_data = [];
     /**
      * @var Validator[]
      */
@@ -81,7 +82,7 @@ class Field implements \Iterator
     /**
      * @var string
      */
-    public $type;
+    public string $type;
     /**
      * @var DefaultMeta
      */
@@ -97,34 +98,34 @@ class Field implements \Iterator
     /**
      * @var string
      */
-    public $name = '';
+    public string $name = '';
     /**
      * @var Flags
      */
-    public $flags;
+    public Flags $flags;
     /**
-     * @var Label
+     * @var Label|string
      */
     public $label;
     /**
-     * @var array
+     * @var array<string, mixed>
      */
-    public $attributes;
+    public array $attributes;
     /**
      * @var string|null
      */
-    public $prefix;
+    public ?string $prefix = null;
 
     /**
      * Options passed to constructor, used for cloning fields in FieldList
-     * @var array
+     * @var array<string, mixed>
      */
-    public $constructor_options = [];
+    public array $constructor_options = [];
 
     /**
      * Field constructor.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      *
      */
     public function __construct(array $options = [])
@@ -236,7 +237,7 @@ class Field implements \Iterator
     /**
      * Render this field as HTML, using keyword args as additional attributes
      *
-     * This delegates rendering to {@link WTForms\DefaultMeta\render_field}
+     * This delegates rendering to {@link \WTForms\DefaultMeta::$render_field}
      * whose default behavior is to call the field's widget, passing any
      * keyword arguments from this call to the widget.
      *
@@ -245,16 +246,16 @@ class Field implements \Iterator
      * wants with the supplied keyword arguments, and widgets don't have to
      * even do anything related to HTML
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      *
      * @return mixed
      */
-    public function __invoke($options = [])
+    public function __invoke(array $options = [])
     {
         return $this->meta->renderField($this, $options);
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         if ($name == "label") {
             if (count($arguments) > 0) {
@@ -270,7 +271,7 @@ class Field implements \Iterator
     /**
      * Validates the field and returns true or false. {@link errors} will
      * contain any errors raised during validation. This is usually only
-     * called by {@link Form\validate}
+     * called by {@link Form::validate()}
      *
      * Subfields shouldn't override this, but rather override either
      * {@link pre_validate}, {@link post_validate}, or both, depending on needs.
@@ -280,7 +281,7 @@ class Field implements \Iterator
      *
      * @return bool
      */
-    public function validate(Form $form, array $extra_validators = [])
+    public function validate(Form $form, array $extra_validators = []): bool
     {
         $this->errors = $this->process_errors;
         $stop_validation = false;
@@ -328,10 +329,11 @@ class Field implements \Iterator
     /**
      * Run a validation chain, stopping if any validator raises StopValidation
      *
-     * @param Form                   $form       The form instance this field belongs to
+     * @param Form $form The form instance this field belongs to
      * @param (Validator|callable)[] $validators A sequence or iterable of validator callables
      *
      * @return bool True if the validation was stopped, False if otherwise
+     * @throws NotImplemented
      */
     protected function runValidationChain(Form $form, array $validators)
     {
@@ -342,21 +344,7 @@ class Field implements \Iterator
                 } else {
                     $v($form, $this);
                 }
-            } catch (StopValidation $e) {
-                $message = $e->getMessage();
-                if ($message != "") {
-                    $this->errors[] = $message;
-                }
-
-                return true;
-            } catch (ValidationError $e) {
-                $message = $e->getMessage();
-                if ($message != "") {
-                    $this->errors[] = $message;
-                }
-
-                return true;
-            } catch (ValueError $e) {
+            } catch (StopValidation|ValidationError|ValueError $e) {
                 $message = $e->getMessage();
                 if ($message != "") {
                     $this->errors[] = $message;
@@ -376,7 +364,7 @@ class Field implements \Iterator
      * @param Form    $form            The form the field belongs to
      * @param boolean $stop_validation `True` if any validator raised `StopValidation`
      */
-    public function postValidate(Form $form, $stop_validation)
+    public function postValidate(Form $form, bool $stop_validation)
     {
     }
 
@@ -392,10 +380,10 @@ class Field implements \Iterator
      * special advanced processing, such as when a field encapsulates many
      * inputs.
      *
-     * @param            $formdata
+     * @param array<string, mixed> $formdata
      * @param null|mixed $data
      */
-    public function process($formdata, $data = null)
+    public function process(array $formdata, $data = null)
     {
         $this->process_errors = [];
         if ($data === null) {
@@ -445,7 +433,7 @@ class Field implements \Iterator
      * This will be called during form construction by the form's `options` or
      * `obj` argument.
      *
-     * @param string|array $value
+     * @param TData $value
      */
     public function processData($value)
     {
@@ -473,10 +461,11 @@ class Field implements \Iterator
      * Note: This is a destructive operation. If `$obj->$name` already exists,
      * it will be overridden. Use with caution
      *
-     * @param $obj
-     * @param $name
+     * @template T of object
+     * @param T $obj
+     * @param string $name
      */
-    public function populateObj($obj, $name)
+    public function populateObj(object $obj, string $name)
     {
         $obj->$name = $this->data;
     }
@@ -484,7 +473,7 @@ class Field implements \Iterator
     /**
      * @internal
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if ($name == "value") {
             if ($this->raw_data) {
@@ -502,11 +491,11 @@ class Field implements \Iterator
     /**
      * @return Form | null
      */
-    private function resolveParentForm()
+    private function resolveParentForm(): ?Form
     {
         $backtrace = array_reverse(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4));
         while ($stack = array_pop($backtrace)) {
-            if ($stack['object'] && $stack['object'] instanceof Form) {
+            if ($stack['object'] instanceof Form) {
                 return $stack['object'];
             }
         }

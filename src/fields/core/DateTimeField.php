@@ -54,10 +54,9 @@ class DateTimeField extends Field
             }
 
             if ($this->data instanceof Carbon) {
-                return $this->data->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
+                return $this->data->format($this->carbon_format);
             } elseif ($this->data instanceof \DateTime) {
-                return Carbon::instance($this->data)
-                             ->formatLocalized(str_replace("%s", "%S", str_replace("%i", "%M", $this->format)));
+                return Carbon::instance($this->data)->format($this->carbon_format);
             } else {
                 return ''; // @codeCoverageIgnore
             }
