@@ -9,6 +9,7 @@
 namespace WTForms;
 
 use WTForms\CSRF\Session\SessionCSRF;
+use WTForms\Exceptions\TypeError;
 use WTForms\Fields;
 use WTForms\Fields\Core\Field;
 
@@ -22,27 +23,23 @@ class DefaultMeta
     /**
      * @var string
      */
-    public $csrf_field_name = "csrf_token";
+    public string $csrf_field_name = "csrf_token";
     /**
      * @var string
      */
-    public $csrf_time_limit;
+    public string $csrf_time_limit;
     /**
      * @var bool
      */
-    public $csrf = false;
+    public bool $csrf = false;
     /**
      * @var string|null
      */
-    public $csrf_secret = null;
+    public ?string $csrf_secret = null;
     /**
-     * @var null|array|object
+     * @var ?class-string<covariant \WTForms\CSRF\Core\CSRF> $csrf_class
      */
-    public $csrf_context = null;
-    /**
-     * @var null|callable
-     */
-    public $csrf_class = null;
+    public ?string $csrf_class = null;
 
     /**
      * @param Field $field
@@ -50,9 +47,9 @@ class DefaultMeta
      *
      * @return mixed
      */
-    public function renderField(Field $field, $render_kw = [])
+    public function renderField(Field $field, array $render_kw = [])
     {
-        $other_kw = property_exists($field, 'render_kw') ? $field->render_kw : null;
+        $other_kw = $field->render_kw;
         if (!is_null($other_kw)) {
             $render_kw = array_merge($other_kw, $render_kw);
         }
@@ -70,11 +67,16 @@ class DefaultMeta
      * @param Form $form The form
      *
      * @return object|SessionCSRF A CSRF representation
+     * @noinspection PhpUnusedParameterInspection
      */
     public function buildCSRF(Form $form)
     {
         if (!is_null($this->csrf_class)) {
+          try {
             return (new \ReflectionClass($this->csrf_class))->newInstance();
+          } catch (\ReflectionException $e) {
+            throw new TypeError(sprintf("csrf_class must be a valid class name (got %s)", $this->csrf_class));
+          }
         }
 
         return new SessionCSRF();

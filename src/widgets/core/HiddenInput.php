@@ -17,7 +17,7 @@ class HiddenInput extends Input
     /**
      * @var array
      */
-    public $field_flags = ['hidden'];
+    public array $field_flags = ['hidden'];
     public $input_type = "hidden";
 
     public function __construct()

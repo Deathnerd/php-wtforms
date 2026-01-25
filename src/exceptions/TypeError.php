@@ -9,7 +9,7 @@
 namespace WTForms\Exceptions;
 
 
-class TypeError extends \Exception
+class TypeError extends \TypeError
 {
 
 }

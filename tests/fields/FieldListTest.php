@@ -253,9 +253,9 @@ class FieldListTest extends \PHPUnit\Framework\TestCase
 
 class Val extends Validator
 {
-    public function __construct($message = "", array $options = [])
+    public function __construct(string $message = "", array $options = [])
     {
-        $this->message = $message;
+        parent::__construct($message, $options);
     }
 
     function __invoke(Form $form, Field $field, string $message = "")

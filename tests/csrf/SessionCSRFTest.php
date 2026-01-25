@@ -39,8 +39,8 @@ class TimePin extends SessionCSRF
 
 class FFMeta extends DefaultMeta
 {
-    public $csrf = true;
-    public $csrf_secret = 'foobar';
+    public bool $csrf = true;
+    public ?string $csrf_secret = 'foobar';
 }
 
 class FF extends Form
@@ -58,9 +58,9 @@ class FF extends Form
 
 class NTLMeta extends DefaultMeta
 {
-    public $csrf_time_limit = null;
-    public $csrf = true;
-    public $csrf_secret = "foobar";
+    public string $csrf_time_limit = null;
+    public bool $csrf = true;
+    public ?string $csrf_secret = "foobar";
 }
 
 class NoTimeLimit extends FF
@@ -74,7 +74,7 @@ class NoTimeLimit extends FF
 
 class PinnedMeta extends DefaultMeta
 {
-    public $csrf_class = '\WTForms\Tests\CSRF\TimePin';
+    public ?string $csrf_class = \WTForms\Tests\CSRF\TimePin::class;
 }
 
 class Pinned extends FF

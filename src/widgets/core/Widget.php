@@ -15,18 +15,13 @@ use WTForms\Fields\Core\Field;
  * Just so I can have type hinting for widgets
  * @package WTForms\Widgets
  */
-class Widget
+abstract class Widget
 {
-    public $field_flags = [];
+    public array $field_flags = [];
 
     /**
      * @param Field|mixed $field
      * @param array       $options
-     *
-     * @throws NotImplemented
      */
-    public function __invoke($field, array $options = [])
-    {
-        throw new NotImplemented("Widget needs an __invoke method");
-    }
+    public abstract function __invoke($field, array $options = []);
 }

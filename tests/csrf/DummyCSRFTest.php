@@ -15,8 +15,8 @@ use WTForms\Form;
 
 class FMeta extends DefaultMeta
 {
-    public $csrf_class = '\WTForms\Tests\SupportingClasses\DummyCSRF';
-    public $csrf = true;
+    public ?string $csrf_class = \WTForms\Tests\SupportingClasses\DummyCSRF::class;
+    public bool $csrf = true;
 }
 
 class F extends Form
