@@ -23,7 +23,7 @@ class AnyOf extends Validator
     /**
      * @var array
      */
-    public $values;
+    public array $values;
 
     /**
      * @var callable|null
@@ -41,8 +41,9 @@ class AnyOf extends Validator
      *
      * @throws TypeError
      */
-    public function __construct($message = "", array $options = ['formatter' => null])
+    public function __construct(string $message = "", array $options = ['formatter' => null])
     {
+        parent::__construct($message, $options);
         if (!array_key_exists('values', $options)) {
             throw new TypeError("AnyOf validator expects an array of values!");
         }
@@ -61,7 +62,6 @@ class AnyOf extends Validator
         }
 
         $this->values = $options['values'];
-        $this->message = $message;
     }
 
     /**
@@ -71,7 +71,7 @@ class AnyOf extends Validator
      *
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         if (!in_array($field->data, $this->values)) {
             $message = $this->message;
@@ -87,16 +87,16 @@ class AnyOf extends Validator
 
     /**
      * If a callable was passed into the ``$options['formatter']`` in the constructor, this
-     * will call that to format the values to a string. Otherwise calls a default
+     * will call that to format the values to a string. Otherwise, calls a default
      * formatter: ``implode``
      *
      * @param array $values The values to format
      *
      * @return string The formatted string
      */
-    protected function formatter(array $values)
+    protected function formatter(array $values): string
     {
-        if (!is_null($this->user_formatter) && is_callable($this->user_formatter)) {
+        if (!is_null($this->user_formatter)) {
             return ($this->user_formatter)($values);
         }
 

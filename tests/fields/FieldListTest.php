@@ -258,7 +258,7 @@ class Val extends Validator
         $this->message = $message;
     }
 
-    function __invoke(Form $form, Field $field, $message = "")
+    function __invoke(Form $form, Field $field, string $message = "")
     {
         if ($field->data && $field->data[0] == "fail") {
             throw new ValueError("fail");

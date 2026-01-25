@@ -295,9 +295,7 @@ class Field implements \Iterator
                 $this->errors[] = $message;
             }
             $stop_validation = true;
-        } catch (ValueError $e) {
-            $this->errors[] = $e->getMessage();
-        } catch (ValidationError $e) {
+        } catch (ValueError|ValidationError $e) {
             $this->errors[] = $e->getMessage();
         }
 

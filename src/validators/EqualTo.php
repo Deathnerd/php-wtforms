@@ -14,6 +14,7 @@ use WTForms\Form;
 
 /**
  * Compares the values of two fields
+ * @phpstan-type EqualToParams array{fieldname:non-empty-string, ...}
  */
 class EqualTo extends Validator
 {
@@ -24,17 +25,17 @@ class EqualTo extends Validator
 
     /**
      * @param string $message Error message to raise in case of a validation error.
-     * @param array  $options
+     * @phpstan-param EqualToParams $options
      *
      * @throws \TypeError
      */
-    public function __construct($message = "", array $options = ['fieldname' => ''])
+    public function __construct(string $message = "", array $options = ['fieldname' => ''])
     {
+        parent::__construct($message, $options);
         if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
             throw new \RuntimeException("EqualTo requires fieldname!");
         }
         $this->fieldname = $options['fieldname'];
-        $this->message = $message;
     }
 
     /**
@@ -44,21 +45,20 @@ class EqualTo extends Validator
      *
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         if ($form->{$this->fieldname} !== null) {
             /** @var Field $other */
             $other = $form->{$this->fieldname};
         } else {
-            throw new ValidationError("Invalid field name '{$this->fieldname}'");
+            throw new ValidationError(sprintf("Invalid field name '%s'", $this->fieldname));
         }
 
         if ($field->data != $other->data) {
             $message = $this->message;
             $d = [
                 "other_name"  => $this->fieldname,
-                "other_label" => property_exists($other, 'label')
-                && property_exists($other->label, 'text') ? $other->label->text : $this->fieldname
+                "other_label" => property_exists($other->label, 'text') ? $other->label->text : $this->fieldname
             ];
             if ($message == "") {
                 $message = "Field must be equal to %(other_name)s";

@@ -33,7 +33,7 @@ class DataRequired extends Validator
     /**
      * @var array
      */
-    public $field_flags = ['required'];
+    public array $field_flags = ['required'];
 
     /**
      * DataRequired constructor.
@@ -41,9 +41,9 @@ class DataRequired extends Validator
      * @param string $message Error message to raise in case of a validation error
      * @param array  $options
      */
-    public function __construct($message = "", array $options = [])
+    public function __construct(string $message = "", array $options = [])
     {
-        $this->message = $message;
+        parent::__construct($message, $options);
     }
 
     /**
@@ -53,7 +53,7 @@ class DataRequired extends Validator
      *
      * @throws StopValidation
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
             if ($this->message == "") {

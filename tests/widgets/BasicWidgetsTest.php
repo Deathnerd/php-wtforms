@@ -52,7 +52,7 @@ class DummyField extends Field
 
 class BasicWidgetsTest extends \PHPUnit\Framework\TestCase
 {
-    private $field;
+    private DummyField $field;
 
     public function testInputType()
     {

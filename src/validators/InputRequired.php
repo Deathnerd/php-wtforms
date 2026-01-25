@@ -26,7 +26,7 @@ class InputRequired extends Validator
     /**
      * @var array
      */
-    public $field_flags = ['required'];
+    public array $field_flags = ['required'];
 
     /**
      * InputRequired constructor.
@@ -46,7 +46,7 @@ class InputRequired extends Validator
      *
      * @throws StopValidation
      */
-    public function __invoke(Form $form, Field $field = null, $message = "")
+    public function __invoke(Form $form, Field $field = null, string $message = "")
     {
         if (is_null($field->raw_data) || empty($field->raw_data) ||
             (!empty($field->raw_data) && !$field->raw_data[0])

@@ -45,7 +45,7 @@ class Regexp extends Validator
      * @return mixed The first match of the regular expression if one was found
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         $match = preg_match($this->regex, $field->data ?: '', $matches);
         if (!$match) {

@@ -37,7 +37,7 @@ class MacAddress extends Validator
      * @return mixed
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         $value = $field->data;
         $valid = false;

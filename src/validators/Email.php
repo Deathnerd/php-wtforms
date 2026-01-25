@@ -25,9 +25,9 @@ class Email extends Validator
      * @param string $message Error message to raise in case of a validation error.
      * @param array  $options
      */
-    public function __construct($message = "", array $options = [])
+    public function __construct(string $message = "", array $options = [])
     {
-        $this->message = $message;
+        parent::__construct($message, $options);
     }
 
     /**
@@ -35,10 +35,9 @@ class Email extends Validator
      * @param Field  $field
      * @param string $message
      *
-     * @return mixed
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "") : void
     {
         $value = $field->data;
         $valid = false;

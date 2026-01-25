@@ -232,4 +232,37 @@ class FormTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($form->errors, $form2->errors);
     }
 
+    /**
+     * Test that $_errors is always empty immediately after validate() returns.
+     * PHPStan claims `count($this->_errors) === 0` is always true in validate().
+     * This test verifies that claim by checking $_errors via reflection.
+     */
+    public function testErrorsPropertyIsEmptyAfterValidate()
+    {
+        $form = new TestForm();
+        $form->process(["formdata" => ["Foo-a" => [""], "Foo-c" => ["error"]]]);
+
+        // Validation should fail (a is required, c throws ValidationError)
+        $result = $form->validate();
+        $this->assertFalse($result);
+
+        // Use reflection to access protected $_errors
+        $reflection = new \ReflectionClass($form);
+        $errorsProp = $reflection->getProperty('_errors');
+        $errorsProp->setAccessible(true);
+        $internalErrors = $errorsProp->getValue($form);
+
+        // PHPStan claims this is always empty after validate()
+        $this->assertEmpty($internalErrors, 'Expected $_errors to be empty after validate(), but it was: ' . print_r($internalErrors, true));
+
+        // Now access $form->errors (triggers __get lazy population)
+        $publicErrors = $form->errors;
+        $this->assertNotEmpty($publicErrors);
+
+        // Check $_errors again - should now be populated
+        $internalErrorsAfterAccess = $errorsProp->getValue($form);
+        $this->assertNotEmpty($internalErrorsAfterAccess);
+        $this->assertEquals($publicErrors, $internalErrorsAfterAccess);
+    }
+
 }

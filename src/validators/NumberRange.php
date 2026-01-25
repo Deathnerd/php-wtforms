@@ -52,7 +52,7 @@ class NumberRange extends Validator
      *
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         $data = $field->data;
         if (is_null($data)

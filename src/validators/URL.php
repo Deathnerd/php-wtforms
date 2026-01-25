@@ -36,7 +36,7 @@ class URL extends Validator
      *
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         if (!is_null($field->data)) {
             $valid = filter_var($field->data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)

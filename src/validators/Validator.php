@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpPropertyOnlyWrittenInspection */
 /**
  * Created by PhpStorm.
  * User: Wes
@@ -12,32 +12,63 @@ use WTForms\Exceptions\NotImplemented;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
 
-class Validator
+abstract class Validator
 {
     /**
      * @var string Error message to raise in case of a validation error
      */
-    public $message;
+    public string $message;
     /**
      * @var array
      */
-    public $field_flags = [];
+    public array $field_flags = [];
+    private array $options;
 
-    public function __construct($message = "", array $options = [])
+    /**
+     * @param string $message
+     * @param array $options
+     */
+    public function __construct(string $message = "", array $options = [])
     {
-        throw new NotImplemented("Validator must have an overridden __construct method");
+        $this->message = $message;
+        $this->options = $options;
     }
 
     /**
      * @param Form   $form
      * @param Field  $field
      * @param string $message
-     *
-     * @throws NotImplemented
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public abstract function __invoke(Form $form, Field $field, string $message = "");
+
+    public function getOptions(): array
     {
-        throw new NotImplemented("Validator must have an overridden __invoke method");
+        return $this->options;
+    }
+
+    public function setOptions(array $options): void
+    {
+        $this->options = $options;
+    }
+
+    public function getFieldFlags(): array
+    {
+        return $this->field_flags;
+    }
+
+    public function setFieldFlags(array $field_flags): void
+    {
+        $this->field_flags = $field_flags;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): void
+    {
+        $this->message = $message;
     }
 }
 

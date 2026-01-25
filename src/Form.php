@@ -13,6 +13,7 @@ use WTForms\Fields\Core\Label;
 
 /**
  * Declarative Form base class.
+ * @template TMeta of DefaultMeta
  * @package WTForms
  * @property array $data
  * @property array $errors
@@ -36,7 +37,7 @@ class Form implements \ArrayAccess, \Iterator
     /**
      * The meta object used for binding fields,
      * interacting with widgets, etc.
-     * @var DefaultMeta
+     * @var null|TMeta
      */
     public $meta;
 
@@ -49,15 +50,16 @@ class Form implements \ArrayAccess, \Iterator
     /**
      * Will hold the translations class when the
      * translations are in place
+     * @TODO: Do the translations feature and figure out the actual class type we'll use here
      * @var object
      */
-    public $translations;
+    public object $translations;
 
     /**
      * Cached errors from validation
      * @var array
      */
-    protected $_errors = [];
+    protected array $_errors = [];
 
     /**
      * Implements the Arrayable interface for the form
@@ -108,18 +110,17 @@ class Form implements \ArrayAccess, \Iterator
      * extra `Form.validate_<fieldname>` validators to the field validator.
      * @return bool
      */
-    public function validate()
+    public function validate(): bool
     {
         $this->_errors = [];
         $success = true;
         foreach ($this->fields as $name => $field) {
-            /** @var Field $field */
             if (!$field->validate($this, $this->getExtraValidatorFor($name))) {
                 $success = false;
             }
         }
 
-        return $success && count($this->_errors) === 0;
+        return $success && count($this->errors) === 0;
     }
 
     /**
@@ -132,7 +133,7 @@ class Form implements \ArrayAccess, \Iterator
      * @return array The names of extra validators defined on this form to be called
      *                by the field when executing validation
      */
-    private function getExtraValidatorFor($name)
+    private function getExtraValidatorFor(string $name): array
     {
         return method_exists($this, "validate_$name") ? [[$this, "validate_$name"]] : [];
     }
@@ -147,12 +148,7 @@ class Form implements \ArrayAccess, \Iterator
          * Python implementation
          */
         if ($field_name == "data") {
-            $ret_val = [];
-            foreach ($this->fields as $name => $field) {
-                $ret_val[$name] = $field->data;
-            }
-
-            return $ret_val;
+            return array_map(fn($field) => $field->data, $this->fields);
         } elseif ($field_name == "errors") {
             if (!$this->_errors) {
                 foreach ($this->fields as $name => $field) {
@@ -172,12 +168,12 @@ class Form implements \ArrayAccess, \Iterator
     /**
      * Allow setting a field on the form as a property
      *
-     * @internal
-     *
      * @param string $name  The name of the field to add to the current fields
      * @param mixed  $value The field object to add
+     * @internal
+     *
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         // Setting up a new field
         if ($value instanceof Field) {
@@ -211,7 +207,7 @@ class Form implements \ArrayAccess, \Iterator
     /**
      * @param string $name The name of the field to unset
      */
-    public function __unset($name)
+    public function __unset(string $name)
     {
         if (array_key_exists($name, $this->fields)) {
             unset($this->fields[$name]);
@@ -257,7 +253,7 @@ class Form implements \ArrayAccess, \Iterator
      *
      * @return T The object with the data from the form replacing values for members of the object
      */
-    public function populateObj(object &$obj): object
+    public function populateObj(object $obj): object
     {
         foreach ($this->fields as $field_name => $field) {
             $field->populateObj($obj, $field_name);

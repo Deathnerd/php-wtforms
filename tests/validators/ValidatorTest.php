@@ -15,7 +15,8 @@ use WTForms\Validators\Validator;
 
 class ValidatorOverride extends Validator
 {
-    public function __construct($message = "", array $options = [])
+    /** @noinspection PhpMissingParentConstructorInspection */
+    public function __construct(string $message = "", array $options = [])
     {
     }
 

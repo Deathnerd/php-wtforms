@@ -36,7 +36,7 @@ class UUID extends Regexp
      * @return mixed
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         $message = $this->message;
         if (!$message) {

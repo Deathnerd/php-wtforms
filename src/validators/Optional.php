@@ -24,7 +24,7 @@ class Optional extends Validator
     /**
      * @var array
      */
-    public $field_flags = ['optional'];
+    public array $field_flags = ['optional'];
 
     /**
      * @var callable
@@ -55,7 +55,7 @@ class Optional extends Validator
      *
      * @throws StopValidation
      */
-    public function __invoke(Form $form, Field $field, $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         if (is_null($field->raw_data)
             || (is_string($field->raw_data[0]) && $this->stringCheck($field->raw_data[0]) == "")

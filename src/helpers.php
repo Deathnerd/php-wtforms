@@ -6,9 +6,7 @@
  * Time: 3:40 PM
  */
 
-if (!defined('DS')) {
-    define('DS', DIRECTORY_SEPARATOR);
-}
+use Gettext\GettextTranslator;
 
 if (!function_exists('e')) {
     /**
@@ -18,71 +16,75 @@ if (!function_exists('e')) {
      *
      * @return string The escaped string
      */
-    function e($string)
+    function e(string $string): string
     {
         return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
     }
 }
 
 
-//if (!function_exists('messages_path')) {
-//  /**
-//   * Determine the path to the 'messages' directory as best as possible
-//   *
-//   * @return string The best guess for where the messages are
-//   */
-//  function messages_path()
-//  {
-//    $module_path = __DIR__ . DS . "locale";
-//    if (!file_exists($module_path)) {
-//      $module_path = "/usr/share/locale";
-//    }
-//
-//    return $module_path;
-//  }
-//}
+if (!function_exists('messages_path')) {
+  /**
+   * Determine the path to the 'messages' directory as best as possible
+   *
+   * @return string The best guess for where the messages are
+   *
+   * @TODO Possible configuration point for our refactor into Conformity library?
+   */
+  function messages_path(): string
+  {
+    $module_path = __DIR__ . DIRECTORY_SEPARATOR . "locale";
+    if (!file_exists($module_path)) {
+      $module_path = "/usr/share/locale";
+    }
 
-//if (!function_exists('get_builtin_gnu_translations')) {
-//  /**
-//   * Returns the built-in GNU translations located in php-wtform's
-//   * src root (src/locale/[languages here]
-//   *
-//   * @param string $language Which language to get
-//   *
-//   * @return \Gettext\GettextTranslator The resulting translation object
-//   */
-//  function get_builtin_gnu_translations($language = "")
-//  {
-//    if (!$language) {
-//      $language = "en_US";
-//    }
-//    $domain = messages_path();
-//    $t = new \Gettext\GettextTranslator();
-//    $t->setLanguage($language);
-//    $t->loadDomain('wtforms', $domain);
-//
-//    return $t;
-//  }
-//}
+    return $module_path;
+  }
+}
 
-//if (!function_exists('get_translations')) {
-//  /**
-//   * Gets a translation object
-//   *
-//   * @param null|string   $languages
-//   * @param null|callable $getter
-//   *
-//   * @return \Gettext\GettextTranslator
-//   */
-//  function get_translations($languages = null, $getter = null)
-//  {
-//    if (is_callable($getter)) {
-//      return $getter($languages);
-//    }
-//
-//    return get_builtin_gnu_translations($languages);
-//  }
-//}
+if (!function_exists('get_builtin_gnu_translations')) {
+  /**
+   * Returns the built-in GNU translations located in php-wtform's
+   * src root (src/locale/[languages here]
+   *
+   * @param string|null $language Which language to get
+   *
+   * @return GettextTranslator The resulting translation object
+   *
+   * @TODO Possible configuration point for our refactor into Conformity library?
+   */
+  function get_builtin_gnu_translations(?string $language = ""): GettextTranslator
+  {
+    if (!$language) {
+      $language = "en_US";
+    }
+    $domain = messages_path();
+    $t = new GettextTranslator();
+    $t->setLanguage($language);
+    $t->loadDomain('wtforms', $domain);
+
+    return $t;
+  }
+}
+
+if (!function_exists('get_translations')) {
+  /**
+   * Gets a translation object
+   *
+   * @param string|null $languages
+   * @param callable|null $getter
+   *
+   * @return GettextTranslator
+   */
+  function get_translations(string $languages = null, callable $getter = null): GettextTranslator
+  {
+    if (is_callable($getter)) {
+      return $getter($languages);
+    }
+
+    return get_builtin_gnu_translations($languages);
+  }
+}
 
 if (!function_exists('html_params')) {
     /**
@@ -109,11 +111,11 @@ if (!function_exists('html_params')) {
      * >>> html_params(['checked'=>true, 'readonly'=>false, 'name'=>'text1', 'abc'=>'hello'])
      * 'abc="hello" checked name="text1"
      *
-     * @param array $options An associative array of attributes for an HTML tag
+     * @param array<string, mixed> $options An associative array of attributes for an HTML tag
      *
      * @return string The string of HTML attributes
      */
-    function html_params($options)
+    function html_params(array $options): string
     {
         $params = [];
         ksort($options);
@@ -131,7 +133,7 @@ if (!function_exists('html_params')) {
                 if (is_array($value)) {
                     $value = implode(" ", $value);
                 }
-                $params[] = $key . '="' . e($value) . '"';
+                $params[] = sprintf('%s="%s"', $key, e($value));
             }
         }
 
@@ -144,11 +146,11 @@ if (!function_exists('str_contains')) {
      * Convenience method for determining if a needle string is in a haystack string
      *
      * @param string $haystack The string to search in
-     * @param string $needle   The string to search for
+     * @param string|null $needle   The string to search for
      *
      * @return bool
      */
-    function str_contains($haystack, $needle)
+    function str_contains(string $haystack, ?string $needle): bool
     {
         if ($needle === null || $needle === '') {
             return false;
@@ -162,13 +164,13 @@ if (!function_exists('starts_with')) {
      * Convenience method for determining if a string starts with another string
      * or collection of strings
      *
-     * @param string          $haystack The string to search in
+     * @param string $haystack The string to search in
      * @param string|string[] $needle   The string(s) to search for in the haystack
      *
      * @codeCoverageIgnore
      * @return bool
      */
-    function starts_with($haystack, $needle)
+    function starts_with(string $haystack, $needle)
     {
         if (is_array($needle)) {
             $ret = false;
@@ -198,12 +200,12 @@ if (!function_exists('vsprintf_named')) {
      *                       formatting things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'}
      *                       returns a string of "Sally walks with Rick".
      *
-     * @param  array $args   An associative array of values to map to the specified keys in the format string.
+     * @param array<string, mixed> $args   An associative array of values to map to the specified keys in the format string.
      *                       For example, ["foo" => "Sally", "bar" => 5]
      *
      * @return string The result of formatting the string with the given named parameters
      */
-    function vsprintf_named($format, $args)
+    function vsprintf_named(string $format, array $args): string
     {
         preg_match_all('/%\((.*?)\)/', $format, $matches, PREG_SET_ORDER);
         $values = array();

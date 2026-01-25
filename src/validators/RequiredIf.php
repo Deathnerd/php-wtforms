@@ -45,7 +45,7 @@ class RequiredIf extends DataRequired
      *
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field = null, $message = "")
+    public function __invoke(Form $form, Field $field = null, string $message = "")
     {
         if ($form->{$this->fieldname} !== null) {
             /** @var Field $other */
