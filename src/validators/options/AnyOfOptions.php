@@ -12,14 +12,14 @@ namespace WTForms\Validators\Options;
  */
 class AnyOfOptions extends ArrayOptions
 {
-    /** @var array */
-    public array $values = [];
+  /** @var array */
+  public array $values = [];
 
-    /** @var callable|null */
-    public $formatter = null;
+  /** @var callable|null */
+  public $formatter = null;
 
-    protected function getDefaults(): array
-    {
-        return ['values' => [], 'formatter' => null];
-    }
+  protected function getDefaults(): array
+  {
+    return ['values' => [], 'formatter' => null];
+  }
 }

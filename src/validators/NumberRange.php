@@ -23,63 +23,63 @@ use WTForms\Validators\Options\NumberRangeOptions;
  */
 class NumberRange extends Validator
 {
-    /**
-     * @var float|int|null
-     */
-    public $min;
+  /**
+   * @var float|int|null
+   */
+  public $min;
 
-    /**
-     * @var float|int|null
-     */
-    public $max;
+  /**
+   * @var float|int|null
+   */
+  public $max;
 
-    /**
-     * NumberRange constructor.
-     *
-     * @param string $message Error message to raise in case of a validation error.
-     * @param NumberRangeOptionsArray|NumberRangeOptions $options
-     */
-    public function __construct(string $message = "", $options = [])
-    {
-        if ($options instanceof ArrayOptions) {
-            $options = $options->toArray();
-        }
-        $options = array_merge(["min" => null, "max" => null], $options);
-        parent::__construct($message, $options);
-        $this->min = $options['min'];
-        $this->max = $options['max'];
+  /**
+   * NumberRange constructor.
+   *
+   * @param string $message Error message to raise in case of a validation error.
+   * @param NumberRangeOptionsArray|NumberRangeOptions $options
+   */
+  public function __construct(string $message = "", $options = [])
+  {
+    if ($options instanceof ArrayOptions) {
+      $options = $options->toArray();
     }
+    $options = array_merge(["min" => null, "max" => null], $options);
+    parent::__construct($message, $options);
+    $this->min = $options['min'];
+    $this->max = $options['max'];
+  }
 
-    /**
-     * @param Form   $form
-     * @param Field  $field
-     * @param string $message
-     *
-     * @return void
-     *
-     * @throws ValidationError
-     * @phpstan-assert !null $field->data
-     */
-    public function __invoke(Form $form, Field $field, string $message = "")
-    {
-        $data = $field->data;
-        if (is_null($data)
-            || (!is_null($this->min) && $data < $this->min)
-            || (!is_null($this->max) && $data > $this->max)
-        ) {
-            $message = $this->message;
-            if ($message == "") {
-                if (is_null($this->max)) {
-                    $message = sprintf("Number must be at least %d.", $this->min);
-                } elseif (is_null($this->min)) {
-                    $message = sprintf("Number must be at most %d.", $this->max);
-                } else {
-                    $message = sprintf("Number must be between %d and %d.", $this->min, $this->max);
-                }
-            } else {
-                $message = vsprintf_named($message, ["min" => $this->min, "max" => $this->max]);
-            }
-            throw new ValidationError($message);
+  /**
+   * @param Form   $form
+   * @param Field  $field
+   * @param string $message
+   *
+   * @return void
+   *
+   * @throws ValidationError
+   * @phpstan-assert !null $field->data
+   */
+  public function __invoke(Form $form, Field $field, string $message = "")
+  {
+    $data = $field->data;
+    if (is_null($data)
+        || (!is_null($this->min) && $data < $this->min)
+        || (!is_null($this->max) && $data > $this->max)
+    ) {
+      $message = $this->message;
+      if ($message == "") {
+        if (is_null($this->max)) {
+          $message = sprintf("Number must be at least %d.", $this->min);
+        } elseif (is_null($this->min)) {
+          $message = sprintf("Number must be at most %d.", $this->max);
+        } else {
+          $message = sprintf("Number must be between %d and %d.", $this->min, $this->max);
         }
+      } else {
+        $message = vsprintf_named($message, ["min" => $this->min, "max" => $this->max]);
+      }
+      throw new ValidationError($message);
     }
+  }
 }

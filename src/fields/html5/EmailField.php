@@ -17,12 +17,12 @@ use WTForms\Widgets\HTML5\EmailInput;
  */
 class EmailField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $options = [])
-    {
-        $options = array_merge(["widget" => new EmailInput()], $options);
-        parent::__construct($options);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct(array $options = [])
+  {
+    $options = array_merge(["widget" => new EmailInput()], $options);
+    parent::__construct($options);
+  }
 }

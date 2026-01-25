@@ -20,12 +20,12 @@ use WTForms\Widgets\Core\FileInput;
  */
 class FileField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $options = [])
-    {
-        $options = array_merge(["widget" => new FileInput()], $options);
-        parent::__construct($options);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct(array $options = [])
+  {
+    $options = array_merge(["widget" => new FileInput()], $options);
+    parent::__construct($options);
+  }
 }

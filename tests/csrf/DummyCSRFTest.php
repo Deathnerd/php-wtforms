@@ -15,74 +15,74 @@ use WTForms\Form;
 
 class FMeta extends DefaultMeta
 {
-    public ?string $csrf_class = \WTForms\Tests\SupportingClasses\DummyCSRF::class;
-    public bool $csrf = true;
+  public ?string $csrf_class = \WTForms\Tests\SupportingClasses\DummyCSRF::class;
+  public bool $csrf = true;
 }
 
 class F extends Form
 {
-    public function __construct(array $options = [])
-    {
-        $this->meta = new FMeta();
-        parent::__construct($options);
-        $this->a = new StringField();
-    }
+  public function __construct(array $options = [])
+  {
+    $this->meta = new FMeta();
+    parent::__construct($options);
+    $this->a = new StringField();
+  }
 
 }
 
 class DummyCSRFTest extends \PHPUnit\Framework\TestCase
 {
-    public function testBaseClass()
-    {
-        $this->expectException(\WTForms\Exceptions\NotImplemented::class);
-        (new F(["meta" => ["csrf_class" => new CSRF]]))->process([]);
-    }
+  public function testBaseClass()
+  {
+    $this->expectException(\WTForms\Exceptions\NotImplemented::class);
+    (new F(["meta" => ["csrf_class" => new CSRF]]))->process([]);
+  }
 
-    public function testBasicImpl()
-    {
-        $form = new F();
-        $form->process();
-        $field_names = [];
-        foreach ($form as $name => $field) {
-            $field_names[] = $name;
-        }
-        $this->assertContains('csrf_token', $field_names);
-        $this->assertFalse($form->validate());
-        $this->assertEquals('dummytoken', $form->csrf_token->value);
-        $form = new F();
-        $form->process(["formdata" => ["csrf_token" => "dummytoken"]]);
-        $this->assertTrue($form->validate());
+  public function testBasicImpl()
+  {
+    $form = new F();
+    $form->process();
+    $field_names = [];
+    foreach ($form as $name => $field) {
+      $field_names[] = $name;
     }
+    $this->assertContains('csrf_token', $field_names);
+    $this->assertFalse($form->validate());
+    $this->assertEquals('dummytoken', $form->csrf_token->value);
+    $form = new F();
+    $form->process(["formdata" => ["csrf_token" => "dummytoken"]]);
+    $this->assertTrue($form->validate());
+  }
 
-    public function testCSRFOff()
-    {
-        $form = new F(["meta" => ["csrf" => false]]);
-        $field_names = [];
-        foreach ($form as $name => $field) {
-            $field_names[] = $name;
-        }
-        $this->assertNotContains('csrf_token', $field_names);
+  public function testCSRFOff()
+  {
+    $form = new F(["meta" => ["csrf" => false]]);
+    $field_names = [];
+    foreach ($form as $name => $field) {
+      $field_names[] = $name;
     }
+    $this->assertNotContains('csrf_token', $field_names);
+  }
 
-    public function testRename()
-    {
-        $form = new F(["meta" => ["csrf_field_name" => "mycsrf"]]);
-        $field_names = [];
-        foreach ($form as $name => $field) {
-            $field_names[] = $name;
-        }
-        $this->assertNotContains('csrf_token', $field_names);
-        $this->assertContains('mycsrf', $field_names);
+  public function testRename()
+  {
+    $form = new F(["meta" => ["csrf_field_name" => "mycsrf"]]);
+    $field_names = [];
+    foreach ($form as $name => $field) {
+      $field_names[] = $name;
     }
+    $this->assertNotContains('csrf_token', $field_names);
+    $this->assertContains('mycsrf', $field_names);
+  }
 
-    public function testNoPopulate()
-    {
-        $obj = (object)["a" => null, "csrf_token" => null];
-        $form = new F(["csrf_token" => "dummytoken"]);
-        $form->process(["a" => "test"]);
-        $form->populateObj($obj);
-        $this->assertNull($obj->csrf_token);
-        $this->assertEquals('test', $obj->a);
-    }
+  public function testNoPopulate()
+  {
+    $obj = (object)["a" => null, "csrf_token" => null];
+    $form = new F(["csrf_token" => "dummytoken"]);
+    $form->process(["a" => "test"]);
+    $form->populateObj($obj);
+    $this->assertNull($obj->csrf_token);
+    $this->assertEquals('test', $obj->a);
+  }
 
 }

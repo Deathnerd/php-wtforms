@@ -12,10 +12,10 @@ namespace WTForms\Validators\Options;
  */
 class EqualToOptions extends ArrayOptions
 {
-    public string $fieldname = '';
+  public string $fieldname = '';
 
-    protected function getDefaults(): array
-    {
-        return ['fieldname' => ''];
-    }
+  protected function getDefaults(): array
+  {
+    return ['fieldname' => ''];
+  }
 }

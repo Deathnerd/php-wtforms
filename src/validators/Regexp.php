@@ -22,51 +22,51 @@ use WTForms\Validators\Options\RegexpOptions;
  */
 class Regexp extends Validator
 {
-    /**
-     * @var non-empty-string
-     */
-    public string $regex;
+  /**
+   * @var non-empty-string
+   */
+  public string $regex;
 
-    /**
-     * Assertion check is done here for a valid regular expression
-     *
-     * @param string $message Error message to raise in case of a validation error
-     * @param RegexpOptionsArray|RegexpOptions $options
-     */
-    public function __construct(string $message = "", $options = [])
-    {
-        if ($options instanceof ArrayOptions) {
-            $options = $options->toArray();
+  /**
+   * Assertion check is done here for a valid regular expression
+   *
+   * @param string $message Error message to raise in case of a validation error
+   * @param RegexpOptionsArray|RegexpOptions $options
+   */
+  public function __construct(string $message = "", $options = [])
+  {
+    if ($options instanceof ArrayOptions) {
+      $options = $options->toArray();
+    }
+    assert(preg_match($options['regex'], '') !== false, "Invalid regular expression passed to Regexp");
+    parent::__construct($message, $options);
+    $this->regex = $options['regex'];
+  }
+
+  /**
+   * @param Form   $form
+   * @param Field  $field
+   * @param string $message
+   *
+   * @return string The first match of the regular expression if one was found
+   *
+   * @throws ValidationError
+   * @phpstan-assert string $field->data
+   */
+  public function __invoke(Form $form, Field $field, string $message = ""): string
+  {
+    $match = preg_match($this->regex, $field->data ?: '', $matches);
+    if (!$match) {
+      if ($message == "") {
+        if ($this->message == "") {
+          $message = "Invalid Input.";
+        } else {
+          $message = $this->message;
         }
-        assert(preg_match($options['regex'], '') !== false, "Invalid regular expression passed to Regexp");
-        parent::__construct($message, $options);
-        $this->regex = $options['regex'];
+      }
+      throw new ValidationError($message);
     }
 
-    /**
-     * @param Form   $form
-     * @param Field  $field
-     * @param string $message
-     *
-     * @return string The first match of the regular expression if one was found
-     *
-     * @throws ValidationError
-     * @phpstan-assert string $field->data
-     */
-    public function __invoke(Form $form, Field $field, string $message = ""): string
-    {
-        $match = preg_match($this->regex, $field->data ?: '', $matches);
-        if (!$match) {
-            if ($message == "") {
-                if ($this->message == "") {
-                    $message = "Invalid Input.";
-                } else {
-                    $message = $this->message;
-                }
-            }
-            throw new ValidationError($message);
-        }
-
-        return $matches[0];
-    }
+    return $matches[0];
+  }
 }

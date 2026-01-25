@@ -12,11 +12,11 @@ namespace WTForms\Validators\Options;
  */
 class LengthOptions extends ArrayOptions
 {
-    public int $min = -1;
-    public int $max = -1;
+  public int $min = -1;
+  public int $max = -1;
 
-    protected function getDefaults(): array
-    {
-        return ['min' => -1, 'max' => -1];
-    }
+  protected function getDefaults(): array
+  {
+    return ['min' => -1, 'max' => -1];
+  }
 }

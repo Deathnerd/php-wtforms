@@ -24,78 +24,78 @@ use WTForms\Validators\Options\LengthOptions;
  */
 class Length extends Validator
 {
-    /**
-     * @var int The minimum required length of the string
-     */
-    public $min;
-    /**
-     * @var int The maximum length of the string
-     */
-    public $max;
+  /**
+   * @var int The minimum required length of the string
+   */
+  public $min;
+  /**
+   * @var int The maximum length of the string
+   */
+  public $max;
 
 
-    /**
-     * Validates the length of a string.
-     *
-     * @param string $message Error message to raise in case of a validation error.
-     * @param LengthOptionsArray|LengthOptions $options
-     *
-     * @throws TypeError
-     * @throws ValueError
-     */
-    public function __construct(string $message = "", $options = [])
-    {
-        if ($options instanceof ArrayOptions) {
-            $options = $options->toArray();
-        }
-        $options = array_merge(['min' => -1, 'max' => -1], $options);
-        if (!($options['min'] != -1 || $options['max'] != -1)) {
-            throw new TypeError("At least one of min or max must be specified");
-        }
-        if (!($options['max'] == -1 || $options['min'] <= $options['max'])) {
-            throw new ValueError("min cannot be more than max");
-        }
-        parent::__construct($message, $options);
-        $this->min = $options['min'];
-        $this->max = $options['max'];
+  /**
+   * Validates the length of a string.
+   *
+   * @param string $message Error message to raise in case of a validation error.
+   * @param LengthOptionsArray|LengthOptions $options
+   *
+   * @throws TypeError
+   * @throws ValueError
+   */
+  public function __construct(string $message = "", $options = [])
+  {
+    if ($options instanceof ArrayOptions) {
+      $options = $options->toArray();
     }
+    $options = array_merge(['min' => -1, 'max' => -1], $options);
+    if (!($options['min'] != -1 || $options['max'] != -1)) {
+      throw new TypeError("At least one of min or max must be specified");
+    }
+    if (!($options['max'] == -1 || $options['min'] <= $options['max'])) {
+      throw new ValueError("min cannot be more than max");
+    }
+    parent::__construct($message, $options);
+    $this->min = $options['min'];
+    $this->max = $options['max'];
+  }
 
-    /**
-     * @param Form   $form
-     * @param Field  $field
-     * @param string $message
-     *
-     * @throws ValidationError
-     */
-    public function __invoke(Form $form, Field $field, string $message = "")
-    {
-        if ($field->data !== null) {
-            $length = strlen($field->data);
+  /**
+   * @param Form   $form
+   * @param Field  $field
+   * @param string $message
+   *
+   * @throws ValidationError
+   */
+  public function __invoke(Form $form, Field $field, string $message = "")
+  {
+    if ($field->data !== null) {
+      $length = strlen($field->data);
+    } else {
+      $length = 0;
+    }
+    if ($length < $this->min || $this->max != -1 && $length > $this->max) {
+      $message = $this->message;
+      if ($message == "") {
+        if ($this->max == -1) {
+          if ($this->min > 1) {
+            $message = sprintf("Field must be at least %d characters long.", $this->min);
+          } else {
+            $message = sprintf("Field must be at least %d character long.", $this->min);
+          }
+        } elseif ($this->min == -1) {
+          if ($this->max > 1) {
+            $message = sprintf("Field cannot be longer than %d characters long.", $this->max);
+          } else {
+            $message = sprintf("Field cannot be longer than %d character long.", $this->max);
+          }
         } else {
-            $length = 0;
+          $message = sprintf("Field must be between %d and %d characters long.", $this->min, $this->max);
         }
-        if ($length < $this->min || $this->max != -1 && $length > $this->max) {
-            $message = $this->message;
-            if ($message == "") {
-                if ($this->max == -1) {
-                    if ($this->min > 1) {
-                        $message = sprintf("Field must be at least %d characters long.", $this->min);
-                    } else {
-                        $message = sprintf("Field must be at least %d character long.", $this->min);
-                    }
-                } elseif ($this->min == -1) {
-                    if ($this->max > 1) {
-                        $message = sprintf("Field cannot be longer than %d characters long.", $this->max);
-                    } else {
-                        $message = sprintf("Field cannot be longer than %d character long.", $this->max);
-                    }
-                } else {
-                    $message = sprintf("Field must be between %d and %d characters long.", $this->min, $this->max);
-                }
-            } else {
-                $message = vsprintf_named($message, ["min" => $this->min, "max" => $this->max]);
-            }
-            throw new ValidationError($message);
-        }
+      } else {
+        $message = vsprintf_named($message, ["min" => $this->min, "max" => $this->max]);
+      }
+      throw new ValidationError($message);
     }
+  }
 }

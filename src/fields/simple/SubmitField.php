@@ -18,13 +18,13 @@ use WTForms\Widgets\Core\SubmitInput;
  */
 class SubmitField extends BooleanField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $options = [])
-    {
-        $options = array_merge(["widget" => new SubmitInput()], $options);
-        parent::__construct($options);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct(array $options = [])
+  {
+    $options = array_merge(["widget" => new SubmitInput()], $options);
+    parent::__construct($options);
+  }
 
 }

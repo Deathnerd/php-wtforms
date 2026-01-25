@@ -20,12 +20,12 @@ use WTForms\Widgets\Core\PasswordInput;
  */
 class PasswordField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $options = [])
-    {
-        $options = array_merge(["widget" => new PasswordInput()], $options);
-        parent::__construct($options);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct(array $options = [])
+  {
+    $options = array_merge(["widget" => new PasswordInput()], $options);
+    parent::__construct($options);
+  }
 }

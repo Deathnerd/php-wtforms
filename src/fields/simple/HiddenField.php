@@ -19,12 +19,12 @@ use WTForms\Widgets\Core\HiddenInput;
  */
 class HiddenField extends StringField
 {
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $options = [])
-    {
-        $options = array_merge(["widget" => new HiddenInput()], $options);
-        parent::__construct($options);
-    }
+  /**
+   * @inheritdoc
+   */
+  public function __construct(array $options = [])
+  {
+    $options = array_merge(["widget" => new HiddenInput()], $options);
+    parent::__construct($options);
+  }
 }

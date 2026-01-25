@@ -30,42 +30,42 @@ use WTForms\Form;
 class DataRequired extends Validator
 {
 
-    /**
-     * @var array
-     */
-    public array $field_flags = ['required'];
+  /**
+   * @var array
+   */
+  public array $field_flags = ['required'];
 
-    /**
-     * DataRequired constructor.
-     *
-     * @param string $message Error message to raise in case of a validation error
-     * @param array  $options
-     */
-    public function __construct(string $message = "", array $options = [])
-    {
-        parent::__construct($message, $options);
-    }
+  /**
+   * DataRequired constructor.
+   *
+   * @param string $message Error message to raise in case of a validation error
+   * @param array  $options
+   */
+  public function __construct(string $message = "", array $options = [])
+  {
+    parent::__construct($message, $options);
+  }
 
-    /**
-     * @param Form   $form
-     * @param Field  $field
-     * @param string $message
-     *
-     * @return void
-     *
-     * @throws StopValidation
-     * @phpstan-assert !null $field->data
-     */
-    public function __invoke(Form $form, Field $field, string $message = "")
-    {
-        if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
-            if ($this->message == "") {
-                $message = "This field is required.";
-            } else {
-                $message = $this->message;
-            }
-            $field->errors = [];
-            throw new StopValidation($message);
-        }
+  /**
+   * @param Form   $form
+   * @param Field  $field
+   * @param string $message
+   *
+   * @return void
+   *
+   * @throws StopValidation
+   * @phpstan-assert !null $field->data
+   */
+  public function __invoke(Form $form, Field $field, string $message = "")
+  {
+    if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
+      if ($this->message == "") {
+        $message = "This field is required.";
+      } else {
+        $message = $this->message;
+      }
+      $field->errors = [];
+      throw new StopValidation($message);
     }
+  }
 }

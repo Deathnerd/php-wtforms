@@ -12,10 +12,10 @@ namespace WTForms\Validators\Options;
  */
 class RegexpOptions extends ArrayOptions
 {
-    public string $regex = '';
+  public string $regex = '';
 
-    protected function getDefaults(): array
-    {
-        return ['regex' => ''];
-    }
+  protected function getDefaults(): array
+  {
+    return ['regex' => ''];
+  }
 }

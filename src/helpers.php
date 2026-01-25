@@ -9,17 +9,17 @@
 use Gettext\GettextTranslator;
 
 if (!function_exists('e')) {
-    /**
-     * Blatant ripoff of Laravel and Twig's HTML escape function
-     *
-     * @param $string string The string to escape
-     *
-     * @return string The escaped string
-     */
-    function e(string $string): string
-    {
-        return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
-    }
+  /**
+   * Blatant ripoff of Laravel and Twig's HTML escape function
+   *
+   * @param $string string The string to escape
+   *
+   * @return string The escaped string
+   */
+  function e(string $string): string
+  {
+    return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+  }
 }
 
 
@@ -87,133 +87,133 @@ if (!function_exists('get_translations')) {
 }
 
 if (!function_exists('html_params')) {
-    /**
-     * Generate HTML attribute syntax from inputted keyword arguments.
-     *
-     * The output value is sorted by the passed keys, to provide consistent output
-     * each time this function is called with the same parameters. Because of the
-     * frequent use of the normally reserved keywords ``class`` and ``for``, suffixing
-     * these with an underscore will allow them to be used.
-     *
-     * In order to facilitate the use of 'data-' attributes, the first underscore
-     * behind the ``data``-element is replaced with a hyphen.
-     *
-     * ```
-     * >>> html_params(['any_data_attribute'=>'something'])
-     * 'data-any_attribute="something"'
-     * ```
-     * In addition, the values ``true`` and ``false`` are special:
-     *   * ``'attr'=>true`` generates the HTML compact output of a boolean attribute,
-     *   * ``'attr'=>false`` will be ignored and generate no output
-     * ```
-     * >>> html_params(['name'=>'text1', 'id'=>'f', 'class_'=>'text'])
-     * 'class="text" id="f" name="text1"
-     * >>> html_params(['checked'=>true, 'readonly'=>false, 'name'=>'text1', 'abc'=>'hello'])
-     * 'abc="hello" checked name="text1"
-     *
-     * @param array<string, mixed> $options An associative array of attributes for an HTML tag
-     *
-     * @return string The string of HTML attributes
-     */
-    function html_params(array $options): string
-    {
-        $params = [];
-        ksort($options);
-        foreach ($options as $key => $value) {
-            if (in_array($key, ['class_', 'class__', 'for_'])) {
-                $key = str_replace("_", "", $key);
-            } elseif (starts_with($key, "data_")) {
-                $key = preg_replace('/_/', '-', $key);
-            }
-            if ($value === true) {
-                $params[] = $key;
-            } elseif ($value === false) {
-                continue;
-            } else {
-                if (is_array($value)) {
-                    $value = implode(" ", $value);
-                }
-                $params[] = sprintf('%s="%s"', $key, e($value));
-            }
+  /**
+   * Generate HTML attribute syntax from inputted keyword arguments.
+   *
+   * The output value is sorted by the passed keys, to provide consistent output
+   * each time this function is called with the same parameters. Because of the
+   * frequent use of the normally reserved keywords ``class`` and ``for``, suffixing
+   * these with an underscore will allow them to be used.
+   *
+   * In order to facilitate the use of 'data-' attributes, the first underscore
+   * behind the ``data``-element is replaced with a hyphen.
+   *
+   * ```
+   * >>> html_params(['any_data_attribute'=>'something'])
+   * 'data-any_attribute="something"'
+   * ```
+   * In addition, the values ``true`` and ``false`` are special:
+   *   * ``'attr'=>true`` generates the HTML compact output of a boolean attribute,
+   *   * ``'attr'=>false`` will be ignored and generate no output
+   * ```
+   * >>> html_params(['name'=>'text1', 'id'=>'f', 'class_'=>'text'])
+   * 'class="text" id="f" name="text1"
+   * >>> html_params(['checked'=>true, 'readonly'=>false, 'name'=>'text1', 'abc'=>'hello'])
+   * 'abc="hello" checked name="text1"
+   *
+   * @param array<string, mixed> $options An associative array of attributes for an HTML tag
+   *
+   * @return string The string of HTML attributes
+   */
+  function html_params(array $options): string
+  {
+    $params = [];
+    ksort($options);
+    foreach ($options as $key => $value) {
+      if (in_array($key, ['class_', 'class__', 'for_'])) {
+        $key = str_replace("_", "", $key);
+      } elseif (starts_with($key, "data_")) {
+        $key = preg_replace('/_/', '-', $key);
+      }
+      if ($value === true) {
+        $params[] = $key;
+      } elseif ($value === false) {
+        continue;
+      } else {
+        if (is_array($value)) {
+          $value = implode(" ", $value);
         }
-
-        return implode(" ", $params);
+        $params[] = sprintf('%s="%s"', $key, e($value));
+      }
     }
+
+    return implode(" ", $params);
+  }
 }
 
 if (!function_exists('str_contains')) {
-    /**
-     * Convenience method for determining if a needle string is in a haystack string
-     *
-     * @param string $haystack The string to search in
-     * @param string|null $needle   The string to search for
-     *
-     * @return bool
-     */
-    function str_contains(string $haystack, ?string $needle): bool
-    {
-        if ($needle === null || $needle === '') {
-            return false;
-        }
-        return strpos($haystack, $needle) !== false;
+  /**
+   * Convenience method for determining if a needle string is in a haystack string
+   *
+   * @param string $haystack The string to search in
+   * @param string|null $needle   The string to search for
+   *
+   * @return bool
+   */
+  function str_contains(string $haystack, ?string $needle): bool
+  {
+    if ($needle === null || $needle === '') {
+      return false;
     }
+    return strpos($haystack, $needle) !== false;
+  }
 }
 
 if (!function_exists('starts_with')) {
-    /**
-     * Convenience method for determining if a string starts with another string
-     * or collection of strings
-     *
-     * @param string $haystack The string to search in
-     * @param string|string[] $needle   The string(s) to search for in the haystack
-     *
-     * @codeCoverageIgnore
-     * @return bool
-     */
-    function starts_with(string $haystack, $needle)
-    {
-        if (is_array($needle)) {
-            $ret = false;
-            foreach ($needle as $n) {
-                $ret |= starts_with($haystack, $n);
-            }
+  /**
+   * Convenience method for determining if a string starts with another string
+   * or collection of strings
+   *
+   * @param string $haystack The string to search in
+   * @param string|string[] $needle   The string(s) to search for in the haystack
+   *
+   * @codeCoverageIgnore
+   * @return bool
+   */
+  function starts_with(string $haystack, $needle)
+  {
+    if (is_array($needle)) {
+      $ret = false;
+      foreach ($needle as $n) {
+        $ret |= starts_with($haystack, $n);
+      }
 
-            return $ret;
-        }
-
-        return strpos($haystack, $needle) === 0;
+      return $ret;
     }
+
+    return strpos($haystack, $needle) === 0;
+  }
 }
 
 if (!function_exists('vsprintf_named')) {
-    /**
-     * A helper function to emulate Python's support of named tokens in format strings. Much thanks to user Jon at
-     * StackOverflow for this function.
-     *
-     * Note: This function does not allow mixed non-named and named format tokens as this is meant to be used internally
-     * with PHP-WTForms and exposed indirectly only by a couple of validators.
-     *
-     * @see http://stackoverflow.com/questions/7435233/name-php-specifiers-in-printf-strings
-     * @see https://docs.python.org/2/library/stdtypes.html#string-formatting
-     *
-     * @param string $format The named format string to parse. These are in the style of Python's named string
-     *                       formatting things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'}
-     *                       returns a string of "Sally walks with Rick".
-     *
-     * @param array<string, mixed> $args   An associative array of values to map to the specified keys in the format string.
-     *                       For example, ["foo" => "Sally", "bar" => 5]
-     *
-     * @return string The result of formatting the string with the given named parameters
-     */
-    function vsprintf_named(string $format, array $args): string
-    {
-        preg_match_all('/%\((.*?)\)/', $format, $matches, PREG_SET_ORDER);
-        $values = array();
-        foreach ($matches as $match) {
-            $values[] = $args[$match[1]];
-        }
-        $format = preg_replace('/%\((.*?)\)/', '%', $format);
-
-        return vsprintf($format, $values);
+  /**
+   * A helper function to emulate Python's support of named tokens in format strings. Much thanks to user Jon at
+   * StackOverflow for this function.
+   *
+   * Note: This function does not allow mixed non-named and named format tokens as this is meant to be used internally
+   * with PHP-WTForms and exposed indirectly only by a couple of validators.
+   *
+   * @see http://stackoverflow.com/questions/7435233/name-php-specifiers-in-printf-strings
+   * @see https://docs.python.org/2/library/stdtypes.html#string-formatting
+   *
+   * @param string $format The named format string to parse. These are in the style of Python's named string
+   *                       formatting things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'}
+   *                       returns a string of "Sally walks with Rick".
+   *
+   * @param array<string, mixed> $args   An associative array of values to map to the specified keys in the format string.
+   *                       For example, ["foo" => "Sally", "bar" => 5]
+   *
+   * @return string The result of formatting the string with the given named parameters
+   */
+  function vsprintf_named(string $format, array $args): string
+  {
+    preg_match_all('/%\((.*?)\)/', $format, $matches, PREG_SET_ORDER);
+    $values = array();
+    foreach ($matches as $match) {
+      $values[] = $args[$match[1]];
     }
+    $format = preg_replace('/%\((.*?)\)/', '%', $format);
+
+    return vsprintf($format, $values);
+  }
 }

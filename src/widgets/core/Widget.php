@@ -17,11 +17,11 @@ use WTForms\Fields\Core\Field;
  */
 abstract class Widget
 {
-    public array $field_flags = [];
+  public array $field_flags = [];
 
-    /**
-     * @param Field|mixed $field
-     * @param array       $options
-     */
-    public abstract function __invoke($field, array $options = []);
+  /**
+   * @param Field|mixed $field
+   * @param array       $options
+   */
+  public abstract function __invoke($field, array $options = []);
 }

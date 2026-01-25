@@ -14,14 +14,14 @@ namespace WTForms\Widgets\Core;
  */
 class HiddenInput extends Input
 {
-    /**
-     * @var array
-     */
-    public array $field_flags = ['hidden'];
-    public $input_type = "hidden";
+  /**
+   * @var array
+   */
+  public array $field_flags = ['hidden'];
+  public $input_type = "hidden";
 
-    public function __construct()
-    {
-        parent::__construct("hidden");
-    }
+  public function __construct()
+  {
+    parent::__construct("hidden");
+  }
 }

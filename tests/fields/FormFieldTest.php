@@ -16,142 +16,142 @@ use WTForms\Validators\DataRequired;
 
 class F extends Form
 {
-    /**
-     * Form constructor.
-     *
-     * @param array $options
-     */
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
-        $this->a = new StringField(["validators" => [new DataRequired()], "name" => "a"]);
-        $this->b = new StringField(["name" => "b"]);
-        $this->process($options);
-    }
+  /**
+   * Form constructor.
+   *
+   * @param array $options
+   */
+  public function __construct(array $options = [])
+  {
+    parent::__construct($options);
+    $this->a = new StringField(["validators" => [new DataRequired()], "name" => "a"]);
+    $this->b = new StringField(["name" => "b"]);
+    $this->process($options);
+  }
 
 }
 
 class FormFieldTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var Form
-     */
-    public $f1;
-    /**
-     * @var Form
-     */
-    public $f2;
+  /**
+   * @var Form
+   */
+  public $f1;
+  /**
+   * @var Form
+   */
+  public $f2;
 
-    public function setUp(): void
-    {
-        $this->f1 = new Form();
-        $this->f1->a = new FormField(["form_class" => '\WTForms\Tests\Fields\F']);
-        $this->f1->process([]);
+  public function setUp(): void
+  {
+    $this->f1 = new Form();
+    $this->f1->a = new FormField(["form_class" => '\WTForms\Tests\Fields\F']);
+    $this->f1->process([]);
 
-        $this->f2 = new Form();
-        $this->f2->a = new FormField(["form_class" => new F, "separator" => "::"]);
-        $this->f2->process([]);
+    $this->f2 = new Form();
+    $this->f2->a = new FormField(["form_class" => new F, "separator" => "::"]);
+    $this->f2->process([]);
+  }
+
+  public function testFormData()
+  {
+    $this->f1->process(["formdata" => ["a-a" => ["moo"]]]);
+    $this->assertEquals("a-a", $this->f1->a->form->a->name);
+    $this->assertEquals("moo", $this->f1->a['a']->data);
+    $this->assertEquals("", $this->f1->a['b']->data);
+    $this->assertTrue($this->f1->validate());
+  }
+
+  public function testIteration()
+  {
+    $actual = [];
+    foreach ($this->f1->a as $x) {
+      $actual[] = $x->name;
     }
+    $this->assertEquals(["a-a", "a-b"], $actual);
+  }
 
-    public function testFormData()
-    {
-        $this->f1->process(["formdata" => ["a-a" => ["moo"]]]);
-        $this->assertEquals("a-a", $this->f1->a->form->a->name);
-        $this->assertEquals("moo", $this->f1->a['a']->data);
-        $this->assertEquals("", $this->f1->a['b']->data);
-        $this->assertTrue($this->f1->validate());
-    }
+  public function testObj()
+  {
+    $obj = (object)["a" => (object)["a" => "mmm"]];
+    $form = $this->f1;
+    $form->process(["obj" => $obj]);
+    $this->assertEquals("mmm", $form->a->form->a->data);
+    $this->assertNull($form->a->form->b->data);
+    $obj_inner = (object)["a" => null, "b" => "rawr"];
+    $obj2 = (object)["a" => $obj_inner];
+    $form->populateObj($obj2);
+    $this->assertTrue($obj2->a === $obj_inner);
+    $this->assertEquals("mmm", $obj_inner->a);
+    $this->assertNull($obj_inner->b);
+  }
 
-    public function testIteration()
-    {
-        $actual = [];
-        foreach ($this->f1->a as $x) {
-            $actual[] = $x->name;
+  public function testWidget()
+  {
+    $this->assertEquals(
+      '<table id="a">' .
+      '<tr><th><label for="a-a">A</label></th><td><input id="a-a" name="a-a" type="text" value=""></td></tr>' .
+      '<tr><th><label for="a-b">B</label></th><td><input id="a-b" name="a-b" type="text" value=""></td></tr>' .
+      '</table>',
+      $this->f1->a->__invoke()
+    );
+  }
+
+  public function testSeparator()
+  {
+    $form = $this->f2;
+    $form->process(["formdata" => ["a-a" => "fake", "a::a" => "real"]]);
+    $this->assertEquals("a::a", $form->a->a->name);
+    $this->assertEquals("real", $form->a->a->data);
+    $this->assertTrue($form->validate());
+  }
+
+  public function testNoFormClass()
+  {
+    $this->expectExceptionMessage("FormField must have a form_class property set!");
+    $this->expectException(\WTForms\Exceptions\TypeError::class);
+    (new FormField());
+  }
+
+  public function testNoValidators()
+  {
+    $this->expectExceptionMessage("FormField does not accept any validators. Instead, define them on the enclosed form.");
+    $this->expectException(\WTForms\Exceptions\TypeError::class);
+    (new FormField(["form_class" => '\WTForms\Tests\Fields\F', "validators" => [new DataRequired()]]));
+  }
+
+  public function testNoFilters()
+  {
+    $this->expectExceptionMessage("FormField cannot take filters, as the encapsulated data is not mutable");
+    $this->expectException(\WTForms\Exceptions\TypeError::class);
+    (new FormField([
+        "form_class" => '\WTForms\Tests\Fields\F',
+        "filters"    => function ($x) {
+          return $x;
         }
-        $this->assertEquals(["a-a", "a-b"], $actual);
-    }
+    ]));
+  }
 
-    public function testObj()
-    {
-        $obj = (object)["a" => (object)["a" => "mmm"]];
-        $form = $this->f1;
-        $form->process(["obj" => $obj]);
-        $this->assertEquals("mmm", $form->a->form->a->data);
-        $this->assertNull($form->a->form->b->data);
-        $obj_inner = (object)["a" => null, "b" => "rawr"];
-        $obj2 = (object)["a" => $obj_inner];
-        $form->populateObj($obj2);
-        $this->assertTrue($obj2->a === $obj_inner);
-        $this->assertEquals("mmm", $obj_inner->a);
-        $this->assertNull($obj_inner->b);
-    }
-
-    public function testWidget()
-    {
-        $this->assertEquals(
-            '<table id="a">' .
-            '<tr><th><label for="a-a">A</label></th><td><input id="a-a" name="a-a" type="text" value=""></td></tr>' .
-            '<tr><th><label for="a-b">B</label></th><td><input id="a-b" name="a-b" type="text" value=""></td></tr>' .
-            '</table>',
-            $this->f1->a->__invoke()
-        );
-    }
-
-    public function testSeparator()
-    {
-        $form = $this->f2;
-        $form->process(["formdata" => ["a-a" => "fake", "a::a" => "real"]]);
-        $this->assertEquals("a::a", $form->a->a->name);
-        $this->assertEquals("real", $form->a->a->data);
-        $this->assertTrue($form->validate());
-    }
-
-    public function testNoFormClass()
-    {
-        $this->expectExceptionMessage("FormField must have a form_class property set!");
-        $this->expectException(\WTForms\Exceptions\TypeError::class);
-        (new FormField());
-    }
-
-    public function testNoValidators()
-    {
-        $this->expectExceptionMessage("FormField does not accept any validators. Instead, define them on the enclosed form.");
-        $this->expectException(\WTForms\Exceptions\TypeError::class);
-        (new FormField(["form_class" => '\WTForms\Tests\Fields\F', "validators" => [new DataRequired()]]));
-    }
-
-    public function testNoFilters()
-    {
-        $this->expectExceptionMessage("FormField cannot take filters, as the encapsulated data is not mutable");
-        $this->expectException(\WTForms\Exceptions\TypeError::class);
-        (new FormField([
-            "form_class" => '\WTForms\Tests\Fields\F',
-            "filters"    => function ($x) {
-                return $x;
-            }
-        ]));
-    }
-
-    public function testNoExtraValidators()
-    {
-        $this->expectExceptionMessage("FormField does not accept in-line validators, as it gets errors from the enclosed form.");
-        $this->expectException(\WTForms\Exceptions\TypeError::class);
-        $form = new C();
-      $form->validate();
-    }
+  public function testNoExtraValidators()
+  {
+    $this->expectExceptionMessage("FormField does not accept in-line validators, as it gets errors from the enclosed form.");
+    $this->expectException(\WTForms\Exceptions\TypeError::class);
+    $form = new C();
+    $form->validate();
+  }
 }
 
 class C extends Form
 {
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
-        $this->a = new FormField(["form_class" => '\WTForms\Tests\Fields\F']);
-        $this->process($options);
-    }
+  public function __construct(array $options = [])
+  {
+    parent::__construct($options);
+    $this->a = new FormField(["form_class" => '\WTForms\Tests\Fields\F']);
+    $this->process($options);
+  }
 
-    public function validate_a($form, $field)
-    {
-        return;
-    }
+  public function validate_a($form, $field)
+  {
+    return;
+  }
 }

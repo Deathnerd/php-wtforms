@@ -16,44 +16,44 @@ use WTForms\Exceptions\ValidationError;
 
 class EqualToTest extends \PHPUnit\Framework\TestCase
 {
-    public $form;
+  public $form;
 
-    protected function setUp(): void
-    {
-        $this->form = new Form();
-    }
+  protected function setUp(): void
+  {
+    $this->form = new Form();
+  }
 
-    public function testBasic()
-    {
-        $this->form->foo = new DummyField(["data" => "test"]);
-        $triggered_validation_error = false;
-        try {
-            (new EqualTo("", ["fieldname" => "foo"]))->__invoke($this->form, $this->form['foo']);
-        } catch (ValidationError $e) {
-            $triggered_validation_error = $e->getMessage();
-        }
-        $this->assertFalse($triggered_validation_error);
+  public function testBasic()
+  {
+    $this->form->foo = new DummyField(["data" => "test"]);
+    $triggered_validation_error = false;
+    try {
+      (new EqualTo("", ["fieldname" => "foo"]))->__invoke($this->form, $this->form['foo']);
+    } catch (ValidationError $e) {
+      $triggered_validation_error = $e->getMessage();
     }
+    $this->assertFalse($triggered_validation_error);
+  }
 
-    public function testNoFieldnameSupplied()
-    {
-        $this->expectExceptionMessage("EqualTo requires fieldname!");
-        $this->expectException(\RuntimeException::class);
-        (new EqualTo("", []));
-    }
+  public function testNoFieldnameSupplied()
+  {
+    $this->expectExceptionMessage("EqualTo requires fieldname!");
+    $this->expectException(\RuntimeException::class);
+    (new EqualTo("", []));
+  }
 
-    public function testInvalidFieldName()
-    {
-        $this->expectException(\WTForms\Exceptions\ValidationError::class);
-        $this->form->foo = new DummyField(["data" => "test"]);
-        (new EqualTo("", ["fieldname" => "invalid_field_name"]))->__invoke($this->form,
-            new DummyField(["data" => "test"]));
-    }
+  public function testInvalidFieldName()
+  {
+    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->form->foo = new DummyField(["data" => "test"]);
+    (new EqualTo("", ["fieldname" => "invalid_field_name"]))->__invoke($this->form,
+      new DummyField(["data" => "test"]));
+  }
 
-    public function testAnotherInvalidFieldName()
-    {
-        $this->expectException(\WTForms\Exceptions\ValidationError::class);
-        $this->form->foo = new DummyField(["data" => "test"]);
-        (new EqualTo("", ["fieldname" => "foo"]))->__invoke($this->form, new DummyField(["data" => "different_value"]));
-    }
+  public function testAnotherInvalidFieldName()
+  {
+    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->form->foo = new DummyField(["data" => "test"]);
+    (new EqualTo("", ["fieldname" => "foo"]))->__invoke($this->form, new DummyField(["data" => "different_value"]));
+  }
 }

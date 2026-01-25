@@ -20,40 +20,40 @@ use WTForms\Validators\Options\UUIDOptions;
  */
 class UUID extends Regexp
 {
-    /**
-     * UUID constructor.
-     *
-     * @param string $message Error message to raise in case of validation error
-     * @param UUIDOptionsArray|UUIDOptions $options
-     */
-    public function __construct(string $message = "", $options = [])
-    {
-        if ($options instanceof ArrayOptions) {
-            $options = $options->toArray();
-        }
-        if (!isset($options['regex'])) {
-            $options['regex'] = '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/';
-        }
-        parent::__construct($message, $options);
+  /**
+   * UUID constructor.
+   *
+   * @param string $message Error message to raise in case of validation error
+   * @param UUIDOptionsArray|UUIDOptions $options
+   */
+  public function __construct(string $message = "", $options = [])
+  {
+    if ($options instanceof ArrayOptions) {
+      $options = $options->toArray();
+    }
+    if (!isset($options['regex'])) {
+      $options['regex'] = '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/';
+    }
+    parent::__construct($message, $options);
+  }
+
+  /**
+   * @param Form   $form
+   * @param Field  $field
+   * @param string $message
+   *
+   * @return string The matched UUID string
+   *
+   * @throws ValidationError
+   * @phpstan-assert non-empty-string $field->data
+   */
+  public function __invoke(Form $form, Field $field, string $message = ""): string
+  {
+    $message = $this->message;
+    if (!$message) {
+      $message = "Invalid UUID.";
     }
 
-    /**
-     * @param Form   $form
-     * @param Field  $field
-     * @param string $message
-     *
-     * @return string The matched UUID string
-     *
-     * @throws ValidationError
-     * @phpstan-assert non-empty-string $field->data
-     */
-    public function __invoke(Form $form, Field $field, string $message = ""): string
-    {
-        $message = $this->message;
-        if (!$message) {
-            $message = "Invalid UUID.";
-        }
-
-        return parent::__invoke($form, $field, $message);
-    }
+    return parent::__invoke($form, $field, $message);
+  }
 }

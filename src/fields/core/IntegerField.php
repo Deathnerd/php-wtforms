@@ -20,32 +20,32 @@ use WTForms\Widgets\Core\TextInput;
  */
 class IntegerField extends Field
 {
-    /**
-     * @var TextInput
-     */
-    public $widget;
+  /**
+   * @var TextInput
+   */
+  public $widget;
 
-    /**
-     * IntegerField constructor.
-     *
-     *   $form
-     * @param array $options
-     */
-    public function __construct(array $options = [])
-    {
-        $options = array_merge(["widget" => new TextInput()], $options);
-        parent::__construct($options);
-    }
+  /**
+   * IntegerField constructor.
+   *
+   *   $form
+   * @param array $options
+   */
+  public function __construct(array $options = [])
+  {
+    $options = array_merge(["widget" => new TextInput()], $options);
+    parent::__construct($options);
+  }
 
-    public function processFormData(array $valuelist)
-    {
-        if ($valuelist) {
-            if (is_numeric($valuelist[0])) {
-                $this->data = intval($valuelist[0]);
-            } else {
-                $this->data = null;
-                throw new ValueError("Not a valid integer value");
-            }
-        }
+  public function processFormData(array $valuelist)
+  {
+    if ($valuelist) {
+      if (is_numeric($valuelist[0])) {
+        $this->data = intval($valuelist[0]);
+      } else {
+        $this->data = null;
+        throw new ValueError("Not a valid integer value");
+      }
     }
+  }
 }

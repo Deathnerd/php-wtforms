@@ -23,184 +23,184 @@ use Traversable;
  */
 abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
 {
-    /**
-     * Internal array storage
-     * @var TShape
-     */
-    protected array $data = [];
+  /**
+   * Internal array storage
+   * @var TShape
+   */
+  protected array $data = [];
 
-    /**
-     * @param TShape $data
-     */
-    public function __construct(array $data = [])
-    {
-        $this->data = array_merge($this->getDefaults(), $data);
-        $this->hydrateProperties();
+  /**
+   * @param TShape $data
+   */
+  public function __construct(array $data = [])
+  {
+    $this->data = array_merge($this->getDefaults(), $data);
+    $this->hydrateProperties();
+  }
+
+  /**
+   * Get default values for this options class.
+   * Override in subclasses to provide defaults.
+   *
+   * @return array<string, mixed>
+   */
+  protected function getDefaults(): array
+  {
+    return [];
+  }
+
+  /**
+   * Hydrate public properties from the internal data array.
+   */
+  protected function hydrateProperties(): void
+  {
+    foreach ($this->data as $key => $value) {
+      if (property_exists($this, $key)) {
+        $this->$key = $value;
+      }
     }
+  }
 
-    /**
-     * Get default values for this options class.
-     * Override in subclasses to provide defaults.
-     *
-     * @return array<string, mixed>
-     */
-    protected function getDefaults(): array
-    {
-        return [];
+  /**
+   * Sync a property value back to the internal array.
+   * Call this after modifying a property directly.
+   */
+  protected function syncToArray(string $property): void
+  {
+    if (property_exists($this, $property)) {
+      $this->data[$property] = $this->$property;
     }
+  }
 
-    /**
-     * Hydrate public properties from the internal data array.
-     */
-    protected function hydrateProperties(): void
-    {
-        foreach ($this->data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
-        }
+  /**
+   * Convert to a plain array.
+   *
+   * @return TShape
+   */
+  public function toArray(): array
+  {
+    // Sync all public properties to array before returning
+    $reflection = new \ReflectionClass($this);
+    foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
+      $name = $prop->getName();
+      if ($name !== 'data') {
+        $this->data[$name] = $this->$name;
+      }
     }
+    return $this->data;
+  }
 
-    /**
-     * Sync a property value back to the internal array.
-     * Call this after modifying a property directly.
-     */
-    protected function syncToArray(string $property): void
-    {
-        if (property_exists($this, $property)) {
-            $this->data[$property] = $this->$property;
-        }
+  /**
+   * Create from an array or return the ArrayOptions instance as-is.
+   *
+   * @param TShape|static $options
+   * @return static
+   */
+  public static function from($options)
+  {
+    if ($options instanceof static) {
+      return $options;
     }
+    return new static($options);
+  }
 
-    /**
-     * Convert to a plain array.
-     *
-     * @return TShape
-     */
-    public function toArray(): array
-    {
-        // Sync all public properties to array before returning
-        $reflection = new \ReflectionClass($this);
-        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
-            $name = $prop->getName();
-            if ($name !== 'data') {
-                $this->data[$name] = $this->$name;
-            }
-        }
-        return $this->data;
+  // -------------------------------------------------------------------------
+  // ArrayAccess implementation
+  // -------------------------------------------------------------------------
+
+  /**
+   * @param string $offset
+   */
+  public function offsetExists($offset): bool
+  {
+    return array_key_exists($offset, $this->data) || property_exists($this, $offset);
+  }
+
+  /**
+   * @param string $offset
+   * @return mixed
+   */
+  public function offsetGet($offset)
+  {
+    // Prefer property value if it exists (it may have been modified directly)
+    if (property_exists($this, $offset) && $offset !== 'data') {
+      return $this->$offset;
     }
+    return $this->data[$offset] ?? null;
+  }
 
-    /**
-     * Create from an array or return the ArrayOptions instance as-is.
-     *
-     * @param TShape|static $options
-     * @return static
-     */
-    public static function from($options)
-    {
-        if ($options instanceof static) {
-            return $options;
-        }
-        return new static($options);
+  /**
+   * @param string $offset
+   * @param mixed $value
+   */
+  public function offsetSet($offset, $value): void
+  {
+    $this->data[$offset] = $value;
+    if (property_exists($this, $offset) && $offset !== 'data') {
+      $this->$offset = $value;
     }
+  }
 
-    // -------------------------------------------------------------------------
-    // ArrayAccess implementation
-    // -------------------------------------------------------------------------
-
-    /**
-     * @param string $offset
-     */
-    public function offsetExists($offset): bool
-    {
-        return array_key_exists($offset, $this->data) || property_exists($this, $offset);
+  /**
+   * @param string $offset
+   */
+  public function offsetUnset($offset): void
+  {
+    unset($this->data[$offset]);
+    if (property_exists($this, $offset) && $offset !== 'data') {
+      $this->$offset = null;
     }
+  }
 
-    /**
-     * @param string $offset
-     * @return mixed
-     */
-    public function offsetGet($offset)
-    {
-        // Prefer property value if it exists (it may have been modified directly)
-        if (property_exists($this, $offset) && $offset !== 'data') {
-            return $this->$offset;
-        }
-        return $this->data[$offset] ?? null;
-    }
+  // -------------------------------------------------------------------------
+  // Countable implementation
+  // -------------------------------------------------------------------------
 
-    /**
-     * @param string $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value): void
-    {
-        $this->data[$offset] = $value;
-        if (property_exists($this, $offset) && $offset !== 'data') {
-            $this->$offset = $value;
-        }
-    }
+  public function count(): int
+  {
+    return count($this->data);
+  }
 
-    /**
-     * @param string $offset
-     */
-    public function offsetUnset($offset): void
-    {
-        unset($this->data[$offset]);
-        if (property_exists($this, $offset) && $offset !== 'data') {
-            $this->$offset = null;
-        }
-    }
+  // -------------------------------------------------------------------------
+  // IteratorAggregate implementation
+  // -------------------------------------------------------------------------
 
-    // -------------------------------------------------------------------------
-    // Countable implementation
-    // -------------------------------------------------------------------------
+  public function getIterator(): Traversable
+  {
+    // Sync properties before iterating
+    $this->toArray();
+    return new ArrayIterator($this->data);
+  }
 
-    public function count(): int
-    {
-        return count($this->data);
-    }
+  // -------------------------------------------------------------------------
+  // Magic methods for property-style access to array keys
+  // -------------------------------------------------------------------------
 
-    // -------------------------------------------------------------------------
-    // IteratorAggregate implementation
-    // -------------------------------------------------------------------------
+  /**
+   * @param string $name
+   * @return mixed
+   */
+  public function __get(string $name)
+  {
+    return $this->data[$name] ?? null;
+  }
 
-    public function getIterator(): Traversable
-    {
-        // Sync properties before iterating
-        $this->toArray();
-        return new ArrayIterator($this->data);
-    }
+  /**
+   * @param string $name
+   * @param mixed $value
+   */
+  public function __set(string $name, $value): void
+  {
+    $this->data[$name] = $value;
+  }
 
-    // -------------------------------------------------------------------------
-    // Magic methods for property-style access to array keys
-    // -------------------------------------------------------------------------
+  public function __isset(string $name): bool
+  {
+    return isset($this->data[$name]);
+  }
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function __get(string $name)
-    {
-        return $this->data[$name] ?? null;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     */
-    public function __set(string $name, $value): void
-    {
-        $this->data[$name] = $value;
-    }
-
-    public function __isset(string $name): bool
-    {
-        return isset($this->data[$name]);
-    }
-
-    public function __unset(string $name): void
-    {
-        unset($this->data[$name]);
-    }
+  public function __unset(string $name): void
+  {
+    unset($this->data[$name]);
+  }
 }

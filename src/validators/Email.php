@@ -19,40 +19,40 @@ use WTForms\Form;
  */
 class Email extends Validator
 {
-    /**
-     * MacAddress constructor.
-     *
-     * @param string $message Error message to raise in case of a validation error.
-     * @param array  $options
-     */
-    public function __construct(string $message = "", array $options = [])
-    {
-        parent::__construct($message, $options);
-    }
+  /**
+   * MacAddress constructor.
+   *
+   * @param string $message Error message to raise in case of a validation error.
+   * @param array  $options
+   */
+  public function __construct(string $message = "", array $options = [])
+  {
+    parent::__construct($message, $options);
+  }
 
-    /**
-     * @param Form   $form
-     * @param Field  $field
-     * @param string $message
-     *
-     * @return void
-     *
-     * @throws ValidationError
-     * @phpstan-assert non-empty-string $field->data
-     */
-    public function __invoke(Form $form, Field $field, string $message = "")
-    {
-        $value = $field->data;
-        $valid = false;
-        if (!is_null($value)) {
-            $valid = filter_var($value, FILTER_VALIDATE_EMAIL) && preg_match('/^.+@([^.@][^@]+)$/i', $value);
-        }
-        if (!$valid) {
-            $message = $this->message;
-            if ($message == "") {
-                $message = "Invalid email address.";
-            }
-            throw new ValidationError($message);
-        }
+  /**
+   * @param Form   $form
+   * @param Field  $field
+   * @param string $message
+   *
+   * @return void
+   *
+   * @throws ValidationError
+   * @phpstan-assert non-empty-string $field->data
+   */
+  public function __invoke(Form $form, Field $field, string $message = "")
+  {
+    $value = $field->data;
+    $valid = false;
+    if (!is_null($value)) {
+      $valid = filter_var($value, FILTER_VALIDATE_EMAIL) && preg_match('/^.+@([^.@][^@]+)$/i', $value);
     }
+    if (!$valid) {
+      $message = $this->message;
+      if ($message == "") {
+        $message = "Invalid email address.";
+      }
+      throw new ValidationError($message);
+    }
+  }
 }

@@ -12,10 +12,10 @@ namespace WTForms\Validators\Options;
  */
 class IPAddressOptions extends ArrayOptions
 {
-    public int $ip_type = FILTER_FLAG_IPV4;
+  public int $ip_type = FILTER_FLAG_IPV4;
 
-    protected function getDefaults(): array
-    {
-        return ['ip_type' => FILTER_FLAG_IPV4];
-    }
+  protected function getDefaults(): array
+  {
+    return ['ip_type' => FILTER_FLAG_IPV4];
+  }
 }

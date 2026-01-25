@@ -12,10 +12,10 @@ namespace WTForms\Validators\Options;
  */
 class OptionalOptions extends ArrayOptions
 {
-    public bool $strip_whitespace = true;
+  public bool $strip_whitespace = true;
 
-    protected function getDefaults(): array
-    {
-        return ['strip_whitespace' => true];
-    }
+  protected function getDefaults(): array
+  {
+    return ['strip_whitespace' => true];
+  }
 }

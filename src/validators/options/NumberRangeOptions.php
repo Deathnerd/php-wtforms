@@ -12,14 +12,14 @@ namespace WTForms\Validators\Options;
  */
 class NumberRangeOptions extends ArrayOptions
 {
-    /** @var int|float|null */
-    public $min = null;
+  /** @var int|float|null */
+  public $min = null;
 
-    /** @var int|float|null */
-    public $max = null;
+  /** @var int|float|null */
+  public $max = null;
 
-    protected function getDefaults(): array
-    {
-        return ['min' => null, 'max' => null];
-    }
+  protected function getDefaults(): array
+  {
+    return ['min' => null, 'max' => null];
+  }
 }
