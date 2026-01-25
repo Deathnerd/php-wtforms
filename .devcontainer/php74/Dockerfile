@@ -7,12 +7,13 @@ RUN apt-get update && apt-get install -y \
 
 RUN --mount=type=bind,from=mlocati/php-extension-installer:latest,source=/usr/bin/install-php-extensions,target=/usr/local/bin/install-php-extensions \
     install-php-extensions \
-    mbstring \
-    xml \
     curl \
-    zip \
+    gettext \
+    mbstring \
     pdo_sqlite \
-    xdebug
+    xdebug \
+    xml \
+    zip
 
 WORKDIR /workspace
 

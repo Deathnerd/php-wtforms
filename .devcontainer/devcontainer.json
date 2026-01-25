@@ -3,7 +3,6 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "php74",
   "workspaceFolder": "/workspace",
-  "postCreateCommand": "composer install",
   "customizations": {
     "vscode": {
       "extensions": [
