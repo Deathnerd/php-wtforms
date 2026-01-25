@@ -11,10 +11,12 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Validators\Options\UUIDOptions;
 
 /**
  * Validates a UUID
- * @package WTForms\Validators
+ * @phpstan-import-type UUIDOptionsArray from UUIDOptions
  */
 class UUID extends Regexp
 {
@@ -22,10 +24,17 @@ class UUID extends Regexp
      * UUID constructor.
      *
      * @param string $message Error message to raise in case of validation error
+     * @param UUIDOptionsArray|UUIDOptions $options
      */
-    public function __construct($message = "")
+    public function __construct(string $message = "", $options = [])
     {
-        parent::__construct($message, ['regex' => '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/']);
+        if ($options instanceof ArrayOptions) {
+            $options = $options->toArray();
+        }
+        if (!isset($options['regex'])) {
+            $options['regex'] = '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/';
+        }
+        parent::__construct($message, $options);
     }
 
     /**
@@ -33,16 +42,18 @@ class UUID extends Regexp
      * @param Field  $field
      * @param string $message
      *
-     * @return mixed
+     * @return string The matched UUID string
+     *
      * @throws ValidationError
+     * @phpstan-assert non-empty-string $field->data
      */
-    public function __invoke(Form $form, Field $field, string $message = "")
+    public function __invoke(Form $form, Field $field, string $message = ""): string
     {
         $message = $this->message;
         if (!$message) {
             $message = "Invalid UUID.";
         }
 
-        parent::__invoke($form, $field, $message);
+        return parent::__invoke($form, $field, $message);
     }
 }

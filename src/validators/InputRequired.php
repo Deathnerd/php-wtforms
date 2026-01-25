@@ -19,7 +19,7 @@ use WTForms\Form;
  * {@link InputRequired} looks that form-input data was provided, and {@link DataRequired}
  * looks at the post-coercion data
  *
- * @package WTForms\Validators
+ * @template-extends Validator<array{}>
  */
 class InputRequired extends Validator
 {
@@ -34,9 +34,9 @@ class InputRequired extends Validator
      * @param string $message Message to raise if validation fails
      * @param array  $options
      */
-    public function __construct($message = "", array $options = [])
+    public function __construct(string $message = "", array $options = [])
     {
-        $this->message = $message;
+        parent::__construct($message, $options);
     }
 
     /**
@@ -44,13 +44,14 @@ class InputRequired extends Validator
      * @param Field  $field
      * @param string $message
      *
+     * @return void
+     *
      * @throws StopValidation
+     * @phpstan-assert !null $field->raw_data
      */
-    public function __invoke(Form $form, Field $field = null, string $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
-        if (is_null($field->raw_data) || empty($field->raw_data) ||
-            (!empty($field->raw_data) && !$field->raw_data[0])
-        ) {
+        if (empty($field->raw_data) || !$field->raw_data[0]) {
             if ($this->message == "") {
                 $message = "This field is required.";
             } else {

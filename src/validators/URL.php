@@ -14,7 +14,7 @@ use WTForms\Form;
 
 /**
  * Simple url validation using PHP's filter_var.
- * @package WTForms\Validators
+ * @template-extends Validator<array{}>
  */
 class URL extends Validator
 {
@@ -24,9 +24,9 @@ class URL extends Validator
      * @param string $message Error message to raise in case of a validation error
      * @param array  $options
      */
-    public function __construct($message = "", array $options = [])
+    public function __construct(string $message = "", array $options = [])
     {
-        $this->message = $message;
+        parent::__construct($message, $options);
     }
 
     /**
@@ -34,7 +34,10 @@ class URL extends Validator
      * @param Field  $field
      * @param string $message
      *
+     * @return void
+     *
      * @throws ValidationError
+     * @phpstan-assert non-empty-string $field->data
      */
     public function __invoke(Form $form, Field $field, string $message = "")
     {

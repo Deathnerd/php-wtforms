@@ -1,0 +1,37 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method WTForms\\Form\:\:create\(\) should return static\(WTForms\\Form\<TMeta of WTForms\\DefaultMeta\>\) but returns static\(WTForms\\Form\<WTForms\\DefaultMeta\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Form.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int\|string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Form.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: src/Form.php
+
+		-
+			message: '#^Parameter \#1 \$value \(array\|string\) of method WTForms\\Fields\\Core\\BooleanField\:\:processData\(\) should be compatible with parameter \$value \(bool\) of method WTForms\\Fields\\Core\\Field\<bool\>\:\:processData\(\)$#'
+			identifier: method.childParameterType
+			count: 1
+			path: src/fields/core/BooleanField.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int\|string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/fields/core/Field.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int\|string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/fields/core/FormField.php

@@ -15,7 +15,7 @@ use WTForms\Form;
 
 /**
  * Validates a MAC Address
- * @package WTForms\Validators
+ * @template-extends Validator<array{}>
  */
 class MacAddress extends Validator
 {
@@ -23,10 +23,11 @@ class MacAddress extends Validator
      * MacAddress constructor.
      *
      * @param string $message Error message to raise in case of a validation error.
+     * @param array  $options
      */
-    public function __construct($message = "", array $options = [])
+    public function __construct(string $message = "", array $options = [])
     {
-        $this->message = $message;
+        parent::__construct($message, $options);
     }
 
     /**
@@ -34,8 +35,10 @@ class MacAddress extends Validator
      * @param Field  $field
      * @param string $message
      *
-     * @return mixed
+     * @return void
+     *
      * @throws ValidationError
+     * @phpstan-assert non-empty-string $field->data
      */
     public function __invoke(Form $form, Field $field, string $message = "")
     {

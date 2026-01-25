@@ -11,13 +11,16 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Validators\Options\OptionalOptions;
 
 /**
  * Allows empty input and stops the validation chain from continuing.
  *
  * If input is empty, also removes prior errors (such as processing errors)
  * from the field
- * @package WTForms\Validators
+ * @phpstan-import-type OptionalOptionsArray from OptionalOptions
+ * @template-extends Validator<OptionalOptionsArray>
  */
 class Optional extends Validator
 {
@@ -40,11 +43,15 @@ class Optional extends Validator
      * Optional constructor.
      *
      * @param string $message
-     * @param array  $options
-     *
+     * @param OptionalOptionsArray|OptionalOptions $options
      */
-    public function __construct($message = "", array $options = ['strip_whitespace' => true])
+    public function __construct(string $message = "", $options = [])
     {
+        if ($options instanceof ArrayOptions) {
+            $options = $options->toArray();
+        }
+        $options = array_merge(['strip_whitespace' => true], $options);
+        parent::__construct($message, $options);
         $this->strip_whitespace = $options['strip_whitespace'];
     }
 
@@ -65,8 +72,11 @@ class Optional extends Validator
         }
     }
 
-    private function stringCheck($string)
+    private function stringCheck(string $string): string
     {
-        return ($this->strip_whitespace) ? trim($string) : $string;
+      if ($this->strip_whitespace) {
+        return trim($string);
+      }
+      return $string;
     }
 }

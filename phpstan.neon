@@ -4,3 +4,13 @@ parameters:
         - src
     excludePaths:
         - vendor
+    treatPhpDocTypesAsCertain: false
+
+    exceptions:
+        uncheckedExceptionClasses:
+            - WTForms\Exceptions\StopValidation
+            - WTForms\Exceptions\ValidationError
+
+includes:
+    - phpstan-baseline.neon
+    - phpstan/extension.neon

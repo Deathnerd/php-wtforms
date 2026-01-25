@@ -25,7 +25,7 @@ use WTForms\Form;
  *
  * **NOTE** Original Python source has a fallback for deprecated ``Required`` class.
  * This port does not have it. You're more than welcome to extend it yourself.
- * @package WTForms\Validators
+ * @template-extends Validator<array{}>
  */
 class DataRequired extends Validator
 {
@@ -51,7 +51,10 @@ class DataRequired extends Validator
      * @param Field  $field
      * @param string $message
      *
+     * @return void
+     *
      * @throws StopValidation
+     * @phpstan-assert !null $field->data
      */
     public function __invoke(Form $form, Field $field, string $message = "")
     {

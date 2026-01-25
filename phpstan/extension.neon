@@ -1,0 +1,5 @@
+services:
+    -
+        class: WTForms\PHPStan\Extensions\ValidatorThrowTypeExtension
+        tags:
+            - phpstan.dynamicMethodThrowTypeExtension

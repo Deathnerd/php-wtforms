@@ -14,8 +14,8 @@ use WTForms\Fields\Core\Field;
 use WTForms\Form;
 
 /**
- * Validates an Address
- * @package WTForms\Validators
+ * Validates an email address
+ * @template-extends Validator<array{}>
  */
 class Email extends Validator
 {
@@ -35,9 +35,12 @@ class Email extends Validator
      * @param Field  $field
      * @param string $message
      *
+     * @return void
+     *
      * @throws ValidationError
+     * @phpstan-assert non-empty-string $field->data
      */
-    public function __invoke(Form $form, Field $field, string $message = "") : void
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         $value = $field->data;
         $valid = false;

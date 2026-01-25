@@ -11,10 +11,13 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Validators\Options\EqualToOptions;
 
 /**
  * Compares the values of two fields
- * @phpstan-type EqualToParams array{fieldname:non-empty-string, ...}
+ * @phpstan-import-type EqualToOptionsArray from EqualToOptions
+ * @template-extends Validator<EqualToOptionsArray>
  */
 class EqualTo extends Validator
 {
@@ -25,12 +28,15 @@ class EqualTo extends Validator
 
     /**
      * @param string $message Error message to raise in case of a validation error.
-     * @phpstan-param EqualToParams $options
+     * @param EqualToOptionsArray|EqualToOptions $options
      *
-     * @throws \TypeError
+     * @throws \RuntimeException
      */
-    public function __construct(string $message = "", array $options = ['fieldname' => ''])
+    public function __construct(string $message = "", $options = [])
     {
+        if ($options instanceof ArrayOptions) {
+            $options = $options->toArray();
+        }
         parent::__construct($message, $options);
         if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
             throw new \RuntimeException("EqualTo requires fieldname!");

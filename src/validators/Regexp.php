@@ -11,30 +11,36 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Validators\Options\RegexpOptions;
 
 
 /**
  * Validates the field against a user-provided regular expression
- * @package WTForms\Validators
+ * @phpstan-import-type RegexpOptionsArray from RegexpOptions
+ * @template-extends Validator<RegexpOptionsArray>
  */
 class Regexp extends Validator
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
-    public $regex;
+    public string $regex;
 
     /**
      * Assertion check is done here for a valid regular expression
      *
      * @param string $message Error message to raise in case of a validation error
-     * @param array  $options
+     * @param RegexpOptionsArray|RegexpOptions $options
      */
-    public function __construct($message = "", array $options = ['regex' => ''])
+    public function __construct(string $message = "", $options = [])
     {
+        if ($options instanceof ArrayOptions) {
+            $options = $options->toArray();
+        }
         assert(preg_match($options['regex'], '') !== false, "Invalid regular expression passed to Regexp");
+        parent::__construct($message, $options);
         $this->regex = $options['regex'];
-        $this->message = $message;
     }
 
     /**
@@ -42,10 +48,12 @@ class Regexp extends Validator
      * @param Field  $field
      * @param string $message
      *
-     * @return mixed The first match of the regular expression if one was found
+     * @return string The first match of the regular expression if one was found
+     *
      * @throws ValidationError
+     * @phpstan-assert string $field->data
      */
-    public function __invoke(Form $form, Field $field, string $message = "")
+    public function __invoke(Form $form, Field $field, string $message = ""): string
     {
         $match = preg_match($this->regex, $field->data ?: '', $matches);
         if (!$match) {

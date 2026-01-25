@@ -11,9 +11,12 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Validators\Options\RequiredIfOptions;
 
 /**
  * Makes a field required if another field has a value
+ * @phpstan-import-type RequiredIfOptionsArray from RequiredIfOptions
  */
 class RequiredIf extends DataRequired
 {
@@ -24,12 +27,15 @@ class RequiredIf extends DataRequired
 
     /**
      * @param string $message Error message to raise in case of a validation error.
-     * @param array  $options
+     * @param RequiredIfOptionsArray|RequiredIfOptions $options
      *
-     * @throws \TypeError
+     * @throws \RuntimeException
      */
-    public function __construct($message = "", array $options = ['fieldname' => ''])
+    public function __construct(string $message = "", $options = [])
     {
+        if ($options instanceof ArrayOptions) {
+            $options = $options->toArray();
+        }
         if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
             throw new \RuntimeException("RequiredIf requires fieldname!");
         }
@@ -45,7 +51,7 @@ class RequiredIf extends DataRequired
      *
      * @throws ValidationError
      */
-    public function __invoke(Form $form, Field $field = null, string $message = "")
+    public function __invoke(Form $form, Field $field, string $message = "")
     {
         if ($form->{$this->fieldname} !== null) {
             /** @var Field $other */

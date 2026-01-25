@@ -11,7 +11,11 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\NotImplemented;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
+use WTForms\Validators\Options\ArrayOptions;
 
+/**
+ * @template TOptions of array<string, mixed>
+ */
 abstract class Validator
 {
     /**
@@ -22,14 +26,20 @@ abstract class Validator
      * @var array
      */
     public array $field_flags = [];
+    /**
+     * @var TOptions $options
+     */
     private array $options;
 
     /**
      * @param string $message
-     * @param array $options
+     * @param TOptions|ArrayOptions<TOptions> $options
      */
-    public function __construct(string $message = "", array $options = [])
+    public function __construct(string $message = "", $options = [])
     {
+        if ($options instanceof ArrayOptions) {
+           $options = $options->toArray();
+        }
         $this->message = $message;
         $this->options = $options;
     }
@@ -44,6 +54,29 @@ abstract class Validator
     public function getOptions(): array
     {
         return $this->options;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getOption(string $key)
+    {
+      return $this->options[$key] ?? null;
+    }
+
+    public function hasOption(string $key): bool
+    {
+        return array_key_exists($key, $this->options);
+    }
+
+    public function setOption(string $key, $value): void
+    {
+        $this->options[$key] = $value;
+    }
+
+    public function removeOption(string $key): void
+    {
+        unset($this->options[$key]);
     }
 
     public function setOptions(array $options): void
