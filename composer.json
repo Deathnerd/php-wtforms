@@ -41,7 +41,9 @@
   },
   "require": {
     "php": ">=7.4",
-    "nesbot/carbon": "^2.0 || ^3.0"
+    "nesbot/carbon": "^2.0 || ^3.0",
+    "gettext/gettext": "^5.7",
+    "gettext/translator": "^1.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
