@@ -143,6 +143,7 @@ class SessionCSRF extends CSRF
   public function __get($name)
   {
     if ('time_limit' == $name) {
+      // @phpstan-ignore-next-line
       if (property_exists($this->form_meta, 'csrf_time_limit')) {
         return $this->form_meta->csrf_time_limit;
       }

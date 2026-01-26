@@ -20,6 +20,10 @@ use WTForms\Widgets\Core\TextInput;
 
 class SelectFieldBaseTestClass extends SelectFieldBase
 {
+  public function getChoices(): iterable
+  {
+    return [];
+  }
 }
 
 class SelectFieldTest extends \PHPUnit\Framework\TestCase

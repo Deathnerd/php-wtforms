@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/20/2016
- * Time: 10:10 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -16,37 +11,33 @@ use WTForms\Fields\Core\Field;
  *
  * This is used as the basis for most other input fields.
  *
- * By default, the `_value()` method will be called upon teh associated field
- * to provide the ``value=`` HTML attribute
+ * By default, the `_value()` method will be called upon the associated field
+ * to provide the ``value=`` HTML attribute.
+ *
+ * @template TData
+ *
+ * @extends Widget<TData>
  */
 class Input extends Widget
 {
-  /**
-   * @var string
-   */
-  public $input_type;
+  public string $type;
 
   /**
-   * @param string $input_type If passed, will add ``type="$input_type"`` to the
-   *                           html attributes for this input
+   * @param string $type If passed, will add ``type="$input_type"`` to the
+   *                     HTML attributes for this input
    */
-  public function __construct($input_type = '')
+  public function __construct(string $type = '')
   {
-    if ('' !== $input_type) {
-      $this->input_type = $input_type;
+    if ('' !== $type) {
+      $this->type = $type;
     }
   }
 
-  /**
-   * @param Field $field
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     $defaults = [
       'id'    => $field->id,
-      'type'  => $this->input_type,
+      'type'  => $this->type,
       'value' => $field->value,
     ];
     $options = array_merge($defaults, $options);

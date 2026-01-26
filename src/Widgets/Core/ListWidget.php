@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 1/18/2016
- * Time: 2:42 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -22,39 +17,31 @@ use WTForms\Fields\Core\SelectFieldBase;
  * If `$prefix_label` is set, the subfield's label is printed before the field,
  * otherwise afterwards. The latter is useful for iterating radios or
  * checkboxes.
+ *
+ * @extends Widget<mixed>
  */
 class ListWidget extends Widget
 {
-  /**
-   * @var string
-   */
-  public $html_tag = '';
-  /**
-   * @var bool if set to true, subfields will have their labels printed before
-   *           them, otherwise afterwards
-   */
-  public $prefix_label = true;
+  public string $html_tag = '';
 
   /**
-   * ListWidget constructor.
-   *
-   * @param string $html_tag     Must either be ul or ol. Will not pass assertion otherwise
-   * @param bool   $prefix_label if set to true, subfields will have their labels printed before
-   *                             them, otherwise afterwards
+   * If set to true, subfields will have their labels printed before them,
+   * otherwise afterwards.
    */
-  public function __construct($html_tag = 'ul', $prefix_label = true)
+  public bool $prefix_label = true;
+
+  /**
+   * @param string $html_tag     Must be 'ul' or 'ol'
+   * @param bool   $prefix_label If true, subfield labels appear before the field
+   */
+  public function __construct(string $html_tag = 'ul', bool $prefix_label = true)
   {
     assert(in_array($html_tag, ['ul', 'ol']));
     $this->html_tag = $html_tag;
     $this->prefix_label = $prefix_label;
   }
 
-  /**
-   * @param Field|mixed $field
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     $options = array_merge(['id' => $field->id], $options);
     $html = sprintf('<%s %s>', $this->html_tag, html_params($options));

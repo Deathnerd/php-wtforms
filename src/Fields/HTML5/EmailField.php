@@ -10,15 +10,17 @@
 namespace WTForms\Fields\HTML5;
 
 use WTForms\Fields\Core\StringField;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\HTML5\EmailInput;
 
 /**
  * Represents an ``<input type="email">``.
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  */
 class EmailField extends StringField
 {
   /**
-   * @param array<string, mixed> $options
+   * @phpstan-param FieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {

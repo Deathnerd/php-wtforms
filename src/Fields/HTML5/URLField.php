@@ -10,6 +10,7 @@
 namespace WTForms\Fields\HTML5;
 
 use WTForms\Fields\Core\StringField;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\HTML5\URLInput;
 
 /**
@@ -18,7 +19,9 @@ use WTForms\Widgets\HTML5\URLInput;
 class URLField extends StringField
 {
   /**
-   * @param array<string, mixed> $options
+   * @param FieldOptions::FieldOptionsArray $options
+   *
+   * @phpstan-param array<string, mixed> $options
    */
   public function __construct(array $options = [])
   {

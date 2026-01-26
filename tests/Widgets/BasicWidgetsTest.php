@@ -57,9 +57,9 @@ class BasicWidgetsTest extends \PHPUnit\Framework\TestCase
   public function testInputType()
   {
     $a = new Input();
-    $this->assertEmpty($a->input_type);
+    $this->assertEmpty($a->type);
     $b = new Input('test');
-    $this->assertEquals('test', $b->input_type);
+    $this->assertEquals('test', $b->type);
   }
 
   public function testTextInput()

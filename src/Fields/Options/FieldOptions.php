@@ -30,7 +30,9 @@ use WTForms\Widgets\Core\Widget;
  *     form?: Form|null
  * }
  *
- * @extends ArrayOptions<FieldOptionsArray>
+ * @template TOptions of array<string, mixed>
+ *
+ * @extends ArrayOptions<TOptions>
  */
 class FieldOptions extends ArrayOptions
 {

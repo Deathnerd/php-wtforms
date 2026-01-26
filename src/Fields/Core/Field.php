@@ -45,7 +45,7 @@ class Field implements \Iterator
   public array $process_errors = [];
 
   /**
-   * @var array<int, string>|null
+   * @var array<int, mixed>|null
    */
   public ?array $raw_data = [];
 
@@ -117,14 +117,14 @@ class Field implements \Iterator
   /**
    * Options passed to constructor, used for cloning fields in FieldList.
    *
-   * @var FieldOptionsArray
+   * @phpstan-var FieldOptionsArray
    */
   public array $constructor_options = [];
 
   /**
    * Field constructor.
    *
-   * @param FieldOptionsArray $options
+   * @phpstan-param FieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {
@@ -134,6 +134,9 @@ class Field implements \Iterator
     } else {
       $this->form = $this->resolveParentForm();
     }
+    /**
+     * @phpstan-var FieldOptionsArray&array<string, mixed> $options
+     */
     $options = array_merge([
       'validators'  => [],
       'filters'     => [],
@@ -154,7 +157,7 @@ class Field implements \Iterator
 
     if (!is_null($this->form) && property_exists($this->form, 'meta') && $this->form->meta instanceof DefaultMeta) {
       $this->meta = $this->form->meta;
-    } elseif (array_key_exists('meta', $options) && !is_null($options['meta'])) {
+    } elseif (!is_null($options['meta'])) {
       $this->meta = $options['meta'];
     }
     // Always unset meta
@@ -189,12 +192,15 @@ class Field implements \Iterator
     $this->type = get_class();
     $this->validators = $options['validators'];
     unset($options['validators']);
-    $this->id = is_null($options['id']) ? $this->name : $options['id'];
+    if (is_null($options['id'])) {
+      $this->id = $this->name;
+    } else {
+      $this->id = $options['id'];
+    }
     unset($options['id']);
-    $label = $options['label'];
+    $label = $options['label'] ?? ucwords(str_replace('_', ' ', $this->short_name));
     unset($options['label']);
-    $this->label = new Label($this->id,
-      null !== $label ? $label : ucwords(str_replace('_', ' ', $this->short_name)));
+    $this->label = $label;
     if ($options['widget']) {
       $this->widget = $options['widget'];
     }
@@ -209,7 +215,7 @@ class Field implements \Iterator
     foreach ($t as $x) {
       if (is_object($x) && property_exists($x, 'field_flags') && $x->field_flags) {
         foreach ($x->field_flags as $flag) {
-          $this->flags->$flag = true;
+          $this->flags->set($flag);
         }
       }
     }

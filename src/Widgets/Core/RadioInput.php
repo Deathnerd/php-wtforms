@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/28/2016
- * Time: 11:07 AM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -16,23 +11,17 @@ use WTForms\Fields\Core\Field;
  *
  * This widget is most commonly used in conjunction with ListWidget or some
  * other listing, as singular radio buttons are not very useful.
+ *
+ * @extends Input<string|int>
  */
 class RadioInput extends Input
 {
-  /**
-   * RadioInput constructor.
-   */
   public function __construct()
   {
     parent::__construct('radio');
   }
 
-  /**
-   * @param Field $field
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     if ($field->checked) {
       $options['checked'] = true;

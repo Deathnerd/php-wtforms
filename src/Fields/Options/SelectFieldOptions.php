@@ -7,31 +7,20 @@ namespace WTForms\Fields\Options;
 /**
  * Options class for SelectField constructors.
  *
+ * @phpstan-type ChoiceItem array{0: string|int, 1: string}
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  * @phpstan-type SelectFieldOptionsArray array{
- *     validators?: list<\WTForms\Validators\Validator|callable>,
- *     filters?: list<callable>,
- *     description?: string,
- *     id?: string|null,
- *     default?: mixed,
- *     widget?: \WTForms\Widgets\Core\Widget|null,
- *     render_kw?: array<string, mixed>,
- *     name?: string|null,
- *     prefix?: string,
- *     meta?: \WTForms\DefaultMeta|null,
- *     attributes?: array<string, mixed>,
- *     label?: string|null,
- *     class?: string|null,
- *     form?: \WTForms\Form|null,
- *     choices?: array<int, array{0: string|int, 1: string}>,
+ *     choices?: array<int, ChoiceItem>,
  *     coerce?: callable|null
- * }
+ * } & FieldOptionsArray
+ * @extends FieldOptions<SelectFieldOptionsArray>
  */
 class SelectFieldOptions extends FieldOptions
 {
   /**
    * List of choices in the format [[value, label], ...].
    *
-   * @var array<int, array{0: string|int, 1: string}>
+   * @var array<int, ChoiceItem>
    */
   public array $choices = [];
 

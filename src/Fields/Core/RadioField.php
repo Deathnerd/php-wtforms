@@ -15,16 +15,19 @@ use WTForms\Widgets\Core\RadioInput;
  * well) in order to allow custom rendering of the individual radio fields.
  *
  * @phpstan-import-type SelectFieldOptionsArray from SelectFieldOptions
+ * @phpstan-type RadioFieldOptionsArray SelectFieldOptionsArray
  */
 class RadioField extends SelectField
 {
   /**
-   * @param SelectFieldOptionsArray $options
+   * @phpstan-param SelectFieldOptionsArray $options
    */
   public function __construct(array $options = ['choices' => []])
   {
-    $options = array_merge(['widget' => new ListWidget('ul', false), 'option_widget' => new RadioInput()],
-      $options);
+    $options = array_merge([
+      'widget' => new ListWidget('ul', false),
+      'option_widget' => new RadioInput()
+                           ], $options);
     parent::__construct($options);
   }
 }

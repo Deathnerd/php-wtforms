@@ -167,7 +167,7 @@ if (!function_exists('starts_with')) {
    */
   function starts_with(string $haystack, $needle): bool
   {
-    if (null === $needle || '' === $needle) {
+    if ('' === $needle) {
       return false;
     }
 

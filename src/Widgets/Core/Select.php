@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 1/20/2016
- * Time: 2:26 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -21,17 +16,17 @@ use WTForms\Fields\Core\SelectFieldBase;
  * The field must provide a `getChoices()` method which the widget will
  * call on rendering; this method must yield tuples of
  * `($value, $label, $selected)`.
+ *
+ * @extends Widget<string|int>
  */
 class Select extends Widget
 {
-  public $multiple = false;
+  public bool $multiple = false;
 
   /**
-   * @param SelectFieldBase $field
-   *
-   * @return string
+   * @param SelectFieldBase<string|int> $field
    */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     $options = array_merge(['id' => $field->id], $options);
     $options['name'] = $field->name;
@@ -39,8 +34,9 @@ class Select extends Widget
       $options['multiple'] = true;
     }
 
+    /** @var SelectFieldBase<string|int> $field */
     $html = sprintf('<select %s>', html_params($options));
-    foreach ($field->getChoices() as list($value, $label, $selected)) {
+    foreach ($field->getChoices() as [$value, $label, $selected]) {
       $html .= self::renderOption($value, $label, $selected);
     }
     $html .= '</select>';
@@ -49,15 +45,12 @@ class Select extends Widget
   }
 
   /**
-   * Private method called when rendering each option as HTML.
+   * Render a single option element.
    *
-   * @param string $label
-   * @param bool   $selected
-   * @param array  $options
-   *
-   * @return string
+   * @param string|int|bool      $value
+   * @param array<string, mixed> $options
    */
-  public static function renderOption($value, $label, $selected, $options = [])
+  public static function renderOption($value, string $label, bool $selected, array $options = []): string
   {
     if (true === $value) {
       // Handle the special case of a true value

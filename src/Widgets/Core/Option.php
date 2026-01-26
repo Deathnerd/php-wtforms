@@ -1,25 +1,22 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 1/20/2016
- * Time: 2:11 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
+
+use WTForms\Fields\Core\Field;
 
 /**
  * Renders the individual option from a select field.
  *
  * This is just a convenience for various custom rendering situations, and an
  * option by itself does not constitute an entire field.
+ *
+ * @extends Widget<string|int>
  */
-class Option
+class Option extends Widget
 {
-  public $field_flags = [];
-
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     return Select::renderOption($field->value, $field->label->text, $field->checked, $options);
   }

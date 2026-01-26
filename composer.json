@@ -40,6 +40,8 @@
   },
   "scripts": {
     "format:check": "php-cs-fixer fix --dry-run --diff",
-    "format:fix": "php-cs-fixer fix"
+    "format:fix": "php-cs-fixer fix",
+    "test": "phpunit",
+    "analyze": "phpstan analyse"
   }
 }

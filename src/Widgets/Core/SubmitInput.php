@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 2/3/2016
- * Time: 4:46 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -16,23 +11,17 @@ use WTForms\Fields\Core\Field;
  *
  * The field's label is used as the text of the submit button instead of the
  * data on the field.
+ *
+ * @extends Input<bool>
  */
 class SubmitInput extends Input
 {
-  /**
-   * SubmitInput constructor.
-   */
   public function __construct()
   {
     parent::__construct('submit');
   }
 
-  /**
-   * @param Field $field
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     return parent::__invoke($field, array_merge(['value' => $field->label->text], $options));
   }

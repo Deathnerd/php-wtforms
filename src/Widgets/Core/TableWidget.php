@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 2/3/2016
- * Time: 4:17 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -20,30 +15,22 @@ use WTForms\Fields\Core\Field;
  * Hidden fields will not be displayed with a row, instead the field will be
  * pushed into a subsequent table row to ensure XHTML validity. Hidden fields
  * at the end of the field list will appear outside the table.
+ *
+ * @extends Widget<mixed>
  */
 class TableWidget extends Widget
 {
   /**
-   * @var bool if true, an enclosing `<table>` is placed around the rows
+   * If true, an enclosing `<table>` is placed around the rows.
    */
-  public $with_table_tag;
+  public bool $with_table_tag;
 
-  /**
-   * TableWidget constructor.
-   *
-   * @param bool $with_table_tag
-   */
-  public function __construct($with_table_tag = true)
+  public function __construct(bool $with_table_tag = true)
   {
     $this->with_table_tag = $with_table_tag;
   }
 
-  /**
-   * @param Field $field
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     $html = '';
     $hidden = '';

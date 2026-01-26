@@ -17,9 +17,11 @@ use WTForms\Widgets\Core\CheckboxInput;
  * ``default``-option. Any value for ``default``, e.g. ``default="checked"`` puts
  * ``checked`` into the html-element and sets the ``data`` to ``true``.
  *
- * @extends Field<bool>
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  *
- * @property bool $data
+ * @phpstan-type BooleanFieldOptionsArray array{false_values?: array<int, string>} & FieldOptionsArray
+ *
+ * @extends Field<bool>
  */
 class BooleanField extends Field
 {
@@ -35,14 +37,12 @@ class BooleanField extends Field
   /**
    * BooleanField constructor.
    *
-   * @param FieldOptions::FieldOptionsArray $options
-   *
-   * @phpstan-param array<string, mixed> $options
+   * @phpstan-param BooleanFieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new CheckboxInput()], $options);
-    if (array_key_exists('false_values', $options) && is_array($options['false_values'])) {
+    if (array_key_exists('false_values', $options)) {
       $this->false_values = $options['false_values'];
       unset($options['false_values']);
     }
@@ -83,8 +83,8 @@ class BooleanField extends Field
    */
   public function __get(string $name)
   {
-    if (in_array($name, ['value'])) {
-      if (null !== $this->raw_data && !empty($this->raw_data)) {
+    if ('value' == $name) {
+      if (!empty($this->raw_data)) {
         return strval($this->raw_data[0]);
       }
 

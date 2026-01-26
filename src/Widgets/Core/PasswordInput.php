@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 2/3/2016
- * Time: 4:42 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -16,32 +11,21 @@ use WTForms\Fields\Core\Field;
  *
  * For security purposes, this field will not reproduce the value on a form
  * submit by default. To have the value filled in, set the `$hide_value` to
- * `false`
+ * `false`.
+ *
+ * @extends Input<string>
  */
 class PasswordInput extends Input
 {
-  /**
-   * @var bool
-   */
-  public $hide_value;
+  public bool $hide_value;
 
-  /**
-   * PasswordInput constructor.
-   *
-   * @param bool $hide_value
-   */
-  public function __construct($hide_value = true)
+  public function __construct(bool $hide_value = true)
   {
     parent::__construct('password');
     $this->hide_value = $hide_value;
   }
 
-  /**
-   * @param Field $field
-   *
-   * @return string
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     if ($this->hide_value) {
       $options['value'] = '';

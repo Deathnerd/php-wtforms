@@ -1,11 +1,6 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/28/2016
- * Time: 9:09 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
@@ -15,6 +10,8 @@ use WTForms\Fields\Core\Field;
  * Render a checkbox.
  *
  * The ``checked`` HTML attribute is set if the field's data is a non-false value.
+ *
+ * @extends Input<bool>
  */
 class CheckboxInput extends Input
 {
@@ -26,12 +23,7 @@ class CheckboxInput extends Input
     parent::__construct('checkbox');
   }
 
-  /**
-   * @param Field $field
-   *
-   * @return string|void
-   */
-  public function __invoke($field, array $options = [])
+  public function __invoke(Field $field, array $options = []): string
   {
     if ($field->checked or $field->data) {
       $options['checked'] = true;

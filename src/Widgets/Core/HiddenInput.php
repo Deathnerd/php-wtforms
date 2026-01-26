@@ -1,21 +1,20 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/20/2016
- * Time: 10:10 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Widgets\Core;
 
 /**
  * Render a hidden input.
+ *
+ * @extends Input<mixed>
  */
 class HiddenInput extends Input
 {
+  /** @var list<string> */
   public array $field_flags = ['hidden'];
-  public $input_type = 'hidden';
+
+  public string $type = 'hidden';
 
   public function __construct()
   {

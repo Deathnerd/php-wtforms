@@ -1,39 +1,54 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/21/2016
- * Time: 10:58 AM.
- */
+declare(strict_types=1);
 
 namespace WTForms;
 
 /**
- * Holds a set of boolean flags as attributes.
+ * Holds a set of boolean flags for a field.
  *
- * Accessing a non-existing attribute returns false for its value
- *
- * @property bool $required
- * @property bool $optional
+ * Flags are set by validators and widgets to communicate metadata
+ * to templates and rendering logic (e.g., required indicators).
  */
 class Flags
 {
   /**
-   * @internal
-   *
-   * @return bool
+   * Field is required (set by InputRequired, DataRequired validators).
    */
-  public function __get($name)
+  public bool $required = false;
+
+  /**
+   * Field is optional (set by Optional validator).
+   */
+  public bool $optional = false;
+
+  /**
+   * Field should be hidden (set by HiddenInput widget).
+   */
+  public bool $hidden = false;
+
+  /**
+   * Set a flag by name.
+   *
+   * @throws \InvalidArgumentException if flag name is unknown
+   */
+  public function set(string $flag, bool $value = true): void
   {
-    return property_exists($this, $name) ? $this->$name : $this->$name = false;
+    if (!property_exists($this, $flag)) {
+      throw new \InvalidArgumentException(sprintf('Unknown flag "%s". Known flags: required, optional, hidden', $flag));
+    }
+    $this->$flag = $value;
   }
 
   /**
-   * @internal
+   * Check if a flag is set.
    */
-  public function __set($name, $value)
+  public function has(string $flag): bool
   {
-    $this->$name = $value;
+    if (!property_exists($this, $flag)) {
+      return false;
+    }
+
+    return $this->$flag;
   }
 }

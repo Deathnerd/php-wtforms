@@ -17,15 +17,13 @@ use WTForms\Widgets\Core\TextInput;
  * represents an ``<input type="text">``.
  *
  * @extends Field<string>
- *
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  * @property string $data
  */
 class StringField extends Field
 {
   /**
-   * @param FieldOptions::FieldOptionsArray $options
-   *
-   * @phpstan-param array<string, mixed> $options
+   * @phpstan-param FieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {

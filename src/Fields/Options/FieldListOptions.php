@@ -9,25 +9,13 @@ use WTForms\Fields\Core\Field;
 /**
  * Options class for FieldList constructors.
  *
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  * @phpstan-type FieldListOptionsArray array{
- *     validators?: list<\WTForms\Validators\Validator|callable>,
- *     filters?: list<callable>,
- *     description?: string,
- *     id?: string|null,
- *     default?: mixed,
- *     widget?: \WTForms\Widgets\Core\Widget|null,
- *     render_kw?: array<string, mixed>,
- *     name?: string|null,
- *     prefix?: string,
- *     meta?: \WTForms\DefaultMeta|null,
- *     attributes?: array<string, mixed>,
- *     label?: string|null,
- *     class?: string|null,
- *     form?: \WTForms\Form|null,
  *     inner_field?: Field<mixed>|null,
  *     min_entries?: int,
  *     max_entries?: int|null
- * }
+ * } & FieldOptionsArray
+ * @extends FieldOptions<FieldListOptionsArray>
  */
 class FieldListOptions extends FieldOptions
 {

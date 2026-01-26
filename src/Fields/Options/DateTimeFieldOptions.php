@@ -7,23 +7,9 @@ namespace WTForms\Fields\Options;
 /**
  * Options class for DateTimeField constructors.
  *
- * @phpstan-type DateTimeFieldOptionsArray array{
- *     validators?: list<\WTForms\Validators\Validator|callable>,
- *     filters?: list<callable>,
- *     description?: string,
- *     id?: string|null,
- *     default?: mixed,
- *     widget?: \WTForms\Widgets\Core\Widget|null,
- *     render_kw?: array<string, mixed>,
- *     name?: string|null,
- *     prefix?: string,
- *     meta?: \WTForms\DefaultMeta|null,
- *     attributes?: array<string, mixed>,
- *     label?: string|null,
- *     class?: string|null,
- *     form?: \WTForms\Form|null,
- *     format?: string
- * }
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
+ * @phpstan-type DateTimeFieldOptionsArray array{format?: string} & FieldOptionsArray
+ * @extends FieldOptions<DateTimeFieldOptionsArray>
  */
 class DateTimeFieldOptions extends FieldOptions
 {
