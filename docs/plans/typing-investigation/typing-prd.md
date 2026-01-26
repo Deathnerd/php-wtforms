@@ -426,16 +426,16 @@ Complete typing for Form and DefaultMeta classes:
 
 ### 8.3 Investigation Status
 
-- [ ] Q8.1 - ArrayAccess typed
-- [ ] Q8.2 - Iterator typed
-- [ ] Q8.3 - $_fields storage typed
-- [ ] Q8.4 - Magic __get handling designed
-- [ ] Q8.5 - data/errors typed
-- [ ] Q8.6 - populate_obj generics designed
-- [ ] Q8.7 - formdata input typed
-- [ ] Q8.8 - Meta configuration typed
-- [ ] Q8.9 - validate() signature defined
-- [ ] Q8.10 - CSRF integration typed
+- [x] Q8.1 - ArrayAccess typed
+- [x] Q8.2 - Iterator typed
+- [x] Q8.3 - $_fields storage typed
+- [x] Q8.4 - Magic __get handling designed
+- [x] Q8.5 - data/errors typed
+- [x] Q8.6 - populate_obj generics designed
+- [x] Q8.7 - formdata input typed
+- [x] Q8.8 - Meta configuration typed
+- [x] Q8.9 - validate() signature defined
+- [x] Q8.10 - CSRF integration typed
 
 ---
 

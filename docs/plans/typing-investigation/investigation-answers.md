@@ -2593,7 +2593,323 @@ abstract public function __invoke(Field $field, array $options = []): string;
 
 ## Section 8: Form & Meta Typing
 
-[Template repeats for Q8.1 through Q8.10...]
+### Q8.1 - ArrayAccess Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (FormArrayable trait)
+
+**Findings:**
+**Current implementation:**
+```php
+class Form implements \ArrayAccess
+{
+    public function offsetGet($offset) // Returns Field
+    public function offsetSet($offset, $value) // Accepts Field
+    public function offsetExists($offset) // Returns bool
+    public function offsetUnset($offset) // Returns void
+}
+```
+
+**BREAKING CHANGE APPROVED:** Remove ArrayAccess entirely.
+
+**New approach:**
+```php
+/**
+ * @return Field<mixed>|null
+ */
+public function getField(string $name): ?Field
+
+public function hasField(string $name): bool
+```
+
+Direct property access `$form->username` via typed properties replaces `$form['username']`.
+
+---
+
+### Q8.2 - Iterator Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (FormIterator trait)
+
+**Findings:**
+**Current:**
+```php
+class Form implements \Iterator
+{
+    public function current() // Returns Field
+    public function key() // Returns string
+    public function next() // void
+    public function rewind() // void
+    public function valid() // bool
+}
+```
+
+**Recommended:**
+```php
+/**
+ * @implements \Iterator<string, Field<mixed>>
+ */
+class Form implements \Iterator
+{
+    /** @return Field<mixed> */
+    public function current(): Field
+    /** @return string */
+    public function key(): string
+}
+```
+
+Iterating over form yields field names as keys and Field objects as values.
+
+---
+
+### Q8.3 - $_fields Storage Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @var array<Field> */
+public $fields = [];
+```
+
+**Recommended:**
+```php
+/** @var array<string, Field<mixed>> */
+private array $fields = [];
+```
+
+- Key: field name (string)
+- Value: Field instance
+- Make private, access via getField/hasField
+
+---
+
+### Q8.4 - Magic __get Handling
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+public function __get($field_name)
+{
+    if ($this->offsetExists($field_name)) {
+        return $this->offsetGet($field_name);
+    }
+    return null;
+}
+```
+
+**BREAKING CHANGE APPROVED:** Remove `__get` magic.
+
+**New approach:** Real typed properties via constructor promotion:
+```php
+class LoginForm extends Form {
+    public function __construct(
+        public StringField $username,
+        public PasswordField $password,
+    ) {
+        parent::__construct();
+    }
+}
+
+// Usage - fully typed
+$form->username  // StringField (real property)
+```
+
+---
+
+### Q8.5 - data/errors Types
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current (virtual properties via @property):**
+```php
+/**
+ * @property array $data
+ * @property array $errors
+ */
+```
+
+**Recommended types:**
+```php
+/**
+ * @return array<string, mixed>
+ */
+public function getData(): array
+
+/**
+ * @return array<string, list<string>>
+ */
+public function getErrors(): array
+```
+
+- `data`: Map of field name to field data value
+- `errors`: Map of field name to list of error messages
+
+---
+
+### Q8.6 - populate_obj Generics
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+public function populateObj($obj) // object
+```
+
+**Recommended:**
+```php
+/**
+ * @template T of object
+ * @param T $obj
+ * @return T
+ */
+public function populateObj(object $obj): object
+```
+
+This allows type-safe object population:
+```php
+$user = new User();
+$form->populateObj($user);  // Returns User
+```
+
+---
+
+### Q8.7 - formdata Input Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:** `array` in constructor options.
+
+**Recommended:**
+```php
+/**
+ * @phpstan-type FormData array<string, string|array<int, string>>
+ */
+```
+
+Form data is:
+- Single values: `string`
+- Multi-value (checkboxes, multi-select): `array<int, string>`
+
+All values are strings from `$_POST`/`$_GET`.
+
+---
+
+### Q8.8 - Meta Configuration Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (DefaultMeta.php)
+
+**Findings:**
+**Current Meta properties:**
+```php
+public string $csrf_field_name = 'csrf_token';
+public ?string $csrf_time_limit = null;
+public bool $csrf = false;
+public ?string $csrf_secret = null;
+/** @var ?class-string<CSRF> */
+public ?string $csrf_class = null;
+```
+
+**Recommended shape type:**
+```php
+/**
+ * @phpstan-type MetaOptions array{
+ *     csrf?: bool,
+ *     csrf_field_name?: string,
+ *     csrf_time_limit?: string|null,
+ *     csrf_secret?: string|null,
+ *     csrf_class?: class-string<CSRF>|null
+ * }
+ */
+```
+
+---
+
+### Q8.9 - validate() Signature
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+public function validate($extra_validators = [])
+```
+
+**Recommended:**
+```php
+/**
+ * @param array<string, list<Validator<mixed>>> $extra_validators
+ * @return bool True if validation passed
+ */
+public function validate(array $extra_validators = []): bool
+```
+
+Returns `true` if all fields valid, `false` otherwise.
+Errors available via `getErrors()`.
+
+---
+
+### Q8.10 - CSRF Field Integration
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @var array|Field|null */
+public $csrf_token;
+
+/** @var object */
+public $csrf;
+```
+
+**Recommended:**
+```php
+use WTForms\CSRF\Core\CSRFTokenField;
+use WTForms\CSRF\Core\CSRF;
+
+/** @var CSRFTokenField|null */
+public ?CSRFTokenField $csrf_token = null;
+
+/** @var CSRF|null */
+public ?CSRF $csrf = null;
+```
+
+Proper types for CSRF integration.
 
 ---
 
