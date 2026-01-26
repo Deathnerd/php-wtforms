@@ -9,3 +9,4 @@ tests/_reports
 .phpunit.result.cache
 .php-cs-fixer.cache
 phpstan-errors.json
+/.mcp.json
