@@ -12,9 +12,9 @@
 
 **User has approved the following breaking changes for type safety:**
 
-1. **Replace magic methods** (`__get`/`__set`) with explicit typed getters/setters
-2. **Remove ArrayAccess** on Form - use explicit `getField()` methods instead
-3. **Remove magic public properties** - enforce access through typed methods
+1. **Remove magic methods** (`__get`/`__set`) for dynamic property lookup
+2. **Remove ArrayAccess** on Form (`$form['field']` syntax)
+3. **Keep direct property access** - `$form->username` stays, but as real typed properties (via constructor promotion), not magic
 4. **Separate concerns** into distinct typed structures:
    - Field attributes (HTML attributes)
    - Field data (the actual value)
@@ -22,7 +22,17 @@
    - Field options (configuration)
 5. **Use shapes/contracts** - typed arrays or value objects with enforced access patterns
 
-**Rationale:** The original library was a faithful Python port with dynamic features. Modern PHP with static analysis benefits from explicit typing over dynamic magic.
+**Key distinction:**
+```php
+// KEEP - real typed property (PHP 8 constructor promotion)
+$form->username  // StringField
+
+// REMOVE - magic/dynamic access
+$form['username']  // ArrayAccess
+$form->__get('username')  // Magic method fallback
+```
+
+**Rationale:** The original library was a faithful Python port with dynamic features. Modern PHP with static analysis benefits from explicit typing. See `docs/plans/conformity-prd.md` for the PHP 8+ vision.
 
 ---
 
@@ -856,16 +866,21 @@ public function __get(string $name) {
 **Example transformation:**
 ```php
 // Before (magic, untyped)
-$field->value           // mixed
-$form['username']       // mixed
+$field->value           // mixed via __get
+$form['username']       // mixed via ArrayAccess
 $field->flags->required // magic Flags object
 
 // After (explicit, typed)
-$field->getValue(): string
-$form->getField('username'): StringField
+$form->username         // StringField (real typed property, NOT magic)
+$form->username->getValue(): string
 $field->getFlags()->isRequired(): bool
 $field->getAttributes()->get('class'): ?string
+
+// Dynamic access when needed (rare)
+$form->getField('username'): ?Field
 ```
+
+**Key insight:** Direct property access `$form->username` stays - it becomes a real typed property via constructor promotion, not magic `__get`. Only ArrayAccess and magic method fallbacks are removed.
 
 **Follow-up Questions:**
 - None - full breaking changes approved
@@ -925,72 +940,168 @@ Only 1 ignore in entire codebase - excellent baseline.
 
 ### Q2.8 - ArrayAccess Configuration
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (Form.php)
+- [x] Code inspection (Form.php)
 - [ ] Documentation review
 
 **Findings:**
-[TODO]
+**Current ArrayAccess implementation in Form.php:**
+- `offsetExists($offset)` - checks if field exists
+- `offsetGet($offset)` - returns Field (untyped)
+- `offsetSet($offset, $value)` - sets field
+- `offsetUnset($offset)` - removes field
+
+**PHPStan ArrayAccess typing options:**
+1. `@implements ArrayAccess<string, Field>` - generic ArrayAccess
+2. `@phpstan-type` for specific offset types
+3. Custom extension for dynamic key typing
 
 **Evidence:**
-```
-[TODO]
+```php
+// Current usage
+$form['username']  // Returns Field, but PHPStan sees mixed
+$form['password'] = new PasswordField();  // Works but untyped
 ```
 
 **Decision/Recommendation:**
-[TODO]
+
+**OBSOLETE - ArrayAccess will be removed, but direct property access stays.**
+
+The distinction:
+- **Keep:** `$form->username` - direct typed property (real property, not magic)
+- **Remove:** `$form['username']` - ArrayAccess (untyped)
+- **Remove:** `__get('username')` - magic method fallback (untyped)
+
+With PHP 8 constructor property promotion (per conformity-prd.md):
+```php
+class LoginForm extends Form {
+    public function __construct(
+        public StringField $username,  // Real typed property
+        public PasswordField $password,
+    ) {
+        parent::__construct();
+    }
+}
+
+// Usage - fully typed, no magic
+$form->username->getValue()  // PHPStan knows this is StringField
+$form->password->validate()  // PHPStan knows this is PasswordField
+```
+
+For dynamic access (rare cases), provide explicit method:
+```php
+$form->getField('username'): ?Field  // Returns Field or null
+$form->hasField('username'): bool
+```
+
+No ArrayAccess configuration needed since we're removing it.
 
 **Follow-up Questions:**
-- [TODO]
+- None
 
 ---
 
 ### Q2.9 - Iterable/Generic Strictness
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review
+- [x] Documentation review
 
 **Findings:**
-[TODO]
+**These options are DEPRECATED in PHPStan 2.x:**
+
+| Option | What It Did | Status |
+|--------|-------------|--------|
+| `checkMissingIterableValueType` | Flag `array` without `array<T>` | Deprecated |
+| `checkGenericClassInNonGenericObjectType` | Flag generic classes without type params | Removed |
+
+**In PHPStan 2.x:**
+- These checks are now controlled by **level 6**
+- Level 6 automatically checks missing generic types
+- Use `ignoreErrors` with `identifier: missingType.generics` to suppress if needed
 
 **Evidence:**
-```
-[TODO]
+```neon
+# OLD (deprecated)
+parameters:
+    checkMissingIterableValueType: true
+    checkGenericClassInNonGenericObjectType: true
+
+# NEW (PHPStan 2.x)
+# Just use level 6+ and these checks are automatic
+# To ignore specific errors:
+parameters:
+    ignoreErrors:
+        - identifier: missingType.generics
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. **Don't use deprecated options** - they no longer work in PHPStan 2.1
+2. **Use level 6** - this enables generic type checking automatically
+3. **Don't ignore errors** - with breaking changes approved, fix them properly
+4. All classes extending generic base classes must specify type parameters
 
 **Follow-up Questions:**
-- [TODO]
+- None
 
 ---
 
 ### Q2.10 - CI Integration
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (.github/workflows/)
-- [ ] Documentation review
+- [x] Code inspection (.github/workflows/)
+- [x] Documentation review
 
 **Findings:**
-[TODO]
+**Current CI:** `.github/workflows/tests.yml` exists but only runs PHPUnit tests.
+
+**Missing:** PHPStan is NOT in CI - no static analysis on PRs.
+
+**Current workflow structure:**
+- Triggers: push/PR to master
+- PHP versions: 7.4 only (TODO comment for 5.6, 8.4)
+- Steps: checkout → setup PHP → composer install → phpunit → codecov
 
 **Evidence:**
-```
-[TODO]
+```yaml
+# Current tests.yml - NO PHPStan step
+- name: Run tests
+  run: vendor/bin/phpunit ...
 ```
 
 **Decision/Recommendation:**
-[TODO]
+**Add PHPStan to CI workflow:**
+
+```yaml
+# Add after "Install dependencies"
+- name: Run PHPStan
+  run: vendor/bin/phpstan analyse --memory-limit=512M
+
+# Or as separate job for parallel execution
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - run: composer install --prefer-dist --no-progress
+      - run: vendor/bin/phpstan analyse --memory-limit=512M
+```
+
+**When to add:**
+1. First, fix level 5 errors (8 remaining)
+2. Add PHPStan to CI at level 5
+3. Increment level as we fix more errors
 
 **Follow-up Questions:**
-- [TODO]
+- None
 
 ---
 

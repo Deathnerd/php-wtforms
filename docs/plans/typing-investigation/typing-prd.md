@@ -142,9 +142,9 @@ Configure PHPStan for maximum strictness:
 - [x] Q2.5 - Relevant extensions identified
 - [x] Q2.6 - Magic method handling strategy defined
 - [x] Q2.7 - Acceptable ignores documented
-- [ ] Q2.8 - ArrayAccess configuration solved
-- [ ] Q2.9 - Iterable/generic strictness decided
-- [ ] Q2.10 - CI integration planned
+- [x] Q2.8 - ArrayAccess configuration solved
+- [x] Q2.9 - Iterable/generic strictness decided
+- [x] Q2.10 - CI integration planned
 
 ---
 
