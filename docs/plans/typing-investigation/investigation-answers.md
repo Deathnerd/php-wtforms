@@ -1,11 +1,10 @@
-# Investigation Answers
-## PHP-WTForms Comprehensive Typing Initiative
-
-**Investigation Started:** 2026-01-26
-**Last Updated:** 2026-01-26
-**Current Section:** 2
-**Status:** IN_PROGRESS
-
+---
+title: Investigation Answers
+project: PHP-WTForms Comprehensive Typing Initiative
+investigation_started: 2026-01-26
+last_updated: 2026-01-26
+current_section: 2
+status: IN_PROGRESS
 ---
 
 ## Important Context: Breaking Changes Approved
@@ -2303,7 +2302,292 @@ if (@preg_match($this->regex, '') === false) {
 
 ## Section 7: Widget Classes Typing
 
-[Template repeats for Q7.1 through Q7.10...]
+### Q7.1 - Widget TData Template Pattern
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (Widget.php)
+
+**Findings:**
+**Current pattern:**
+```php
+/**
+ * @template TData The type of data the associated field holds
+ */
+abstract class Widget
+{
+    /**
+     * @param Field<TData> $field The field to render
+     */
+    abstract public function __invoke(Field $field, array $options = []): string;
+}
+```
+
+**Subclass pattern:**
+```php
+/**
+ * @template TData
+ * @extends Widget<TData>
+ */
+class Input extends Widget
+
+/**
+ * @extends Widget<string|int>
+ */
+class Select extends Widget
+```
+
+This pattern links widget to field data type.
+
+---
+
+### Q7.2 - Field Compatibility Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current approach:**
+```php
+// Select.php - uses @param for specific field type
+/**
+ * @param SelectFieldBase<string|int> $field
+ */
+public function __invoke(Field $field, array $options = []): string
+```
+
+**Problem:** PHP signature is `Field` but PHPDoc says `SelectFieldBase`.
+
+**Recommendation:** Use bounds on template:
+```php
+/**
+ * @template TField of SelectFieldBase
+ * @extends Widget<string|int>
+ */
+class Select extends Widget
+{
+    /**
+     * @param TField $field
+     */
+    public function __invoke(Field $field, array $options = []): string
+}
+```
+
+---
+
+### Q7.3 - Options Parameter Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @param array<string, mixed> $options */
+public function __invoke(Field $field, array $options = []): string
+```
+
+**More specific:**
+```php
+/**
+ * @phpstan-type HtmlAttributes array<string, string|int|bool|array<string>>
+ * @param HtmlAttributes $options
+ */
+```
+
+HTML attributes can be:
+- `string` - normal value
+- `int` - numeric (tabindex, etc.)
+- `bool` - true = attribute present, false = omit
+- `array<string>` - for class (joined with space)
+
+---
+
+### Q7.4 - HTML Attributes Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (html_params)
+
+**Findings:**
+**Based on `html_params()` function:**
+```php
+/**
+ * @phpstan-type HtmlAttributeValue string|int|bool|array<int, string>
+ * @phpstan-type HtmlAttributes array<string, HtmlAttributeValue>
+ */
+```
+
+**Processing:**
+- `true` → attribute name only (`checked`)
+- `false` → omit attribute
+- `array` → join with space (`class_` => ['foo', 'bar'] → `class="foo bar"`)
+- Other → escape with `e()`
+
+---
+
+### Q7.5 - Return Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:** `string`
+
+**Options:**
+1. `string` - simple, works
+2. `non-empty-string` - guarantees output
+3. Custom branded type for HTML
+
+**Recommendation:** Keep `string`, but add Psalm taint annotation:
+```php
+/**
+ * @psalm-taint-escape html
+ * @return string HTML output
+ */
+public function __invoke(Field $field, array $options = []): string
+```
+
+---
+
+### Q7.6 - ListWidget Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (ListWidget.php)
+
+**Findings:**
+**ListWidget renders a collection of subfields:**
+```php
+foreach ($field as $subfield) {
+    $html .= sprintf('<li>%s %s</li>', $subfield->label, $subfield());
+}
+```
+
+**Type:**
+```php
+/**
+ * @template TSubField of Field
+ * @extends Widget<array<int, mixed>>
+ */
+class ListWidget extends Widget
+{
+    /**
+     * @param FieldList<TSubField, mixed> $field
+     */
+    public function __invoke(Field $field, array $options = []): string
+}
+```
+
+---
+
+### Q7.7 - Select Widget Choices Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (Select.php)
+
+**Findings:**
+**Choices iteration:**
+```php
+foreach ($field->getChoices() as [$value, $label, $selected]) {
+    $html .= self::renderOption($value, $label, $selected);
+}
+```
+
+**Type:**
+```php
+/**
+ * @phpstan-type Choice array{0: string|int, 1: string, 2: bool}
+ * @return iterable<int, Choice>
+ */
+public function getChoices(): iterable
+```
+
+**Note (Q4.8):** `$label` in `renderOption` should be escaped with `e()`.
+
+---
+
+### Q7.8 - Widget field_flags Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @var list<string> */
+public array $field_flags = [];
+```
+
+**Usage:** Widget declares which flags it sets on fields.
+
+**This differs from Validator's `field_flags`:**
+- Validator: `array<string, bool>` (flag name => value)
+- Widget: `list<string>` (flag names)
+
+**Recommendation:** Align to same pattern:
+```php
+/** @var array<string, bool> */
+public array $field_flags = [];
+```
+
+---
+
+### Q7.9 - State Modification During Rendering
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Widgets that modify field state:**
+- `CheckboxInput` - may set `checked` attribute based on `$field->data`
+- `Select` - iterates and checks `$selected` state
+
+**Generally safe:** Widgets read state, don't modify it.
+
+**Recommendation:** Keep widgets pure (read-only). If state modification needed, document it.
+
+---
+
+### Q7.10 - Taint Sinks in Widgets
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (covered in Q4.3)
+
+**Findings:**
+**All widgets are taint sinks** - they output HTML.
+
+**Already sanitized:**
+- `html_params()` escapes attribute values via `e()`
+- `TextArea` escapes content with `e($field->value)`
+
+**Needs fixing:**
+- `Select::renderOption()` - `$label` not escaped
+
+**Annotations to add:**
+```php
+/**
+ * @psalm-taint-sink html
+ */
+abstract public function __invoke(Field $field, array $options = []): string;
+```
 
 ---
 

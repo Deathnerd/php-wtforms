@@ -378,16 +378,16 @@ Complete typing for all widget classes:
 
 ### 7.3 Investigation Status
 
-- [ ] Q7.1 - TData template pattern documented
-- [ ] Q7.2 - Field compatibility typing designed
-- [ ] Q7.3 - Options parameter typed
-- [ ] Q7.4 - HTML attributes typed
-- [ ] Q7.5 - Return type decided
-- [ ] Q7.6 - ListWidget typed
-- [ ] Q7.7 - Select widget typed
-- [ ] Q7.8 - field_flags typed
-- [ ] Q7.9 - State modification typing handled
-- [ ] Q7.10 - Taint sinks identified
+- [x] Q7.1 - TData template pattern documented
+- [x] Q7.2 - Field compatibility typing designed
+- [x] Q7.3 - Options parameter typed
+- [x] Q7.4 - HTML attributes typed
+- [x] Q7.5 - Return type decided
+- [x] Q7.6 - ListWidget typed
+- [x] Q7.7 - Select widget typed
+- [x] Q7.8 - field_flags typed
+- [x] Q7.9 - State modification typing handled
+- [x] Q7.10 - Taint sinks identified
 
 ---
 
