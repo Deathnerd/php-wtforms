@@ -1391,7 +1391,305 @@ Run PHPStan and Psalm in parallel for speed.
 
 ## Section 4: Taint Analysis
 
-[Template repeats for Q4.1 through Q4.10...]
+### Q4.1 - Taint Analysis Concepts
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review (Psalm docs)
+
+**Findings:**
+**Psalm taint analysis tracks data flow from sources to sinks:**
+
+| Concept | Description |
+|---------|-------------|
+| **Source** | Where untrusted data enters (`$_GET`, `$_POST`, user input) |
+| **Sink** | Where data shouldn't reach unescaped (`echo`, `include`, SQL) |
+| **Sanitizer** | Function that makes data safe (`htmlspecialchars`, prepared statements) |
+
+**How it works:**
+1. Psalm builds a graph of data flow
+2. Traces tainted data from sources through transformations
+3. Warns if tainted data reaches a sink unsanitized
+
+**Run with:**
+```bash
+vendor/bin/psalm --taint-analysis
+```
+
+---
+
+### Q4.2 - Taint Sources in php-wtforms
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Primary taint sources:**
+
+| Location | Source | Why |
+|----------|--------|-----|
+| `Field::process($formdata)` | `$formdata` parameter | Raw user input from form submission |
+| `Field::$raw_data` | Property | Stores raw form values |
+| `Form::__construct($options['formdata'])` | Constructor option | Entry point for form data |
+
+**Code evidence:**
+```php
+// Field.php:402-406
+if ($formdata) {
+    if (array_key_exists($this->name, $formdata)) {
+        $this->raw_data = $formdata[$this->name];
+    }
+}
+```
+
+**Annotation needed:**
+```php
+/**
+ * @psalm-taint-source input
+ */
+public function process(array $formdata, $data = null): void
+```
+
+---
+
+### Q4.3 - Taint Sinks in php-wtforms
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (widgets)
+
+**Findings:**
+**Primary taint sinks (HTML output):**
+
+| Location | Sink | Risk |
+|----------|------|------|
+| `Input::__invoke()` | `sprintf('<input %s>', ...)` | XSS via attributes |
+| `TextArea::__invoke()` | `sprintf('<textarea>%s</textarea>', ...)` | XSS in content |
+| `Select::renderOption()` | `sprintf('<option>%s</option>', ...)` | XSS in labels |
+| `ListWidget::__invoke()` | `sprintf('<li>%s</li>', ...)` | XSS in list items |
+| `Label::__invoke()` | Label text output | XSS in labels |
+
+**Annotation needed:**
+```php
+/**
+ * @psalm-taint-sink html $output
+ */
+public function __invoke(...): string
+```
+
+---
+
+### Q4.4 - Sanitization Functions
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (helpers.php)
+
+**Findings:**
+**Existing sanitizers:**
+
+| Function | Purpose | Location |
+|----------|---------|----------|
+| `e()` | HTML escape via `htmlspecialchars` | helpers.php:20-23 |
+| `html_params()` | Escapes attribute values via `e()` | helpers.php:113-136 |
+
+**Code:**
+```php
+function e(string $string): string {
+    return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+}
+
+// In html_params():
+$params[] = sprintf('%s="%s"', $key, e($value));
+```
+
+**Good:** `html_params()` properly escapes attribute values.
+**Good:** `TextArea` uses `e($field->value)` for content.
+
+---
+
+### Q4.5 - Source Annotation Syntax
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Psalm source annotation:**
+```php
+/**
+ * @psalm-taint-source input
+ */
+public function getUserInput(): string
+```
+
+**Taint types:**
+- `input` - user input (forms, URL params)
+- `html` - HTML content
+- `sql` - SQL queries
+- `shell` - shell commands
+- `file` - file paths
+- `cookie` - cookie data
+
+**For php-wtforms:**
+```php
+// Field.php
+/**
+ * @psalm-taint-source input $formdata
+ */
+public function process(array $formdata, $data = null): void
+```
+
+---
+
+### Q4.6 - Sink Annotation Syntax
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Psalm sink annotation:**
+```php
+/**
+ * @psalm-taint-sink html $content
+ */
+public function render(string $content): void
+```
+
+**For php-wtforms widgets:**
+```php
+// Widget return values go to HTML output
+/**
+ * @psalm-taint-sink html
+ * @return string
+ */
+public function __invoke(Field $field, array $options = []): string
+```
+
+---
+
+### Q4.7 - Escape Annotation Syntax
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Psalm escape annotation:**
+```php
+/**
+ * @psalm-taint-escape html
+ */
+function e(string $string): string
+{
+    return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+}
+```
+
+**For php-wtforms:**
+```php
+// helpers.php - add annotation to e()
+/**
+ * @psalm-taint-escape html
+ */
+function e(string $string): string
+
+// html_params() also effectively escapes
+/**
+ * @psalm-taint-escape html
+ */
+function html_params(array $options): string
+```
+
+---
+
+### Q4.8 - Existing Vulnerabilities Check
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current security analysis:**
+
+| Widget | Escaping | Status |
+|--------|----------|--------|
+| Input | `html_params()` for attrs | ✓ Safe |
+| TextArea | `e($field->value)` for content | ✓ Safe |
+| Select | `html_params()` for attrs, `$label` unescaped | ⚠️ Review |
+| ListWidget | Direct `$subfield()` output | ✓ Delegated |
+
+**Potential issue in Select.php:64:**
+```php
+return sprintf('<option %s>%s</option>', html_params($options), $label);
+// $label is not escaped!
+```
+
+**Recommendation:** Ensure `$label` is escaped: `e($label)`
+
+---
+
+### Q4.9 - Legitimate HTML Handling
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**For intentionally HTML output (form rendering):**
+
+Use `@psalm-taint-specialize` to create safe paths:
+```php
+/**
+ * @psalm-taint-specialize
+ */
+public function render(): string
+```
+
+Or mark specific variables as escaped:
+```php
+/** @var string $html @psalm-taint-escape html */
+$html = $this->buildForm();
+```
+
+**For php-wtforms:**
+The widget output IS the safe HTML (after escaping). Mark widget `__invoke()` returns as escaped since they use `e()` and `html_params()`.
+
+---
+
+### Q4.10 - PHPStan Taint Analysis
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Web search
+
+**Findings:**
+**PHPStan does NOT have built-in taint analysis.**
+
+There was a third-party extension but it's no longer maintained.
+
+**Recommendation:**
+Use Psalm for taint analysis, PHPStan for type analysis.
+
+```bash
+# Taint analysis with Psalm
+vendor/bin/psalm --taint-analysis
+
+# Type analysis with PHPStan
+vendor/bin/phpstan analyse
+```
 
 ---
 
