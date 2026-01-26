@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/20/2016
- * Time: 2:10 PM
+ * Time: 2:10 PM.
  */
 
 namespace WTForms\Fields\Core;
@@ -18,9 +19,10 @@ use WTForms\Widgets\Core\Option;
  * provide this functionality.
  *
  * @template TData
+ *
  * @extends Field<TData>
+ *
  * @property array $options
- * @package WTForms\Fields\Core
  */
 abstract class SelectFieldBase extends Field implements \Iterator
 {
@@ -29,11 +31,8 @@ abstract class SelectFieldBase extends Field implements \Iterator
    */
   public $option_widget;
 
-
   /**
    * SelectFieldBase constructor.
-   *
-   * @param array $options
    */
   public function __construct(array $options = [])
   {
@@ -43,24 +42,21 @@ abstract class SelectFieldBase extends Field implements \Iterator
     parent::__construct($options);
   }
 
-  /**
-   * @inheritdoc
-   */
   public function __get($name)
   {
-    if ($name == "options") {
+    if ('options' == $name) {
       $this->options = [];
       $opts = [
-          'widget' => $this->option_widget,
-          'name'   => $this->name,
-          'form'   => $this->form,
-          'meta'   => $this->meta
+        'widget' => $this->option_widget,
+        'name'   => $this->name,
+        'form'   => $this->form,
+        'meta'   => $this->meta,
       ];
       $i = 0;
       foreach ($this->getChoices() as list($value, $label, $selected)) {
         $opts['id'] = "{$this->id}-{$i}";
         $opts['label'] = $label;
-        $i++;
+        ++$i;
         $opt = new _Option($opts);
         $opt->process([], $value);
         $opt->checked = $selected;
@@ -75,8 +71,10 @@ abstract class SelectFieldBase extends Field implements \Iterator
 
   /**
    * Provides data for choice widget rendering. Must return an array
-   * of `[value,label,selected]` tuples
+   * of `[value,label,selected]` tuples.
+   *
    * @return iterable
+   *
    * @throws NotImplemented
    */
   public function getChoices()
@@ -89,13 +87,10 @@ class _Option extends Field
 {
   public $checked = false;
 
-  /**
-   * @inheritdoc
-   */
   public function __get($name)
   {
     if (is_bool($this->data)) {
-      return $this->data ? "true" : "false";
+      return $this->data ? 'true' : 'false';
     }
 
     return strval($this->data);

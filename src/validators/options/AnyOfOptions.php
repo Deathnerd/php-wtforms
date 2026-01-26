@@ -8,15 +8,15 @@ namespace WTForms\Validators\Options;
  * Options for the AnyOf validator.
  *
  * @phpstan-type AnyOfOptionsArray array{values?:array, formatter?:callable|null}
+ *
  * @extends ArrayOptions<AnyOfOptionsArray>
  */
 class AnyOfOptions extends ArrayOptions
 {
-  /** @var array */
   public array $values = [];
 
   /** @var callable|null */
-  public $formatter = null;
+  public $formatter;
 
   protected function getDefaults(): array
   {

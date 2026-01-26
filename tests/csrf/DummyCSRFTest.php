@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 6/6/2016
- * Time: 11:04 PM
+ * Time: 11:04 PM.
  */
 
 namespace WTForms\Tests\CSRF;
@@ -27,7 +28,6 @@ class F extends Form
     parent::__construct($options);
     $this->a = new StringField();
   }
-
 }
 
 class DummyCSRFTest extends \PHPUnit\Framework\TestCase
@@ -35,7 +35,7 @@ class DummyCSRFTest extends \PHPUnit\Framework\TestCase
   public function testBaseClass()
   {
     $this->expectException(\WTForms\Exceptions\NotImplemented::class);
-    (new F(["meta" => ["csrf_class" => new CSRF]]))->process([]);
+    (new F(['meta' => ['csrf_class' => new CSRF()]]))->process([]);
   }
 
   public function testBasicImpl()
@@ -50,13 +50,13 @@ class DummyCSRFTest extends \PHPUnit\Framework\TestCase
     $this->assertFalse($form->validate());
     $this->assertEquals('dummytoken', $form->csrf_token->value);
     $form = new F();
-    $form->process(["formdata" => ["csrf_token" => "dummytoken"]]);
+    $form->process(['formdata' => ['csrf_token' => 'dummytoken']]);
     $this->assertTrue($form->validate());
   }
 
   public function testCSRFOff()
   {
-    $form = new F(["meta" => ["csrf" => false]]);
+    $form = new F(['meta' => ['csrf' => false]]);
     $field_names = [];
     foreach ($form as $name => $field) {
       $field_names[] = $name;
@@ -66,7 +66,7 @@ class DummyCSRFTest extends \PHPUnit\Framework\TestCase
 
   public function testRename()
   {
-    $form = new F(["meta" => ["csrf_field_name" => "mycsrf"]]);
+    $form = new F(['meta' => ['csrf_field_name' => 'mycsrf']]);
     $field_names = [];
     foreach ($form as $name => $field) {
       $field_names[] = $name;
@@ -77,12 +77,11 @@ class DummyCSRFTest extends \PHPUnit\Framework\TestCase
 
   public function testNoPopulate()
   {
-    $obj = (object)["a" => null, "csrf_token" => null];
-    $form = new F(["csrf_token" => "dummytoken"]);
-    $form->process(["a" => "test"]);
+    $obj = (object) ['a' => null, 'csrf_token' => null];
+    $form = new F(['csrf_token' => 'dummytoken']);
+    $form->process(['a' => 'test']);
     $form->populateObj($obj);
     $this->assertNull($obj->csrf_token);
     $this->assertEquals('test', $obj->a);
   }
-
 }

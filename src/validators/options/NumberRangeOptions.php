@@ -8,15 +8,16 @@ namespace WTForms\Validators\Options;
  * Options for the NumberRange validator.
  *
  * @phpstan-type NumberRangeOptionsArray array{min?:int|float|null, max?:int|float|null}
+ *
  * @extends ArrayOptions<NumberRangeOptionsArray>
  */
 class NumberRangeOptions extends ArrayOptions
 {
   /** @var int|float|null */
-  public $min = null;
+  public $min;
 
   /** @var int|float|null */
-  public $max = null;
+  public $max;
 
   protected function getDefaults(): array
   {

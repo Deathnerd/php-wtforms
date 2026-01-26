@@ -8,6 +8,7 @@ namespace WTForms\Validators\Options;
  * Options for the IPAddress validator.
  *
  * @phpstan-type IPAddressOptionsArray array{ip_type?:int}
+ *
  * @extends ArrayOptions<IPAddressOptionsArray>
  */
 class IPAddressOptions extends ArrayOptions

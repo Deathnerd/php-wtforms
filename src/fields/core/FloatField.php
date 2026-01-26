@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/28/2016
- * Time: 1:40 PM
+ * Time: 1:40 PM.
  */
 
 namespace WTForms\Fields\Core;
@@ -15,7 +16,6 @@ use WTForms\Widgets\Core\TextInput;
  * A text field, except all input is coerced to a float.
  *
  * @extends Field<float|null>
- * @package WTForms\Fields
  */
 class FloatField extends Field
 {
@@ -23,11 +23,10 @@ class FloatField extends Field
    * FloatField constructor.
    *
    *   $form
-   * @param array $options
    */
   public function __construct(array $options = [])
   {
-    $options = array_merge(["widget" => new TextInput()], $options);
+    $options = array_merge(['widget' => new TextInput()], $options);
     parent::__construct($options);
   }
 
@@ -38,7 +37,7 @@ class FloatField extends Field
         $this->data = floatval($valuelist[0]);
       } else {
         $this->data = null;
-        throw new ValueError("Not a valid float value");
+        throw new ValueError('Not a valid float value');
       }
     }
   }

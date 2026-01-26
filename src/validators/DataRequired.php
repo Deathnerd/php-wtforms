@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/27/2016
- * Time: 7:52 PM
+ * Time: 7:52 PM.
  */
 
 namespace WTForms\Validators;
@@ -25,42 +26,35 @@ use WTForms\Form;
  *
  * **NOTE** Original Python source has a fallback for deprecated ``Required`` class.
  * This port does not have it. You're more than welcome to extend it yourself.
+ *
  * @template-extends Validator<array{}>
  */
 class DataRequired extends Validator
 {
-
-  /**
-   * @var array
-   */
   public array $field_flags = ['required'];
 
   /**
    * DataRequired constructor.
    *
    * @param string $message Error message to raise in case of a validation error
-   * @param array  $options
    */
-  public function __construct(string $message = "", array $options = [])
+  public function __construct(string $message = '', array $options = [])
   {
     parent::__construct($message, $options);
   }
 
   /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
    * @return void
    *
    * @throws StopValidation
+   *
    * @phpstan-assert !null $field->data
    */
-  public function __invoke(Form $form, Field $field, string $message = "")
+  public function __invoke(Form $form, Field $field, string $message = '')
   {
-    if (is_null($field->data) || (is_string($field->data) && trim($field->data) == "")) {
-      if ($this->message == "") {
-        $message = "This field is required.";
+    if (is_null($field->data) || (is_string($field->data) && '' == trim($field->data))) {
+      if ('' == $this->message) {
+        $message = 'This field is required.';
       } else {
         $message = $this->message;
       }

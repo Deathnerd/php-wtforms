@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 5/24/2016
- * Time: 12:15 PM
+ * Time: 12:15 PM.
  */
 
 namespace WTForms\Tests\Common;
@@ -23,7 +24,7 @@ class F extends Form
   {
     parent::__construct($options);
     $this->meta = new FMeta();
-    $this->test = new StringField(["name" => "test"]);
+    $this->test = new StringField(['name' => 'test']);
     $this->process($options);
   }
 }
@@ -40,11 +41,10 @@ class G extends Form
   {
     parent::__construct($options);
     $this->meta = new GMeta();
-    $this->test = new StringField(["name" => "test"]);
+    $this->test = new StringField(['name' => 'test']);
     $this->process($options);
   }
 }
-
 
 class DefaultMetaTest extends \PHPUnit\Framework\TestCase
 {

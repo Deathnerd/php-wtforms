@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/28/2016
- * Time: 8:59 PM
+ * Time: 8:59 PM.
  */
 
 namespace WTForms\Fields\Core;
@@ -13,10 +14,9 @@ use WTForms\Widgets\Core\CheckboxInput;
 /**
  * Represents an ``<input type="checkbox">``. Set the ``checked``-status by using the
  * ``default``-option. Any value for ``default``, e.g. ``default="checked"`` puts
- * ``checked`` into the html-element and sets the ``data`` to ``true``
+ * ``checked`` into the html-element and sets the ``data`` to ``true``.
  *
  * @extends Field<bool>
- * @package WTForms\Fields
  */
 class BooleanField extends Field
 {
@@ -26,17 +26,14 @@ class BooleanField extends Field
   public $false_values = ['false', ''];
 
   /**
-   * @var boolean
+   * @var bool
    */
   public $data;
 
-  /**
-   * @inheritdoc
-   */
   public function __construct(array $options = [])
   {
-    $options = array_merge(["widget" => new CheckboxInput()], $options);
-    if (array_key_exists("false_values", $options) && is_array($options['false_values'])) {
+    $options = array_merge(['widget' => new CheckboxInput()], $options);
+    if (array_key_exists('false_values', $options) && is_array($options['false_values'])) {
       $this->false_values = $options['false_values'];
       unset($options['false_values']);
     }
@@ -56,9 +53,6 @@ class BooleanField extends Field
     $this->data = boolval($value);
   }
 
-  /**
-   * @inheritdoc
-   */
   public function processFormData(array $valuelist)
   {
     if (!$valuelist || in_array($valuelist[0], $this->false_values)) {
@@ -68,13 +62,10 @@ class BooleanField extends Field
     }
   }
 
-  /**
-   * @inheritdoc
-   */
   public function __get($name)
   {
     if (in_array($name, ['value'])) {
-      if ($this->raw_data !== null && !empty($this->raw_data)) {
+      if (null !== $this->raw_data && !empty($this->raw_data)) {
         return strval($this->raw_data[0]);
       }
 

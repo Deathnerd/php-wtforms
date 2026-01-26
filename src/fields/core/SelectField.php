@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/20/2016
- * Time: 2:25 PM
+ * Time: 2:25 PM.
  */
 
 namespace WTForms\Fields\Core;
@@ -11,7 +12,6 @@ namespace WTForms\Fields\Core;
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
 use WTForms\Form;
-use WTForms\Widgets;
 use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\Select;
 
@@ -19,7 +19,6 @@ use WTForms\Widgets\Core\Select;
  * Select field with coercible values.
  *
  * @extends SelectFieldBase<mixed>
- * @package WTForms\Fields\Core
  */
 class SelectField extends SelectFieldBase
 {
@@ -54,7 +53,7 @@ class SelectField extends SelectFieldBase
         return $x;
       };
     }
-    $options = array_merge(["widget" => new Select()], $options);
+    $options = array_merge(['widget' => new Select()], $options);
     parent::__construct($options);
   }
 
@@ -85,7 +84,7 @@ class SelectField extends SelectFieldBase
       try {
         $this->data = ($this->coerce)($valuelist[0]);
       } catch (ValueError $e) {
-        throw new ValueError("Invalid choice: could not coerce");
+        throw new ValueError('Invalid choice: could not coerce');
       }
     }
   }
@@ -98,6 +97,6 @@ class SelectField extends SelectFieldBase
       }
     }
 
-    throw new ValueError("Not a valid choice");
+    throw new ValueError('Not a valid choice');
   }
 }

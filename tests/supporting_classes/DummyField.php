@@ -1,14 +1,15 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 2/4/2016
- * Time: 11:15 AM
+ * Time: 11:15 AM.
  */
+
 namespace WTForms\Tests\SupportingClasses;
 
 use WTForms\Fields\Core\Field;
-use WTForms\Form;
 
 class DummyField extends Field
 {
@@ -16,9 +17,6 @@ class DummyField extends Field
    * @var array
    */
   public $errors;
-  /**
-   * @var mixed
-   */
   public $data;
   /**
    * @var mixed

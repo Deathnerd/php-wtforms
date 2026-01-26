@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/20/2016
- * Time: 3:07 PM
+ * Time: 3:07 PM.
  */
 
 namespace WTForms\Fields\Core;
-
 
 class Label
 {
@@ -15,11 +15,11 @@ class Label
    * @var string The id of the field this label is for. Will be
    *             rendered in the `for` attribute for the label
    */
-  public $field_id = "";
+  public $field_id = '';
   /**
    * @var string The text for the label
    */
-  public $text = "";
+  public $text = '';
 
   /**
    * Label constructor.
@@ -35,7 +35,7 @@ class Label
 
   public function __toString()
   {
-    return (string)$this->__invoke();
+    return (string) $this->__invoke();
   }
 
   /**
@@ -45,22 +45,20 @@ class Label
    */
   public function __invoke(array $options = [])
   {
-    $options = array_merge(["for" => $this->field_id, "text" => $this->text], $options);
+    $options = array_merge(['for' => $this->field_id, 'text' => $this->text], $options);
     $text = $options['text'];
     unset($options['text']);
 
-    return sprintf("<label %s>%s</label>", html_params($options), $text);
+    return sprintf('<label %s>%s</label>', html_params($options), $text);
   }
 
   /**
    * @internal
    *
-   * @param $name
-   *
    * @return string
    */
   public function __get($name)
   {
-    return $name == "for" ? $this->field_id : $this->$name;
+    return 'for' == $name ? $this->field_id : $this->$name;
   }
 }

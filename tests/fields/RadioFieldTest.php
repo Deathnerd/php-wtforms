@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 5/30/2016
- * Time: 5:04 PM
+ * Time: 5:04 PM.
  */
 
 namespace WTForms\Tests\Fields;
-
 
 use WTForms\Exceptions\TypeError;
 use WTForms\Fields\Core\RadioField;
@@ -24,18 +24,18 @@ class RadioFieldTest extends \PHPUnit\Framework\TestCase
   {
     $form = new Form();
     $form->a = new RadioField([
-        "choices" => [["a", "hello"], ["b", "bye"]],
-        "default" => "a"
+      'choices' => [['a', 'hello'], ['b', 'bye']],
+      'default' => 'a',
     ]);
     $form->b = new RadioField([
-        "choices" => [[1, "Item 1"], [2, "Item 2"]],
-        "coerce"  => function ($x) {
-          if (!is_numeric($x)) {
-            throw new TypeError;
-          }
-
-          return intval($x);
+      'choices' => [[1, 'Item 1'], [2, 'Item 2']],
+      'coerce'  => function ($x) {
+        if (!is_numeric($x)) {
+          throw new TypeError();
         }
+
+        return intval($x);
+      },
     ]);
     $form->process([]);
     $this->form = $form;
@@ -55,23 +55,23 @@ class RadioFieldTest extends \PHPUnit\Framework\TestCase
       $options[] = "$option";
     }
     $this->assertEquals([
-        '<input checked id="a-0" name="a" type="radio" value="a">',
-        '<input id="a-1" name="a" type="radio" value="b">'
+      '<input checked id="a-0" name="a" type="radio" value="a">',
+      '<input id="a-1" name="a" type="radio" value="b">',
     ], $options);
   }
 
   public function testTextCoercion()
   {
-    # Regression test for text coercsion scenarios where the value is a boolean.
+    // Regression test for text coercsion scenarios where the value is a boolean.
     $this->form->a = new RadioField([
-        "choices" => [[true, "yes"], [false, "no"]],
-        "coerce"  => function ($x) {
-          if ($x == "false") {
-            return false;
-          }
-
-          return boolval($x);
+      'choices' => [[true, 'yes'], [false, 'no']],
+      'coerce'  => function ($x) {
+        if ('false' == $x) {
+          return false;
         }
+
+        return boolval($x);
+      },
     ]);
     $this->form->process([]);
     $expected = '<ul id="a"><li><input id="a-0" name="a" type="radio" value="true"> <label for="a-0">yes</label></li><li><input checked id="a-1" name="a" type="radio" value="false"> <label for="a-1">no</label></li></ul>';

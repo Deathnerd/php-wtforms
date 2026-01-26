@@ -8,6 +8,7 @@ namespace WTForms\Validators\Options;
  * Options for the Length validator.
  *
  * @phpstan-type LengthOptionsArray array{min?:int, max?:int}
+ *
  * @extends ArrayOptions<LengthOptionsArray>
  */
 class LengthOptions extends ArrayOptions

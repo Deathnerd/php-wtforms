@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 2/2/2016
- * Time: 2:23 PM
+ * Time: 2:23 PM.
  */
 
 namespace WTForms\Widgets\HTML5;
@@ -11,16 +12,12 @@ namespace WTForms\Widgets\HTML5;
 use WTForms\Widgets\Core\Input;
 
 /**
- * Renders an input with type "tel"
- * @package WTForms\Widgets\HTML5
+ * Renders an input with type "tel".
  */
 class TelInput extends Input
 {
-  /**
-   * @inheritdoc
-   */
   public function __construct()
   {
-    parent::__construct("tel");
+    parent::__construct('tel');
   }
 }

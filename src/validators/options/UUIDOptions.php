@@ -8,6 +8,7 @@ namespace WTForms\Validators\Options;
  * Options for the UUID validator.
  *
  * @phpstan-type UUIDOptionsArray array{regex?:non-empty-string}
+ *
  * @extends ArrayOptions<UUIDOptionsArray>
  */
 class UUIDOptions extends ArrayOptions

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace WTForms\Validators\Options;
 
 use ArrayAccess;
-use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Traversable;
 
 /**
  * Base class for type-safe options that can be used interchangeably with arrays.
@@ -17,14 +15,17 @@ use Traversable;
  * The class implements all array interfaces so it can be used anywhere an array would be.
  *
  * @template TShape of array<string, mixed>
- * @implements ArrayAccess<key-of<TShape>, value-of<TShape>>
- * @implements IteratorAggregate<key-of<TShape>, value-of<TShape>>
+ *
+ * @implements \ArrayAccess<key-of<TShape>, value-of<TShape>>
+ * @implements \IteratorAggregate<key-of<TShape>, value-of<TShape>>
+ *
  * @phpstan-consistent-constructor
  */
-abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
+abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggregate
 {
   /**
-   * Internal array storage
+   * Internal array storage.
+   *
    * @var TShape
    */
   protected array $data = [];
@@ -83,10 +84,11 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
     $reflection = new \ReflectionClass($this);
     foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
       $name = $prop->getName();
-      if ($name !== 'data') {
+      if ('data' !== $name) {
         $this->data[$name] = $this->$name;
       }
     }
+
     return $this->data;
   }
 
@@ -94,6 +96,7 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
    * Create from an array or return the ArrayOptions instance as-is.
    *
    * @param TShape|static $options
+   *
    * @return static
    */
   public static function from($options)
@@ -101,6 +104,7 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
     if ($options instanceof static) {
       return $options;
     }
+
     return new static($options);
   }
 
@@ -118,25 +122,24 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * @param string $offset
-   * @return mixed
    */
   public function offsetGet($offset)
   {
     // Prefer property value if it exists (it may have been modified directly)
-    if (property_exists($this, $offset) && $offset !== 'data') {
+    if (property_exists($this, $offset) && 'data' !== $offset) {
       return $this->$offset;
     }
+
     return $this->data[$offset] ?? null;
   }
 
   /**
    * @param string $offset
-   * @param mixed $value
    */
   public function offsetSet($offset, $value): void
   {
     $this->data[$offset] = $value;
-    if (property_exists($this, $offset) && $offset !== 'data') {
+    if (property_exists($this, $offset) && 'data' !== $offset) {
       $this->$offset = $value;
     }
   }
@@ -147,7 +150,7 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
   public function offsetUnset($offset): void
   {
     unset($this->data[$offset]);
-    if (property_exists($this, $offset) && $offset !== 'data') {
+    if (property_exists($this, $offset) && 'data' !== $offset) {
       $this->$offset = null;
     }
   }
@@ -165,30 +168,23 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
   // IteratorAggregate implementation
   // -------------------------------------------------------------------------
 
-  public function getIterator(): Traversable
+  public function getIterator(): \Traversable
   {
     // Sync properties before iterating
     $this->toArray();
-    return new ArrayIterator($this->data);
+
+    return new \ArrayIterator($this->data);
   }
 
   // -------------------------------------------------------------------------
   // Magic methods for property-style access to array keys
   // -------------------------------------------------------------------------
 
-  /**
-   * @param string $name
-   * @return mixed
-   */
   public function __get(string $name)
   {
     return $this->data[$name] ?? null;
   }
 
-  /**
-   * @param string $name
-   * @param mixed $value
-   */
   public function __set(string $name, $value): void
   {
     $this->data[$name] = $value;

@@ -1,4 +1,5 @@
 <?php
+
 namespace WTForms\CSRF\Core;
 
 use WTForms;
@@ -9,10 +10,11 @@ use WTForms\Form;
 class CSRFTokenField extends HiddenField
 {
   /**
-   * The current CSRF token
+   * The current CSRF token.
+   *
    * @var string
    */
-  public $current_token = "";
+  public $current_token = '';
 
   /**
    * @var CSRF
@@ -23,7 +25,7 @@ class CSRFTokenField extends HiddenField
    * CSRFTokenField constructor.
    *
    * @param array $options
-   *   $form
+   *                       $form
    */
   public function __construct(array $options = [])
   {
@@ -37,17 +39,19 @@ class CSRFTokenField extends HiddenField
 
   /**
    * We want to always return the current token on render, regardless of
-   * whether a good or bad token was passed
+   * whether a good or bad token was passed.
+   *
    * @internal
+   *
    * @return string
    */
   public function __get($name)
   {
-    return $name == "value" ? $this->current_token : null;
+    return 'value' == $name ? $this->current_token : null;
   }
 
   /**
-   * Don't populate objects with CSRF Token
+   * Don't populate objects with CSRF Token.
    */
   public function populateObj(object $obj, string $name)
   {
@@ -57,8 +61,6 @@ class CSRFTokenField extends HiddenField
   /**
    * Handle the validation of this token field.
    *
-   * @param Form $form
-   *
    * @throws ValidationError
    */
   public function preValidate(Form $form)
@@ -67,7 +69,6 @@ class CSRFTokenField extends HiddenField
   }
 
   /**
-   * @param array $formdata
    * @param null $data
    *
    * @throws WTForms\Exceptions\NotImplemented

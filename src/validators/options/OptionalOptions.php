@@ -8,6 +8,7 @@ namespace WTForms\Validators\Options;
  * Options for the Optional validator.
  *
  * @phpstan-type OptionalOptionsArray array{strip_whitespace?:bool}
+ *
  * @extends ArrayOptions<OptionalOptionsArray>
  */
 class OptionalOptions extends ArrayOptions

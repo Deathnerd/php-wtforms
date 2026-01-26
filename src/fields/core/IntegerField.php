@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/28/2016
- * Time: 1:24 PM
+ * Time: 1:24 PM.
  */
 
 namespace WTForms\Fields\Core;
@@ -16,7 +17,6 @@ use WTForms\Widgets\Core\TextInput;
  * is ignored and will not be accepted as a value.
  *
  * @extends Field<int|null>
- * @package WTForms\Fields
  */
 class IntegerField extends Field
 {
@@ -29,11 +29,10 @@ class IntegerField extends Field
    * IntegerField constructor.
    *
    *   $form
-   * @param array $options
    */
   public function __construct(array $options = [])
   {
-    $options = array_merge(["widget" => new TextInput()], $options);
+    $options = array_merge(['widget' => new TextInput()], $options);
     parent::__construct($options);
   }
 
@@ -44,7 +43,7 @@ class IntegerField extends Field
         $this->data = intval($valuelist[0]);
       } else {
         $this->data = null;
-        throw new ValueError("Not a valid integer value");
+        throw new ValueError('Not a valid integer value');
       }
     }
   }

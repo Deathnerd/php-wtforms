@@ -1,47 +1,46 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 5/24/2016
- * Time: 5:14 PM
+ * Time: 5:14 PM.
  */
 
 namespace WTForms\Tests\Widgets;
-
 
 use WTForms\Widgets\Core\Select;
 
 class SelectTest extends \PHPUnit\Framework\TestCase
 {
-
   public $field;
 
   protected function setUp(): void
   {
     $this->field = new DummyField([
-        "data" => [
-            ["foo", "lfoo", true],
-            ["bar", "lbar", false]
-        ]
+      'data' => [
+        ['foo', 'lfoo', true],
+        ['bar', 'lbar', false],
+      ],
     ]);
-    $this->field->name = "f";
+    $this->field->name = 'f';
   }
 
   public function testBasic()
   {
-    $this->assertEquals('<select id="" name="f">' .
-        '<option selected value="foo">lfoo</option>' .
-        '<option value="bar">lbar</option>' .
+    $this->assertEquals('<select id="" name="f">'.
+        '<option selected value="foo">lfoo</option>'.
+        '<option value="bar">lbar</option>'.
         '</select>', (new Select())->__invoke($this->field));
-    $this->assertEquals('<select id="" multiple name="f">' .
-        '<option selected value="foo">lfoo</option>' .
-        '<option value="bar">lbar</option>' .
+    $this->assertEquals('<select id="" multiple name="f">'.
+        '<option selected value="foo">lfoo</option>'.
+        '<option value="bar">lbar</option>'.
         '</select>', (new Select())->__invoke($this->field, ['multiple' => true]));
     $widget = new Select();
     $widget->multiple = true;
-    $this->assertEquals('<select id="" multiple name="f">' .
-        '<option selected value="foo">lfoo</option>' .
-        '<option value="bar">lbar</option>' .
+    $this->assertEquals('<select id="" multiple name="f">'.
+        '<option selected value="foo">lfoo</option>'.
+        '<option value="bar">lbar</option>'.
         '</select>', $widget($this->field));
   }
 

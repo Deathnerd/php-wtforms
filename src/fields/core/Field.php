@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/4/2016
- * Time: 9:55 AM
+ * Time: 9:55 AM.
  */
 
 namespace WTForms\Fields\Core;
@@ -19,17 +20,16 @@ use WTForms\Validators\Validator;
 use WTForms\Widgets\Core\Widget;
 
 /**
- * Field base class
+ * Field base class.
  *
  * @template TData
- * @property  boolean    $checked
- * @property  TData      $data
- * @property null|string $value
+ *
+ * @property bool        $checked
+ * @property TData       $data
+ * @property string|null $value
  * @property array       $errors
  *
  * @method string label(array $options = [])
- *
- * @package WTForms\Fields
  */
 class Field implements \Iterator
 {
@@ -39,13 +39,7 @@ class Field implements \Iterator
    * @var Form
    */
   public $form;
-  /**
-   * @var array
-   */
   public array $process_errors = [];
-  /**
-   * @var array|null
-   */
   public ?array $raw_data = [];
   /**
    * @var Validator[]
@@ -79,29 +73,17 @@ class Field implements \Iterator
    * @var string
    */
   public $short_name;
-  /**
-   * @var string
-   */
   public string $type;
   /**
    * @var DefaultMeta
    */
   public $meta;
-  /**
-   * @var mixed
-   */
   public $object_data;
   /**
    * @var string
    */
   public $id = '';
-  /**
-   * @var string
-   */
   public string $name = '';
-  /**
-   * @var Flags
-   */
   public Flags $flags;
   /**
    * @var Label|string
@@ -111,13 +93,11 @@ class Field implements \Iterator
    * @var array<string, mixed>
    */
   public array $attributes;
-  /**
-   * @var string|null
-   */
   public ?string $prefix = null;
 
   /**
-   * Options passed to constructor, used for cloning fields in FieldList
+   * Options passed to constructor, used for cloning fields in FieldList.
+   *
    * @var array<string, mixed>
    */
   public array $constructor_options = [];
@@ -126,35 +106,34 @@ class Field implements \Iterator
    * Field constructor.
    *
    * @param array<string, mixed> $options
-   *
    */
   public function __construct(array $options = [])
   {
-    if (array_key_exists("form", $options)) {
+    if (array_key_exists('form', $options)) {
       $this->form = $options['form'];
       unset($options['form']);
     } else {
       $this->form = $this->resolveParentForm();
     }
     $options = array_merge([
-        "validators"  => [],
-        "filters"     => [],
-        "description" => "",
-        "id"          => null,
-        "default"     => null,
-        "widget"      => null,
-        "render_kw"   => [],
-        "name"        => null,
-        "prefix"      => '',
-        "meta"        => new DefaultMeta(),
-        "attributes"  => [],
-        "label"       => null,
-        "class"       => null,
+      'validators'  => [],
+      'filters'     => [],
+      'description' => '',
+      'id'          => null,
+      'default'     => null,
+      'widget'      => null,
+      'render_kw'   => [],
+      'name'        => null,
+      'prefix'      => '',
+      'meta'        => new DefaultMeta(),
+      'attributes'  => [],
+      'label'       => null,
+      'class'       => null,
     ], $options);
 
     $this->constructor_options = $options;
 
-    if (!is_null($this->form) && property_exists($this->form, "meta") && $this->form->meta instanceof DefaultMeta) {
+    if (!is_null($this->form) && property_exists($this->form, 'meta') && $this->form->meta instanceof DefaultMeta) {
       $this->meta = $this->form->meta;
     } elseif (array_key_exists('meta', $options) && !is_null($options['meta'])) {
       $this->meta = $options['meta'];
@@ -170,7 +149,6 @@ class Field implements \Iterator
     }
     unset($options['class']);
 
-
     $this->default = $options['default'];
     unset($options['default']);
     $this->description = $options['description'];
@@ -183,10 +161,10 @@ class Field implements \Iterator
     } elseif (!is_null($this->form)) {
       $prefix = $this->form->prefix;
     } else {
-      $prefix = "";
+      $prefix = '';
     }
     unset($options['prefix']);
-    $this->name = $prefix . $options['name'];
+    $this->name = $prefix.$options['name'];
     $this->short_name = $options['name'];
     unset($options['name']);
     $this->type = get_class();
@@ -197,7 +175,7 @@ class Field implements \Iterator
     $label = $options['label'];
     unset($options['label']);
     $this->label = new Label($this->id,
-      $label !== null ? $label : ucwords(str_replace("_", " ", $this->short_name)));
+      null !== $label ? $label : ucwords(str_replace('_', ' ', $this->short_name)));
     if ($options['widget']) {
       $this->widget = $options['widget'];
     }
@@ -231,11 +209,11 @@ class Field implements \Iterator
 
   public function __toString()
   {
-    return (string)$this->__invoke();
+    return (string) $this->__invoke();
   }
 
   /**
-   * Render this field as HTML, using keyword args as additional attributes
+   * Render this field as HTML, using keyword args as additional attributes.
    *
    * This delegates rendering to {@link \WTForms\DefaultMeta::$render_field}
    * whose default behavior is to call the field's widget, passing any
@@ -247,8 +225,6 @@ class Field implements \Iterator
    * even do anything related to HTML
    *
    * @param array<string, mixed> $options
-   *
-   * @return mixed
    */
   public function __invoke(array $options = [])
   {
@@ -257,7 +233,7 @@ class Field implements \Iterator
 
   public function __call(string $name, array $arguments)
   {
-    if ($name == "label") {
+    if ('label' == $name) {
       if (count($arguments) > 0) {
         return $this->label->__invoke($arguments[0]);
       }
@@ -271,15 +247,13 @@ class Field implements \Iterator
   /**
    * Validates the field and returns true or false. {@link errors} will
    * contain any errors raised during validation. This is usually only
-   * called by {@link Form::validate()}
+   * called by {@link Form::validate()}.
    *
    * Subfields shouldn't override this, but rather override either
    * {@link pre_validate}, {@link post_validate}, or both, depending on needs.
    *
-   * @param Form        $form             The form the field belongs to.
+   * @param Form        $form             the form the field belongs to
    * @param Validator[] $extra_validators A sequence of extra validators to run
-   *
-   * @return bool
    */
   public function validate(Form $form, array $extra_validators = []): bool
   {
@@ -291,7 +265,7 @@ class Field implements \Iterator
       $this->preValidate($form);
     } catch (StopValidation $e) {
       $message = $e->getMessage();
-      if ($message != "") {
+      if ('' != $message) {
         $this->errors[] = $message;
       }
       $stop_validation = true;
@@ -311,7 +285,7 @@ class Field implements \Iterator
       $this->errors[] = $e->getMessage();
     }
 
-    return count($this->errors) == 0;
+    return 0 == count($this->errors);
   }
 
   /**
@@ -325,12 +299,13 @@ class Field implements \Iterator
   }
 
   /**
-   * Run a validation chain, stopping if any validator raises StopValidation
+   * Run a validation chain, stopping if any validator raises StopValidation.
    *
-   * @param Form $form The form instance this field belongs to
+   * @param Form                   $form       The form instance this field belongs to
    * @param (Validator|callable)[] $validators A sequence or iterable of validator callables
    *
    * @return bool True if the validation was stopped, False if otherwise
+   *
    * @throws NotImplemented
    */
   protected function runValidationChain(Form $form, array $validators)
@@ -344,7 +319,7 @@ class Field implements \Iterator
         }
       } catch (StopValidation|ValidationError|ValueError $e) {
         $message = $e->getMessage();
-        if ($message != "") {
+        if ('' != $message) {
           $this->errors[] = $message;
         }
 
@@ -357,10 +332,10 @@ class Field implements \Iterator
 
   /**
    * Override if you need to run any field-level validation tasks after
-   * normal validation. This shouldn't be needed in most cases
+   * normal validation. This shouldn't be needed in most cases.
    *
-   * @param Form    $form            The form the field belongs to
-   * @param boolean $stop_validation `True` if any validator raised `StopValidation`
+   * @param Form $form            The form the field belongs to
+   * @param bool $stop_validation `True` if any validator raised `StopValidation`
    */
   public function postValidate(Form $form, bool $stop_validation)
   {
@@ -379,12 +354,12 @@ class Field implements \Iterator
    * inputs.
    *
    * @param array<string, mixed> $formdata
-   * @param null|mixed $data
+   * @param mixed|null           $data
    */
   public function process(array $formdata, $data = null)
   {
     $this->process_errors = [];
-    if ($data === null) {
+    if (null === $data) {
       if (is_callable($this->default)) {
         $data = ($this->default)();
       } else {
@@ -417,7 +392,7 @@ class Field implements \Iterator
 
     try {
       foreach ($this->filters as $filter) {
-        /** @var callable $filter */
+        /* @var callable $filter */
         $this->data = $filter($data);
       }
     } catch (ValueError $e) {
@@ -460,8 +435,8 @@ class Field implements \Iterator
    * it will be overridden. Use with caution
    *
    * @template T of object
+   *
    * @param T $obj
-   * @param string $name
    */
   public function populateObj(object $obj, string $name)
   {
@@ -473,22 +448,19 @@ class Field implements \Iterator
    */
   public function __get(string $name)
   {
-    if ($name == "value") {
+    if ('value' == $name) {
       if ($this->raw_data) {
         return $this->raw_data[0];
-      } elseif ($this->data !== null) {
+      } elseif (null !== $this->data) {
         return strval($this->data);
       }
 
-      return "";
+      return '';
     }
 
     return null;
   }
 
-  /**
-   * @return Form | null
-   */
   private function resolveParentForm(): ?Form
   {
     $backtrace = array_reverse(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4));

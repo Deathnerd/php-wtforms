@@ -1,16 +1,17 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 12/30/2015
- * Time: 3:40 PM
+ * Time: 3:40 PM.
  */
 
 use Gettext\GettextTranslator;
 
 if (!function_exists('e')) {
   /**
-   * Blatant ripoff of Laravel and Twig's HTML escape function
+   * Blatant ripoff of Laravel and Twig's HTML escape function.
    *
    * @param $string string The string to escape
    *
@@ -22,10 +23,9 @@ if (!function_exists('e')) {
   }
 }
 
-
 if (!function_exists('messages_path')) {
   /**
-   * Determine the path to the 'messages' directory as best as possible
+   * Determine the path to the 'messages' directory as best as possible.
    *
    * @return string The best guess for where the messages are
    *
@@ -33,9 +33,9 @@ if (!function_exists('messages_path')) {
    */
   function messages_path(): string
   {
-    $module_path = __DIR__ . DIRECTORY_SEPARATOR . "locale";
+    $module_path = __DIR__.DIRECTORY_SEPARATOR.'locale';
     if (!file_exists($module_path)) {
-      $module_path = "/usr/share/locale";
+      $module_path = '/usr/share/locale';
     }
 
     return $module_path;
@@ -45,7 +45,7 @@ if (!function_exists('messages_path')) {
 if (!function_exists('get_builtin_gnu_translations')) {
   /**
    * Returns the built-in GNU translations located in php-wtform's
-   * src root (src/locale/[languages here]
+   * src root (src/locale/[languages here].
    *
    * @param string|null $language Which language to get
    *
@@ -53,10 +53,10 @@ if (!function_exists('get_builtin_gnu_translations')) {
    *
    * @TODO Possible configuration point for our refactor into Conformity library?
    */
-  function get_builtin_gnu_translations(?string $language = ""): GettextTranslator
+  function get_builtin_gnu_translations(?string $language = ''): GettextTranslator
   {
     if (!$language) {
-      $language = "en_US";
+      $language = 'en_US';
     }
     $domain = messages_path();
     $t = new GettextTranslator();
@@ -69,14 +69,9 @@ if (!function_exists('get_builtin_gnu_translations')) {
 
 if (!function_exists('get_translations')) {
   /**
-   * Gets a translation object
-   *
-   * @param string|null $languages
-   * @param callable|null $getter
-   *
-   * @return GettextTranslator
+   * Gets a translation object.
    */
-  function get_translations(string $languages = null, callable $getter = null): GettextTranslator
+  function get_translations(?string $languages = null, ?callable $getter = null): GettextTranslator
   {
     if (is_callable($getter)) {
       return $getter($languages);
@@ -121,53 +116,53 @@ if (!function_exists('html_params')) {
     ksort($options);
     foreach ($options as $key => $value) {
       if (in_array($key, ['class_', 'class__', 'for_'])) {
-        $key = str_replace("_", "", $key);
-      } elseif (starts_with($key, "data_")) {
+        $key = str_replace('_', '', $key);
+      } elseif (starts_with($key, 'data_')) {
         $key = preg_replace('/_/', '-', $key);
       }
-      if ($value === true) {
+      if (true === $value) {
         $params[] = $key;
-      } elseif ($value === false) {
+      } elseif (false === $value) {
         continue;
       } else {
         if (is_array($value)) {
-          $value = implode(" ", $value);
+          $value = implode(' ', $value);
         }
         $params[] = sprintf('%s="%s"', $key, e($value));
       }
     }
 
-    return implode(" ", $params);
+    return implode(' ', $params);
   }
 }
 
 if (!function_exists('str_contains')) {
   /**
-   * Convenience method for determining if a needle string is in a haystack string
+   * Convenience method for determining if a needle string is in a haystack string.
    *
-   * @param string $haystack The string to search in
+   * @param string      $haystack The string to search in
    * @param string|null $needle   The string to search for
-   *
-   * @return bool
    */
   function str_contains(string $haystack, ?string $needle): bool
   {
-    if ($needle === null || $needle === '') {
+    if (null === $needle || '' === $needle) {
       return false;
     }
-    return strpos($haystack, $needle) !== false;
+
+    return false !== strpos($haystack, $needle);
   }
 }
 
 if (!function_exists('starts_with')) {
   /**
    * Convenience method for determining if a string starts with another string
-   * or collection of strings
+   * or collection of strings.
    *
-   * @param string $haystack The string to search in
+   * @param string          $haystack The string to search in
    * @param string|string[] $needle   The string(s) to search for in the haystack
    *
    * @codeCoverageIgnore
+   *
    * @return bool
    */
   function starts_with(string $haystack, $needle)
@@ -181,7 +176,7 @@ if (!function_exists('starts_with')) {
       return $ret;
     }
 
-    return strpos($haystack, $needle) === 0;
+    return 0 === strpos($haystack, $needle);
   }
 }
 
@@ -196,19 +191,18 @@ if (!function_exists('vsprintf_named')) {
    * @see http://stackoverflow.com/questions/7435233/name-php-specifiers-in-printf-strings
    * @see https://docs.python.org/2/library/stdtypes.html#string-formatting
    *
-   * @param string $format The named format string to parse. These are in the style of Python's named string
-   *                       formatting things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'}
-   *                       returns a string of "Sally walks with Rick".
-   *
+   * @param string               $format The named format string to parse. These are in the style of Python's named string
+   *                                     formatting things, ie: "%(foo)s walks with %(bar)s" % {'foo': 'Sally', 'bar': 'Rick'}
+   *                                     returns a string of "Sally walks with Rick".
    * @param array<string, mixed> $args   An associative array of values to map to the specified keys in the format string.
-   *                       For example, ["foo" => "Sally", "bar" => 5]
+   *                                     For example, ["foo" => "Sally", "bar" => 5]
    *
    * @return string The result of formatting the string with the given named parameters
    */
   function vsprintf_named(string $format, array $args): string
   {
     preg_match_all('/%\((.*?)\)/', $format, $matches, PREG_SET_ORDER);
-    $values = array();
+    $values = [];
     foreach ($matches as $match) {
       $values[] = $args[$match[1]];
     }

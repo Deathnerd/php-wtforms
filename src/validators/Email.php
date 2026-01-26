@@ -1,20 +1,21 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/27/2016
- * Time: 10:45 PM
+ * Time: 10:45 PM.
  */
 
 namespace WTForms\Validators;
-
 
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
 
 /**
- * Validates an email address
+ * Validates an email address.
+ *
  * @template-extends Validator<array{}>
  */
 class Email extends Validator
@@ -22,25 +23,21 @@ class Email extends Validator
   /**
    * MacAddress constructor.
    *
-   * @param string $message Error message to raise in case of a validation error.
-   * @param array  $options
+   * @param string $message error message to raise in case of a validation error
    */
-  public function __construct(string $message = "", array $options = [])
+  public function __construct(string $message = '', array $options = [])
   {
     parent::__construct($message, $options);
   }
 
   /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
    * @return void
    *
    * @throws ValidationError
+   *
    * @phpstan-assert non-empty-string $field->data
    */
-  public function __invoke(Form $form, Field $field, string $message = "")
+  public function __invoke(Form $form, Field $field, string $message = '')
   {
     $value = $field->data;
     $valid = false;
@@ -49,8 +46,8 @@ class Email extends Validator
     }
     if (!$valid) {
       $message = $this->message;
-      if ($message == "") {
-        $message = "Invalid email address.";
+      if ('' == $message) {
+        $message = 'Invalid email address.';
       }
       throw new ValidationError($message);
     }

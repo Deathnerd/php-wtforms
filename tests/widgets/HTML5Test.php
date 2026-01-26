@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 5/24/2016
- * Time: 5:28 PM
+ * Time: 5:28 PM.
  */
 
 namespace WTForms\Tests\Widgets;
@@ -21,14 +22,14 @@ class HTML5Test extends \PHPUnit\Framework\TestCase
 
     $i2 = new HTML5\NumberInput(['step' => 2]);
     $this->assertEquals('<input id="id" name="bar" step="3" type="number" value="42">',
-      $i2($this->field, ["step" => 3]));
+      $i2($this->field, ['step' => 3]));
 
     $i3 = new HTML5\NumberInput(['min' => 10]);
     $this->assertEquals('<input id="id" min="10" name="bar" type="number" value="42">', $i3($this->field));
     $this->assertEquals('<input id="id" min="5" name="bar" type="number" value="42">',
-      $i3($this->field, ["min" => 5]));
+      $i3($this->field, ['min' => 5]));
 
-    $i4 = new HTML5\NumberInput(["max" => 100]);
+    $i4 = new HTML5\NumberInput(['max' => 100]);
     $this->assertEquals('<input id="id" max="100" name="bar" type="number" value="42">', $i4($this->field));
     $this->assertEquals('<input id="id" max="50" name="bar" type="number" value="42">',
       $i4($this->field, ['max' => 50]));
@@ -36,7 +37,7 @@ class HTML5Test extends \PHPUnit\Framework\TestCase
 
   public function testRange()
   {
-    $i1 = new HTML5\RangeInput(["step" => "any"]);
+    $i1 = new HTML5\RangeInput(['step' => 'any']);
     $this->assertEquals('<input id="id" name="bar" step="any" type="range" value="42">', $i1($this->field));
     $i2 = new HTML5\RangeInput(['step' => 2]);
     $this->assertEquals('<input id="id" name="bar" step="3" type="range" value="42">',
@@ -46,7 +47,7 @@ class HTML5Test extends \PHPUnit\Framework\TestCase
   public function testColor()
   {
     $color = new HTML5\ColorInput();
-    $this->field->data = "#ff0000";
+    $this->field->data = '#ff0000';
     $this->assertEquals('<input id="id" name="bar" type="color" value="#ff0000">', $color($this->field));
   }
 
@@ -90,7 +91,7 @@ class HTML5Test extends \PHPUnit\Framework\TestCase
   public function testTel()
   {
     $tel = new HTML5\TelInput();
-    $this->field->data = "+1(555) 555-555";
+    $this->field->data = '+1(555) 555-555';
     $this->assertEquals('<input id="id" name="bar" type="tel" value="+1(555) 555-555">', $tel($this->field));
   }
 
@@ -103,7 +104,7 @@ class HTML5Test extends \PHPUnit\Framework\TestCase
   public function testURL()
   {
     $url = new HTML5\URLInput();
-    $this->field->data = "https://www.google.com";
+    $this->field->data = 'https://www.google.com';
     $this->assertEquals('<input id="id" name="bar" type="url" value="https://www.google.com">', $url($this->field));
   }
 
@@ -117,5 +118,4 @@ class HTML5Test extends \PHPUnit\Framework\TestCase
   {
     $this->field = new \WTForms\Tests\SupportingClasses\DummyField(['data' => '42', 'name' => 'bar', 'id' => 'id']);
   }
-
 }

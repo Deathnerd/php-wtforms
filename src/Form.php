@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 12/31/2015
- * Time: 11:12 AM
+ * Time: 11:12 AM.
  */
 
 namespace WTForms;
@@ -13,23 +14,35 @@ use WTForms\Fields\Core\Label;
 
 /**
  * Declarative Form base class.
+ *
  * @template TMeta of DefaultMeta
- * @package WTForms
+ *
  * @property array $data
  * @property array $errors
  */
 class Form implements \ArrayAccess, \Iterator
 {
   /**
-   * If this is set, every field of this form
-   * will have their name prefixed with this value
-   * e.g. "foo-bar"
-   * @var string
+   * Implements the Arrayable interface for the form.
    */
-  public $prefix = "";
+  use FormArrayable;
 
   /**
-   * The input fields on the form
+   * Implements the Iterable interface for the form.
+   */
+  use FormIterator;
+  /**
+   * If this is set, every field of this form
+   * will have their name prefixed with this value
+   * e.g. "foo-bar".
+   *
+   * @var string
+   */
+  public $prefix = '';
+
+  /**
+   * The input fields on the form.
+   *
    * @var array<Field>
    */
   public $fields = [];
@@ -37,45 +50,34 @@ class Form implements \ArrayAccess, \Iterator
   /**
    * The meta object used for binding fields,
    * interacting with widgets, etc.
-   * @var null|TMeta
+   *
+   * @var TMeta|null
    */
   public $meta;
 
   /**
-   * The CSRF implementation for this form
+   * The CSRF implementation for this form.
+   *
    * @var object
    */
   public $csrf;
 
   /**
    * Will hold the translations class when the
-   * translations are in place
+   * translations are in place.
+   *
    * @TODO: Do the translations feature and figure out the actual class type we'll use here
-   * @var object
    */
   public object $translations;
 
   /**
-   * Cached errors from validation
-   * @var array
+   * Cached errors from validation.
    */
   protected array $_errors = [];
 
   /**
-   * Implements the Arrayable interface for the form
-   */
-  use FormArrayable;
-
-  /**
-   * Implements the Iterable interface for the form
-   */
-  use FormIterator;
-
-  /**
    * Initialize a form. This is usually done in the context of a view/controller in your application. When a form is
-   * constructed, the fields populate their input based on the form
-   *
-   * @param array $options
+   * constructed, the fields populate their input based on the form.
    */
   public function __construct(array $options = [])
   {
@@ -100,15 +102,14 @@ class Form implements \ArrayAccess, \Iterator
       $this->prefix = $options['prefix'];
     }
     // Normalize the end of the prefix to contain only one dash
-    if ($this->prefix && !str_contains("-_;:/.", substr($this->prefix, -1))) {
-      $this->prefix .= "-";
+    if ($this->prefix && !str_contains('-_;:/.', substr($this->prefix, -1))) {
+      $this->prefix .= '-';
     }
   }
 
   /**
    * Validates the form by calling `validate` on each field, passing any
    * extra `Form.validate_<fieldname>` validators to the field validator.
-   * @return bool
    */
   public function validate(): bool
   {
@@ -120,7 +121,7 @@ class Form implements \ArrayAccess, \Iterator
       }
     }
 
-    return $success && count($this->errors) === 0;
+    return $success && 0 === count($this->errors);
   }
 
   /**
@@ -131,7 +132,7 @@ class Form implements \ArrayAccess, \Iterator
    * @param $name string The name of the field to get an extra validator for
    *
    * @return array The names of extra validators defined on this form to be called
-   *                by the field when executing validation
+   *               by the field when executing validation
    */
   private function getExtraValidatorFor(string $name): array
   {
@@ -147,9 +148,9 @@ class Form implements \ArrayAccess, \Iterator
      * Emulate the `form.data` and `form.errors` calls you can do in the original
      * Python implementation
      */
-    if ($field_name == "data") {
-      return array_map(fn($field) => $field->data, $this->fields);
-    } elseif ($field_name == "errors") {
+    if ('data' == $field_name) {
+      return array_map(fn ($field) => $field->data, $this->fields);
+    } elseif ('errors' == $field_name) {
       if (!$this->_errors) {
         foreach ($this->fields as $name => $field) {
           if ($field->errors) {
@@ -166,12 +167,12 @@ class Form implements \ArrayAccess, \Iterator
   }
 
   /**
-   * Allow setting a field on the form as a property
+   * Allow setting a field on the form as a property.
    *
    * @param string $name  The name of the field to add to the current fields
    * @param mixed  $value The field object to add
-   * @internal
    *
+   * @internal
    */
   public function __set(string $name, $value)
   {
@@ -191,10 +192,10 @@ class Form implements \ArrayAccess, \Iterator
       if (!$value->short_name) {
         $value->short_name = $name;
       }
-      $value->name = $value->prefix . $name;
+      $value->name = $value->prefix.$name;
       $value->id = $value->name;
       if (!$value->label->text) {
-        $value->label = new Label($value->id, ucwords(str_replace("_", " ", $value->short_name)));
+        $value->label = new Label($value->id, ucwords(str_replace('_', ' ', $value->short_name)));
       }
       $this->fields[$name] = $value;
     } elseif (array_key_exists($name, $this->fields)) {
@@ -214,7 +215,6 @@ class Form implements \ArrayAccess, \Iterator
     } else {
       unset($this->$name); // @codeCoverageIgnore
     }
-
   }
 
   /**
@@ -223,9 +223,11 @@ class Form implements \ArrayAccess, \Iterator
    * depending on what was passed into the function.
    *
    * @template T of object
+   *
    * @param array|T $data
    *
    * @return array|T The result of populating the object or array passed
+   *
    * @throws \InvalidArgumentException If something besides an object or an array were passed
    */
   public function populate($data)
@@ -236,9 +238,7 @@ class Form implements \ArrayAccess, \Iterator
     if (is_array($data)) {
       return $this->populateArray($data);
     }
-    throw new \InvalidArgumentException(
-      sprintf("Form::populate accepts only an array or an object as input; %s given.", gettype($data))
-    );
+    throw new \InvalidArgumentException(sprintf('Form::populate accepts only an array or an object as input; %s given.', gettype($data)));
   }
 
   /**
@@ -249,6 +249,7 @@ class Form implements \ArrayAccess, \Iterator
    * that has the same name as a property on the object, it WILL BE OVERWRITTEN.
    *
    * @template T of object
+   *
    * @param T $obj The object to populate
    *
    * @return T The object with the data from the form replacing values for members of the object
@@ -293,7 +294,9 @@ class Form implements \ArrayAccess, \Iterator
    * This is the preferred method for type-safe population of DTOs/entities.
    *
    * @template T of object
+   *
    * @param class-string<T> $class The fully-qualified class name to instantiate
+   *
    * @return T The populated object
    */
   public function populateTo(string $class): object
@@ -306,23 +309,23 @@ class Form implements \ArrayAccess, \Iterator
     return $obj;
   }
 
-  public function process(array $options = ["formdata" => [], "data" => []])
+  public function process(array $options = ['formdata' => [], 'data' => []])
   {
-    if (array_key_exists("formdata", $options)) {
+    if (array_key_exists('formdata', $options)) {
       $formdata = $options['formdata'];
       unset($options['formdata']);
     } else {
       $formdata = [];
     }
 
-    if (array_key_exists("obj", $options)) {
+    if (array_key_exists('obj', $options)) {
       $obj = $options['obj'];
       unset($options['obj']);
     } else {
       $obj = null;
     }
 
-    if (array_key_exists("data", $options)) {
+    if (array_key_exists('data', $options)) {
       $data = $options['data'];
       unset($options['data']);
     } else {

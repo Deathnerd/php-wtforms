@@ -1,14 +1,14 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/20/2016
- * Time: 10:02 PM
+ * Time: 10:02 PM.
  */
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Widgets;
 use WTForms\Widgets\Core\TextInput;
 
 /**
@@ -16,7 +16,6 @@ use WTForms\Widgets\Core\TextInput;
  * represents an ``<input type="text">``.
  *
  * @extends Field<string>
- * @package WTForms\Fields
  */
 class StringField extends Field
 {
@@ -27,13 +26,10 @@ class StringField extends Field
 
   public function __construct(array $options = [])
   {
-    $options = array_merge(["widget" => new TextInput()], $options);
+    $options = array_merge(['widget' => new TextInput()], $options);
     parent::__construct($options);
   }
 
-  /**
-   * @param array $valuelist
-   */
   public function processFormData(array $valuelist)
   {
     if ($valuelist) {
@@ -43,13 +39,10 @@ class StringField extends Field
     }
   }
 
-  /**
-   * @inheritdoc
-   */
   public function __get($name)
   {
-    if ($name == "value") {
-      return $this->data ?: "";
+    if ('value' == $name) {
+      return $this->data ?: '';
     }
 
     return null;

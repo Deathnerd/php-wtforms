@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/28/2016
- * Time: 11:15 AM
+ * Time: 11:15 AM.
  */
 
 namespace WTForms\Fields\Core;
-
 
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
@@ -17,9 +17,7 @@ use WTForms\Widgets\Core\Select;
 /**
  * No different from a normal select field, except this one can take (and
  * validate) multiple choices. You'll need to specify the HTML `size`
- * attribute to the select field when rendering
- *
- * @package WTForms\Fields
+ * attribute to the select field when rendering.
  */
 class SelectMultipleField extends SelectField
 {
@@ -29,26 +27,27 @@ class SelectMultipleField extends SelectField
   public $data;
 
   /**
-   * @var \WTForms\Widgets\Core\Select
+   * @var Select
    */
   public $widget;
 
   public function __construct(array $options = ['choices' => []])
   {
-    $options = array_merge(["widget" => new Select()], $options);
+    $options = array_merge(['widget' => new Select()], $options);
     parent::__construct($options);
     $this->widget->multiple = true;
   }
 
   /**
    * Provides data for choice widget rendering. Must return a sequence or
-   * iterable of `[value,label,selected]` tuples
+   * iterable of `[value,label,selected]` tuples.
+   *
    * @return \Generator
    */
   public function getChoices()
   {
     foreach ($this->choices as list($value, $label)) {
-      yield [$value, $label, $this->data !== null && in_array($value, $this->data)];
+      yield [$value, $label, null !== $this->data && in_array($value, $this->data)];
     }
   }
 
@@ -59,7 +58,7 @@ class SelectMultipleField extends SelectField
   {
     try {
       if (!is_array($value)) {
-        throw new TypeError;
+        throw new TypeError();
       }
       $d = [];
       foreach ($value as $v) {

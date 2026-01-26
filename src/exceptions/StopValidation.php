@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/21/2016
- * Time: 11:16 AM
+ * Time: 11:16 AM.
  */
 
 namespace WTForms\Exceptions;
-
 
 /**
  * Causes the validation chain to stop.

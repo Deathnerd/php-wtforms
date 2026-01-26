@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Beyond this line lie dragons... Enter at your own risk
  * Created by PhpStorm.
  * User: Wes
  * Date: 2/6/2016
- * Time: 4:55 PM
+ * Time: 4:55 PM.
  */
 
 namespace WTForms\Fields\Core;
@@ -22,26 +23,25 @@ use WTForms\Widgets\Core\ListWidget;
  * >>> $authors = new FieldList(new StringField("name", [new DataRequired()]));
  *
  * @extends Field<array>
- * @package WTForms\Fields\Core
  */
 class FieldList extends Field implements \Countable, \ArrayAccess
 {
   /**
-   * @var integer
+   * @var int
    */
   public $min_entries = 0;
   /**
-   * @var integer|null Used internally as an upper bound for how many subfields
-   *                   the field list is allowed to generate.
-   *                      !!!! WARNING !!!!
-   *                   This should be manipulated only via the constructor as
-   *                   there are assertion checks to make sure this is always
-   *                   greater than or equal to {@link min_entries}. Undefined
-   *                   and untested behavior may occur if this is manipulated
-   *                   otherwise. This is kept public purely for testing purposes
-   *                   only.
+   * @var int|null Used internally as an upper bound for how many subfields
+   *               the field list is allowed to generate.
+   *               !!!! WARNING !!!!
+   *               This should be manipulated only via the constructor as
+   *               there are assertion checks to make sure this is always
+   *               greater than or equal to {@link min_entries}. Undefined
+   *               and untested behavior may occur if this is manipulated
+   *               otherwise. This is kept public purely for testing purposes
+   *               only.
    */
-  public $max_entries = null;
+  public $max_entries;
   /**
    * @var Field The field class that will be used to generate subfields
    */
@@ -54,33 +54,33 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   public $last_index = -1;
 
   /**
-   * FieldList constructor
+   * FieldList constructor.
    *
    * @param array $options Accepts
    *
    * @throws TypeError
    */
-  public function __construct(array $options = ["inner_field" => null,
-                                                "max_entries" => null,
-                                                "min_entries" => 0])
+  public function __construct(array $options = ['inner_field' => null,
+    'max_entries'                                             => null,
+    'min_entries'                                             => 0])
   {
     if (!array_key_exists('inner_field', $options) || is_null($options['inner_field'])) {
-      throw new TypeError("FieldList requires an inner_field declaration");
-    } elseif (!($options['inner_field'] instanceof Field)) {
-      //@codeCoverageIgnoreStart
+      throw new TypeError('FieldList requires an inner_field declaration');
+    } elseif (!$options['inner_field'] instanceof Field) {
+      // @codeCoverageIgnoreStart
       if (is_object($options['inner_field'])) {
         $type = get_class($options['inner_field']);
       } else {
         $type = gettype($options['inner_field']);
       }
-      //@codeCoverageIgnoreEnd
-      throw new TypeError(sprintf("FieldList requires an inner_field type subclassing Field; %s given", $type));
+      // @codeCoverageIgnoreEnd
+      throw new TypeError(sprintf('FieldList requires an inner_field type subclassing Field; %s given', $type));
     } else {
       $this->inner_field = $options['inner_field'];
       unset($options['inner_field']);
     }
     if (array_key_exists('filters', $options)) {
-      throw new TypeError("FieldList does not accept any filters. Instead, define them on the enclosed field");
+      throw new TypeError('FieldList does not accept any filters. Instead, define them on the enclosed field');
     }
     if (array_key_exists('min_entries', $options)) {
       $this->min_entries = $options['min_entries'];
@@ -90,7 +90,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       $this->max_entries = $options['max_entries'];
       unset($options['max_entries']);
     }
-    $options = array_merge(["widget" => new ListWidget()], $options);
+    $options = array_merge(['widget' => new ListWidget()], $options);
     parent::__construct($options);
   }
 
@@ -106,12 +106,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * special advanced processing, such as when a field encapsulates many
    * inputs.
    *
-   * @param array $formdata
-   * @param null|mixed $data
+   * @param mixed|null $data
    */
   public function process(array $formdata, $data = null)
   {
-    //@codeCoverageIgnoreStart
+    // @codeCoverageIgnoreStart
     $this->entries = [];
     if (is_null($data) || !$data) {
       if (is_callable($this->default)) {
@@ -120,7 +119,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
         $data = $this->default;
       }
     }
-    //@codeCoverageIgnoreEnd
+    // @codeCoverageIgnoreEnd
 
     $this->object_data = $data;
 
@@ -140,7 +139,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
           $obj_data = $data[$data_length];
         }
         $this->addEntry($formdata, $obj_data, $index);
-        $data_length++;
+        ++$data_length;
       }
     } else {
       // Or add data that maps to object data
@@ -159,12 +158,9 @@ class FieldList extends Field implements \Countable, \ArrayAccess
 
   /**
    * Yield indices of any keys with given prefix. Keys are in the format
-   * of: prefix-numeric_index-subfield_name
+   * of: prefix-numeric_index-subfield_name.
    *
    * $formdata must be an object which will produce keys when iterated.
-   *
-   * @param $prefix
-   * @param $formdata
    *
    * @return array
    */
@@ -174,8 +170,8 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     $ret = [];
     // Array keys are in the form of "prefix-numeric_index-subfield_name"
     foreach (array_keys($formdata) as $k) {
-      if (strpos($k, $prefix) !== false) {
-        $k = explode("-", substr($k, $offset), 2)[0];
+      if (false !== strpos($k, $prefix)) {
+        $k = explode('-', substr($k, $offset), 2)[0];
         if (is_numeric($k)) {
           $ret[] = $k;
         }
@@ -186,22 +182,23 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
-   * Processes an unbound field and inserts it as a field type in this field list
+   * Processes an unbound field and inserts it as a field type in this field list.
    *
-   * @param array        $formdata
-   * @param null|array   $data
-   * @param null|integer $index
+   * @param array      $formdata
+   * @param array|null $data
+   * @param int|null   $index
    *
    * @return Field
+   *
    * @throws AssertionError
    */
   private function addEntry($formdata = [], $data = null, $index = null)
   {
     if (!(!$this->max_entries || count($this->entries) < $this->max_entries)) {
-      throw new AssertionError("You cannot have more than max_entries entries in the FieldList");
+      throw new AssertionError('You cannot have more than max_entries entries in the FieldList');
     }
 
-    if ($index === null) {
+    if (null === $index) {
       $index = $this->last_index + 1;
     }
     $this->last_index = $index;
@@ -236,8 +233,6 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * Entries added in this way will *not* receive formdata however, and can
    * only receive object data
    *
-   * @param mixed $data
-   *
    * @return Field
    */
   public function appendEntry($data = null)
@@ -246,17 +241,17 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
-   * Removes the last entry from the list and returns it
-   * @return mixed
+   * Removes the last entry from the list and returns it.
+   *
    * @throws IndexError
    */
   public function popEntry()
   {
-    if (count($this->entries) == 0) {
-      throw new IndexError;
+    if (0 == count($this->entries)) {
+      throw new IndexError();
     }
     $entry = array_pop($this->entries);
-    $this->last_index -= 1;
+    --$this->last_index;
 
     return $entry;
   }
@@ -267,11 +262,6 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * Note that the FieldList differs from normal field validation in
    * that FieldList validates all its enclosed fields first before running any
    * of its own validators.
-   *
-   * @param \WTForms\Form $form
-   * @param array         $extra_validators
-   *
-   * @return bool
    */
   public function validate(Form $form, array $extra_validators = []): bool
   {
@@ -288,12 +278,9 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     }
     $this->runValidationChain($form, array_merge($this->validators, $extra_validators));
 
-    return count($this->errors) == 0;
+    return 0 == count($this->errors);
   }
 
-  /**
-   * @inheritdoc
-   */
   public function populateObj(object $obj, string $name)
   {
     $values = $obj->$name;
@@ -310,17 +297,14 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       $fake_obj->data = @$values[$i];
       $field->populateObj($fake_obj, 'data');
       $output[] = $fake_obj->data;
-      $i++;
+      ++$i;
     }
     $obj->$name = $output;
   }
 
-  /**
-   * @inheritdoc
-   */
   public function __get($name)
   {
-    if ($name == "data") {
+    if ('data' == $name) {
       $ret = [];
       foreach ($this->entries as $entry) {
         $ret[] = $entry->data;
@@ -329,12 +313,9 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       return $ret;
     }
 
-    return parent::__get($name); //@codeCoverageIgnore
+    return parent::__get($name); // @codeCoverageIgnore
   }
 
-  /**
-   * @inheritdoc
-   */
   public function count()
   {
     return count($this->entries);

@@ -8,6 +8,7 @@ namespace WTForms\Validators\Options;
  * Options for the RequiredIf validator.
  *
  * @phpstan-type RequiredIfOptionsArray array{fieldname?:string}
+ *
  * @extends ArrayOptions<RequiredIfOptionsArray>
  */
 class RequiredIfOptions extends ArrayOptions

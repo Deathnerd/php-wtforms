@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/20/2016
- * Time: 2:11 PM
+ * Time: 2:11 PM.
  */
 
 namespace WTForms\Widgets\Core;
@@ -13,8 +14,6 @@ namespace WTForms\Widgets\Core;
  *
  * This is just a convenience for various custom rendering situations, and an
  * option by itself does not constitute an entire field.
- *
- * @package WTForms\Widgets\Core
  */
 class Option
 {

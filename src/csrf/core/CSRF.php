@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/20/2016
- * Time: 10:32 PM
+ * Time: 10:32 PM.
  */
 
 namespace WTForms\CSRF\Core;
-
 
 use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\ValidationError;
@@ -25,8 +25,8 @@ class CSRF
     $meta = $form->meta;
     $field_name = $meta->csrf_field_name;
     $unbound_field = (new \ReflectionClass($this->field_class))->newInstance([
-        'label'     => 'CSRF Token',
-        'csrf_impl' => $this
+      'label'     => 'CSRF Token',
+      'csrf_impl' => $this,
     ]);
 
     return [$field_name, $unbound_field];
@@ -43,10 +43,11 @@ class CSRF
    * @param CSRFTokenField $csrf_token_field The field which is being used for CSRF
    *
    * @return string
-   * @throws \WTForms\Exceptions\NotImplemented
+   *
+   * @throws NotImplemented
    */
   public function generateCSRFToken(
-    /** @noinspection PhpUnusedParameterInspection */
+    /* @noinspection PhpUnusedParameterInspection */
     CSRFTokenField $csrf_token_field
   ) {
     throw new NotImplemented();
@@ -64,12 +65,12 @@ class CSRF
    * @throws ValidationError
    */
   public function validate_csrf_token(
-    /** @noinspection PhpUnusedParameterInspection */
+    /* @noinspection PhpUnusedParameterInspection */
     Form $form,
     CSRFTokenField $field
   ) {
     if ($field->current_token !== $field->data) {
-      throw new ValidationError("Invalid CSRF Token");
+      throw new ValidationError('Invalid CSRF Token');
     }
   }
 }

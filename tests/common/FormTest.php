@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 3/15/2016
- * Time: 9:11 PM
+ * Time: 9:11 PM.
  */
 
 namespace WTForms\Tests\Common;
@@ -22,35 +23,34 @@ use WTForms\Validators\DataRequired;
  */
 class TestForm extends Form
 {
-  public $prefix = "Foo";
+  public $prefix = 'Foo';
 
   public function __construct(array $options = [])
   {
     $this->meta = new DefaultMeta();
     parent::__construct($options);
     $this->a = new StringField([
-        "name"       => "a",
-        "validators" => [new DataRequired()],
+      'name'       => 'a',
+      'validators' => [new DataRequired()],
     ]);
-    $this->b = new StringField(["name" => "b"], $this);
-    $this->c = new StringField(["name" => "c"]);
+    $this->b = new StringField(['name' => 'b'], $this);
+    $this->c = new StringField(['name' => 'c']);
   }
 
   public function validate_c(Form $form, Field $field)
   {
-    if ($field->data == "error") {
-      throw new ValidationError("C has data!");
+    if ('error' == $field->data) {
+      throw new ValidationError('C has data!');
     }
   }
 }
 
 class FormTest extends \PHPUnit\Framework\TestCase
 {
-
   public function testFormCreation()
   {
     $form = new TestForm();
-    $this->assertEquals("Foo-", $form->prefix);
+    $this->assertEquals('Foo-', $form->prefix);
     $this->assertTrue($form->a instanceof Field);
     $this->assertTrue($form->a->form === $form);
     $this->assertFalse($form->validate());
@@ -67,10 +67,10 @@ class FormTest extends \PHPUnit\Framework\TestCase
 
   public function testPostDataPopulate()
   {
-    $post_data = ["Foo-a" => ["foo"]];
+    $post_data = ['Foo-a' => ['foo']];
     $form = new TestForm();
-    $form->process(["formdata" => $post_data]);
-    $this->assertEquals("foo", $form->a->data);
+    $form->process(['formdata' => $post_data]);
+    $this->assertEquals('foo', $form->a->data);
     $this->assertTrue($form->validate());
     $form->a->data = null;
     $this->assertFalse($form->validate());
@@ -79,8 +79,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
   public function testExtraDataPopulate()
   {
     $form = new TestForm();
-    $form->process(["a" => "foo"]);
-    $this->assertEquals("foo", $form->a->data);
+    $form->process(['a' => 'foo']);
+    $this->assertEquals('foo', $form->a->data);
     $this->assertTrue($form->validate());
   }
 
@@ -88,25 +88,25 @@ class FormTest extends \PHPUnit\Framework\TestCase
   {
     $form = new TestForm();
     // Test assigning data to a field
-    $form->a = "foo";
+    $form->a = 'foo';
     $this->assertTrue($form->a instanceof StringField);
-    $this->assertEquals("foo", $form->a->data);
-    $form->a->data = "baz";
-    $this->assertEquals("baz", $form->a->data);
+    $this->assertEquals('foo', $form->a->data);
+    $form->a->data = 'baz';
+    $this->assertEquals('baz', $form->a->data);
 
     // test for non-field attribute assignment
-    $form->foo = "bar";
-    $this->assertObjectHasProperty("foo", $form);
-    $this->assertEquals("bar", $form->foo);
+    $form->foo = 'bar';
+    $this->assertObjectHasProperty('foo', $form);
+    $this->assertEquals('bar', $form->foo);
 
     // test unsetting dynamic form field assignment
     unset($form->a);
-    $this->assertObjectNotHasProperty("a", $form);
+    $this->assertObjectNotHasProperty('a', $form);
     $this->assertNull($form->a);
 
     // test unsetting non-field dynamic assignment
     unset($form->foo);
-    $this->assertObjectNotHasProperty("foo", $form);
+    $this->assertObjectNotHasProperty('foo', $form);
     $this->assertNull($form->foo);
   }
 
@@ -117,16 +117,16 @@ class FormTest extends \PHPUnit\Framework\TestCase
     foreach ($form as $field) {
       $fields[] = $field->name;
     }
-    $this->assertTrue($fields[0] == "Foo-a");
-    $this->assertTrue($fields[1] == "Foo-b");
-    $this->assertTrue($fields[2] == "Foo-c");
+    $this->assertTrue('Foo-a' == $fields[0]);
+    $this->assertTrue('Foo-b' == $fields[1]);
+    $this->assertTrue('Foo-c' == $fields[2]);
     unset($form->b);
     $fields = [];
     foreach ($form as $field) {
       $fields[] = $field->name;
     }
-    $this->assertTrue($fields[0] == "Foo-a");
-    $this->assertTrue($fields[1] == "Foo-c");
+    $this->assertTrue('Foo-a' == $fields[0]);
+    $this->assertTrue('Foo-c' == $fields[1]);
   }
 
   public function testFormSerialize()
@@ -141,47 +141,47 @@ class FormTest extends \PHPUnit\Framework\TestCase
   public function testPopulateObj()
   {
     $form = new TestForm();
-    $form->process(['a' => "foobar"]);
+    $form->process(['a' => 'foobar']);
     $obj = new \stdClass();
-    $obj->a = "baz";
+    $obj->a = 'baz';
     $obj = $form->populateObj($obj);
-    $this->assertEquals("foobar", $obj->a);
+    $this->assertEquals('foobar', $obj->a);
   }
 
   public function testPopulateArray()
   {
     $form = new TestForm();
-    $form->process(['a' => "foobar"]);
-    $arr = ["a" => "baz"];
+    $form->process(['a' => 'foobar']);
+    $arr = ['a' => 'baz'];
     $arr = $form->populateArray($arr);
-    $this->assertEquals("foobar", $arr['a']);
+    $this->assertEquals('foobar', $arr['a']);
   }
 
   public function testPopulate()
   {
     $form = new TestForm();
-    $form->process(["a" => "foobar"]);
+    $form->process(['a' => 'foobar']);
     $obj = new \stdClass();
-    $obj->a = "baz";
-    $arr = ["a" => "baz"];
-    $this->assertEquals("foobar", $form->populate($obj)->a);
-    $this->assertEquals("foobar", $form->populate($arr)["a"]);
+    $obj->a = 'baz';
+    $arr = ['a' => 'baz'];
+    $this->assertEquals('foobar', $form->populate($obj)->a);
+    $this->assertEquals('foobar', $form->populate($arr)['a']);
   }
 
   public function testDataArg()
   {
     $form = new TestForm();
-    $form->process(["data" => ["a" => "foo"]]);
-    $this->assertEquals("foo", $form->a->data);
+    $form->process(['data' => ['a' => 'foo']]);
+    $this->assertEquals('foo', $form->a->data);
     $form = new TestForm();
-    $form->process(["data" => ["a" => "foo"], "a" => "bar"]);
-    $this->assertEquals("bar", $form->a->data);
+    $form->process(['data' => ['a' => 'foo'], 'a' => 'bar']);
+    $this->assertEquals('bar', $form->a->data);
   }
 
   public function testUpdateMeta()
   {
-    $form = new TestForm(["meta" => ["csrf_secret" => "shhhdonttell"]]);
-    $this->assertEquals("shhhdonttell", $form->meta->csrf_secret);
+    $form = new TestForm(['meta' => ['csrf_secret' => 'shhhdonttell']]);
+    $this->assertEquals('shhhdonttell', $form->meta->csrf_secret);
   }
 
   public function testFormErrors()
@@ -189,22 +189,22 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $form = new TestForm();
     $this->assertFalse($form->validate());
     $this->assertNotEmpty($form->errors);
-    $this->assertEquals(["a" => ["This field is required."]], $form->errors);
+    $this->assertEquals(['a' => ['This field is required.']], $form->errors);
   }
 
   public function testInvalidPopulateArgument()
   {
-    $this->expectExceptionMessage("Form::populate accepts only an array or an object as input; string given.");
+    $this->expectExceptionMessage('Form::populate accepts only an array or an object as input; string given.');
     $this->expectException(\InvalidArgumentException::class);
-    (new TestForm())->populate("foo");
+    (new TestForm())->populate('foo');
   }
 
   public function testExtraValidator()
   {
     $form = new TestForm();
-    $form->process(["formdata" => ["Foo-c" => ["error"]]]);
+    $form->process(['formdata' => ['Foo-c' => ['error']]]);
     $this->assertFalse($form->validate());
-    $this->assertEquals(["C has data!"], $form->errors["c"]);
+    $this->assertEquals(['C has data!'], $form->errors['c']);
   }
 
   public function testAutoLabel()
@@ -212,23 +212,23 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $form = new Form();
     $form->first_name = new StringField();
     $form->foo_bar = new StringField([
-        "label" => "foo baz",
+      'label' => 'foo baz',
     ]);
-    $this->assertEquals("First Name", $form->first_name->label->text);
-    $this->assertEquals("foo baz", $form->foo_bar->label->text);
+    $this->assertEquals('First Name', $form->first_name->label->text);
+    $this->assertEquals('foo baz', $form->foo_bar->label->text);
   }
 
   public function testCreateMethod()
   {
     $form = new TestForm();
-    $form->process(["formdata" => ["Foo-c" => ["error"]]]);
+    $form->process(['formdata' => ['Foo-c' => ['error']]]);
 
-    $form2 = TestForm::create(["formdata" => ["Foo-c" => ["error"]]]);
+    $form2 = TestForm::create(['formdata' => ['Foo-c' => ['error']]]);
     $this->assertInstanceOf('\WTForms\Form', $form);
     $this->assertInstanceOf('\WTForms\Form', $form2);
     $this->assertFalse($form->validate());
     $this->assertFalse($form2->validate());
-    $this->assertEquals(["C has data!"], $form2->errors["c"]);
+    $this->assertEquals(['C has data!'], $form2->errors['c']);
     $this->assertEquals($form->errors, $form2->errors);
   }
 
@@ -240,7 +240,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
   public function testErrorsPropertyIsEmptyAfterValidate()
   {
     $form = new TestForm();
-    $form->process(["formdata" => ["Foo-a" => [""], "Foo-c" => ["error"]]]);
+    $form->process(['formdata' => ['Foo-a' => [''], 'Foo-c' => ['error']]]);
 
     // Validation should fail (a is required, c throws ValidationError)
     $result = $form->validate();
@@ -253,7 +253,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $internalErrors = $errorsProp->getValue($form);
 
     // PHPStan claims this is always empty after validate()
-    $this->assertEmpty($internalErrors, 'Expected $_errors to be empty after validate(), but it was: ' . print_r($internalErrors, true));
+    $this->assertEmpty($internalErrors, 'Expected $_errors to be empty after validate(), but it was: '.print_r($internalErrors, true));
 
     // Now access $form->errors (triggers __get lazy population)
     $publicErrors = $form->errors;
@@ -264,5 +264,4 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $this->assertNotEmpty($internalErrorsAfterAccess);
     $this->assertEquals($publicErrors, $internalErrorsAfterAccess);
   }
-
 }

@@ -1,14 +1,15 @@
-<?php /** @noinspection PhpPropertyOnlyWrittenInspection */
+<?php
+
+/** @noinspection PhpPropertyOnlyWrittenInspection */
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/21/2016
- * Time: 11:15 AM
+ * Time: 11:15 AM.
  */
 
 namespace WTForms\Validators;
 
-use WTForms\Exceptions\NotImplemented;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
 use WTForms\Validators\Options\ArrayOptions;
@@ -22,20 +23,16 @@ abstract class Validator
    * @var string Error message to raise in case of a validation error
    */
   public string $message;
-  /**
-   * @var array
-   */
   public array $field_flags = [];
   /**
-   * @var TOptions $options
+   * @var TOptions
    */
   private array $options;
 
   /**
-   * @param string $message
    * @param TOptions|ArrayOptions<TOptions> $options
    */
-  public function __construct(string $message = "", $options = [])
+  public function __construct(string $message = '', $options = [])
   {
     if ($options instanceof ArrayOptions) {
       $options = $options->toArray();
@@ -44,12 +41,7 @@ abstract class Validator
     $this->options = $options;
   }
 
-  /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   */
-  public abstract function __invoke(Form $form, Field $field, string $message = "");
+  abstract public function __invoke(Form $form, Field $field, string $message = '');
 
   public function getOptions(): array
   {
@@ -104,4 +96,3 @@ abstract class Validator
     $this->message = $message;
   }
 }
-

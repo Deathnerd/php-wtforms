@@ -1,34 +1,30 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 3/18/2016
- * Time: 10:28 PM
+ * Time: 10:28 PM.
  */
 
 namespace WTForms\Tests\Common;
-
 
 use WTForms\Fields\Core\StringField;
 use WTForms\Flags;
 use WTForms\Form;
 use WTForms\Validators\DataRequired;
 
-
 class FlagsTestForm extends Form
 {
   /**
    * Form constructor.
-   *
-   * @param array $options
    */
   public function __construct(array $options = [])
   {
     parent::__construct($options);
-    $this->a = new StringField(["validators" => [new DataRequired()]]);
+    $this->a = new StringField(['validators' => [new DataRequired()]]);
     $this->process($options);
   }
-
 }
 
 class FlagsTest extends \PHPUnit\Framework\TestCase
@@ -42,11 +38,11 @@ class FlagsTest extends \PHPUnit\Framework\TestCase
     $flags = new Flags();
     $flags->foo = true;
     $flags->_bar = false;
-    $this->assertObjectHasProperty("foo", $flags);
-    $this->assertObjectNotHasProperty("_foo", $flags);
+    $this->assertObjectHasProperty('foo', $flags);
+    $this->assertObjectNotHasProperty('_foo', $flags);
     $this->assertTrue($flags->foo);
-    $this->assertObjectHasProperty("_bar", $flags);
-    $this->assertObjectNotHasProperty("bar", $flags);
+    $this->assertObjectHasProperty('_bar', $flags);
+    $this->assertObjectNotHasProperty('bar', $flags);
     $this->assertFalse($flags->_bar);
     $this->assertFalse($flags->foo == $flags->_foo);
   }
@@ -77,5 +73,4 @@ class FlagsTest extends \PHPUnit\Framework\TestCase
     $this->assertFalse(property_exists($flags, 'required'));
     $this->assertEquals(false, $flags->required);
   }
-
 }

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 8/18/2016
- * Time: 12:10 PM
+ * Time: 12:10 PM.
  */
 
 namespace WTForms\Tests\Validators;
@@ -28,11 +29,11 @@ class RequiredIfTest extends \PHPUnit\Framework\TestCase
   {
     $this->form->a = new StringField();
     $this->form->b = new StringField([
-        "validators" => [
-            new RequiredIf("B is required if A is filled", ["fieldname" => "a"]),
-        ],
+      'validators' => [
+        new RequiredIf('B is required if A is filled', ['fieldname' => 'a']),
+      ],
     ]);
-    $this->form->process(["a" => "foo", "b" => "bar"]);
+    $this->form->process(['a' => 'foo', 'b' => 'bar']);
     $this->assertTrue($this->form->validate());
     $this->assertEmpty($this->form->errors);
   }
@@ -41,11 +42,11 @@ class RequiredIfTest extends \PHPUnit\Framework\TestCase
   {
     $this->form->a = new StringField();
     $this->form->b = new StringField([
-        "validators" => [
-            new RequiredIf("B is required if A is filled", ["fieldname" => "a"]),
-        ],
+      'validators' => [
+        new RequiredIf('B is required if A is filled', ['fieldname' => 'a']),
+      ],
     ]);
-    $this->form->process(["b" => "bar"]);
+    $this->form->process(['b' => 'bar']);
     $this->assertTrue($this->form->validate());
     $this->assertEmpty($this->form->errors);
   }
@@ -54,13 +55,12 @@ class RequiredIfTest extends \PHPUnit\Framework\TestCase
   {
     $this->form->a = new StringField();
     $this->form->b = new StringField([
-        "validators" => [
-            new RequiredIf("B is required if A is filled", ["fieldname" => "a"]),
-        ],
+      'validators' => [
+        new RequiredIf('B is required if A is filled', ['fieldname' => 'a']),
+      ],
     ]);
-    $this->form->process(["a" => "foo"]);
+    $this->form->process(['a' => 'foo']);
     $this->assertFalse($this->form->validate());
     $this->assertNotEmpty($this->form->errors);
   }
-
 }

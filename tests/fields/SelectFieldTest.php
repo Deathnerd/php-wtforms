@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 4/8/2016
- * Time: 4:51 PM
+ * Time: 4:51 PM.
  */
 
 namespace WTForms\Tests\Fields;
-
 
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
@@ -20,7 +20,6 @@ use WTForms\Widgets\Core\TextInput;
 
 class SelectFieldBaseTestClass extends SelectFieldBase
 {
-
 }
 
 class SelectFieldTest extends \PHPUnit\Framework\TestCase
@@ -34,30 +33,30 @@ class SelectFieldTest extends \PHPUnit\Framework\TestCase
   {
     $form = new Form();
     $form->a = new SelectField([
-        "choices" => [["a", "hello"], ["btest", "bye"]],
-        "default" => "a"
+      'choices' => [['a', 'hello'], ['btest', 'bye']],
+      'default' => 'a',
     ]);
     $form->b = new SelectField([
-        "choices"       => [[1, "Item 1"], [2, "Item 2"]],
-        "coerce"        => function ($x) {
-          if (!is_numeric($x)) {
-            throw new ValueError;
-          }
-
-          return intval($x);
-        },
-        "option_widget" => new TextInput
-    ]);
-    $form->c = new SelectField(["default" => "c"]);
-    $form->d = new SelectField([
-        "choices" => [["d", "hiya"]],
-        "coerce"  => function ($x) {
-          if ($x == "hiya") {
-            throw new TypeError;
-          }
-
-          return $x;
+      'choices' => [[1, 'Item 1'], [2, 'Item 2']],
+      'coerce'  => function ($x) {
+        if (!is_numeric($x)) {
+          throw new ValueError();
         }
+
+        return intval($x);
+      },
+      'option_widget' => new TextInput(),
+    ]);
+    $form->c = new SelectField(['default' => 'c']);
+    $form->d = new SelectField([
+      'choices' => [['d', 'hiya']],
+      'coerce'  => function ($x) {
+        if ('hiya' == $x) {
+          throw new TypeError();
+        }
+
+        return $x;
+      },
     ]);
     $form->process([]);
     $this->form = $form;
@@ -75,26 +74,26 @@ class SelectFieldTest extends \PHPUnit\Framework\TestCase
     $this->assertEquals('<select id="b" name="b"><option value="1">Item 1</option><option value="2">Item 2</option></select>',
       $this->form->b->__toString());
     $this->assertEquals(0, count($this->form->c->options));
-    $this->form->process(["d" => "hiya"]);
+    $this->form->process(['d' => 'hiya']);
     $this->assertFalse($this->form->validate());
   }
 
   public function testWithData()
   {
-    $this->form->process(["formdata" => ["a" => ["btest"]]]);
-    $this->assertEquals("btest", $this->form->a->data);
+    $this->form->process(['formdata' => ['a' => ['btest']]]);
+    $this->assertEquals('btest', $this->form->a->data);
     $this->assertEquals('<select id="a" name="a"><option value="a">hello</option><option selected value="btest">bye</option></select>',
       $this->form->a->__toString());
   }
 
   public function testValueCoercion()
   {
-    $this->form->process(["formdata" => ["b" => ["2"]]]);
+    $this->form->process(['formdata' => ['b' => ['2']]]);
     $this->assertTrue(2 === $this->form->b->data);
     $this->assertTrue($this->form->b->validate($this->form));
 
     $this->setUp();
-    $this->form->process(["formdata" => ["b" => ["b"]]]);
+    $this->form->process(['formdata' => ['b' => ['b']]]);
     $this->assertEquals(null, $this->form->b->data);
     $this->assertFalse($this->form->b->validate($this->form));
   }
@@ -112,17 +111,17 @@ class SelectFieldTest extends \PHPUnit\Framework\TestCase
       $text_options);
     $this->assertTrue($first_option->widget instanceof Option);
     $this->assertTrue($this->form->b->options[0]->widget instanceof TextInput);
-    $this->assertEquals('<option disabled selected value="a">hello</option>', $first_option(["disabled" => true]));
+    $this->assertEquals('<option disabled selected value="a">hello</option>', $first_option(['disabled' => true]));
   }
 
   public function testDefaultCoerce()
   {
-    $this->form->a = new SelectField(["choices" => [["a", "Foo"]]]);
-    $this->form->process(["formdata" => ["a" => []]]);
+    $this->form->a = new SelectField(['choices' => [['a', 'Foo']]]);
+    $this->form->process(['formdata' => ['a' => []]]);
     $this->assertFalse($this->form->validate());
     $this->assertNull($this->form->a->data);
     $this->assertEquals(1, count($this->form->a->errors));
-    $this->assertEquals(["Not a valid choice"], $this->form->a->errors);
+    $this->assertEquals(['Not a valid choice'], $this->form->a->errors);
   }
 
   public function testSelectFieldBase()

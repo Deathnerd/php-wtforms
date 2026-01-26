@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 6/7/2016
- * Time: 12:38 AM
+ * Time: 12:38 AM.
  */
 
 namespace WTForms\Tests\CSRF;
@@ -16,7 +17,7 @@ use WTForms\Form;
 
 class Pin
 {
-  public static $pinned_time = null;
+  public static $pinned_time;
 
   public static function pinTime($value)
   {
@@ -47,7 +48,7 @@ class FF extends Form
 {
   public function __construct(array $options = [])
   {
-    if (!$this->meta || get_class($this->meta) == "DefaultMeta") {
+    if (!$this->meta || 'DefaultMeta' == get_class($this->meta)) {
       $this->meta = new FFMeta();
     }
     parent::__construct($options);
@@ -60,7 +61,7 @@ class NTLMeta extends DefaultMeta
 {
   public string $csrf_time_limit = null;
   public bool $csrf = true;
-  public ?string $csrf_secret = "foobar";
+  public ?string $csrf_secret = 'foobar';
 }
 
 class NoTimeLimit extends FF
@@ -74,7 +75,7 @@ class NoTimeLimit extends FF
 
 class PinnedMeta extends DefaultMeta
 {
-  public ?string $csrf_class = \WTForms\Tests\CSRF\TimePin::class;
+  public ?string $csrf_class = TimePin::class;
 }
 
 class Pinned extends FF
@@ -88,7 +89,7 @@ class Pinned extends FF
 
 class SessionCSRFTest extends \PHPUnit\Framework\TestCase
 {
-  public function testVariousFailures_1()
+  public function testVariousFailures1()
   {
     $this->expectException(\WTForms\Exceptions\TypeError::class);
     // Session must be active first before we can destroy it
@@ -96,11 +97,11 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
     new FF();
   }
 
-  public function testVariousFailures_2()
+  public function testVariousFailures2()
   {
-    $this->expectExceptionMessage("Must set `csrf_secret` on class Meta for SessionCSRF to work");
+    $this->expectExceptionMessage('Must set `csrf_secret` on class Meta for SessionCSRF to work');
     $this->expectException(\Exception::class);
-    new FF(["meta" => ["csrf_secret" => null]]);
+    new FF(['meta' => ['csrf_secret' => null]]);
   }
 
   public function testNoTimeLimit()
@@ -112,9 +113,9 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
     $this->assertArrayHasKey('csrf', $_SESSION);
     // End Phase 1
     $expected_csrf = hash_hmac('sha1', $_SESSION['csrf'], 'foobar');
-    $this->assertEquals('##' . $expected_csrf, $form->csrf_token->current_token);
+    $this->assertEquals('##'.$expected_csrf, $form->csrf_token->current_token);
     // Phase 2
-    $form = new NoTimeLimit(["formdata" => ["csrf_token" => $form->csrf_token->current_token]]);
+    $form = new NoTimeLimit(['formdata' => ['csrf_token' => $form->csrf_token->current_token]]);
     $this->assertTrue($form->validate());
     // End Phase 2
   }
@@ -125,7 +126,7 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
     $this->assertFalse($form->validate());
     $this->assertNotEmpty($form->csrf_token->errors);
     $this->assertArrayHasKey('csrf', $_SESSION);
-    $form = new FF(["formdata" => ["csrf_token" => $form->csrf_token->current_token]]);
+    $form = new FF(['formdata' => ['csrf_token' => $form->csrf_token->current_token]]);
     $this->assertTrue($form->validate());
   }
 
@@ -133,7 +134,7 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
   {
     $_SESSION = ['csrf' => '93fed52fa69a2b2b0bf9c350c8aeeb408b6b6dfa'];
     Pin::pinTime(Carbon::create(2013, 1, 15, 8, 11, 12));
-    $form = new Pinned(["meta" => ["csrf" => true, "csrf_secret" => "foobar", "csrf_time_limit" => 1800]]);
+    $form = new Pinned(['meta' => ['csrf' => true, 'csrf_secret' => 'foobar', 'csrf_time_limit' => 1800]]);
     $this->assertFalse($form->validate());
     $this->assertNotEmpty($form->csrf_token->errors);
     $this->assertArrayHasKey('csrf', $_SESSION);
@@ -143,8 +144,8 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
     // Validate under normal case
     Pin::pinTime(Carbon::create(2013, 1, 15, 8, 18));
     $form = new Pinned([
-        "meta"     => ["csrf" => true, "csrf_secret" => "foobar", "csrf_time_limit" => 1800],
-        "formdata" => ["csrf_token" => $token]
+      'meta'     => ['csrf' => true, 'csrf_secret' => 'foobar', 'csrf_time_limit' => 1800],
+      'formdata' => ['csrf_token' => $token],
     ]);
     $this->assertTrue($form->validate());
     $new_token = $form->csrf_token->current_token;
@@ -154,30 +155,30 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
     // Make sure CSRF fails when we're past time
     Pin::pinTime(Carbon::create(2013, 1, 15, 8, 43));
     $form = new Pinned([
-        "meta"     => ["csrf" => true, "csrf_secret" => "foobar", "csrf_time_limit" => 1800],
-        "formdata" => ["csrf_token" => $token]
+      'meta'     => ['csrf' => true, 'csrf_secret' => 'foobar', 'csrf_time_limit' => 1800],
+      'formdata' => ['csrf_token' => $token],
     ]);
     $this->assertFalse($form->validate());
-    $this->assertEquals(["CSRF token expired"], $form->csrf_token->errors);
+    $this->assertEquals(['CSRF token expired'], $form->csrf_token->errors);
     // We can succeed with a slightly newer token
     $form = new Pinned([
-        "meta"     => ["csrf" => true, "csrf_secret" => "foobar", "csrf_time_limit" => 1800],
-        "formdata" => ["csrf_token" => $new_token]
+      'meta'     => ['csrf' => true, 'csrf_secret' => 'foobar', 'csrf_time_limit' => 1800],
+      'formdata' => ['csrf_token' => $new_token],
     ]);
     $this->assertTrue($form->validate());
 
     Pin::pinTime(Carbon::create(2013, 1, 15, 8, 44));
     $bad_token = '20130115084800##e399e3a6a84860762723672b694134507ba21b59';
     $form = new Pinned([
-        "meta"     => ["csrf" => true, "csrf_secret" => "foobar", "csrf_time_limit" => 1800],
-        "formdata" => ["csrf_token" => $bad_token]
+      'meta'     => ['csrf' => true, 'csrf_secret' => 'foobar', 'csrf_time_limit' => 1800],
+      'formdata' => ['csrf_token' => $bad_token],
     ]);
     $this->assertFalse($form->validate());
   }
 
   protected function setUp(): void
   {
-    if (session_status() == PHP_SESSION_ACTIVE) {
+    if (PHP_SESSION_ACTIVE == session_status()) {
       session_destroy();
     }
     session_start();
@@ -185,7 +186,7 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
 
   protected function tearDown(): void
   {
-    if (session_status() == PHP_SESSION_ACTIVE) {
+    if (PHP_SESSION_ACTIVE == session_status()) {
       session_destroy();
     }
   }

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/27/2016
- * Time: 11:21 PM
+ * Time: 11:21 PM.
  */
 
 namespace WTForms\Validators;
@@ -15,7 +16,8 @@ use WTForms\Validators\Options\ArrayOptions;
 use WTForms\Validators\Options\UUIDOptions;
 
 /**
- * Validates a UUID
+ * Validates a UUID.
+ *
  * @phpstan-import-type UUIDOptionsArray from UUIDOptions
  */
 class UUID extends Regexp
@@ -23,10 +25,10 @@ class UUID extends Regexp
   /**
    * UUID constructor.
    *
-   * @param string $message Error message to raise in case of validation error
+   * @param string                       $message Error message to raise in case of validation error
    * @param UUIDOptionsArray|UUIDOptions $options
    */
-  public function __construct(string $message = "", $options = [])
+  public function __construct(string $message = '', $options = [])
   {
     if ($options instanceof ArrayOptions) {
       $options = $options->toArray();
@@ -38,20 +40,17 @@ class UUID extends Regexp
   }
 
   /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
    * @return string The matched UUID string
    *
    * @throws ValidationError
+   *
    * @phpstan-assert non-empty-string $field->data
    */
-  public function __invoke(Form $form, Field $field, string $message = ""): string
+  public function __invoke(Form $form, Field $field, string $message = ''): string
   {
     $message = $this->message;
     if (!$message) {
-      $message = "Invalid UUID.";
+      $message = 'Invalid UUID.';
     }
 
     return parent::__invoke($form, $field, $message);

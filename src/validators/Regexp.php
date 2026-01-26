@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/27/2016
- * Time: 10:09 PM
+ * Time: 10:09 PM.
  */
 
 namespace WTForms\Validators;
@@ -14,10 +15,11 @@ use WTForms\Form;
 use WTForms\Validators\Options\ArrayOptions;
 use WTForms\Validators\Options\RegexpOptions;
 
-
 /**
- * Validates the field against a user-provided regular expression
+ * Validates the field against a user-provided regular expression.
+ *
  * @phpstan-import-type RegexpOptionsArray from RegexpOptions
+ *
  * @template-extends Validator<RegexpOptionsArray>
  */
 class Regexp extends Validator
@@ -28,38 +30,35 @@ class Regexp extends Validator
   public string $regex;
 
   /**
-   * Assertion check is done here for a valid regular expression
+   * Assertion check is done here for a valid regular expression.
    *
-   * @param string $message Error message to raise in case of a validation error
+   * @param string                           $message Error message to raise in case of a validation error
    * @param RegexpOptionsArray|RegexpOptions $options
    */
-  public function __construct(string $message = "", $options = [])
+  public function __construct(string $message = '', $options = [])
   {
     if ($options instanceof ArrayOptions) {
       $options = $options->toArray();
     }
-    assert(preg_match($options['regex'], '') !== false, "Invalid regular expression passed to Regexp");
+    assert(false !== preg_match($options['regex'], ''), 'Invalid regular expression passed to Regexp');
     parent::__construct($message, $options);
     $this->regex = $options['regex'];
   }
 
   /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
    * @return string The first match of the regular expression if one was found
    *
    * @throws ValidationError
+   *
    * @phpstan-assert string $field->data
    */
-  public function __invoke(Form $form, Field $field, string $message = ""): string
+  public function __invoke(Form $form, Field $field, string $message = ''): string
   {
     $match = preg_match($this->regex, $field->data ?: '', $matches);
     if (!$match) {
-      if ($message == "") {
-        if ($this->message == "") {
-          $message = "Invalid Input.";
+      if ('' == $message) {
+        if ('' == $this->message) {
+          $message = 'Invalid Input.';
         } else {
           $message = $this->message;
         }

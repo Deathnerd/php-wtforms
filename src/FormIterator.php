@@ -1,21 +1,20 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 1/22/2016
- * Time: 3:32 PM
+ * Time: 3:32 PM.
  */
 
 namespace WTForms;
 
 /**
- * Class FormIterator
- * @package WTForms
+ * Class FormIterator.
  */
 trait FormIterator
 {
   /**
-   * @inheritdoc
    * @internal
    */
   public function current()
@@ -24,7 +23,6 @@ trait FormIterator
   }
 
   /**
-   * @inheritdoc
    * @internal
    */
   public function next()
@@ -33,7 +31,6 @@ trait FormIterator
   }
 
   /**
-   * @inheritdoc
    * @internal
    */
   public function key()
@@ -42,19 +39,17 @@ trait FormIterator
   }
 
   /**
-   * @inheritdoc
    * @internal
    */
   public function valid()
   {
     $key = key($this->fields);
-    $var = ($key !== null && $key !== false);
+    $var = (null !== $key && false !== $key);
 
     return $var;
   }
 
   /**
-   * @inheritdoc
    * @internal
    */
   public function rewind()

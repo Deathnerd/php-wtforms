@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 6/5/2016
- * Time: 4:11 PM
+ * Time: 4:11 PM.
  */
 
 namespace WTForms\Tests\Fields;
@@ -17,8 +18,8 @@ class PasswordFieldTest extends \PHPUnit\Framework\TestCase
   public function testPasswordField()
   {
     $form = new Form();
-    $form->a = new PasswordField(["widget" => new PasswordInput(false), "default" => "LE DEFAULT"]);
-    $form->b = new PasswordField(["default" => "Hai"]);
+    $form->a = new PasswordField(['widget' => new PasswordInput(false), 'default' => 'LE DEFAULT']);
+    $form->b = new PasswordField(['default' => 'Hai']);
     $form->process([]);
     $this->assertEquals('<input id="a" name="a" type="password" value="LE DEFAULT">', "$form->a");
     $this->assertEquals('<input id="b" name="b" type="password" value="">', "$form->b");

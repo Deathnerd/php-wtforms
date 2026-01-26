@@ -1,52 +1,33 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 12/31/2015
- * Time: 11:34 AM
+ * Time: 11:34 AM.
  */
 
 namespace WTForms;
 
 use WTForms\CSRF\Session\SessionCSRF;
 use WTForms\Exceptions\TypeError;
-use WTForms\Fields;
 use WTForms\Fields\Core\Field;
 
 /**
  * This is the default Meta class which defines all the default values
- * and therefore is also the 'API' of the class Meta interface
- * @package WTForms
+ * and therefore is also the 'API' of the class Meta interface.
  */
 class DefaultMeta
 {
-  /**
-   * @var string
-   */
-  public string $csrf_field_name = "csrf_token";
-  /**
-   * @var string
-   */
+  public string $csrf_field_name = 'csrf_token';
   public string $csrf_time_limit;
-  /**
-   * @var bool
-   */
   public bool $csrf = false;
-  /**
-   * @var string|null
-   */
   public ?string $csrf_secret = null;
   /**
-   * @var ?class-string<covariant \WTForms\CSRF\Core\CSRF> $csrf_class
+   * @var ?class-string<covariant \WTForms\CSRF\Core\CSRF>
    */
   public ?string $csrf_class = null;
 
-  /**
-   * @param Field $field
-   * @param array $render_kw
-   *
-   * @return mixed
-   */
   public function renderField(Field $field, array $render_kw = [])
   {
     $other_kw = $field->render_kw;
@@ -67,6 +48,7 @@ class DefaultMeta
    * @param Form $form The form
    *
    * @return object|SessionCSRF A CSRF representation
+   *
    * @noinspection PhpUnusedParameterInspection
    */
   public function buildCSRF(Form $form)
@@ -75,7 +57,7 @@ class DefaultMeta
       try {
         return (new \ReflectionClass($this->csrf_class))->newInstance();
       } catch (\ReflectionException $e) {
-        throw new TypeError(sprintf("csrf_class must be a valid class name (got %s)", $this->csrf_class));
+        throw new TypeError(sprintf('csrf_class must be a valid class name (got %s)', $this->csrf_class));
       }
     }
 
@@ -84,8 +66,6 @@ class DefaultMeta
 
   /**
    * Given an associative array of values, update values on this `Meta` instance.
-   *
-   * @param array $values
    */
   public function updateValues(array $values = [])
   {

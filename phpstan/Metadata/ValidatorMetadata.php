@@ -31,52 +31,52 @@ use WTForms\Validators\UUID;
  */
 final class ValidatorMetadata
 {
-    /**
-     * Maps validator classes to the exception types they throw.
-     *
-     * Validators that halt validation chain throw StopValidation.
-     * Validators that report field errors throw ValidationError.
-     *
-     * @var array<class-string, class-string<\Throwable>>
-     */
-    public const THROW_TYPES = [
-        // Stop validators - halt the validation chain
-        DataRequired::class => StopValidation::class,
-        InputRequired::class => StopValidation::class,
-        Optional::class => StopValidation::class,
-        RequiredIf::class => StopValidation::class,
+  /**
+   * Maps validator classes to the exception types they throw.
+   *
+   * Validators that halt validation chain throw StopValidation.
+   * Validators that report field errors throw ValidationError.
+   *
+   * @var array<class-string, class-string<\Throwable>>
+   */
+  public const THROW_TYPES = [
+    // Stop validators - halt the validation chain
+    DataRequired::class  => StopValidation::class,
+    InputRequired::class => StopValidation::class,
+    Optional::class      => StopValidation::class,
+    RequiredIf::class    => StopValidation::class,
 
-        // Error validators - report field validation errors
-        Length::class => ValidationError::class,
-        Email::class => ValidationError::class,
-        URL::class => ValidationError::class,
-        IPAddress::class => ValidationError::class,
-        MacAddress::class => ValidationError::class,
-        UUID::class => ValidationError::class,
-        NumberRange::class => ValidationError::class,
-        Regexp::class => ValidationError::class,
-        AnyOf::class => ValidationError::class,
-        NoneOf::class => ValidationError::class,
-        EqualTo::class => ValidationError::class,
-    ];
+    // Error validators - report field validation errors
+    Length::class      => ValidationError::class,
+    Email::class       => ValidationError::class,
+    URL::class         => ValidationError::class,
+    IPAddress::class   => ValidationError::class,
+    MacAddress::class  => ValidationError::class,
+    UUID::class        => ValidationError::class,
+    NumberRange::class => ValidationError::class,
+    Regexp::class      => ValidationError::class,
+    AnyOf::class       => ValidationError::class,
+    NoneOf::class      => ValidationError::class,
+    EqualTo::class     => ValidationError::class,
+  ];
 
-    /**
-     * Type narrowing rules applied after a validator passes.
-     *
-     * - 'removes': Types that are eliminated from the union (e.g., null)
-     * - 'narrows_to': The resulting type after validation passes
-     *
-     * @var array<class-string, array{removes?: list<string>, narrows_to?: string}>
-     */
-    public const TYPE_NARROWING = [
-        DataRequired::class => ['removes' => ['null']],
-        InputRequired::class => ['removes' => ['null']],
-        Email::class => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
-        URL::class => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
-        IPAddress::class => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
-        MacAddress::class => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
-        UUID::class => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
-        NumberRange::class => ['removes' => ['null'], 'narrows_to' => 'int|float'],
-        Regexp::class => ['removes' => ['null'], 'narrows_to' => 'string'],
-    ];
+  /**
+   * Type narrowing rules applied after a validator passes.
+   *
+   * - 'removes': Types that are eliminated from the union (e.g., null)
+   * - 'narrows_to': The resulting type after validation passes
+   *
+   * @var array<class-string, array{removes?: list<string>, narrows_to?: string}>
+   */
+  public const TYPE_NARROWING = [
+    DataRequired::class  => ['removes' => ['null']],
+    InputRequired::class => ['removes' => ['null']],
+    Email::class         => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
+    URL::class           => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
+    IPAddress::class     => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
+    MacAddress::class    => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
+    UUID::class          => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
+    NumberRange::class   => ['removes' => ['null'], 'narrows_to' => 'int|float'],
+    Regexp::class        => ['removes' => ['null'], 'narrows_to' => 'string'],
+  ];
 }

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes
  * Date: 2/6/2016
- * Time: 4:23 PM
+ * Time: 4:23 PM.
  */
 
 namespace WTForms;
@@ -12,10 +13,6 @@ trait FormArrayable
 {
   /**
    * @internal
-   *
-   * @param mixed $offset
-   *
-   * @return bool
    */
   public function offsetExists($offset): bool
   {
@@ -24,10 +21,6 @@ trait FormArrayable
 
   /**
    * @internal
-   *
-   * @param mixed $offset
-   *
-   * @return \WTForms\Fields\Core\Field|null
    */
   public function offsetGet($offset): ?Fields\Core\Field
   {
@@ -40,9 +33,6 @@ trait FormArrayable
 
   /**
    * @internal
-   *
-   * @param mixed $offset
-   * @param mixed $value
    */
   public function offsetSet($offset, $value)
   {
@@ -52,8 +42,6 @@ trait FormArrayable
 
   /**
    * @internal
-   *
-   * @param mixed $offset
    */
   public function offsetUnset($offset)
   {

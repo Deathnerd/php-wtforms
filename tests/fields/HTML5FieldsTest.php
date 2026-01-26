@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 6/6/2016
- * Time: 5:19 PM
+ * Time: 5:19 PM.
  */
 
 namespace WTForms\Tests\Fields;
-
 
 use Carbon\Carbon;
 use WTForms\Fields\HTML5;
@@ -30,19 +30,19 @@ class HTML5FieldsTest extends \PHPUnit\Framework\TestCase
     $form->int_range = new HTML5\IntegerRangeField();
     $form->decimal_range = new HTML5\DecimalRangeField();
     $form->process([
-        "formdata" => [
-            "search"        => "search",
-            "telephone"     => "123456789",
-            "url"           => "http://github.com/Deathnerd/php-wtforms",
-            "email"         => "foo@bar.com",
-            "datetime"      => '2013-09-05 00:23:42',
-            "date"          => '2013-09-05',
-            "dt_local"      => "2013-09-05 00:23:42",
-            "integer"       => "42",
-            "decimal"       => "43.5",
-            "int_range"     => "4",
-            "decimal_range" => "58"
-        ]
+      'formdata' => [
+        'search'        => 'search',
+        'telephone'     => '123456789',
+        'url'           => 'http://github.com/Deathnerd/php-wtforms',
+        'email'         => 'foo@bar.com',
+        'datetime'      => '2013-09-05 00:23:42',
+        'date'          => '2013-09-05',
+        'dt_local'      => '2013-09-05 00:23:42',
+        'integer'       => '42',
+        'decimal'       => '43.5',
+        'int_range'     => '4',
+        'decimal_range' => '58',
+      ],
     ]);
 
     $this->assertEquals('<input id="search" name="search" type="search" value="search">', "$form->search");

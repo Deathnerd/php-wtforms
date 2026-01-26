@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Wes Gilleland
  * Date: 1/27/2016
- * Time: 7:33 PM
+ * Time: 7:33 PM.
  */
 
 namespace WTForms\Validators;
@@ -19,14 +20,13 @@ use WTForms\Validators\Options\OptionalOptions;
  *
  * If input is empty, also removes prior errors (such as processing errors)
  * from the field
+ *
  * @phpstan-import-type OptionalOptionsArray from OptionalOptions
+ *
  * @template-extends Validator<OptionalOptionsArray>
  */
 class Optional extends Validator
 {
-  /**
-   * @var array
-   */
   public array $field_flags = ['optional'];
 
   /**
@@ -42,10 +42,9 @@ class Optional extends Validator
   /**
    * Optional constructor.
    *
-   * @param string $message
    * @param OptionalOptionsArray|OptionalOptions $options
    */
-  public function __construct(string $message = "", $options = [])
+  public function __construct(string $message = '', $options = [])
   {
     if ($options instanceof ArrayOptions) {
       $options = $options->toArray();
@@ -56,16 +55,12 @@ class Optional extends Validator
   }
 
   /**
-   * @param Form   $form
-   * @param Field  $field
-   * @param string $message
-   *
    * @throws StopValidation
    */
-  public function __invoke(Form $form, Field $field, string $message = "")
+  public function __invoke(Form $form, Field $field, string $message = '')
   {
     if (is_null($field->raw_data)
-        || (is_string($field->raw_data[0]) && $this->stringCheck($field->raw_data[0]) == "")
+        || (is_string($field->raw_data[0]) && '' == $this->stringCheck($field->raw_data[0]))
     ) {
       $field->errors = [];
       throw new StopValidation();
@@ -77,6 +72,7 @@ class Optional extends Validator
     if ($this->strip_whitespace) {
       return trim($string);
     }
+
     return $string;
   }
 }

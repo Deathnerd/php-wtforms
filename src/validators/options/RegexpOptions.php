@@ -8,6 +8,7 @@ namespace WTForms\Validators\Options;
  * Options for the Regexp validator.
  *
  * @phpstan-type RegexpOptionsArray array{regex?:string}
+ *
  * @extends ArrayOptions<RegexpOptionsArray>
  */
 class RegexpOptions extends ArrayOptions
