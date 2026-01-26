@@ -5111,6 +5111,27 @@ The actual data value is never rendered or used in a type-specific way. Widgets 
 
 **Recommended Change:**
 
+First, define a bounded type for all valid field data types (avoiding `mixed`):
+
+```php
+// In src/Fields/Core/Field.php or a dedicated types file
+/**
+ * All valid data types that fields can hold.
+ * This is an explicit bound - NO mixed allowed.
+ *
+ * @phpstan-type FieldDataType scalar|array<array-key, scalar|null>|\DateTimeInterface|null
+ */
+```
+
+More specifically, based on actual field types in the codebase:
+```php
+/**
+ * @phpstan-type FieldDataType string|int|float|bool|\DateTimeInterface|array<array-key, string|int|float|bool|null>|null
+ */
+```
+
+Then Widget becomes:
+
 ```php
 // Before
 /**
@@ -5120,10 +5141,13 @@ abstract class Widget {
     abstract public function __invoke(Field $field, array $options = []): string;
 }
 
-// After - no generic
+// After - explicit bound, NO mixed
+/**
+ * @phpstan-import-type FieldDataType from Field
+ */
 abstract class Widget {
     /**
-     * @param Field<mixed> $field Any field type
+     * @param Field<FieldDataType> $field Any field with valid data type
      */
     abstract public function __invoke(Field $field, array $options = []): string;
 }
@@ -5140,23 +5164,40 @@ class TextInput extends Widget { }
 class TextInput extends Widget { }
 ```
 
-**Benefits of Removing Generic:**
-1. Simpler code - no `@template` or `@extends` annotations
-2. No fake type safety that doesn't actually constrain anything
+**Benefits:**
+1. **No `mixed`** - explicit union of valid types
+2. Simpler code - no `@template` or `@extends` annotations on Widget
 3. Widgets can render any field type (which they already can)
-4. Avoids variance complexity
+4. PHPStan can verify that fields passed to widgets have valid data types
+5. Avoids variance complexity
 
-**When Generics WOULD Help:**
-If we had type-specific rendering, e.g.:
+**Alternative: Keep Widget Generic with Bounded Type**
+
+If we want Widget subclasses to declare what field types they accept:
+
 ```php
-/** @template TData of \DateTimeInterface */
-class DateWidget extends Widget {
-    public function __invoke(Field $field, array $options = []): string {
-        return $field->data->format($this->format);  // Uses TData methods
-    }
+/**
+ * @phpstan-type FieldDataType string|int|float|bool|\DateTimeInterface|array<array-key, scalar|null>|null
+ *
+ * @template TData of FieldDataType
+ */
+abstract class Widget {
+    /**
+     * @param Field<TData> $field
+     */
+    abstract public function __invoke(Field $field, array $options = []): string;
 }
+
+/** @extends Widget<string> */
+class TextInput extends Widget { }
+
+/** @extends Widget<bool> */
+class CheckboxInput extends Widget { }
 ```
-But this pattern doesn't exist in WTForms - all rendering goes through `$field->value` (already string).
+
+This is more verbose but explicitly documents which widgets work with which field types.
+
+**Recommendation:** Use the non-generic approach with explicit `FieldDataType` bound. The generic version adds complexity without real benefit since widgets don't use TData-specific operations.
 
 **New questions raised:**
 - None - this concludes the Widget typing analysis (FQ2 + FQ7).
