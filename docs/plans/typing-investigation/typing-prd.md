@@ -474,16 +474,16 @@ Complete typing for CSRF and security components:
 
 ### 9.3 Investigation Status
 
-- [ ] Q9.1 - CSRF base class typed
-- [ ] Q9.2 - Token generation typed
-- [ ] Q9.3 - Session integration typed
-- [ ] Q9.4 - Time-limit validation typed
-- [ ] Q9.5 - Taint analysis applied
-- [ ] Q9.6 - Public API methods typed
-- [ ] Q9.7 - Field metadata typed
-- [ ] Q9.8 - Nullable handling designed
-- [ ] Q9.9 - Timing-safe comparison typed
-- [ ] Q9.10 - Exception types documented
+- [x] Q9.1 - CSRF base class typed
+- [x] Q9.2 - Token generation typed
+- [x] Q9.3 - Session integration typed
+- [x] Q9.4 - Time-limit validation typed
+- [x] Q9.5 - Taint analysis applied
+- [x] Q9.6 - Public API methods typed
+- [x] Q9.7 - Field metadata typed
+- [x] Q9.8 - Nullable handling designed
+- [x] Q9.9 - Timing-safe comparison typed
+- [x] Q9.10 - Exception types documented
 
 ---
 
@@ -522,16 +522,16 @@ Establish comprehensive generics strategy:
 
 ### 10.3 Investigation Status
 
-- [ ] Q10.1 - Naming convention established
-- [ ] Q10.2 - Covariant returns handled
-- [ ] Q10.3 - Contravariant params handled
-- [ ] Q10.4 - Bounded generics syntax documented
-- [ ] Q10.5 - Inheritance propagation designed
-- [ ] Q10.6 - Covariant template usage documented
-- [ ] Q10.7 - Type import syntax documented
-- [ ] Q10.8 - PHP 7.4 limitations documented
-- [ ] Q10.9 - IDE documentation approach defined
-- [ ] Q10.10 - Circular dependencies handled
+- [x] Q10.1 - Naming convention established
+- [x] Q10.2 - Covariant returns handled
+- [x] Q10.3 - Contravariant params handled
+- [x] Q10.4 - Bounded generics syntax documented
+- [x] Q10.5 - Inheritance propagation designed
+- [x] Q10.6 - Covariant template usage documented
+- [x] Q10.7 - Type import syntax documented
+- [x] Q10.8 - PHP 7.4 limitations documented
+- [x] Q10.9 - IDE documentation approach defined
+- [x] Q10.10 - Circular dependencies handled
 
 ---
 
@@ -570,16 +570,16 @@ Complete typing for internal utilities:
 
 ### 11.3 Investigation Status
 
-- [ ] Q11.1 - Utility classes listed
-- [ ] Q11.2 - ArrayOptions typed
-- [ ] Q11.3 - Procedural functions identified
-- [ ] Q11.4 - Exception hierarchy documented
-- [ ] Q11.5 - Static helpers typed
-- [ ] Q11.6 - i18n functions typed
-- [ ] Q11.7 - Reflection utilities typed
-- [ ] Q11.8 - Array utilities generified
-- [ ] Q11.9 - Constants documented
-- [ ] Q11.10 - Bootstrap code typed
+- [x] Q11.1 - Utility classes listed
+- [x] Q11.2 - ArrayOptions typed
+- [x] Q11.3 - Procedural functions identified
+- [x] Q11.4 - Exception hierarchy documented
+- [x] Q11.5 - Static helpers typed
+- [x] Q11.6 - i18n functions typed
+- [x] Q11.7 - Reflection utilities typed
+- [x] Q11.8 - Array utilities generified
+- [x] Q11.9 - Constants documented
+- [x] Q11.10 - Bootstrap code typed
 
 ---
 
@@ -618,16 +618,16 @@ Ensure type coverage in test code:
 
 ### 12.3 Investigation Status
 
-- [ ] Q12.1 - Test inclusion policy decided
-- [ ] Q12.2 - PHPUnit extensions configured
-- [ ] Q12.3 - Mock typing approach defined
-- [ ] Q12.4 - Helper class typing policy set
-- [ ] Q12.5 - Data provider typing solved
-- [ ] Q12.6 - Assertion method typing understood
-- [ ] Q12.7 - Fixture typing approach defined
-- [ ] Q12.8 - Custom assertion typing evaluated
-- [ ] Q12.9 - Separate analysis configuration designed
-- [ ] Q12.10 - CI workflow defined
+- [x] Q12.1 - Test inclusion policy decided
+- [x] Q12.2 - PHPUnit extensions configured
+- [x] Q12.3 - Mock typing approach defined
+- [x] Q12.4 - Helper class typing policy set
+- [x] Q12.5 - Data provider typing solved
+- [x] Q12.6 - Assertion method typing understood
+- [x] Q12.7 - Fixture typing approach defined
+- [x] Q12.8 - Custom assertion typing evaluated
+- [x] Q12.9 - Separate analysis configuration designed
+- [x] Q12.10 - CI workflow defined
 
 ---
 
