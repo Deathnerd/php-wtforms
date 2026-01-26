@@ -4847,12 +4847,92 @@ throw new ValidationError(vsprintf_named($message, ['min' => $this->min, 'max' =
 
 ---
 
-#### FQ5. [ ] Should we create a common `WTFormsException` base class?
+#### FQ5. [x] Should we create a common `WTFormsException` base class?
 
-**Answer:** *Pending investigation*
+**Answer:** **Yes, but as a marker interface, not a base class.** This is the recommended pattern for PHP library exceptions.
+
+**Current State:**
+```
+\Exception
+├── WTForms\Exceptions\AssertionError
+├── WTForms\Exceptions\IndexError
+├── WTForms\Exceptions\NotImplemented
+├── WTForms\Exceptions\StopValidation
+├── WTForms\Exceptions\ValidationError
+├── WTForms\Exceptions\ValueError
+└── \TypeError
+    └── WTForms\Exceptions\TypeError
+```
+
+**Problem:** No way to catch "all WTForms exceptions" without catching all `\Exception`.
+
+**Recommended Pattern: Marker Interface**
+
+Per [PHP exception best practices](https://php.watch/articles/PHP-exception-hierarchy), use a marker interface so exceptions can:
+1. Extend appropriate SPL base classes (LogicException, RuntimeException)
+2. Still be catchable as a group via the interface
+
+```php
+namespace WTForms\Exceptions;
+
+/**
+ * Marker interface for all WTForms exceptions.
+ * Allows catching all library exceptions: catch (WTFormsException $e)
+ */
+interface WTFormsException extends \Throwable {}
+```
+
+**Revised Hierarchy:**
+```php
+// Logic errors (bugs in code/config - should never happen in correct code)
+class TypeError extends \TypeError implements WTFormsException {}
+class ValueError extends \InvalidArgumentException implements WTFormsException {}
+class AssertionError extends \LogicException implements WTFormsException {}
+class NotImplemented extends \BadMethodCallException implements WTFormsException {}
+
+// Runtime errors (can happen even in correct code)
+class ValidationError extends \RuntimeException implements WTFormsException {}
+class StopValidation extends \RuntimeException implements WTFormsException {}
+class IndexError extends \OutOfBoundsException implements WTFormsException {}
+
+// CSRF-specific (from FQ1)
+class CSRFException extends \RuntimeException implements WTFormsException {}
+class CSRFConfigurationException extends CSRFException {}
+class CSRFValidationException extends CSRFException {}
+```
+
+**Benefits:**
+
+1. **Granular catching:**
+   ```php
+   try {
+       $form->validate();
+   } catch (ValidationError $e) {
+       // Handle validation failure specifically
+   } catch (WTFormsException $e) {
+       // Catch any other WTForms error
+   }
+   ```
+
+2. **SPL semantics preserved:**
+   - `LogicException` subclasses = bugs (fix the code)
+   - `RuntimeException` subclasses = expected failures (handle gracefully)
+
+3. **Static analysis benefits:**
+   - PHPStan/Psalm can track exception flow
+   - `@throws` annotations become more specific
+
+4. **Matches SPL exception design:**
+   - PHP's own `PDOException`, `JsonException` follow similar patterns
+   - Libraries like Guzzle, Symfony use marker interfaces
+
+**Why Interface Over Base Class:**
+- Can't have multiple inheritance in PHP
+- Our exceptions need to extend SPL exceptions (`\TypeError`, `\InvalidArgumentException`)
+- Interface allows "multiple inheritance" of exception categorization
 
 **New questions raised:**
-- *None yet*
+- None - this establishes the pattern for FQ1 and FQ6.
 
 ---
 
