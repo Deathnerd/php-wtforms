@@ -5054,12 +5054,112 @@ WTFormsException (interface)
 
 ---
 
-#### FQ7. [ ] Should Widget even be generic over TData, or should it just accept `Field<mixed>` since it only reads common properties?
+#### FQ7. [x] Should Widget even be generic over TData, or should it just accept `Field<mixed>` since it only reads common properties?
 
-**Answer:** *Pending investigation*
+**Answer:** **No, Widget should NOT be generic.** Remove `@template TData` from Widget.
+
+**Analysis of Field Properties Accessed by Widgets:**
+
+```bash
+grep -rn '\$field->' src/Widgets/
+```
+
+| Property | Type | Used In |
+|----------|------|---------|
+| `$field->id` | `string` | All widgets |
+| `$field->name` | `string` | All widgets |
+| `$field->value` | `string\|null` | Input, TextArea, Option |
+| `$field->data` | `TData` | CheckboxInput (as boolean check) |
+| `$field->checked` | `bool` | CheckboxInput, RadioInput, Option |
+| `$field->label` | `Label` | SubmitInput, Option, ListWidget |
+| `$field->getChoices()` | `iterable` | Select |
+| `$field->options` | `iterable` | ListWidget |
+
+**Key Observation:** `$field->data` (the TData) is only accessed in `CheckboxInput`:
+```php
+if ($field->checked or $field->data) {  // Used as boolean check only
+```
+
+The actual data value is never rendered or used in a type-specific way. Widgets only use:
+- Metadata (`id`, `name`)
+- Display values (`value`, `label->text`)
+- State flags (`checked`)
+
+**Why Generic TData Doesn't Help:**
+
+1. **No type-specific operations:**
+   ```php
+   // This is what would benefit from TData:
+   public function render(Field<DateTime> $field): string {
+       return $field->data->format('Y-m-d');  // TData-specific method
+   }
+
+   // But widgets only do this:
+   public function render(Field $field): string {
+       return $field->value;  // Already string, no TData needed
+   }
+   ```
+
+2. **Variance problem (from FQ2):** Can't use `@template-covariant` because TData is in parameter position
+
+3. **Subclass specificity is fake:**
+   ```php
+   /** @extends Widget<string> */
+   class TextInput extends Widget { }
+   // The <string> doesn't actually constrain anything useful
+   ```
+
+**Recommended Change:**
+
+```php
+// Before
+/**
+ * @template TData
+ */
+abstract class Widget {
+    abstract public function __invoke(Field $field, array $options = []): string;
+}
+
+// After - no generic
+abstract class Widget {
+    /**
+     * @param Field<mixed> $field Any field type
+     */
+    abstract public function __invoke(Field $field, array $options = []): string;
+}
+```
+
+**Subclass Changes:**
+
+```php
+// Before
+/** @extends Widget<string> */
+class TextInput extends Widget { }
+
+// After - no extends needed
+class TextInput extends Widget { }
+```
+
+**Benefits of Removing Generic:**
+1. Simpler code - no `@template` or `@extends` annotations
+2. No fake type safety that doesn't actually constrain anything
+3. Widgets can render any field type (which they already can)
+4. Avoids variance complexity
+
+**When Generics WOULD Help:**
+If we had type-specific rendering, e.g.:
+```php
+/** @template TData of \DateTimeInterface */
+class DateWidget extends Widget {
+    public function __invoke(Field $field, array $options = []): string {
+        return $field->data->format($this->format);  // Uses TData methods
+    }
+}
+```
+But this pattern doesn't exist in WTForms - all rendering goes through `$field->value` (already string).
 
 **New questions raised:**
-- *None yet*
+- None - this concludes the Widget typing analysis (FQ2 + FQ7).
 
 ---
 
