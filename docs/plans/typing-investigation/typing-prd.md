@@ -330,16 +330,16 @@ Complete typing for all validator classes:
 
 ### 6.3 Investigation Status
 
-- [ ] Q6.1 - TOptions template pattern documented
-- [ ] Q6.2 - Per-validator options typed
-- [ ] Q6.3 - Return type decided
-- [ ] Q6.4 - Message interpolation typed
-- [ ] Q6.5 - field_flags typed
-- [ ] Q6.6 - Field data access typing solved
-- [ ] Q6.7 - phpstan-assert usage evaluated
-- [ ] Q6.8 - Optional/required handling typed
-- [ ] Q6.9 - Exception hierarchy documented
-- [ ] Q6.10 - Regexp pattern typed
+- [x] Q6.1 - TOptions template pattern documented
+- [x] Q6.2 - Per-validator options typed
+- [x] Q6.3 - Return type decided
+- [x] Q6.4 - Message interpolation typed
+- [x] Q6.5 - field_flags typed
+- [x] Q6.6 - Field data access typing solved
+- [x] Q6.7 - phpstan-assert usage evaluated
+- [x] Q6.8 - Optional/required handling typed
+- [x] Q6.9 - Exception hierarchy documented
+- [x] Q6.10 - Regexp pattern typed
 
 ---
 

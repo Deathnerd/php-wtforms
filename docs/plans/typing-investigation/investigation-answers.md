@@ -2005,7 +2005,299 @@ class Field { }
 
 ## Section 6: Validator Classes Typing
 
-[Template repeats for Q6.1 through Q6.10...]
+### Q6.1 - TOptions Template Pattern
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (Validator.php)
+
+**Findings:**
+**Current pattern:**
+```php
+/**
+ * @template TOptions of array<string, mixed>
+ */
+abstract class Validator
+{
+    /** @var TOptions */
+    private array $options;
+
+    /**
+     * @param TOptions|ArrayOptions<TOptions> $options
+     */
+    public function __construct(string $message = '', $options = [])
+}
+```
+
+**Subclass pattern:**
+```php
+/**
+ * @phpstan-type LengthOptionsArray array{min?:int, max?:int}
+ * @template-extends Validator<LengthOptionsArray>
+ */
+class Length extends Validator
+```
+
+This is a solid pattern - each validator specifies its options shape.
+
+---
+
+### Q6.2 - Per-Validator Options Types
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (all validators)
+
+**Findings:**
+**Options types by validator:**
+
+| Validator | Options Type |
+|-----------|-------------|
+| Length | `array{min?: int, max?: int}` |
+| NumberRange | `array{min?: int\|float, max?: int\|float}` |
+| Regexp | `array{regex: string, flags?: string}` |
+| Email | `array{}` (no options) |
+| URL | `array{}` |
+| EqualTo | `array{fieldname: string}` |
+| AnyOf | `array{values: array<int, mixed>}` |
+| NoneOf | `array{values: array<int, mixed>}` |
+| IPAddress | `array{ipv4?: bool, ipv6?: bool}` |
+| Optional | `array{strip_whitespace?: bool}` |
+
+---
+
+### Q6.3 - Validator Return Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+abstract public function __invoke(Form $form, Field $field, string $message = '');
+```
+
+**Recommendation:**
+```php
+/**
+ * @throws ValidationError
+ * @throws StopValidation
+ */
+abstract public function __invoke(Form $form, Field $field, string $message = ''): void;
+```
+
+Return `void` - validators either succeed silently or throw exceptions.
+
+---
+
+### Q6.4 - Message Interpolation Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Message interpolation uses `vsprintf_named()`:**
+```php
+$message = vsprintf_named($message, ['min' => $this->min, 'max' => $this->max]);
+```
+
+**Type:**
+```php
+/**
+ * @param string $message Format string with %(name)s placeholders
+ * @param array<string, scalar> $args Named arguments for interpolation
+ * @return string Interpolated message
+ */
+function vsprintf_named(string $message, array $args): string
+```
+
+---
+
+### Q6.5 - field_flags Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+public array $field_flags = [];
+```
+
+**Used by validators like InputRequired:**
+```php
+public array $field_flags = ['required' => true];
+```
+
+**Recommended type:**
+```php
+/** @var array<string, bool> */
+public array $field_flags = [];
+```
+
+Flags are always string keys with boolean values.
+
+---
+
+### Q6.6 - Field Data Access Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Problem:** Validators access `$field->data` but field data type varies.
+
+**Current (Length.php):**
+```php
+if (null !== $field->data) {
+    $length = strlen($field->data);  // Assumes string
+}
+```
+
+**Solutions:**
+1. Validators could be generic over field type
+2. Use type assertions/narrowing
+3. Accept `Field<mixed>` and check at runtime
+
+**Recommended:** Type assertions with guards:
+```php
+if (!is_string($field->data)) {
+    return; // Skip validation for non-string
+}
+$length = strlen($field->data);
+```
+
+---
+
+### Q6.7 - phpstan-assert Usage
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**`@phpstan-assert` can narrow types after validation:**
+```php
+/**
+ * @phpstan-assert !null $field->data
+ */
+public function __invoke(Form $form, Field $field, string $message = ''): void
+```
+
+**For InputRequired/DataRequired:**
+```php
+/**
+ * @phpstan-assert-if-true !null $field->data
+ */
+```
+
+**Benefit:** After calling validator, PHPStan knows data is not null.
+
+**Recommendation:** Add assertions to validators that guarantee types.
+
+---
+
+### Q6.8 - Optional vs Required Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Pattern:**
+- `InputRequired`/`DataRequired` → throw StopValidation if empty
+- `Optional` → throw StopValidation if empty (to skip remaining validators)
+
+**Type implications:**
+- After InputRequired passes: `$field->data` is not null/empty
+- After Optional passes: validation chain stops if empty
+
+**Annotation:**
+```php
+// InputRequired
+/**
+ * @phpstan-assert !null $field->data
+ * @throws StopValidation If field is empty
+ */
+
+// Optional
+/**
+ * @throws StopValidation If field is empty (stops validation, not an error)
+ */
+```
+
+---
+
+### Q6.9 - Exception Hierarchy
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current exceptions:**
+```
+\Exception
+└── WTForms\Exceptions\WTFormsException (base)
+    ├── StopValidation - Control flow: stop validation chain
+    ├── ValidationError - Validation failure: add error message
+    ├── ValueError - Invalid argument
+    └── TypeError - Type mismatch
+```
+
+**ValidationError usage:**
+```php
+throw new ValidationError($message);
+// Message is added to $field->errors
+```
+
+**StopValidation usage:**
+```php
+throw new StopValidation($message);
+// Stops validation, optionally adds message
+```
+
+---
+
+### Q6.10 - Regexp Pattern Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Regexp validator options:**
+```php
+/**
+ * @phpstan-type RegexpOptionsArray array{regex: string, flags?: string}
+ */
+```
+
+**Pattern type considerations:**
+- `regex` is a PCRE pattern string
+- Could use `non-empty-string` to ensure not empty
+- Could create branded type `@psalm-type PcrePattern = non-empty-string`
+
+**Validation:**
+```php
+if (@preg_match($this->regex, '') === false) {
+    throw new ValueError('Invalid regex pattern');
+}
+```
 
 ---
 
