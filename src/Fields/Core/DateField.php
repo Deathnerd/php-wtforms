@@ -1,29 +1,29 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 2/2/2016
- * Time: 3:14 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
 use Carbon\Carbon;
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\DateTimeFieldOptions;
 
 /**
  * Same as DateTimeField, except stores a date (actually still a DateTime,
  * but formats to just a Date).
+ *
+ * @phpstan-import-type DateTimeFieldOptionsArray from DateTimeFieldOptions
  */
 class DateField extends DateTimeField
 {
-  public $format = '%Y-%m-%d';
+  public string $format = '%Y-%m-%d';
 
   /**
+   * @param array<int, string> $valuelist
+   *
    * @throws ValueError
    */
-  public function processFormData(array $valuelist)
+  public function processFormData(array $valuelist): void
   {
     if ($valuelist) {
       $date_str = implode(' ', $valuelist);
@@ -39,7 +39,10 @@ class DateField extends DateTimeField
     }
   }
 
-  public function __get($name)
+  /**
+   * @return string
+   */
+  public function __get(string $name)
   {
     if ('value' == $name) {
       if ($this->raw_data) {

@@ -1,18 +1,13 @@
 <?php
 
-/**
- * Beyond this line lie dragons... Enter at your own risk
- * Created by PhpStorm.
- * User: Wes
- * Date: 2/6/2016
- * Time: 4:55 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
 use WTForms\Exceptions\AssertionError;
 use WTForms\Exceptions\IndexError;
 use WTForms\Exceptions\TypeError;
+use WTForms\Fields\Options\FieldListOptions;
 use WTForms\Form;
 use WTForms\Widgets\Core\ListWidget;
 
@@ -22,41 +17,48 @@ use WTForms\Widgets\Core\ListWidget;
  *
  * >>> $authors = new FieldList(new StringField("name", [new DataRequired()]));
  *
- * @extends Field<array>
+ * @phpstan-import-type FieldListOptionsArray from FieldListOptions
+ *
+ * @extends Field<array<int, mixed>>
  */
 class FieldList extends Field implements \Countable, \ArrayAccess
 {
   /**
-   * @var int
+   * Minimum number of entries to display.
    */
-  public $min_entries = 0;
+  public int $min_entries = 0;
+
   /**
-   * @var int|null Used internally as an upper bound for how many subfields
-   *               the field list is allowed to generate.
-   *               !!!! WARNING !!!!
-   *               This should be manipulated only via the constructor as
-   *               there are assertion checks to make sure this is always
-   *               greater than or equal to {@link min_entries}. Undefined
-   *               and untested behavior may occur if this is manipulated
-   *               otherwise. This is kept public purely for testing purposes
-   *               only.
+   * Used internally as an upper bound for how many subfields
+   * the field list is allowed to generate.
+   * !!!! WARNING !!!!
+   * This should be manipulated only via the constructor as
+   * there are assertion checks to make sure this is always
+   * greater than or equal to {@link min_entries}. Undefined
+   * and untested behavior may occur if this is manipulated
+   * otherwise. This is kept public purely for testing purposes
+   * only.
    */
-  public $max_entries;
+  public ?int $max_entries = null;
+
   /**
-   * @var Field The field class that will be used to generate subfields
+   * The field class that will be used to generate subfields.
+   *
+   * @var Field<mixed>
    */
-  public $inner_field;
+  public Field $inner_field;
+
   /**
-   * @var int Used internally to keep track of the last index generated
-   *          for the subfields. Also used for testing purposes. This
-   *          should not be used for any other purposes
+   * Used internally to keep track of the last index generated
+   * for the subfields. Also used for testing purposes. This
+   * should not be used for any other purposes.
    */
-  public $last_index = -1;
+  public int $last_index = -1;
 
   /**
    * FieldList constructor.
    *
-   * @param array $options Accepts
+   * @param FieldListOptionsArray $options
    *
    * @throws TypeError
    */
@@ -106,9 +108,10 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * special advanced processing, such as when a field encapsulates many
    * inputs.
    *
-   * @param mixed|null $data
+   * @param array<string, mixed>   $formdata
+   * @param array<int, mixed>|null $data
    */
-  public function process(array $formdata, $data = null)
+  public function process(array $formdata, $data = null): void
   {
     // @codeCoverageIgnoreStart
     $this->entries = [];
@@ -162,9 +165,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    *
    * $formdata must be an object which will produce keys when iterated.
    *
-   * @return array
+   * @param array<string, mixed> $formdata
+   *
+   * @return array<int, int|string>
    */
-  private function extractIndices($prefix, $formdata)
+  private function extractIndices(string $prefix, array $formdata): array
   {
     $offset = strlen($prefix) + 1;
     $ret = [];
@@ -184,15 +189,14 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   /**
    * Processes an unbound field and inserts it as a field type in this field list.
    *
-   * @param array      $formdata
-   * @param array|null $data
-   * @param int|null   $index
+   * @param array<string, mixed> $formdata
+   * @param int|string|null      $index
    *
-   * @return Field
+   * @return Field<mixed>
    *
    * @throws AssertionError
    */
-  private function addEntry($formdata = [], $data = null, $index = null)
+  private function addEntry(array $formdata = [], $data = null, $index = null): Field
   {
     if (!(!$this->max_entries || count($this->entries) < $this->max_entries)) {
       throw new AssertionError('You cannot have more than max_entries entries in the FieldList');
@@ -201,7 +205,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     if (null === $index) {
       $index = $this->last_index + 1;
     }
-    $this->last_index = $index;
+    $this->last_index = (int) $index;
     $name = "$this->short_name-$index";
     $id = "$this->id-$index";
     // I feel so dirty... There's gotta be a better way - Deathnerd
@@ -217,7 +221,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     }
 
     /**
-     * @var Field $field
+     * @var Field<mixed> $field
      */
     $field = new $this->inner_field($inner_field_options);
     $field->process($formdata, $data);
@@ -231,11 +235,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * Create a new entry with optional default data.
    *
    * Entries added in this way will *not* receive formdata however, and can
-   * only receive object data
+   * only receive object data.
    *
-   * @return Field
+   * @return Field<mixed>
    */
-  public function appendEntry($data = null)
+  public function appendEntry($data = null): Field
   {
     return $this->addEntry([], $data);
   }
@@ -243,9 +247,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   /**
    * Removes the last entry from the list and returns it.
    *
+   * @return Field<mixed>
+   *
    * @throws IndexError
    */
-  public function popEntry()
+  public function popEntry(): Field
   {
     if (0 == count($this->entries)) {
       throw new IndexError();
@@ -262,6 +268,8 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * Note that the FieldList differs from normal field validation in
    * that FieldList validates all its enclosed fields first before running any
    * of its own validators.
+   *
+   * @param array<int, \WTForms\Validators\Validator|callable> $extra_validators
    */
   public function validate(Form $form, array $extra_validators = []): bool
   {
@@ -270,7 +278,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     // Run validators on all entries within
     foreach ($this->entries as $subfield) {
       /**
-       * @var Field $subfield
+       * @var Field<mixed> $subfield
        */
       if (!$subfield->validate($form)) {
         $this->errors[] = $subfield->errors;
@@ -281,7 +289,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     return 0 == count($this->errors);
   }
 
-  public function populateObj(object $obj, string $name)
+  public function populateObj(object $obj, string $name): void
   {
     $values = $obj->$name;
     if (!is_array($values)) {
@@ -291,7 +299,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     $i = 0;
     foreach ($this->entries as $field) {
       /**
-       * @var Field $field
+       * @var Field<mixed> $field
        */
       $fake_obj = new \stdClass();
       $fake_obj->data = @$values[$i];
@@ -302,7 +310,10 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     $obj->$name = $output;
   }
 
-  public function __get($name)
+  /**
+   * @return array<int, mixed>|mixed
+   */
+  public function __get(string $name)
   {
     if ('data' == $name) {
       $ret = [];
@@ -316,22 +327,29 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     return parent::__get($name); // @codeCoverageIgnore
   }
 
-  public function count()
+  public function count(): int
   {
     return count($this->entries);
   }
 
   /**
+   * @param int|string $offset
+   *
    * @codeCoverageIgnore
    */
-  public function offsetExists($offset)
+  public function offsetExists($offset): bool
   {
     return isset($this->entries[$offset]);
   }
 
   /**
+   * @param int|string $offset
+   *
+   * @return Field<mixed>|null
+   *
    * @codeCoverageIgnore
    */
+
   public function offsetGet($offset)
   {
     if (isset($this->entries[$offset])) {
@@ -342,9 +360,12 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
+   * @param int|string|null $offset
+   * @param Field<mixed>    $value
+   *
    * @codeCoverageIgnore
    */
-  public function offsetSet($offset, $value)
+  public function offsetSet($offset, $value): void
   {
     if (is_null($offset)) {
       $this->entries[] = $value;
@@ -354,9 +375,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   }
 
   /**
+   * @param int|string $offset
+   *
    * @codeCoverageIgnore
    */
-  public function offsetUnset($offset)
+  public function offsetUnset($offset): void
   {
     unset($this->entries[$offset]);
   }

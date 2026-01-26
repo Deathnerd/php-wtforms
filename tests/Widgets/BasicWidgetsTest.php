@@ -34,14 +34,14 @@ class DummyField extends Field
     $this->id = array_key_exists('id', $options) ? $options['id'] : $this->id;
   }
 
-  public function __toString()
+  public function __toString(): string
   {
-    return $this->data;
+    return is_string($this->data) ? $this->data : '';
   }
 
-  public function __invoke(array $options = [])
+  public function __invoke(array $options = []): string
   {
-    return $this->data;
+    return is_string($this->data) ? $this->data : '';
   }
 
   public function __call(string $name, array $arguments)

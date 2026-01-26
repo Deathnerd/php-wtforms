@@ -2,11 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WTForms\Validators\Options;
-
-use ArrayAccess;
-use Countable;
-use IteratorAggregate;
+namespace WTForms\Internal\Types;
 
 /**
  * Base class for type-safe options that can be used interchangeably with arrays.

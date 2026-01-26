@@ -13,7 +13,7 @@ use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
 use WTForms\Validators\Options\AnyOfOptions;
-use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Internal\Types\ArrayOptions;
 
 /**
  * Compares the incoming data to a sequence of invalid objects.

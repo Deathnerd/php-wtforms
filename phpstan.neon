@@ -12,5 +12,5 @@ parameters:
             - WTForms\Exceptions\ValidationError
 
 includes:
-    - phpstan-baseline.neon
+#    - phpstan-baseline.neon
     - phpstan/extension.neon

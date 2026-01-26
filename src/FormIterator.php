@@ -41,12 +41,9 @@ trait FormIterator
   /**
    * @internal
    */
-  public function valid()
+  public function valid(): bool
   {
-    $key = key($this->fields);
-    $var = (null !== $key && false !== $key);
-
-    return $var;
+    return null !== key($this->fields);
   }
 
   /**

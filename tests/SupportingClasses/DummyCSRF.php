@@ -17,7 +17,7 @@ class DummyCSRF extends CSRF
   public function generateCSRFToken(
     /* @noinspection PhpUnusedParameterInspection */
     CSRFTokenField $csrf_token_field
-  ) {
+  ): string {
     return 'dummytoken';
   }
 }

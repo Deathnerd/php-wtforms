@@ -17,6 +17,25 @@ use WTForms\Form;
 use WTForms\Validators\DataRequired;
 
 /**
+ * Simple DTO for testing populateTo().
+ */
+class UserDTO
+{
+  public ?string $a = null;
+  public ?string $b = null;
+  public ?string $c = null;
+}
+
+/**
+ * DTO with typed properties for testing populateTo() type coercion.
+ */
+class TypedDTO
+{
+  public string $name = '';
+  public int $age = 0;
+}
+
+/**
  * @property StringField a
  * @property StringField b
  * @property StringField c
@@ -263,5 +282,69 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $internalErrorsAfterAccess = $errorsProp->getValue($form);
     $this->assertNotEmpty($internalErrorsAfterAccess);
     $this->assertEquals($publicErrors, $internalErrorsAfterAccess);
+  }
+
+  public function testPopulateToCreatesNewInstance()
+  {
+    $form = new TestForm();
+    $form->process(['a' => 'foo', 'b' => 'bar', 'c' => 'baz']);
+
+    $dto = $form->populateTo(UserDTO::class);
+
+    $this->assertInstanceOf(UserDTO::class, $dto);
+    $this->assertEquals('foo', $dto->a);
+    $this->assertEquals('bar', $dto->b);
+    $this->assertEquals('baz', $dto->c);
+  }
+
+  public function testPopulateToWithStdClass()
+  {
+    $form = new TestForm();
+    $form->process(['a' => 'hello']);
+
+    $obj = $form->populateTo(\stdClass::class);
+
+    $this->assertInstanceOf(\stdClass::class, $obj);
+    $this->assertEquals('hello', $obj->a);
+  }
+
+  public function testPopulateToDoesNotMutateForm()
+  {
+    $form = new TestForm();
+    $form->process(['a' => 'original']);
+
+    $dto = $form->populateTo(UserDTO::class);
+    $dto->a = 'modified';
+
+    // Form data should remain unchanged
+    $this->assertEquals('original', $form->a->data);
+  }
+
+  public function testPopulateToWithEmptyForm()
+  {
+    $form = new TestForm();
+    // Don't process any data
+
+    $dto = $form->populateTo(UserDTO::class);
+
+    $this->assertInstanceOf(UserDTO::class, $dto);
+    $this->assertNull($dto->a);
+    $this->assertNull($dto->b);
+    $this->assertNull($dto->c);
+  }
+
+  public function testPopulateToReturnsCorrectType()
+  {
+    $form = new TestForm();
+    $form->process(['a' => 'test']);
+
+    // Verify PHPDoc @template T works at runtime
+    $dto = $form->populateTo(UserDTO::class);
+    $this->assertInstanceOf(UserDTO::class, $dto);
+
+    // Create another DTO type
+    $stdObj = $form->populateTo(\stdClass::class);
+    $this->assertInstanceOf(\stdClass::class, $stdObj);
+    $this->assertNotInstanceOf(UserDTO::class, $stdObj);
   }
 }

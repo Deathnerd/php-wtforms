@@ -70,12 +70,9 @@ trait FieldIterator
    *
    * @since 5.0.0
    */
-  public function valid()
+  public function valid(): bool
   {
-    $key = key($this->entries);
-    $var = (null !== $key && false !== $key);
-
-    return $var;
+    return null !== key($this->entries);
   }
 
   /**

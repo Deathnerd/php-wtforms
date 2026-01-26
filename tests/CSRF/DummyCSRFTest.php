@@ -20,6 +20,9 @@ class FMeta extends DefaultMeta
   public bool $csrf = true;
 }
 
+/**
+ * @property StringField $a
+ */
 class F extends Form
 {
   public function __construct(array $options = [])
@@ -34,7 +37,9 @@ class DummyCSRFTest extends \PHPUnit\Framework\TestCase
 {
   public function testBaseClass()
   {
-    $this->expectException(\WTForms\Exceptions\NotImplemented::class);
+    // CSRF is now abstract and cannot be instantiated
+    $this->expectException(\Error::class);
+    $this->expectExceptionMessage('Cannot instantiate abstract class');
     (new F(['meta' => ['csrf_class' => CSRF::class]]))->process([]);
   }
 

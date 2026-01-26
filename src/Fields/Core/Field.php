@@ -10,10 +10,10 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\DefaultMeta;
-use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Flags;
 use WTForms\Form;
 use WTForms\Validators\Validator;
@@ -24,10 +24,12 @@ use WTForms\Widgets\Core\Widget;
  *
  * @template TData
  *
- * @property bool        $checked
- * @property TData       $data
- * @property string|null $value
- * @property array       $errors
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
+ *
+ * @property bool               $checked
+ * @property TData              $data
+ * @property string|null        $value
+ * @property array<int, string> $errors
  *
  * @method string label(array $options = [])
  */
@@ -35,77 +37,94 @@ class Field implements \Iterator
 {
   use FieldIterator;
 
+  public ?Form $form = null;
+
   /**
-   * @var Form
+   * @var array<int, string>
    */
-  public $form;
   public array $process_errors = [];
-  public ?array $raw_data = [];
+
   /**
-   * @var Validator[]
+   * @var array<int, string>|null
    */
-  public $validators = [];
+  public ?array $raw_data = [];
+
   /**
-   * @var Widget
+   * @var list<Validator|callable>
+   */
+  public array $validators = [];
+
+  /**
+   * The widget for rendering this field.
+   *
+   * @var Widget|object|null
    */
   public $widget;
+
   /**
-   * @var array
+   * @var array<int, mixed>
    */
-  public $entries = [];
+  public array $entries = [];
+
+  public string $description = '';
+
   /**
-   * @var string
-   */
-  public $description;
-  /**
+   * Default value - can be a callable that returns the default or the value itself.
+   *
    * @var callable|mixed
    */
   public $default;
+
   /**
-   * @var array
+   * @var array<string, mixed>
    */
-  public $render_kw = [];
+  public array $render_kw = [];
+
   /**
-   * @var array
+   * @var list<callable>
    */
-  public $filters;
+  public array $filters = [];
+
+  public string $short_name = '';
+
+  public string $type = '';
+
+  public DefaultMeta $meta;
+
   /**
-   * @var string
+   * The original object data passed to the field.
    */
-  public $short_name;
-  public string $type;
-  /**
-   * @var DefaultMeta
-   */
-  public $meta;
   public $object_data;
-  /**
-   * @var string
-   */
-  public $id = '';
+
+  public string $id = '';
+
   public string $name = '';
+
   public Flags $flags;
+
   /**
    * @var Label|string
    */
   public $label;
+
   /**
    * @var array<string, mixed>
    */
-  public array $attributes;
+  public array $attributes = [];
+
   public ?string $prefix = null;
 
   /**
    * Options passed to constructor, used for cloning fields in FieldList.
    *
-   * @var array<string, mixed>
+   * @var FieldOptionsArray
    */
   public array $constructor_options = [];
 
   /**
    * Field constructor.
    *
-   * @param array<string, mixed> $options
+   * @param FieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {
@@ -164,8 +183,8 @@ class Field implements \Iterator
       $prefix = '';
     }
     unset($options['prefix']);
-    $this->name = $prefix.$options['name'];
-    $this->short_name = $options['name'];
+    $this->name = $prefix.($options['name'] ?? '');
+    $this->short_name = $options['name'] ?? '';
     unset($options['name']);
     $this->type = get_class();
     $this->validators = $options['validators'];
@@ -188,7 +207,7 @@ class Field implements \Iterator
       $t[] = $this->widget;
     }
     foreach ($t as $x) {
-      if ($x->field_flags) {
+      if (is_object($x) && property_exists($x, 'field_flags') && $x->field_flags) {
         foreach ($x->field_flags as $flag) {
           $this->flags->$flag = true;
         }
@@ -207,7 +226,7 @@ class Field implements \Iterator
     }
   }
 
-  public function __toString()
+  public function __toString(): string
   {
     return (string) $this->__invoke();
   }
@@ -226,11 +245,14 @@ class Field implements \Iterator
    *
    * @param array<string, mixed> $options
    */
-  public function __invoke(array $options = [])
+  public function __invoke(array $options = []): string
   {
     return $this->meta->renderField($this, $options);
   }
 
+  /**
+   * @param array<int, mixed> $arguments
+   */
   public function __call(string $name, array $arguments)
   {
     if ('label' == $name) {
@@ -294,21 +316,19 @@ class Field implements \Iterator
    *
    * @param Form $form The form the field belongs to
    */
-  public function preValidate(Form $form)
+  public function preValidate(Form $form): void
   {
   }
 
   /**
    * Run a validation chain, stopping if any validator raises StopValidation.
    *
-   * @param Form                   $form       The form instance this field belongs to
-   * @param (Validator|callable)[] $validators A sequence or iterable of validator callables
+   * @param Form                     $form       The form instance this field belongs to
+   * @param list<Validator|callable> $validators A sequence or iterable of validator callables
    *
    * @return bool True if the validation was stopped, False if otherwise
-   *
-   * @throws NotImplemented
    */
-  protected function runValidationChain(Form $form, array $validators)
+  protected function runValidationChain(Form $form, array $validators): bool
   {
     foreach ($validators as $v) {
       try {
@@ -337,7 +357,7 @@ class Field implements \Iterator
    * @param Form $form            The form the field belongs to
    * @param bool $stop_validation `True` if any validator raised `StopValidation`
    */
-  public function postValidate(Form $form, bool $stop_validation)
+  public function postValidate(Form $form, bool $stop_validation): void
   {
   }
 
@@ -354,9 +374,9 @@ class Field implements \Iterator
    * inputs.
    *
    * @param array<string, mixed> $formdata
-   * @param mixed|null           $data
+   * @param TData|null           $data
    */
-  public function process(array $formdata, $data = null)
+  public function process(array $formdata, $data = null): void
   {
     $this->process_errors = [];
     if (null === $data) {
@@ -408,7 +428,7 @@ class Field implements \Iterator
    *
    * @param TData $value
    */
-  public function processData($value)
+  public function processData($value): void
   {
     $this->data = $value;
   }
@@ -419,9 +439,9 @@ class Field implements \Iterator
    * This will be called during form construction with data supplied
    * through the `formdata` argument
    *
-   * @param array $valuelist A list of strings to process
+   * @param array<int, string> $valuelist A list of strings to process
    */
-  public function processFormData(array $valuelist)
+  public function processFormData(array $valuelist): void
   {
     if (count($valuelist) > 0) {
       $this->data = $valuelist[0];
@@ -438,7 +458,7 @@ class Field implements \Iterator
    *
    * @param T $obj
    */
-  public function populateObj(object $obj, string $name)
+  public function populateObj(object $obj, string $name): void
   {
     $obj->$name = $this->data;
   }

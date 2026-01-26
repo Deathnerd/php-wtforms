@@ -18,6 +18,9 @@ use WTForms\Widgets\Core\TextArea;
  */
 class TextAreaField extends StringField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new TextArea()], $options);

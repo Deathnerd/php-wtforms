@@ -17,7 +17,7 @@ use WTForms\Validators\Length;
 
 class PrePostTestField extends StringField
 {
-  public function preValidate(Form $form)
+  public function preValidate(Form $form): void
   {
     if ('stoponly' == $this->data) {
       throw new StopValidation();
@@ -28,7 +28,7 @@ class PrePostTestField extends StringField
     }
   }
 
-  public function postValidate(Form $form, bool $stop_validation)
+  public function postValidate(Form $form, bool $stop_validation): void
   {
     if ('p' == $this->data) {
       throw new ValueError('Post');

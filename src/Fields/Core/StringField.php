@@ -9,6 +9,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\TextInput;
 
 /**
@@ -16,21 +17,28 @@ use WTForms\Widgets\Core\TextInput;
  * represents an ``<input type="text">``.
  *
  * @extends Field<string>
+ *
+ * @property string $data
  */
 class StringField extends Field
 {
   /**
-   * @var TextInput
+   * @param FieldOptions::FieldOptionsArray $options
+   *
+   * @phpstan-param array<string, mixed> $options
    */
-  public $widget;
-
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new TextInput()], $options);
     parent::__construct($options);
   }
 
-  public function processFormData(array $valuelist)
+  /**
+   * Process data received over the wire from a form.
+   *
+   * @param array<int, string> $valuelist A list of strings to process
+   */
+  public function processFormData(array $valuelist): void
   {
     if ($valuelist) {
       $this->data = $valuelist[0];
@@ -39,7 +47,12 @@ class StringField extends Field
     }
   }
 
-  public function __get($name)
+  /**
+   * @return string|null
+   *
+   * @internal
+   */
+  public function __get(string $name)
   {
     if ('value' == $name) {
       return $this->data ?: '';

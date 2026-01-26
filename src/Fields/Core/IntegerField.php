@@ -10,6 +10,7 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\TextInput;
 
 /**
@@ -17,18 +18,17 @@ use WTForms\Widgets\Core\TextInput;
  * is ignored and will not be accepted as a value.
  *
  * @extends Field<int|null>
+ *
+ * @property int|null $data
  */
 class IntegerField extends Field
 {
   /**
-   * @var TextInput
-   */
-  public $widget;
-
-  /**
    * IntegerField constructor.
    *
-   *   $form
+   * @param FieldOptions::FieldOptionsArray $options
+   *
+   * @phpstan-param array<string, mixed> $options
    */
   public function __construct(array $options = [])
   {
@@ -36,7 +36,14 @@ class IntegerField extends Field
     parent::__construct($options);
   }
 
-  public function processFormData(array $valuelist)
+  /**
+   * Process data received over the wire from a form.
+   *
+   * @param array<int, string> $valuelist A list of strings to process
+   *
+   * @throws ValueError When the value is not a valid integer
+   */
+  public function processFormData(array $valuelist): void
   {
     if ($valuelist) {
       if (is_numeric($valuelist[0])) {

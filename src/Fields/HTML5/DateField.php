@@ -16,6 +16,9 @@ use WTForms\Widgets\HTML5\DateInput;
  */
 class DateField extends \WTForms\Fields\Core\DateField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new DateInput()], $options);

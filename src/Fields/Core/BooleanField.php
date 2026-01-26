@@ -9,6 +9,7 @@
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\CheckboxInput;
 
 /**
@@ -17,19 +18,27 @@ use WTForms\Widgets\Core\CheckboxInput;
  * ``checked`` into the html-element and sets the ``data`` to ``true``.
  *
  * @extends Field<bool>
+ *
+ * @property bool $data
  */
 class BooleanField extends Field
 {
   /**
-   * @var array A sequence of strings to be considered "false" values for the field
+   * A sequence of strings to be considered "false" values for the field.
+   *
+   * @var array<int, string>
    */
-  public $false_values = ['false', ''];
+  public array $false_values = ['false', ''];
+
+  public bool $data = false;
 
   /**
-   * @var bool
+   * BooleanField constructor.
+   *
+   * @param FieldOptions::FieldOptionsArray $options
+   *
+   * @phpstan-param array<string, mixed> $options
    */
-  public $data;
-
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new CheckboxInput()], $options);
@@ -46,14 +55,19 @@ class BooleanField extends Field
    * This will be called during form construction by the form's `options` or
    * `obj` argument.
    *
-   * @param string|array $value
+   * @param string|array<mixed>|bool|null $value
    */
-  public function processData($value)
+  public function processData($value): void
   {
     $this->data = boolval($value);
   }
 
-  public function processFormData(array $valuelist)
+  /**
+   * Process data received over the wire from a form.
+   *
+   * @param array<int, string> $valuelist A list of strings to process
+   */
+  public function processFormData(array $valuelist): void
   {
     if (!$valuelist || in_array($valuelist[0], $this->false_values)) {
       $this->data = false;
@@ -62,7 +76,12 @@ class BooleanField extends Field
     }
   }
 
-  public function __get($name)
+  /**
+   * @return string|null
+   *
+   * @internal
+   */
+  public function __get(string $name)
   {
     if (in_array($name, ['value'])) {
       if (null !== $this->raw_data && !empty($this->raw_data)) {

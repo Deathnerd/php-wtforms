@@ -17,6 +17,9 @@ use WTForms\Widgets\HTML5\SearchInput;
  */
 class SearchField extends StringField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new SearchInput()], $options);

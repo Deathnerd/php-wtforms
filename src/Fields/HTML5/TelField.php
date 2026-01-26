@@ -17,6 +17,9 @@ use WTForms\Widgets\HTML5\TelInput;
  */
 class TelField extends StringField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new TelInput()], $options);

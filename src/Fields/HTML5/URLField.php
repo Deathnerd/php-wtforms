@@ -17,6 +17,9 @@ use WTForms\Widgets\HTML5\URLInput;
  */
 class URLField extends StringField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new URLInput()], $options);

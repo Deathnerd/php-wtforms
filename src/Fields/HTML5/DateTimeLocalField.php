@@ -16,6 +16,9 @@ use WTForms\Widgets\HTML5\DateTimeLocalInput;
  */
 class DateTimeLocalField extends DateTimeField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new DateTimeLocalInput()], $options);

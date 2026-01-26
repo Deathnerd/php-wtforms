@@ -9,18 +9,20 @@
 
 namespace WTForms\CSRF\Core;
 
-use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 
-class CSRF
+abstract class CSRF
 {
   /**
-   * @var string
+   * @var class-string<\WTForms\Fields\Core\Field>
    */
-  public $field_class = '\WTForms\CSRF\Core\CSRFTokenField';
+  public string $field_class = CSRFTokenField::class;
 
-  public function setupForm(Form $form)
+  /**
+   * @throws \ReflectionException
+   */
+  public function setupForm(Form $form): array
   {
     $meta = $form->meta;
     $field_name = $meta->csrf_field_name;
@@ -41,17 +43,8 @@ class CSRF
    * can validate on a subsequent request.
    *
    * @param CSRFTokenField $csrf_token_field The field which is being used for CSRF
-   *
-   * @return string
-   *
-   * @throws NotImplemented
    */
-  public function generateCSRFToken(
-    /* @noinspection PhpUnusedParameterInspection */
-    CSRFTokenField $csrf_token_field
-  ) {
-    throw new NotImplemented();
-  }
+  abstract public function generateCSRFToken(CSRFTokenField $csrf_token_field): string;
 
   /**
    * Override this method to provide custom CSRF validation logic.

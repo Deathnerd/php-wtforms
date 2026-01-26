@@ -1,12 +1,6 @@
 <?php
 
-/**
- * Beyond this line, lie dragons... Enter at your own risk
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 5/17/2016
- * Time: 2:46 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
@@ -17,16 +11,31 @@ use WTForms\Widgets\Core\TableWidget;
 /**
  * Encapsulate a form as a field into another form.
  *
- * @extends Field<array>
+ * @extends Field<array<string, mixed>>
  */
 class FormField extends Field implements \ArrayAccess
 {
-  public $separator = '-';
+  /**
+   * Separator between form prefix and field name.
+   */
+  public string $separator = '-';
+
+  /**
+   * The class name of the form to embed, or an instance of the form.
+   *
+   * @var class-string<Form>|Form
+   */
   public $form_class;
+
+  /**
+   * @var object|null
+   */
   private $obj;
 
   /**
-   * @throws \TypeError
+   * @param array<string, mixed> $options
+   *
+   * @throws TypeError
    */
   public function __construct(array $options = [])
   {
@@ -53,9 +62,13 @@ class FormField extends Field implements \ArrayAccess
     parent::__construct($options);
   }
 
-  public function process(array $formdata, $data = null)
+  /**
+   * @param array<string, mixed>             $formdata
+   * @param object|array<string, mixed>|null $data
+   */
+  public function process(array $formdata, $data = null): void
   {
-    if (is_null($data) || !$data) {
+    if (!$data) {
       if (is_callable($this->default)) {
         $data = ($this->default)();
       } else {
@@ -68,7 +81,7 @@ class FormField extends Field implements \ArrayAccess
     $prefix = $this->name.$this->separator;
 
     /**
-     * @var Form $form_class
+     * @var class-string<Form> $form_class
      */
     $form_class = $this->form_class;
     if (is_array($data)) {
@@ -87,6 +100,8 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
+   * @param array<int, \WTForms\Validators\Validator|callable> $extra_validators
+   *
    * @throws TypeError
    */
   public function validate(Form $form, array $extra_validators = []): bool
@@ -98,7 +113,7 @@ class FormField extends Field implements \ArrayAccess
     return $this->form->validate();
   }
 
-  public function populateObj(object $obj, string $name)
+  public function populateObj(object $obj, string $name): void
   {
     $candidate = $obj->$name;
     if (is_null($candidate)) {
@@ -111,7 +126,7 @@ class FormField extends Field implements \ArrayAccess
     $this->form->populateObj($candidate);
   }
 
-  public function __get($name)
+  public function __get(string $name)
   {
     if (in_array($name, ['data', 'errors']) || property_exists($this->form, $name)) {
       return $this->form->$name;
@@ -124,8 +139,11 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
+   * @return Field<mixed>|false
+   *
    * @codeCoverageIgnore
    */
+
   public function current()
   {
     return current($this->form->fields);
@@ -134,14 +152,17 @@ class FormField extends Field implements \ArrayAccess
   /**
    * @codeCoverageIgnore
    */
-  public function next()
+  public function next(): void
   {
     next($this->form->fields);
   }
 
   /**
+   * @return string|int|null
+   *
    * @codeCoverageIgnore
    */
+
   public function key()
   {
     return key($this->form->fields);
@@ -150,33 +171,39 @@ class FormField extends Field implements \ArrayAccess
   /**
    * @codeCoverageIgnore
    */
-  public function valid()
+  public function valid(): bool
   {
     $key = key($this->form->fields);
 
-    return null !== $key && false !== $key;
+    return null !== $key;
   }
 
   /**
    * @codeCoverageIgnore
    */
-  public function rewind()
+  public function rewind(): void
   {
     reset($this->form->fields);
   }
 
   /**
+   * @param string|int $offset
+   *
    * @codeCoverageIgnore
    */
-  public function offsetExists($offset)
+  public function offsetExists($offset): bool
   {
     return array_key_exists($offset, $this->form->fields);
   }
 
   /**
+   * @param string|int $offset
+   *
+   * @return Field<mixed>|null
+   *
    * @codeCoverageIgnore
    */
-  public function offsetGet($offset)
+  public function offsetGet($offset): ?Field
   {
     if (array_key_exists($offset, $this->form->fields)) {
       return $this->form->fields[$offset];
@@ -186,18 +213,23 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
+   * @param string|int|null $offset
+   * @param Field<mixed>    $value
+   *
    * @codeCoverageIgnore
    */
-  public function offsetSet($offset, $value)
+  public function offsetSet($offset, $value): void
   {
     $this->form->fields[$offset] = $value;
     $this->form->$offset = $value;
   }
 
   /**
+   * @param string|int $offset
+   *
    * @codeCoverageIgnore
    */
-  public function offsetUnset($offset)
+  public function offsetUnset($offset): void
   {
     unset($this->form->fields[$offset]);
     $this->form->$offset = null;

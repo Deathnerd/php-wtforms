@@ -12,7 +12,7 @@ namespace WTForms\Validators;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Internal\Types\ArrayOptions;
 
 /**
  * @template TOptions of array<string, mixed>

@@ -7,32 +7,40 @@ use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Simple\HiddenField;
 use WTForms\Form;
 
+/**
+ * @template TCSRFImpl of CSRF
+ *
+ * @phpstan-type CSRFTokenFieldOptions array{label?:string, csrf_impl?: class-string<TCSRFImpl>|TCSRFImpl, ...}
+ */
 class CSRFTokenField extends HiddenField
 {
   /**
    * The current CSRF token.
-   *
-   * @var string
    */
-  public $current_token = '';
+  public string $current_token = '';
 
   /**
-   * @var CSRF
+   * @var TCSRFImpl
    */
   public $csrf_impl;
 
   /**
    * CSRFTokenField constructor.
    *
-   * @param array $options
-   *                       $form
+   * @param CSRFTokenFieldOptions $options
    */
   public function __construct(array $options = [])
   {
+    /** @var CSRFTokenFieldOptions $defaults */
     $defaults = ['label' => 'CSRF Token', 'csrf_impl' => 'WTForms\CSRF\Core\CSRF'];
     $options = array_merge($defaults, $options);
 
-    $this->csrf_impl = (new \ReflectionClass($options['csrf_impl']))->newInstance();
+    // Accept either a class name string or an already-instantiated CSRF object
+    if ($options['csrf_impl'] instanceof CSRF) {
+      $this->csrf_impl = $options['csrf_impl'];
+    } else {
+      $this->csrf_impl = (new \ReflectionClass($options['csrf_impl']))->newInstance();
+    }
     unset($options['csrf_impl']);
     parent::__construct($options);
   }
@@ -53,9 +61,9 @@ class CSRFTokenField extends HiddenField
   /**
    * Don't populate objects with CSRF Token.
    */
-  public function populateObj(object $obj, string $name)
+  public function populateObj(object $obj, string $name): void
   {
-    return $obj;
+    // Intentionally do nothing - CSRF tokens shouldn't be stored in objects
   }
 
   /**
@@ -63,17 +71,18 @@ class CSRFTokenField extends HiddenField
    *
    * @throws ValidationError
    */
-  public function preValidate(Form $form)
+  public function preValidate(Form $form): void
   {
     $this->csrf_impl->validate_csrf_token($form, $this);
   }
 
   /**
-   * @param null $data
+   * @param array<string, mixed> $formdata
+   * @param null                 $data
    *
    * @throws WTForms\Exceptions\NotImplemented
    */
-  public function process(array $formdata, $data = null)
+  public function process(array $formdata, $data = null): void
   {
     parent::process($formdata, $data);
     $this->current_token = $this->csrf_impl->generateCSRFToken($this);

@@ -31,7 +31,7 @@ class DefaultMeta
   public function renderField(Field $field, array $render_kw = [])
   {
     $other_kw = $field->render_kw;
-    if (!is_null($other_kw)) {
+    if (!empty($other_kw)) {
       $render_kw = array_merge($other_kw, $render_kw);
     }
     $widget = $field->widget;

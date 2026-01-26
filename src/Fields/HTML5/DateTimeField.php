@@ -17,10 +17,7 @@ use WTForms\Widgets\HTML5\DateTimeInput;
 class DateTimeField extends \WTForms\Fields\Core\DateTimeField
 {
   /**
-   * DateTimeField constructor.
-   *
-   * @param array $options
-   *                       $form
+   * @param array<string, mixed> $options
    */
   public function __construct(array $options = [])
   {

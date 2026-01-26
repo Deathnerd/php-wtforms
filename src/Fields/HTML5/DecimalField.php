@@ -16,6 +16,9 @@ use WTForms\Widgets\HTML5\NumberInput;
  */
 class DecimalField extends \WTForms\Fields\Core\DecimalField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new NumberInput(['step' => '1'])], $options);

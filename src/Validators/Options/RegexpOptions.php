@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WTForms\Validators\Options;
 
+use WTForms\Internal\Types\ArrayOptions;
+
 /**
  * Options for the Regexp validator.
  *

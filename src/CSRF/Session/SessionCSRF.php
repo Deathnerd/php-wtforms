@@ -35,7 +35,7 @@ class SessionCSRF extends CSRF
    */
   public $form_meta;
 
-  public function setupForm(Form $form)
+  public function setupForm(Form $form): array
   {
     $this->form_meta = $form->meta;
 
@@ -52,12 +52,10 @@ class SessionCSRF extends CSRF
    *
    * @param CSRFTokenField $csrf_token_field The field which is being used for CSRF
    *
-   * @return string
-   *
    * @throws \Exception
    * @throws TypeError
    */
-  public function generateCSRFToken(CSRFTokenField $csrf_token_field)
+  public function generateCSRFToken(CSRFTokenField $csrf_token_field): string
   {
     $meta = $this->form_meta;
     if (!$meta->csrf_secret) {
@@ -102,9 +100,9 @@ class SessionCSRF extends CSRF
       throw new ValidationError('CSRF token missing');
     }
 
-    list($expires, $hmac_csrf) = explode('##', $field->data);
+    [$expires, $hmac_csrf] = explode('##', $field->data);
 
-    $check_val = strval($_SESSION[$this->session_key].$expires);
+    $check_val = $_SESSION[$this->session_key].$expires;
 
     $hmac_compare = hash_hmac('sha1', $check_val, $meta->csrf_secret);
     if ($hmac_compare !== $hmac_csrf) {
@@ -113,8 +111,16 @@ class SessionCSRF extends CSRF
 
     if ($this->time_limit) {
       $now_formatted = $this->now()->format(str_replace('%', '', self::TIME_FORMAT));
-      if ((new \DateTime($now_formatted)) > (new \DateTime($expires))) {
-        throw new ValidationError('CSRF token expired');
+      try {
+        if ((new \DateTime($now_formatted)) > (new \DateTime($expires))) {
+          throw new ValidationError('CSRF token expired');
+        }
+      } catch (\Exception $e) {
+        // DateTime parsing failed - invalid token format
+        if ($e instanceof ValidationError) {
+          throw $e;
+        }
+        throw new ValidationError('Invalid CSRF Token');
       }
     }
   }
@@ -122,11 +128,9 @@ class SessionCSRF extends CSRF
   /**
    * Get the current time. used for test mocking/overriding mainly.
    *
-   * @return Carbon
-   *
    * @codeCoverageIgnore
    */
-  public function now()
+  public function now(): Carbon
   {
     return Carbon::now();
   }

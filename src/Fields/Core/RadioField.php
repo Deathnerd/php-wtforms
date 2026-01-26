@@ -1,14 +1,10 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/28/2016
- * Time: 11:04 AM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
+use WTForms\Fields\Options\SelectFieldOptions;
 use WTForms\Widgets\Core\ListWidget;
 use WTForms\Widgets\Core\RadioInput;
 
@@ -17,9 +13,14 @@ use WTForms\Widgets\Core\RadioInput;
  *
  * Iterating a field will produce subfields (each containing a label as
  * well) in order to allow custom rendering of the individual radio fields.
+ *
+ * @phpstan-import-type SelectFieldOptionsArray from SelectFieldOptions
  */
 class RadioField extends SelectField
 {
+  /**
+   * @param SelectFieldOptionsArray $options
+   */
   public function __construct(array $options = ['choices' => []])
   {
     $options = array_merge(['widget' => new ListWidget('ul', false), 'option_widget' => new RadioInput()],

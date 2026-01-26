@@ -16,6 +16,9 @@ use WTForms\Widgets\HTML5\RangeInput;
  */
 class IntegerRangeField extends IntegerField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new RangeInput(['step' => '1'])], $options);

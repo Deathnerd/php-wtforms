@@ -1,16 +1,11 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 1/20/2016
- * Time: 2:10 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
-use WTForms\Exceptions\NotImplemented;
 use WTForms\Widgets\Core\Option;
+use WTForms\Widgets\Core\Widget;
 
 /**
  * Base class for fields which can be iterated to produce options.
@@ -22,17 +17,19 @@ use WTForms\Widgets\Core\Option;
  *
  * @extends Field<TData>
  *
- * @property array $options
+ * @property array<int, _Option> $options
  */
 abstract class SelectFieldBase extends Field implements \Iterator
 {
   /**
-   * @var Option
+   * Widget used to render individual options.
+   *
+   * @var Option|Widget
    */
   public $option_widget;
 
   /**
-   * SelectFieldBase constructor.
+   * @param array<string, mixed> $options
    */
   public function __construct(array $options = [])
   {
@@ -42,7 +39,10 @@ abstract class SelectFieldBase extends Field implements \Iterator
     parent::__construct($options);
   }
 
-  public function __get($name)
+  /**
+   * @return array<int, _Option>|mixed
+   */
+  public function __get(string $name)
   {
     if ('options' == $name) {
       $this->options = [];
@@ -53,8 +53,8 @@ abstract class SelectFieldBase extends Field implements \Iterator
         'meta'   => $this->meta,
       ];
       $i = 0;
-      foreach ($this->getChoices() as list($value, $label, $selected)) {
-        $opts['id'] = "{$this->id}-{$i}";
+      foreach ($this->getChoices() as [$value, $label, $selected]) {
+        $opts['id'] = sprintf('%s-%s', $this->id, $i);
         $opts['label'] = $label;
         ++$i;
         $opt = new _Option($opts);
@@ -73,26 +73,7 @@ abstract class SelectFieldBase extends Field implements \Iterator
    * Provides data for choice widget rendering. Must return an array
    * of `[value,label,selected]` tuples.
    *
-   * @return iterable
-   *
-   * @throws NotImplemented
+   * @return iterable<int, array{0: string|int, 1: string, 2: bool}>
    */
-  public function getChoices()
-  {
-    throw new NotImplemented();
-  }
-}
-
-class _Option extends Field
-{
-  public $checked = false;
-
-  public function __get($name)
-  {
-    if (is_bool($this->data)) {
-      return $this->data ? 'true' : 'false';
-    }
-
-    return strval($this->data);
-  }
+  abstract public function getChoices(): iterable;
 }

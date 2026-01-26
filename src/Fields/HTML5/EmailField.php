@@ -17,6 +17,9 @@ use WTForms\Widgets\HTML5\EmailInput;
  */
 class EmailField extends StringField
 {
+  /**
+   * @param array<string, mixed> $options
+   */
   public function __construct(array $options = [])
   {
     $options = array_merge(['widget' => new EmailInput()], $options);

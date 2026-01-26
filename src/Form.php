@@ -15,13 +15,11 @@ use WTForms\Fields\Core\Label;
 /**
  * Declarative Form base class.
  *
- * @template TMeta of DefaultMeta
- *
  * @property array $data
  * @property array $errors
+ * @phpstan-consistent-constructor
  */
-class Form implements \ArrayAccess, \Iterator
-{
+class Form implements \ArrayAccess, \Iterator {
   /**
    * Implements the Arrayable interface for the form.
    */
@@ -31,6 +29,11 @@ class Form implements \ArrayAccess, \Iterator
    * Implements the Iterable interface for the form.
    */
   use FormIterator;
+
+  /**
+   * @var array|Field|null
+   */
+  public $csrf_token;
   /**
    * If this is set, every field of this form
    * will have their name prefixed with this value
@@ -51,9 +54,9 @@ class Form implements \ArrayAccess, \Iterator
    * The meta object used for binding fields,
    * interacting with widgets, etc.
    *
-   * @var TMeta|null
+   * @var DefaultMeta|null
    */
-  public $meta;
+  public ?DefaultMeta $meta;
 
   /**
    * The CSRF implementation for this form.
@@ -91,7 +94,7 @@ class Form implements \ArrayAccess, \Iterator
     // automagically and attach it to the form
     if ($this->meta && $this->meta->csrf) {
       $this->csrf = $this->meta->buildCSRF($this);
-      list($csrf_name, $csrf_field) = $this->csrf->setupForm($this);
+      [$csrf_name, $csrf_field] = $this->csrf->setupForm($this);
       if (!property_exists($csrf_field->csrf_impl, 'form_meta') || !$csrf_field->csrf_impl->form_meta) {
         $csrf_field->csrf_impl->form_meta = $this->meta;
       }
@@ -149,7 +152,7 @@ class Form implements \ArrayAccess, \Iterator
      * Python implementation
      */
     if ('data' == $field_name) {
-      return array_map(fn ($field) => $field->data, $this->fields);
+      return array_map(fn($field) => $field->data, $this->fields);
     } elseif ('errors' == $field_name) {
       if (!$this->_errors) {
         foreach ($this->fields as $name => $field) {
@@ -192,12 +195,17 @@ class Form implements \ArrayAccess, \Iterator
       if (!$value->short_name) {
         $value->short_name = $name;
       }
-      $value->name = $value->prefix.$name;
+      $value->name = $value->prefix . $name;
       $value->id = $value->name;
       if (!$value->label->text) {
         $value->label = new Label($value->id, ucwords(str_replace('_', ' ', $value->short_name)));
       }
       $this->fields[$name] = $value;
+      // Also set the property directly if it exists (e.g., csrf_token)
+      // so that accessing $form->csrf_token returns the field, not null
+      if (property_exists($this, $name)) {
+        $this->$name = $value;
+      }
     } elseif (array_key_exists($name, $this->fields)) {
       $this->fields[$name]->data = $value;
     } else {
@@ -222,11 +230,12 @@ class Form implements \ArrayAccess, \Iterator
    * Under the hood it calls {@link populateObj} or {@link populateArray}
    * depending on what was passed into the function.
    *
+   * @template TArray of array
    * @template T of object
    *
-   * @param array|T $data
+   * @param TArray|T $data
    *
-   * @return array|T The result of populating the object or array passed
+   * @return TArray|T The result of populating the object or array passed
    *
    * @throws \InvalidArgumentException If something besides an object or an array were passed
    */
@@ -273,11 +282,13 @@ class Form implements \ArrayAccess, \Iterator
    * This is a destructive operation. If a field exists on this form
    * that has the same name as a key in the array, it WILL BE OVERWRITTEN.
    *
-   * @param array $array The array to populate
+   * @template TArray of array
    *
-   * @return array The array with data from the form replacing values already existing in the array
+   * @param TArray $array The array to populate
+   *
+   * @return TArray The array with data from the form replacing values already existing in the array
    */
-  public function populateArray(array $array)
+  public function populateArray(array $array): array
   {
     foreach ($this->fields as $field_name => $field) {
       if ($field->data) {
@@ -309,6 +320,32 @@ class Form implements \ArrayAccess, \Iterator
     return $obj;
   }
 
+  /**
+   * Process form data and populate field values.
+   *
+   * Takes submitted form data and/or default values and processes them
+   * through each field. Fields receive data in this priority order:
+   * 1. Object properties (if 'obj' is provided and has matching property)
+   * 2. Named options (e.g., $options['username'] for a 'username' field)
+   * 3. Data array values (if 'data' is provided with matching key)
+   * 4. Formdata (raw form submission data, typically $_POST)
+   *
+   * @template T of object
+   *
+   * @param array{
+   *     formdata?: array<string, mixed>,
+   *     obj?: T|null,
+   *     data?: array<string, mixed>,
+   *     ...
+   * } $options Processing options:
+   *            - formdata: Raw form submission data (e.g., $_POST). Keys are field names.
+   *            - obj: Object with properties matching field names for default values.
+   *            - data: Array of default values keyed by field name.
+   *            - Additional keys are treated as individual field default values and
+   *            take precedence over values in the 'data' array.
+   *
+   * @return void
+   */
   public function process(array $options = ['formdata' => [], 'data' => []])
   {
     if (array_key_exists('formdata', $options)) {
@@ -360,7 +397,7 @@ class Form implements \ArrayAccess, \Iterator
    *
    * @return static The form all ready to go!
    */
-  public static function create(array $options = [])
+  public static function create(array $options = []): Form
   {
     $form = new static($options);
     $form->process($options);

@@ -10,6 +10,14 @@
 
 namespace WTForms\Fields\Core;
 
+/**
+ * A text field which stores and displays as a string, representing a decimal number.
+ *
+ * Currently this is an alias for FloatField, but will eventually handle
+ * locale-aware decimal formatting and arbitrary precision via string representation.
+ *
+ * @property float|null $data
+ */
 class DecimalField extends FloatField
 {
 }

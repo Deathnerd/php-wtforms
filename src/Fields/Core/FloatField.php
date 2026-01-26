@@ -10,19 +10,24 @@
 namespace WTForms\Fields\Core;
 
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field, except all input is coerced to a float.
  *
  * @extends Field<float|null>
+ *
+ * @property float|null $data
  */
 class FloatField extends Field
 {
   /**
    * FloatField constructor.
    *
-   *   $form
+   * @param FieldOptions::FieldOptionsArray $options
+   *
+   * @phpstan-param array<string, mixed> $options
    */
   public function __construct(array $options = [])
   {
@@ -30,7 +35,14 @@ class FloatField extends Field
     parent::__construct($options);
   }
 
-  public function processFormData(array $valuelist)
+  /**
+   * Process data received over the wire from a form.
+   *
+   * @param array<int, string> $valuelist A list of strings to process
+   *
+   * @throws ValueError When the value is not a valid float
+   */
+  public function processFormData(array $valuelist): void
   {
     if ($valuelist) {
       if (is_numeric($valuelist[0])) {

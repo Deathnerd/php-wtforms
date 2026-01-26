@@ -1,44 +1,51 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 2/2/2016
- * Time: 2:36 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
 use Carbon\Carbon;
-use DateTime;
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\DateTimeFieldOptions;
 use WTForms\Widgets\Core\TextInput;
 
 /**
  * A text field which stores a `DateTime` matching a format.
+ *
+ * @phpstan-import-type DateTimeFieldOptionsArray from DateTimeFieldOptions
  *
  * @extends Field<\Carbon\Carbon|\DateTime|null>
  */
 class DateTimeField extends Field
 {
   /**
-   * @var string
+   * The strftime-style format string for parsing/displaying dates.
    */
-  public $format = '%Y-%m-%d %H:%i:%s';
-  protected $carbon_format = 'Y-m-d H:i:s';
+  public string $format = '%Y-%m-%d %H:%i:%s';
 
+  /**
+   * The Carbon/PHP format string (without % prefixes).
+   */
+  protected string $carbon_format = 'Y-m-d H:i:s';
+
+  /**
+   * @param DateTimeFieldOptionsArray $options
+   */
   public function __construct(array $options = [])
   {
     if (array_key_exists('format', $options)) {
       $this->format = $options['format'];
       unset($options['format']);
     }
-    $this->carbon_format = preg_replace('/%/', '', $this->format);
+    $this->carbon_format = preg_replace('/%/', '', $this->format) ?? $this->carbon_format;
     $options = array_merge(['widget' => new TextInput()], $options);
     parent::__construct($options);
   }
 
-  public function __get($name)
+  /**
+   * @return string
+   */
+  public function __get(string $name)
   {
     if ('value' == $name) {
       if ($this->raw_data) {
@@ -58,9 +65,11 @@ class DateTimeField extends Field
   }
 
   /**
+   * @param array<int, string> $valuelist
+   *
    * @throws ValueError
    */
-  public function processFormData(array $valuelist)
+  public function processFormData(array $valuelist): void
   {
     if ($valuelist) {
       $date_str = implode(' ', $valuelist);

@@ -17,14 +17,14 @@ use WTForms\Form;
 
 class Pin
 {
-  public static $pinned_time;
+  public static ?Carbon $pinned_time;
 
-  public static function pinTime($value)
+  public static function pinTime(?Carbon $value): void
   {
     Pin::$pinned_time = $value;
   }
 
-  public static function unPinTime()
+  public static function unPinTime(): void
   {
     Pin::$pinned_time = null;
   }
@@ -32,9 +32,13 @@ class Pin
 
 class TimePin extends SessionCSRF
 {
-  public function now()
+  public function now(): Carbon
   {
-    return !is_null(Pin::$pinned_time) ? Pin::$pinned_time : parent::now();
+    if (!is_null(Pin::$pinned_time)) {
+      return Pin::$pinned_time;
+    }
+
+    return parent::now();
   }
 }
 
@@ -44,6 +48,9 @@ class FFMeta extends DefaultMeta
   public ?string $csrf_secret = 'foobar';
 }
 
+/**
+ * @property StringField $a
+ */
 class FF extends Form
 {
   public function __construct(array $options = [])

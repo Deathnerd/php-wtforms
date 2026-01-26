@@ -1,16 +1,12 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes
- * Date: 1/28/2016
- * Time: 11:15 AM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\SelectFieldOptions;
 use WTForms\Form;
 use WTForms\Widgets\Core\Select;
 
@@ -18,33 +14,39 @@ use WTForms\Widgets\Core\Select;
  * No different from a normal select field, except this one can take (and
  * validate) multiple choices. You'll need to specify the HTML `size`
  * attribute to the select field when rendering.
+ *
+ * @phpstan-import-type SelectFieldOptionsArray from SelectFieldOptions
+ *
+ * @property array<int, string|int>|null $data
  */
 class SelectMultipleField extends SelectField
 {
   /**
-   * @var array
+   * The selected values.
+   *
+   * @var array<int, string|int>|null
    */
   public $data;
 
   /**
-   * @var Select
+   * @param SelectFieldOptionsArray $options
    */
-  public $widget;
-
   public function __construct(array $options = ['choices' => []])
   {
     $options = array_merge(['widget' => new Select()], $options);
     parent::__construct($options);
-    $this->widget->multiple = true;
+    /** @var Select $widget */
+    $widget = $this->widget;
+    $widget->multiple = true;
   }
 
   /**
    * Provides data for choice widget rendering. Must return a sequence or
    * iterable of `[value,label,selected]` tuples.
    *
-   * @return \Generator
+   * @return \Generator<int, array{0: string|int, 1: string, 2: bool}>
    */
-  public function getChoices()
+  public function getChoices(): \Generator
   {
     foreach ($this->choices as list($value, $label)) {
       yield [$value, $label, null !== $this->data && in_array($value, $this->data)];
@@ -52,9 +54,9 @@ class SelectMultipleField extends SelectField
   }
 
   /**
-   * @param array|null $value
+   * @param array<int, string|int>|null $value
    */
-  public function processData($value)
+  public function processData($value): void
   {
     try {
       if (!is_array($value)) {
@@ -72,7 +74,12 @@ class SelectMultipleField extends SelectField
     $this->data = $d;
   }
 
-  public function processFormData(array $valuelist)
+  /**
+   * @param array<int, string> $valuelist
+   *
+   * @throws ValueError
+   */
+  public function processFormData(array $valuelist): void
   {
     try {
       $d = [];
@@ -85,7 +92,10 @@ class SelectMultipleField extends SelectField
     $this->data = $d;
   }
 
-  public function preValidate(Form $form)
+  /**
+   * @throws ValueError
+   */
+  public function preValidate(Form $form): void
   {
     if ($this->data) {
       $values = [];

@@ -15,7 +15,7 @@ use WTForms\Form;
 
 class ProcessMethodsField extends Field
 {
-  public function processData($value)
+  public function processData($value): void
   {
     if ('baddata' == $value) {
       throw new ValueError('bad data!');
@@ -23,7 +23,7 @@ class ProcessMethodsField extends Field
     parent::processData($value);
   }
 
-  public function processFormData(array $valuelist)
+  public function processFormData(array $valuelist): void
   {
     parent::processFormData($valuelist);
     if ('badformdata' == $this->data) {

@@ -12,7 +12,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "WTForms\\": "src/"
+      "WTForms\\": "src/",
+      "WTForms\\Internal\\": "src/Internal/"
     },
     "files": [
       "src/helpers.php"
@@ -28,7 +29,8 @@
     "php": ">=7.4",
     "nesbot/carbon": "^2.0 || ^3.0",
     "gettext/gettext": "^5.7",
-    "gettext/translator": "^1.2"
+    "gettext/translator": "^1.2",
+    "ext-openssl": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",

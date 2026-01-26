@@ -12,7 +12,7 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\Validators\Options\ArrayOptions;
+use WTForms\Internal\Types\ArrayOptions;
 use WTForms\Validators\Options\RegexpOptions;
 
 /**

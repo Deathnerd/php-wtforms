@@ -1,42 +1,41 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Wes Gilleland
- * Date: 1/20/2016
- * Time: 2:25 PM.
- */
+declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
+use WTForms\Fields\Options\SelectFieldOptions;
 use WTForms\Form;
-use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\Select;
 
 /**
  * Select field with coercible values.
  *
- * @extends SelectFieldBase<mixed>
+ * @phpstan-import-type SelectFieldOptionsArray from SelectFieldOptions
+ *
+ * @extends SelectFieldBase<string|int|null>
  */
 class SelectField extends SelectFieldBase
 {
   /**
-   * @var Option
+   * Available choices as array of [value, label] tuples.
+   *
+   * @var array<int, array{0: string|int, 1: string}>
    */
-  public $option_widget;
+  public array $choices = [];
 
   /**
-   * @var array
-   */
-  public $choices = [];
-
-  /**
-   * @var callable|null
+   * Callable to coerce values to the appropriate type.
+   *
+   * @var callable
    */
   public $coerce;
 
+  /**
+   * @param SelectFieldOptionsArray $options
+   */
   public function __construct(array $options = ['choices' => []])
   {
     if (array_key_exists('choices', $options)) {
@@ -58,16 +57,19 @@ class SelectField extends SelectFieldBase
   }
 
   /**
-   * @return \Generator
+   * @return \Generator<int, array{0: string|int, 1: string, 2: bool}>
    */
-  public function getChoices()
+  public function getChoices(): \Generator
   {
     foreach ($this->choices as list($value, $label)) {
       yield [$value, $label, $value == $this->data];
     }
   }
 
-  public function processData($value)
+  /**
+   * @param string|int|null $value
+   */
+  public function processData($value): void
   {
     try {
       $this->data = ($this->coerce)($value);
@@ -78,7 +80,12 @@ class SelectField extends SelectFieldBase
     }
   }
 
-  public function processFormData(array $valuelist)
+  /**
+   * @param array<int, string> $valuelist
+   *
+   * @throws ValueError
+   */
+  public function processFormData(array $valuelist): void
   {
     if ($valuelist) {
       try {
@@ -89,7 +96,10 @@ class SelectField extends SelectFieldBase
     }
   }
 
-  public function preValidate(Form $form)
+  /**
+   * @throws ValueError
+   */
+  public function preValidate(Form $form): void
   {
     foreach ($this->choices as list($v, $_)) {
       if ($this->data == $v) {
