@@ -11,6 +11,7 @@
             <directory>./tests/Widgets</directory>
             <directory>./tests/CSRF</directory>
             <directory>./tests/Quirks</directory>
+            <directory>./tests/PHPStan</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
@@ -19,6 +20,7 @@
             <directory suffix=".php">./src/Widgets</directory>
             <directory suffix=".php">./src/Validators</directory>
             <directory suffix=".php">./src/CSRF</directory>
+            <directory suffix=".php">./phpstan</directory>
             <file>./src/Form.php</file>
             <file>./src/helpers.php</file>
             <file>./src/Flags.php</file>

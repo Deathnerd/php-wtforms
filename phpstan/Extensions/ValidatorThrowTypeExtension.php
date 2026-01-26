@@ -39,19 +39,24 @@ class ValidatorThrowTypeExtension implements DynamicMethodThrowTypeExtension
     }
 
     $declaringClass = $methodReflection->getDeclaringClass();
-    $className = $declaringClass->getName();
 
+    return $this->isValidatorClass($declaringClass->getName(), $declaringClass->isSubclassOf(Validator::class));
+  }
+
+  /**
+   * Check if a class is the Validator base class or a Validator subclass.
+   *
+   * Extracted for testability since PHPStan's ClassReflection is final.
+   */
+  public function isValidatorClass(string $className, bool $isSubclassOfValidator): bool
+  {
     // Handle the base Validator class
     if (Validator::class === $className) {
       return true;
     }
 
     // Handle all Validator subclasses
-    if ($declaringClass->isSubclassOf(Validator::class)) {
-      return true;
-    }
-
-    return false;
+    return $isSubclassOfValidator;
   }
 
   /**
