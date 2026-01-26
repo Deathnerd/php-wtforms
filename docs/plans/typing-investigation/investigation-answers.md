@@ -4743,12 +4743,107 @@ Keep options mutable but add `@psalm-mutation-free` to pure methods like `toArra
 
 ---
 
-#### FQ4. [ ] How to handle i18n messages in a type-safe way (translation keys)?
+#### FQ4. [x] How to handle i18n messages in a type-safe way (translation keys)?
 
-**Answer:** *Pending investigation*
+**Answer:** Follow Python WTForms' approach - **pass English strings directly to translation functions** rather than using translation keys. Type safety comes from interfaces, not string literal types.
+
+**Current State in php-wtforms:**
+```php
+// Validators use plain English strings with sprintf/vsprintf_named
+throw new ValidationError('Field must be at least %d characters long.');
+throw new ValidationError(vsprintf_named($message, ['min' => $this->min, 'max' => $this->max]));
+```
+
+**How Python WTForms handles i18n (per [WTForms i18n docs](https://wtforms.readthedocs.io/en/2.3.x/i18n/)):**
+1. Built-in messages are English strings, not keys
+2. Users override `_get_translations()` on Form to provide a translator object
+3. Translator implements `gettext(string)` and `ngettext(singular, plural, n)`
+4. Gettext catalogs map English strings to translations
+
+**Recommended Type-Safe Approach for PHP:**
+
+1. **Define a `Translator` interface:**
+   ```php
+   interface Translator
+   {
+       /**
+        * Translate a message string.
+        * @param string $message English message (acts as key)
+        */
+       public function gettext(string $message): string;
+
+       /**
+        * Translate with plural forms.
+        * @param string $singular Singular English message
+        * @param string $plural Plural English message
+        * @param int $n Count for plural selection
+        */
+       public function ngettext(string $singular, string $plural, int $n): string;
+   }
+   ```
+
+2. **Add translator to Meta/Form:**
+   ```php
+   class DefaultMeta
+   {
+       public ?Translator $translator = null;
+
+       public function gettext(string $message): string
+       {
+           return $this->translator?->gettext($message) ?? $message;
+       }
+   }
+   ```
+
+3. **Use in validators:**
+   ```php
+   // Instead of:
+   throw new ValidationError('Field must be at least %d characters long.');
+
+   // Do:
+   $message = $field->gettext('Field must be at least %d characters long.');
+   throw new ValidationError(sprintf($message, $this->min));
+   ```
+
+**Why NOT Translation Keys:**
+- Keys like `'error.field.min_length'` are less self-documenting
+- Gettext catalogs use English strings as keys (standard approach)
+- Python WTForms uses this approach successfully
+- Keys require external lookup tables; strings are readable in code
+
+**Type Safety Mechanisms:**
+
+1. **Interface types** (not string literal types):
+   - `Translator` interface ensures proper implementation
+   - PHPStan can verify method signatures
+   - IDE autocomplete works for translator methods
+
+2. **PHPDoc for message format validation** (optional):
+   ```php
+   /**
+    * @psalm-param literal-string $message
+    */
+   public function gettext(string $message): string;
+   ```
+   Psalm's `literal-string` type prevents dynamic string injection attacks.
+
+3. **Named parameter validation** (at runtime):
+   ```php
+   /**
+    * @param array<string, scalar> $params Named parameters
+    */
+   public function format(string $message, array $params): string;
+   ```
+
+**Recommendation:**
+- Add `Translator` interface to `src/I18n/Translator.php`
+- Add `NullTranslator` (pass-through) as default implementation
+- Add `gettext()`/`ngettext()` methods to `DefaultMeta`
+- Update validators to use `$field->gettext()` for messages
+- Type safety through interfaces, not string literal types
 
 **New questions raised:**
-- *None yet*
+- None - this follows established patterns from Python WTForms.
 
 ---
 
