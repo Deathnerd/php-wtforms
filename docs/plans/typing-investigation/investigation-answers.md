@@ -4664,12 +4664,82 @@ Widget is conceptually "covariant" because it only *reads* field data. A `Widget
 
 ---
 
-#### FQ3. [ ] Should we add `@psalm-immutable` to option classes after construction?
+#### FQ3. [x] Should we add `@psalm-immutable` to option classes after construction?
 
-**Answer:** *Pending investigation*
+**Answer:** **No, option classes cannot be marked `@psalm-immutable`** due to their design as mutable `ArrayAccess` containers.
+
+**Why Not Immutable:**
+
+1. **`ArrayOptions` implements mutable interfaces:**
+   ```php
+   abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggregate
+   {
+       public function offsetSet($offset, $value): void  // ← Mutation!
+       {
+           $this->data[$offset] = $value;
+           if (property_exists($this, $offset)) {
+               $this->$offset = $value;
+           }
+       }
+
+       public function __set(string $name, $value): void  // ← Mutation!
+       {
+           $this->data[$name] = $value;
+       }
+   }
+   ```
+
+2. **`@psalm-immutable` requirements (per [Psalm docs](https://psalm.dev/docs/annotating_code/supported_annotations/)):**
+   - Every property treated as `@psalm-readonly`
+   - Every instance method treated as `@psalm-mutation-free`
+   - The `offsetSet`, `offsetUnset`, `__set`, and `__unset` methods violate this
+
+3. **Actual usage pattern is mutable:**
+   ```php
+   $options = new FieldOptions(['validators' => []]);
+   $options['validators'][] = new InputRequired();  // Mutation after construction
+   $options->description = 'Updated';  // Also mutation
+   ```
+
+**What We Could Do Instead:**
+
+1. **`@psalm-readonly` on specific properties** where mutation is rare:
+   ```php
+   /** @psalm-readonly */
+   public int $min = -1;
+   ```
+   But this would break existing code that modifies options.
+
+2. **Create separate immutable "frozen" option classes:**
+   ```php
+   /**
+    * @psalm-immutable
+    */
+   final class FrozenFieldOptions
+   {
+       public function __construct(
+           public readonly array $validators,
+           public readonly string $description,
+           // ...
+       ) {}
+   }
+
+   // Usage:
+   $opts = new FieldOptions(['validators' => [...]]);  // Mutable
+   $frozen = $opts->freeze();  // Returns FrozenFieldOptions
+   ```
+
+3. **Use `@psalm-mutation-free` on getter methods:**
+   ```php
+   /** @psalm-mutation-free */
+   public function toArray(): array { ... }
+   ```
+
+**Recommendation:**
+Keep options mutable but add `@psalm-mutation-free` to pure methods like `toArray()`, `count()`, and `offsetGet()`. The mutable pattern is intentional and matches WTForms' design where options are built incrementally.
 
 **New questions raised:**
-- *None yet*
+- None - this question is fully resolved.
 
 ---
 
