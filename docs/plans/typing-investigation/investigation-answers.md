@@ -4529,11 +4529,50 @@ No blocking issues. All 120 questions have been investigated.
 
 ### New Questions Discovered
 
-1. Should we create a `CSRFConfigurationException` for CSRF setup errors?
-2. Should `Widget` be marked `@template-covariant` since it only reads field data?
-3. Should we add `@psalm-immutable` to option classes after construction?
-4. How to handle i18n messages in a type-safe way (translation keys)?
-5. Should we create a common `WTFormsException` base class?
+#### FQ1. [ ] Should we create a `CSRFConfigurationException` for CSRF setup errors?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
+
+#### FQ2. [ ] Should `Widget` be marked `@template-covariant` since it only reads field data?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
+
+#### FQ3. [ ] Should we add `@psalm-immutable` to option classes after construction?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
+
+#### FQ4. [ ] How to handle i18n messages in a type-safe way (translation keys)?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
+
+#### FQ5. [ ] Should we create a common `WTFormsException` base class?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
 
 ### Tool Versions Used
 - PHPStan: 2.1.x
