@@ -1,10 +1,28 @@
 # Investigation Answers
 ## PHP-WTForms Comprehensive Typing Initiative
 
-**Investigation Started:** [TIMESTAMP]
-**Last Updated:** [TIMESTAMP]
-**Current Section:** [SECTION NUMBER]
-**Status:** IN_PROGRESS | BLOCKED | COMPLETE
+**Investigation Started:** 2026-01-26
+**Last Updated:** 2026-01-26
+**Current Section:** 2
+**Status:** IN_PROGRESS
+
+---
+
+## Important Context: Breaking Changes Approved
+
+**User has approved the following breaking changes for type safety:**
+
+1. **Replace magic methods** (`__get`/`__set`) with explicit typed getters/setters
+2. **Remove ArrayAccess** on Form - use explicit `getField()` methods instead
+3. **Remove magic public properties** - enforce access through typed methods
+4. **Separate concerns** into distinct typed structures:
+   - Field attributes (HTML attributes)
+   - Field data (the actual value)
+   - Field flags (boolean indicators like `required`)
+   - Field options (configuration)
+5. **Use shapes/contracts** - typed arrays or value objects with enforced access patterns
+
+**Rationale:** The original library was a faithful Python port with dynamic features. Modern PHP with static analysis benefits from explicit typing over dynamic magic.
 
 ---
 
@@ -372,12 +390,15 @@ PHP 7.4.33 (cli)
 3. Use `@return static` for fluent interfaces
 4. Generics via PHPDoc only (`@template`, `@phpstan-type`)
 
-**NOTE:** User indicated willingness to break Python-esque dynamic API for better typing. This opens options like:
-- Replacing dynamic `__get`/`__set` with explicit typed accessors
-- Using strict constructor signatures instead of options arrays
+**BREAKING CHANGES CONFIRMED:** User has approved major refactoring for type safety:
+- Replace `__get`/`__set` with explicit typed accessors
+- Remove `ArrayAccess` - use explicit `getField()` methods
+- Separate concerns: attributes, data, flags, options into typed structures
+- Use shapes/contracts with enforced access patterns
+- Strict constructor signatures instead of dynamic options arrays
 
 **Follow-up Questions:**
-- Should we break backward compatibility for type safety?
+- None - breaking changes approved
 
 ---
 
@@ -418,13 +439,15 @@ Key locations with mixed:
 ```
 
 **Decision/Recommendation:**
-1. **Low suppression count** - only 4 total, manageable
-2. **Mixed in FieldList** - unavoidable for heterogeneous collections, but could add generic constraints
-3. **Consider replacing** `Field<mixed>` with proper bounded generics when possible
-4. Remove unused parameter suppressions by adding proper type narrowing
+
+**UPDATED (Breaking Changes Approved):**
+1. **Eliminate `mixed` usage** - separate attributes/data/flags/options into typed structures
+2. **FieldList** - make properly generic `FieldList<TField of Field>`
+3. **Remove all `@noinspection`** - fix underlying issues with explicit methods
+4. **Goal: Zero suppressions** - breaking changes allow proper typing
 
 **Follow-up Questions:**
-- Can we use bounded generics to eliminate some `mixed` usage?
+- None - breaking changes allow proper fixes
 
 ---
 
@@ -538,167 +561,365 @@ public const TYPE_NARROWING = [
 
 ### Q2.1 - PHPStan Level Differences
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review (PHPStan docs)
+- [x] Documentation review (PHPStan docs)
 
 **Findings:**
-[TODO: Document what each level adds]
+PHPStan levels are cumulative (level 5 includes 0-4). Here's what each level adds:
+
+| Level | What It Adds |
+|-------|-------------|
+| 0-4 | Basic: unknown classes/functions/methods, wrong arg counts, undefined variables, PHPDoc validation |
+| 5 | Dead code: always-false instanceof, dead else branches, unreachable code after return |
+| 6 | **Argument type checking**: types of arguments passed to methods/functions |
+| 7 | **Partial union types**: methods that only exist on some types in a union |
+| 8 | **Nullable checking**: calling methods/accessing properties on nullable types |
+| 9 | Strict generics, uninitialized properties, benevolent union types |
+| 10 | Max strictness: all `mixed` types treated strictly (PHPStan v2 only) |
+
+**Current state for php-wtforms:**
+- Level 5: 8 errors (dead code, covariance)
+- Level 6: 118 errors (+110 from missing generics on extending classes)
+- Level 7: 158 errors (+40)
+- Level 8: 179 errors (+21)
+- Level 9: 217 errors (+38)
 
 **Evidence:**
-```
-[TODO]
-```
+PHPStan's own source code uses level 8 + strict-rules, not level 9/10.
 
 **Decision/Recommendation:**
-[TODO]
+
+**UPDATED (Breaking Changes Approved):**
+1. **Target level 9** as final goal - breaking changes allow proper fixes
+2. Fix level 5 errors first (8 errors - dead code, covariance)
+3. Fix level 6 errors (add generic type specs to all extending classes)
+4. Enable `phpstan-strict-rules` early for LSP/covariance checks
+5. Progress through 7→8→9 with proper typing, not suppressions
+
+With breaking changes approved, we can eliminate the need for workarounds.
 
 **Follow-up Questions:**
-- [TODO]
+- None
 
 ---
 
 ### Q2.2 - Strict Rules Extension
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review
-- [ ] Web search
+- [x] Documentation review
+- [x] Web search
 
 **Findings:**
-[TODO]
+`phpstan/phpstan-strict-rules` adds extra strict and opinionated rules:
+
+**Key rules added:**
+| Rule Category | What It Checks |
+|---------------|----------------|
+| Boolean conditions | Require booleans in if/elseif/ternary/while (not truthy values) |
+| Always-true checks | Flag always-true instanceof, is_* functions, strict comparisons |
+| LSP enforcement | Contravariance for params, covariance for returns |
+| Static method LSP | LSP checks for static methods too |
+| Parent constructor | Require calling parent constructor |
+| Backtick operator | Disallow shell backticks |
+| And more... | disallowedLooseComparison, disallowedEmpty, noVariableVariables, etc. |
+
+**Configurable options via `strictRules` parameter:**
+- disallowedLooseComparison, booleansInConditions, uselessCast
+- requireParentConstructorCall, disallowedBacktick, disallowedEmpty
+- disallowedImplicitArrayCreation, disallowedShortTernary
+- closureUsesThis, numericOperandsInArithmeticOperators
+- strictFunctionCalls, dynamicCallOnStaticMethod, noVariableVariables
+
+**Note:** Even with `strictRules.allRules: false`, it still changes default PHPStan parameters.
 
 **Evidence:**
-```
-[TODO]
+```bash
+composer require --dev phpstan/phpstan-strict-rules
+# Then in phpstan.neon:
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
 ```
 
 **Decision/Recommendation:**
-[TODO]
+**YES - Enable strict-rules** because:
+1. LSP enforcement catches covariance/contravariance issues (we have these)
+2. Boolean conditions enforcement catches loose truthy checks
+3. PHPStan itself uses strict-rules + level 8
 
 **Follow-up Questions:**
-- [TODO]
+- How many new errors will strict-rules introduce?
 
 ---
 
 ### Q2.3 - Deprecation Rules Extension
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review
+- [x] Documentation review
 
 **Findings:**
-[TODO]
+`phpstan/phpstan-deprecation-rules` detects usage of deprecated code:
+
+**What it detects:**
+- Deprecated classes
+- Deprecated methods
+- Deprecated properties
+- Deprecated constants
+- Deprecated traits
+
+**Key features:**
+- Parses `@deprecated` PHPDoc annotations
+- Shows deprecation message if provided (`@deprecated Use X instead`)
+- Smart scoping: deprecated code calling other deprecated code isn't flagged
+- Stub files for marking vendor code as deprecated
 
 **Evidence:**
-```
-[TODO]
+```bash
+composer require --dev phpstan/phpstan-deprecation-rules
+# Auto-includes via extension-installer
 ```
 
 **Decision/Recommendation:**
-[TODO]
+**YES - Enable deprecation-rules** because:
+1. Helps track internal deprecations during refactoring
+2. Catches usage of deprecated Carbon/PHPUnit APIs
+3. Low noise (only reports actual deprecations)
 
 **Follow-up Questions:**
-- [TODO]
+- Do we have any @deprecated annotations in the codebase?
 
 ---
 
 ### Q2.4 - Bleeding Edge Features
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review
+- [x] Documentation review
 - [ ] Command execution
 
 **Findings:**
-[TODO]
+**Bleeding Edge** is PHPStan's preview of next major version features:
+
+**What it provides:**
+- New rules that would break BC in minor versions
+- Bug fixes waiting for major release
+- Stricter analysis behavior
+- Performance improvements
+
+**Example features in bleeding edge:**
+- Null coalesce on non-nullable variable detection
+- Missing `#[\Override]` attribute checks (PHP 8.3)
+- Private property union type reduction suggestions
+
+**How to enable:**
+```neon
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+```
+
+**Caveats:**
+- No BC guarantees between minor versions
+- Behavior can change unexpectedly
+- Only activates rules at your current level
 
 **Evidence:**
-```
-[TODO]
-```
+From PHPStan docs: "Bleeding edge offers a preview of the next major version."
 
 **Decision/Recommendation:**
-[TODO]
+**YES - Enable bleeding edge** because:
+1. We're already on PHPStan v2.1, so most features are stable
+2. Performance improvements reported
+3. Easier incremental upgrades vs major version shock
+4. Current level (5) limits what activates anyway
+
+Add after fixing level 5 errors:
+```neon
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+```
 
 **Follow-up Questions:**
-- [TODO]
+- None
 
 ---
 
 ### Q2.5 - Relevant Extensions
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Web search (packagist)
-- [ ] Documentation review
+- [x] Web search (packagist)
+- [x] Documentation review
 
 **Findings:**
-[TODO: Carbon extension, PHPUnit extension, etc.]
+**Relevant PHPStan extensions for php-wtforms:**
+
+| Extension | Purpose | Install? |
+|-----------|---------|----------|
+| `phpstan/phpstan-phpunit` | PHPUnit assertions, early termination | **YES** |
+| `phpstan/phpstan-strict-rules` | Stricter boolean/LSP checks | **YES** |
+| `phpstan/phpstan-deprecation-rules` | Deprecated code detection | **YES** |
+| `phpstan/extension-installer` | Auto-include extensions | **YES** |
+
+**Carbon support:**
+- Carbon v3 includes its own PHPStan stubs in the package
+- No separate extension needed
+- `soyhuce/phpstan-extension` adds strict Carbon rules (forbids mutable copy())
+
+**PHPUnit extension features:**
+- Assert method type narrowing (assertInstanceOf, assertTrue, etc.)
+- Early terminating method detection
+- Always-true/false assertion detection
+- Strict rules for assert best practices
 
 **Evidence:**
-```
-[TODO]
+```bash
+composer require --dev \
+  phpstan/extension-installer \
+  phpstan/phpstan-phpunit \
+  phpstan/phpstan-strict-rules \
+  phpstan/phpstan-deprecation-rules
 ```
 
 **Decision/Recommendation:**
-[TODO]
+Install all four extensions. The extension-installer will auto-include them.
 
 **Follow-up Questions:**
-- [TODO]
+- None
 
 ---
 
 ### Q2.6 - Magic Method Handling
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (__get, __set usage)
-- [ ] Documentation review
+- [x] Code inspection (__get, __set usage)
+- [x] Documentation review
 
 **Findings:**
-[TODO]
+**Current `__get`/`__set` usage is extensive:**
+
+| File | Usage |
+|------|-------|
+| Field.php | `__get` for `value` virtual property |
+| Form.php | `__get`/`__set` for dynamic field access |
+| FieldList.php | `__get` for entries access |
+| FormField.php | `__get` for nested field access |
+| DateField/DateTimeField | `__get` for data/format |
+| SelectFieldBase | `__get` for choices/data |
+| CSRFTokenField | `__get` for csrf_impl |
+| Label.php | `__get` for text/field_id |
+
+**PHPStan solutions for magic methods:**
+1. `@property` PHPDoc annotations
+2. `@mixin` for delegation
+3. Custom `PropertiesClassReflectionExtension`
+4. `universalObjectCratesClasses` config
 
 **Evidence:**
-```
-[TODO]
+```php
+// Current pattern (Field.php:475)
+public function __get(string $name) {
+    if ('value' == $name) { ... }
+    return null;
+}
 ```
 
 **Decision/Recommendation:**
-[TODO]
+**BREAKING CHANGE APPROVED:** Replace magic methods with explicit typed accessors.
+
+**Migration strategy (CONFIRMED):**
+1. **Replace magic methods** with explicit typed getters/setters
+2. **Remove ArrayAccess** on Form - use `getField(string $name): Field`
+3. **Separate concerns** into typed structures:
+   - `FieldAttributes` - HTML attributes (typed array or value object)
+   - `FieldData<T>` - the actual value with generic type
+   - `FieldFlags` - boolean indicators (required, disabled, etc.)
+   - `FieldOptions` - configuration with typed shape
+4. **Use contracts/interfaces** for enforced access patterns
+
+**Benefits:**
+- Full PHPStan type inference at level 9
+- IDE autocomplete with proper types
+- No `@property` annotations needed
+- No `mixed` types needed
+- Modern Symfony/Java-style OOP
+- Clear separation of concerns
+
+**Example transformation:**
+```php
+// Before (magic, untyped)
+$field->value           // mixed
+$form['username']       // mixed
+$field->flags->required // magic Flags object
+
+// After (explicit, typed)
+$field->getValue(): string
+$form->getField('username'): StringField
+$field->getFlags()->isRequired(): bool
+$field->getAttributes()->get('class'): ?string
+```
 
 **Follow-up Questions:**
-- [TODO]
+- None - full breaking changes approved
 
 ---
 
 ### Q2.7 - Acceptable Ignores
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review
-- [ ] Code inspection
+- [x] Documentation review
+- [x] Code inspection
 
 **Findings:**
-[TODO]
+**Current ignores in codebase (only 1):**
+```php
+// SessionCSRF.php:146
+// @phpstan-ignore-next-line
+```
+
+**When `@phpstan-ignore` is acceptable:**
+
+| Acceptable | Example |
+|------------|---------|
+| Third-party library quirks | Library returns wrong type in stub |
+| PHP version differences | Code branches for PHP 7.4 vs 8.0 |
+| Intentional dynamic behavior | Truly dynamic metaprogramming (rare) |
+| False positives | Proven PHPStan bug with issue reference |
+
+**When `@phpstan-ignore` is NOT acceptable:**
+
+| Not Acceptable | Fix Instead |
+|----------------|-------------|
+| Lazy typing | Add proper types |
+| Mixed types | Use union types or generics |
+| Magic methods | Replace with explicit methods ✓ |
+| Dynamic properties | Use typed properties ✓ |
+
+**PHPStan 1.11+ error identifiers:**
+Use specific identifiers: `@phpstan-ignore argument.type, return.type`
+Not generic: `@phpstan-ignore-next-line`
 
 **Evidence:**
-```
-[TODO]
-```
+Only 1 ignore in entire codebase - excellent baseline.
 
 **Decision/Recommendation:**
-[TODO]
+1. **Goal: Zero ignores** - with breaking changes approved, we can fix issues properly
+2. Audit the one existing ignore in SessionCSRF.php
+3. Use error identifiers if any ignores are truly needed
+4. Document reason in comment when ignoring
 
 **Follow-up Questions:**
-- [TODO]
+- What is the SessionCSRF.php ignore for?
 
 ---
 

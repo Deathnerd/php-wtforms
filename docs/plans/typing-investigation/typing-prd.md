@@ -135,13 +135,13 @@ Configure PHPStan for maximum strictness:
 
 ### 2.3 Investigation Status
 
-- [ ] Q2.1 - Level differences documented
-- [ ] Q2.2 - Strict rules evaluated
-- [ ] Q2.3 - Deprecation rules evaluated
-- [ ] Q2.4 - Bleeding edge features reviewed
-- [ ] Q2.5 - Relevant extensions identified
-- [ ] Q2.6 - Magic method handling strategy defined
-- [ ] Q2.7 - Acceptable ignores documented
+- [x] Q2.1 - Level differences documented
+- [x] Q2.2 - Strict rules evaluated
+- [x] Q2.3 - Deprecation rules evaluated
+- [x] Q2.4 - Bleeding edge features reviewed
+- [x] Q2.5 - Relevant extensions identified
+- [x] Q2.6 - Magic method handling strategy defined
+- [x] Q2.7 - Acceptable ignores documented
 - [ ] Q2.8 - ArrayAccess configuration solved
 - [ ] Q2.9 - Iterable/generic strictness decided
 - [ ] Q2.10 - CI integration planned
