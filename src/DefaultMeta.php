@@ -20,7 +20,7 @@ use WTForms\Fields\Core\Field;
 class DefaultMeta
 {
   public string $csrf_field_name = 'csrf_token';
-  public string $csrf_time_limit;
+  public ?string $csrf_time_limit = null;
   public bool $csrf = false;
   public ?string $csrf_secret = null;
   /**

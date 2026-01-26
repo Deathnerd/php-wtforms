@@ -5,20 +5,20 @@
          colors="true">
     <testsuites>
         <testsuite name="WTForms Test Suite">
-            <directory>./tests/validators</directory>
-            <directory>./tests/common</directory>
-            <directory>./tests/fields</directory>
-            <directory>./tests/widgets</directory>
-            <directory>./tests/csrf</directory>
-            <directory>./tests/quirks</directory>
+            <directory>./tests/Validators</directory>
+            <directory>./tests/Common</directory>
+            <directory>./tests/Fields</directory>
+            <directory>./tests/Widgets</directory>
+            <directory>./tests/CSRF</directory>
+            <directory>./tests/Quirks</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>
-            <directory suffix=".php">./src/fields</directory>
-            <directory suffix=".php">./src/widgets</directory>
-            <directory suffix=".php">./src/validators</directory>
-            <directory suffix=".php">./src/csrf</directory>
+            <directory suffix=".php">./src/Fields</directory>
+            <directory suffix=".php">./src/Widgets</directory>
+            <directory suffix=".php">./src/Validators</directory>
+            <directory suffix=".php">./src/CSRF</directory>
             <file>./src/Form.php</file>
             <file>./src/helpers.php</file>
             <file>./src/Flags.php</file>
@@ -27,7 +27,7 @@
         <exclude>
             <directory>./tests</directory>
             <directory>./vendor</directory>
-            <directory>./src/exceptions</directory>
+            <directory>./src/Exceptions</directory>
         </exclude>
         <report>
             <clover outputFile="./tests/_reports/clover.xml"/>

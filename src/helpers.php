@@ -165,15 +165,20 @@ if (!function_exists('starts_with')) {
    *
    * @return bool
    */
-  function starts_with(string $haystack, $needle)
+  function starts_with(string $haystack, $needle): bool
   {
+    if (null === $needle || '' === $needle) {
+      return false;
+    }
+
     if (is_array($needle)) {
-      $ret = false;
       foreach ($needle as $n) {
-        $ret |= starts_with($haystack, $n);
+        if (starts_with($haystack, $n)) {
+          return true;
+        }
       }
 
-      return $ret;
+      return false;
     }
 
     return 0 === strpos($haystack, $needle);

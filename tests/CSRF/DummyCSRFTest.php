@@ -35,7 +35,7 @@ class DummyCSRFTest extends \PHPUnit\Framework\TestCase
   public function testBaseClass()
   {
     $this->expectException(\WTForms\Exceptions\NotImplemented::class);
-    (new F(['meta' => ['csrf_class' => new CSRF()]]))->process([]);
+    (new F(['meta' => ['csrf_class' => CSRF::class]]))->process([]);
   }
 
   public function testBasicImpl()

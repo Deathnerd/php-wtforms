@@ -59,7 +59,7 @@ class FF extends Form
 
 class NTLMeta extends DefaultMeta
 {
-  public string $csrf_time_limit = null;
+  public ?string $csrf_time_limit = null;
   public bool $csrf = true;
   public ?string $csrf_secret = 'foobar';
 }

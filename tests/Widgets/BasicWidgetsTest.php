@@ -122,11 +122,7 @@ class BasicWidgetsTest extends \PHPUnit\Framework\TestCase
       (new SubmitInput())->__invoke($this->field));
   }
 
-  public function testWidgetNotImplemented()
-  {
-    $this->expectException(\WTForms\Exceptions\NotImplemented::class);
-    (new Widget())->__invoke($this->field);
-  }
+  // Widget is now abstract - instantiation is prevented at the language level
 
   public function testOption()
   {
