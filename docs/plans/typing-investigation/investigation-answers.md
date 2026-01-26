@@ -4936,12 +4936,121 @@ class CSRFValidationException extends CSRFException {}
 
 ---
 
-#### FQ6. [ ] Should `CSRFValidationException` replace current `ValidationError` usage in CSRF context, or should CSRF validation still use `ValidationError`?
+#### FQ6. [x] Should `CSRFValidationException` replace current `ValidationError` usage in CSRF context, or should CSRF validation still use `ValidationError`?
 
-**Answer:** *Pending investigation*
+**Answer:** **Yes, but `CSRFValidationException` should extend `ValidationError`** for backward compatibility while enabling specific CSRF error handling.
+
+**Current CSRF Validation Errors:**
+```php
+// CSRF/Core/CSRF.php
+throw new ValidationError('Invalid CSRF Token');
+
+// CSRF/Session/SessionCSRF.php
+throw new ValidationError('CSRF token missing');
+throw new ValidationError('CSRF failed');
+throw new ValidationError('CSRF token expired');
+throw new ValidationError('Invalid CSRF Token');
+```
+
+**Semantic Difference:**
+
+| ValidationError | CSRFValidationException |
+|-----------------|------------------------|
+| Field content invalid | Security token invalid |
+| User input error | Potential security threat |
+| Show error, let user fix | May require full form reload |
+| "Email format invalid" | "Session expired, reload page" |
+
+**Recommended Design:**
+
+```php
+/**
+ * CSRF validation failure (security-related validation error).
+ * Extends ValidationError for backward compatibility.
+ */
+class CSRFValidationException extends ValidationError implements WTFormsException
+{
+    public const TOKEN_MISSING = 'missing';
+    public const TOKEN_INVALID = 'invalid';
+    public const TOKEN_EXPIRED = 'expired';
+    public const TOKEN_MISMATCH = 'mismatch';
+
+    private string $reason;
+
+    public function __construct(string $message, string $reason = self::TOKEN_INVALID)
+    {
+        parent::__construct($message);
+        $this->reason = $reason;
+    }
+
+    public function getReason(): string
+    {
+        return $this->reason;
+    }
+}
+```
+
+**Benefits of Extending ValidationError:**
+
+1. **Backward compatibility:**
+   ```php
+   // Existing code continues to work
+   try {
+       $form->validate();
+   } catch (ValidationError $e) {
+       // Still catches CSRF errors
+   }
+   ```
+
+2. **Opt-in specific handling:**
+   ```php
+   try {
+       $form->validate();
+   } catch (CSRFValidationException $e) {
+       // CSRF-specific handling (e.g., redirect to login)
+       if ($e->getReason() === CSRFValidationException::TOKEN_EXPIRED) {
+           return redirect('/login?session_expired=1');
+       }
+   } catch (ValidationError $e) {
+       // Regular validation errors
+   }
+   ```
+
+3. **Form error collection unchanged:**
+   - CSRF errors still get collected in `$form->errors`
+   - Rendering logic doesn't need to change
+
+**Usage in Code:**
+
+```php
+// Before
+throw new ValidationError('CSRF token expired');
+
+// After
+throw new CSRFValidationException(
+    'CSRF token expired',
+    CSRFValidationException::TOKEN_EXPIRED
+);
+```
+
+**Exception Hierarchy (Updated from FQ5):**
+
+```
+WTFormsException (interface)
+├── ValidationError (extends RuntimeException)
+│   └── CSRFValidationException  // ← NEW
+├── CSRFException (extends RuntimeException)
+│   └── CSRFConfigurationException  // Setup errors (from FQ1)
+└── ... other exceptions
+```
+
+**Note:** `CSRFValidationException` extends `ValidationError`, NOT `CSRFException`. This is intentional:
+- `CSRFException` is for setup/configuration problems
+- `CSRFValidationException` is for runtime token validation failures
+- They're semantically different categories
 
 **New questions raised:**
-- *None yet*
+- None - this completes the CSRF exception design (FQ1 + FQ6).
 
 ---
 
