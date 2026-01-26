@@ -40,8 +40,11 @@ fi
 
 echo "🎨 Auto-formatting with php-cs-fixer..."
 
-# Run php-cs-fixer using system php
-if php "$PHP_CS_FIXER" fix --config="$PHP_CS_CONFIG" --quiet "$file_path" 2>/dev/null; then
+# Use PHP_PATH env var if set, otherwise default to "php"
+PHP_BIN="${PHP_PATH:-php}"
+
+# Run php-cs-fixer
+if "$PHP_BIN" "$PHP_CS_FIXER" fix --config="$PHP_CS_CONFIG" --quiet "$file_path" 2>/dev/null; then
     echo "✅ Formatted successfully"
 else
     # Don't block on formatter errors, just notify
