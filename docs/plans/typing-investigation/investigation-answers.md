@@ -4599,12 +4599,68 @@ throw new CSRFConfigurationException('SessionCSRF requires an active PHP session
 
 ---
 
-#### FQ2. [ ] Should `Widget` be marked `@template-covariant` since it only reads field data?
+#### FQ2. [x] Should `Widget` be marked `@template-covariant` since it only reads field data?
 
-**Answer:** *Pending investigation*
+**Answer:** **It depends - recommend removing the generic parameter entirely or using call-site variance.**
+
+**Investigation:**
+Widgets only read field properties and never write to them:
+```bash
+# Search for any field property writes in widgets
+grep -rn '\$field->[a-z]+ =' src/Widgets/
+# Result: No matches found - widgets ONLY read!
+
+# Examples of read-only access:
+$field->id, $field->name, $field->value, $field->data, $field->checked
+```
+
+**The Problem with `@template-covariant TData`:**
+
+Per [PHPStan docs](https://phpstan.org/blog/whats-up-with-template-covariant), a covariant type parameter **cannot appear in parameter position**. But Widget's `__invoke` method accepts `Field<TData>` as a parameter:
+
+```php
+/**
+ * @template-covariant TData  // ❌ Won't work
+ */
+abstract class Widget {
+    abstract public function __invoke(Field $field, ...): string;
+    //                                ^^^^^^^^^^^^
+    // TData is in parameter position - violates covariance rule!
+}
+```
+
+**Why the question exists:**
+Widget is conceptually "covariant" because it only *reads* field data. A `Widget<Animal>` should safely render a `Field<Cat>` since it just reads properties. But PHPStan enforces covariance structurally, not semantically.
+
+**Options:**
+
+1. **Remove the generic parameter entirely** (Recommended)
+   ```php
+   /** Widget doesn't need TData - it reads common Field properties */
+   abstract class Widget {
+       abstract public function __invoke(Field $field, array $options = []): string;
+   }
+   ```
+   This works because widgets access common properties (`id`, `name`, `value`) not type-specific ones.
+
+2. **Use call-site variance**
+   ```php
+   /** @param Widget<covariant TData> $widget */
+   function render(Widget $widget, Field $field): string { ... }
+   ```
+   Mark covariance at the use site, not the class definition.
+
+3. **Keep invariant but document intent**
+   ```php
+   /**
+    * @template TData (invariant for PHPStan, but conceptually read-only)
+    */
+   ```
+
+**Recommendation:** Remove `@template TData` from Widget entirely. The generic parameter adds complexity without real type-safety benefits - widgets use the same Field properties regardless of the field's data type.
 
 **New questions raised:**
-- *None yet*
+- FQ7. Should Widget even be generic over TData, or should it just accept `Field<mixed>` since it only reads common properties?
 
 ---
 
@@ -4636,6 +4692,15 @@ throw new CSRFConfigurationException('SessionCSRF requires an active PHP session
 ---
 
 #### FQ6. [ ] Should `CSRFValidationException` replace current `ValidationError` usage in CSRF context, or should CSRF validation still use `ValidationError`?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
+
+#### FQ7. [ ] Should Widget even be generic over TData, or should it just accept `Field<mixed>` since it only reads common properties?
 
 **Answer:** *Pending investigation*
 
