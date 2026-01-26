@@ -4529,12 +4529,73 @@ No blocking issues. All 120 questions have been investigated.
 
 ### New Questions Discovered
 
-#### FQ1. [ ] Should we create a `CSRFConfigurationException` for CSRF setup errors?
+#### FQ1. [x] Should we create a `CSRFConfigurationException` for CSRF setup errors?
 
-**Answer:** *Pending investigation*
+**Answer:** **Yes, we should create a `CSRFConfigurationException`** (or `CSRFSetupException`) to distinguish configuration-time errors from validation-time errors.
+
+**Current State:**
+```php
+// SessionCSRF.php lines 61-66
+if (!$meta->csrf_secret) {
+    throw new \Exception('Must set `csrf_secret` on class Meta for SessionCSRF to work');
+}
+if (PHP_SESSION_ACTIVE !== session_status()) {
+    throw new TypeError('Must must have an active session to use SessionCSRF');
+}
+```
+
+**Problems with Current Approach:**
+1. Uses generic `\Exception` which is hard to catch specifically
+2. Uses `TypeError` for session state, which is semantically incorrect (not a type error)
+3. No consistent exception hierarchy for CSRF-related errors
+4. Hard for users to implement proper error handling
+
+**Recommended Approach:**
+
+```php
+// New exception hierarchy
+namespace WTForms\Exceptions;
+
+// Base for all CSRF errors (aligns with FQ5 base exception question)
+class CSRFException extends \RuntimeException {}
+
+// Configuration errors (thrown at setup/form creation time)
+class CSRFConfigurationException extends CSRFException {}
+
+// Validation errors (thrown when token fails validation)
+class CSRFValidationException extends CSRFException {}
+```
+
+**Why `RuntimeException` base?**
+- CSRF configuration errors are runtime problems (missing config, no session)
+- They are not logic errors that should crash the application
+- Users can catch and handle them appropriately
+- Matches PHP's semantic: "Exception thrown if an error which can only be found on runtime occurs"
+
+**Benefits:**
+1. **Type-safe catching**: `catch (CSRFConfigurationException $e)` vs generic `catch (\Exception $e)`
+2. **PHPStan/Psalm visibility**: Static analyzers can track exception flow
+3. **Documentation via types**: Exception class name explains the error category
+4. **Consistent hierarchy**: All CSRF errors under `CSRFException`
+
+**Migration:**
+```php
+// Before
+throw new \Exception('Must set `csrf_secret`...');
+throw new TypeError('Must have an active session...');
+
+// After
+throw new CSRFConfigurationException('Missing csrf_secret in Meta');
+throw new CSRFConfigurationException('SessionCSRF requires an active PHP session');
+```
+
+**Evidence from Python ecosystem:**
+- Flask-WTF uses `CSRFError` (extends HTTP 400) for validation failures
+- Configuration errors throw `RuntimeError`
+- WTForms core uses `ValidationError` for token mismatches, `NotImplementedError` for missing implementations
 
 **New questions raised:**
-- *None yet*
+- FQ6. Should `CSRFValidationException` replace current `ValidationError` usage in CSRF context, or should CSRF validation still use `ValidationError`?
 
 ---
 
@@ -4566,6 +4627,15 @@ No blocking issues. All 120 questions have been investigated.
 ---
 
 #### FQ5. [ ] Should we create a common `WTFormsException` base class?
+
+**Answer:** *Pending investigation*
+
+**New questions raised:**
+- *None yet*
+
+---
+
+#### FQ6. [ ] Should `CSRFValidationException` replace current `ValidationError` usage in CSRF context, or should CSRF validation still use `ValidationError`?
 
 **Answer:** *Pending investigation*
 
