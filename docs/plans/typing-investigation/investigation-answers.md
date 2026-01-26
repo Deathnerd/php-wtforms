@@ -1695,7 +1695,311 @@ vendor/bin/phpstan analyse
 
 ## Section 5: Field Classes Typing
 
-[Template repeats for Q5.1 through Q5.10...]
+### Q5.1 - Base Field Generic Structure
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (Field.php)
+
+**Findings:**
+**Current generic structure:**
+```php
+/**
+ * @template TData
+ * @property TData $data
+ */
+class Field implements \Iterator
+```
+
+`TData` represents the type of data the field holds:
+- `StringField` → `TData = string`
+- `IntegerField` → `TData = int`
+- `DateField` → `TData = ?Carbon`
+- `BooleanField` → `TData = bool`
+
+**Properties using TData:**
+- `$data` - the processed/coerced value (virtual property via `@property`)
+
+**Current issue:** `$data` is accessed via `__get` magic, not a real typed property.
+
+**Recommendation:** With breaking changes approved, make `$data` a real typed property.
+
+---
+
+### Q5.2 - Per-Field Data Types
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (all field classes)
+
+**Findings:**
+**Recommended `TData` types for each field:**
+
+| Field Class | TData Type | Notes |
+|-------------|-----------|-------|
+| StringField | `string` | Text input |
+| IntegerField | `?int` | Nullable for empty input |
+| FloatField | `?float` | Nullable for empty input |
+| DecimalField | `?string` | Decimal as string for precision |
+| BooleanField | `bool` | Checkbox (never null) |
+| DateField | `?Carbon` | Carbon instance or null |
+| DateTimeField | `?Carbon` | Carbon instance or null |
+| SelectField | `?string` | Selected value |
+| SelectMultipleField | `array<int, string>` | Multiple selected values |
+| RadioField | `?string` | Selected value |
+| FieldList | `array<int, TInner>` | Generic over inner field's data |
+| FormField | `TForm` | Generic over nested form |
+
+---
+
+### Q5.3 - FieldList Generics
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (FieldList.php)
+
+**Findings:**
+**Current:**
+```php
+/**
+ * @extends Field<array<int, mixed>>
+ */
+class FieldList extends Field
+{
+    /** @var Field<mixed> */
+    public Field $inner_field;
+}
+```
+
+**Problem:** Uses `mixed` instead of propagating inner field type.
+
+**Recommended design:**
+```php
+/**
+ * @template TInnerField of Field
+ * @template TInnerData
+ * @extends Field<array<int, TInnerData>>
+ */
+class FieldList extends Field
+{
+    /** @var TInnerField */
+    public Field $inner_field;
+}
+
+// Usage
+/** @var FieldList<StringField, string> */
+$names = new FieldList(new StringField());
+```
+
+---
+
+### Q5.4 - FormField Generics
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (FormField.php)
+
+**Findings:**
+**Recommended design:**
+```php
+/**
+ * @template TForm of Form
+ * @extends Field<TForm>
+ */
+class FormField extends Field
+{
+    /** @var class-string<TForm> */
+    public string $form_class;
+
+    /** @var TForm */
+    public Form $form;
+}
+
+// Usage
+/** @var FormField<AddressForm> */
+$address = new FormField(AddressForm::class);
+$address->form->city  // PHPStan knows this is AddressForm
+```
+
+---
+
+### Q5.5 - SelectField Choices Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection (SelectFieldBase.php)
+
+**Findings:**
+**Choices structure:**
+```php
+// Each choice is [value, label, selected]
+array<int, array{0: string, 1: string, 2: bool}>
+```
+
+**Or as named shape:**
+```php
+/**
+ * @phpstan-type Choice array{value: string, label: string, selected: bool}
+ * @phpstan-type Choices array<int, Choice>
+ */
+```
+
+**Dynamic choices (callable):**
+```php
+/** @var Choices|callable(): Choices */
+public $choices;
+```
+
+---
+
+### Q5.6 - processFormData Typing
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current signature:**
+```php
+public function processFormData(array $valuelist): void
+```
+
+**Recommended:**
+```php
+/**
+ * Process raw form data into field data.
+ *
+ * @param array<int, string> $valuelist Raw values from form submission
+ */
+public function processFormData(array $valuelist): void
+```
+
+**Return type:** `void` - modifies `$this->data` directly.
+
+---
+
+### Q5.7 - raw_data Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @var array<int, mixed>|null */
+public ?array $raw_data = [];
+```
+
+**Recommended:**
+```php
+/** @var array<int, string>|null */
+public ?array $raw_data = null;
+```
+
+Raw form data is always strings (from `$_POST`/`$_GET`). Initialize to `null` not empty array for cleaner null checks.
+
+---
+
+### Q5.8 - Widget Property Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @var Widget|object|null */
+public $widget;
+```
+
+**Problem:** Too loose. `object` allows anything.
+
+**Recommended:**
+```php
+/**
+ * @template TData
+ * @var Widget<TData>|null
+ */
+public ?Widget $widget = null;
+```
+
+Each field subclass should narrow to specific widget:
+```php
+// StringField
+/** @var Input<string>|null */
+public ?Widget $widget = null;
+```
+
+---
+
+### Q5.9 - Validators Array Type
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Current:**
+```php
+/** @var list<Validator|callable> */
+public array $validators = [];
+```
+
+**Issue:** `callable` is too loose. Should be specific signature.
+
+**Recommended:**
+```php
+/**
+ * @phpstan-type ValidatorCallable callable(Form, Field, ?string): void
+ * @var list<Validator<array<string, mixed>>|ValidatorCallable>
+ */
+public array $validators = [];
+```
+
+---
+
+### Q5.10 - Variance Issues
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] PHPStan output analysis
+
+**Findings:**
+**Current PHPStan errors (level 5) related to variance:**
+```
+Parameter #1 $field of method Widget::__invoke() expects
+Field<float|int|null>, Field<float|int|null> given.
+Template type TData on class Field is not covariant.
+```
+
+**The issue:**
+- `Field<TData>` template is invariant by default
+- Widget expects `Field<TData>` but gets subclass
+
+**Solution options:**
+1. Use `@template-covariant TData` where appropriate
+2. Use bounded generics: `@template TData of string|int|null`
+3. With breaking changes: redesign to avoid variance issues
+
+**Recommended:**
+```php
+/**
+ * @template-covariant TData
+ */
+class Field { }
+```
 
 ---
 

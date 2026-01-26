@@ -282,16 +282,16 @@ Achieve complete typing for all Field classes:
 
 ### 5.3 Investigation Status
 
-- [ ] Q5.1 - Base Field generic structure documented
-- [ ] Q5.2 - Per-field data types defined
-- [ ] Q5.3 - FieldList generics designed
-- [ ] Q5.4 - FormField generics designed
-- [ ] Q5.5 - SelectField choices typed
-- [ ] Q5.6 - processFormData typing solved
-- [ ] Q5.7 - raw_data type defined
-- [ ] Q5.8 - Widget property typing solved
-- [ ] Q5.9 - Validators array typed
-- [ ] Q5.10 - Variance issues documented
+- [x] Q5.1 - Base Field generic structure documented
+- [x] Q5.2 - Per-field data types defined
+- [x] Q5.3 - FieldList generics designed
+- [x] Q5.4 - FormField generics designed
+- [x] Q5.5 - SelectField choices typed
+- [x] Q5.6 - processFormData typing solved
+- [x] Q5.7 - raw_data type defined
+- [x] Q5.8 - Widget property typing solved
+- [x] Q5.9 - Validators array typed
+- [x] Q5.10 - Variance issues documented
 
 ---
 
