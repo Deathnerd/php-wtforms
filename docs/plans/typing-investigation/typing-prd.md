@@ -85,16 +85,16 @@ Before making changes, we must understand the current typing state:
 
 ### 1.3 Investigation Status
 
-- [ ] Q1.1 - PHPStan configuration documented
-- [ ] Q1.2 - Error counts at each level recorded
-- [ ] Q1.3 - Baseline status checked
-- [ ] Q1.4 - Native return type coverage estimated
-- [ ] Q1.5 - PHPDoc coverage estimated
-- [ ] Q1.6 - Template/generic usage patterns documented
-- [ ] Q1.7 - PHP 7.4 type constraints documented
-- [ ] Q1.8 - Suppressions and weak types identified
-- [ ] Q1.9 - Dev dependencies documented
-- [ ] Q1.10 - Custom extensions identified
+- [x] Q1.1 - PHPStan configuration documented
+- [x] Q1.2 - Error counts at each level recorded
+- [x] Q1.3 - Baseline status checked
+- [x] Q1.4 - Native return type coverage estimated
+- [x] Q1.5 - PHPDoc coverage estimated
+- [x] Q1.6 - Template/generic usage patterns documented
+- [x] Q1.7 - PHP 7.4 type constraints documented
+- [x] Q1.8 - Suppressions and weak types identified
+- [x] Q1.9 - Dev dependencies documented
+- [x] Q1.10 - Custom extensions identified
 
 ---
 

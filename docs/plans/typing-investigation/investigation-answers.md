@@ -52,238 +52,485 @@ This document captures answers to all investigation questions from the PRD. For 
 
 ### Q1.1 - PHPStan Configuration
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (`phpstan.neon`, `phpstan.neon.dist`)
+- [x] Code inspection (`phpstan.neon`, `phpstan.neon.dist`)
 - [ ] Command execution
 - [ ] Documentation review
 
 **Findings:**
-[TODO: Document PHPStan configuration]
+PHPStan is configured at level 5 with the following settings:
+- **Level:** 5 (medium strictness)
+- **Paths analyzed:** `src/` only (tests not included)
+- **Excluded:** `vendor/`
+- **Custom extension:** Includes `phpstan/extension.neon` which registers a `ValidatorThrowTypeExtension`
+- **Exception handling:** Unchecked exceptions configured for `StopValidation` and `ValidationError`
+- **treatPhpDocTypesAsCertain:** Commented out (defaults to true)
 
 **Evidence:**
-```
-[TODO: Paste config file contents]
+```neon
+# phpstan.neon
+parameters:
+    level: 5
+    paths:
+        - src
+    excludePaths:
+        - vendor
+    exceptions:
+        uncheckedExceptionClasses:
+            - WTForms\Exceptions\StopValidation
+            - WTForms\Exceptions\ValidationError
+includes:
+    - phpstan/extension.neon
+
+# phpstan/extension.neon
+services:
+  - class: WTForms\PHPStan\Extensions\ValidatorThrowTypeExtension
+    tags:
+      - phpstan.dynamicMethodThrowTypeExtension
 ```
 
 **Decision/Recommendation:**
-[TODO]
+Current configuration is a reasonable starting point. To reach level 9:
+1. Incrementally increase level (5 → 6 → 7 → 8 → 9)
+2. Consider adding `tests/` to paths for full coverage
+3. May need additional extensions for generics and advanced features
 
 **Follow-up Questions:**
-- [TODO]
+- What does ValidatorThrowTypeExtension do exactly?
+- Should tests be included in analysis?
 
 ---
 
 ### Q1.2 - PHPStan Error Counts by Level
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Command execution (PHPStan at levels 5-9)
+- [x] Command execution (PHPStan at levels 5-9)
 
 **Findings:**
-[TODO: Document error counts at each level]
+Error counts increase significantly at each level:
+
+| Level | Error Count | Key New Checks |
+|-------|-------------|----------------|
+| 5     | 8           | Current baseline - always-true checks, covariance issues |
+| 6     | 118         | +110 - Missing generic type specifications |
+| 7     | 158         | +40 - Union type checking |
+| 8     | 179         | +21 - Report possibly undefined variables |
+| 9     | 217         | +38 - Full mixed type checking |
 
 **Evidence:**
-```
-[TODO: Paste command outputs]
+```bash
+# Level 5 (8 errors)
+docker-compose run --rm php74 vendor/bin/phpstan analyse -l 5
+# Errors: instanceof.alwaysTrue, function.impossibleType, deadCode.unreachable, argument.type (covariance)
+
+# Level 6 (118 errors) - main jump
+# Many "missingType.generics" errors like:
+# Class WTForms\Widgets\HTML5\URLInput extends generic class WTForms\Widgets\Core\Input but does not specify its types: TData
+
+# Level 7-9 add incrementally more strictness
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. **Immediate goal:** Fix level 5 errors (8 errors) - mostly dead code and covariance issues
+2. **Short-term:** Move to level 6 by adding generic type specifications to all classes extending generic base classes
+3. **Medium-term:** Progressively work toward level 9
+
+The jump from level 5 to 6 is the biggest (8 → 118), primarily due to generic type requirements.
 
 **Follow-up Questions:**
-- [TODO]
+- How do we properly specify generic types for all extending classes?
+- What is the covariance fix for template types?
 
 ---
 
 ### Q1.3 - PHPStan Baseline Status
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (`phpstan-baseline.neon`)
+- [x] Code inspection (`phpstan-baseline.neon`)
 - [ ] Command execution
 
 **Findings:**
-[TODO]
+**No baseline file exists.** The file `phpstan-baseline.neon` does not exist in the project root.
+
+Git history shows the baseline was recently removed (commit `da2548e Remove phpstan baseline`), indicating a conscious decision to work without a baseline.
 
 **Evidence:**
-```
-[TODO]
+```bash
+$ ls -la phpstan-baseline.neon
+# No baseline file exists
+
+$ git log --oneline | grep baseline
+# da2548e Remove phpstan baseline
 ```
 
 **Decision/Recommendation:**
-[TODO]
+Keep the no-baseline approach. Instead of ignoring errors:
+1. Fix all level 5 errors (currently 8)
+2. Progressively move up levels
+3. Only use baseline temporarily during level transitions if needed
 
 **Follow-up Questions:**
-- [TODO]
+- None - the baseline approach is clear (don't use one)
 
 ---
 
 ### Q1.4 - Native Return Type Coverage
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (sample 10 files)
-- [ ] Command execution (grep patterns)
+- [x] Code inspection (sample 10 files)
+- [x] Command execution (grep patterns)
 
 **Findings:**
-[TODO]
+**Overall:** 132 out of 257 methods have native return types = **51% coverage**
+
+**Sampled key files:**
+| File | With Types | Total | Coverage |
+|------|-----------|-------|----------|
+| Field.php | 11 | 15 | 73% |
+| Validator.php | 9 | 12 | 75% |
+| Form.php | 6 | 13 | 46% |
+
+Core classes (Field, Validator) have better coverage (~75%) than Form (46%).
 
 **Evidence:**
-```
-[TODO]
+```bash
+$ grep -rh "function [a-zA-Z_]*\(.*\): " src/ | wc -l
+132
+$ grep -rh "function [a-zA-Z_]*(" src/ | wc -l
+257
+
+# Per-file sampling
+# Field.php: 11/15 (73%)
+# Validator.php: 9/12 (75%)
+# Form.php: 6/13 (46%)
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. Prioritize adding return types to Form.php (lowest coverage, highest impact)
+2. Add return types to all remaining methods where PHP 7.4 allows
+3. Methods returning `$this` need `: self` or `@return static`
 
 **Follow-up Questions:**
-- [TODO]
+- Which methods lack return types due to PHP 7.4 limitations (union types needed)?
 
 ---
 
 ### Q1.5 - PHPDoc Coverage
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (sample files)
-- [ ] Command execution
+- [x] Code inspection (sample files)
+- [x] Command execution
 
 **Findings:**
-[TODO]
+**Total PHPDoc annotations across src/:**
+| Annotation | Count |
+|-----------|-------|
+| @param | 139 |
+| @return | 56 |
+| @var | 67 |
+
+**Sampled files:**
+| File | @param | @return | Notes |
+|------|--------|---------|-------|
+| Field.php | 14 | 1 | Heavy params, light returns (native types used) |
+| Form.php | 10 | 7 | Balanced coverage |
+
+The pattern: many methods have native return types (51%) but use @param for complex types.
 
 **Evidence:**
-```
-[TODO]
+```bash
+$ grep -rh "@param" src/ | wc -l
+139
+$ grep -rh "@return" src/ | wc -l
+56
+$ grep -rh "@var" src/ | wc -l
+67
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. @return annotations are sparse (56) because native types are preferred
+2. @param usage is good (139) for documenting complex/union types
+3. Add @return annotations where native types aren't possible (union types in PHP 7.4)
 
 **Follow-up Questions:**
-- [TODO]
+- Are there methods with neither native types nor @return annotations?
 
 ---
 
 ### Q1.6 - Template/Generic Usage Patterns
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection
-- [ ] Command execution (grep for @template)
+- [x] Code inspection
+- [x] Command execution (grep for @template)
 
 **Findings:**
-[TODO]
+**Comprehensive generics are already in use:**
+
+| Annotation | Count | Purpose |
+|-----------|-------|---------|
+| @template | 27 | Generic type parameters (TData, TOptions, etc.) |
+| @template-extends | 12 | Specifying parent generic types in subclasses |
+| @phpstan-type | 17 | Custom type aliases for options arrays |
+| @phpstan-import-type | 23 | Importing type aliases between files |
+| @phpstan-param | 8 | PHPStan-specific parameter types |
+
+**Key patterns observed:**
+1. **Field<TData>** - Fields are generic over their data type
+2. **Validator<TOptions>** - Validators generic over their options array shape
+3. **Widget<TData>** - Widgets generic over field data type
+4. **Options arrays** - Custom types like `FieldOptionsArray`, `SelectFieldOptionsArray`
 
 **Evidence:**
-```
-[TODO]
+```php
+// Field.php
+@template TData
+
+// Validator.php
+@template TOptions of array<string, mixed>
+
+// Subclass pattern (e.g., AnyOf.php)
+@template-extends Validator<AnyOfOptionsArray>
+
+// Type import pattern
+@phpstan-import-type FieldOptionsArray from FieldOptions
+@phpstan-type BooleanFieldOptionsArray array{false_values?: array<int, string>} & FieldOptionsArray
 ```
 
 **Decision/Recommendation:**
-[TODO]
+Generics foundation is solid. Focus on:
+1. Ensuring all subclasses properly extend with specific types (level 6 errors)
+2. Add `@template-covariant` where needed for proper variance
+3. Document the pattern for future contributors
 
 **Follow-up Questions:**
-- [TODO]
+- Are covariance issues causing the level 5 errors?
 
 ---
 
 ### Q1.7 - PHP 7.4 Type Constraints
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Documentation review
-- [ ] Code inspection
+- [x] Documentation review
+- [x] Code inspection
 
 **Findings:**
-[TODO: Document available vs unavailable type features]
+**PHP version:** 7.4.33
+
+**Available in PHP 7.4:**
+| Feature | Syntax | Notes |
+|---------|--------|-------|
+| Typed properties | `public string $name;` | Yes, since 7.4 |
+| Return types | `function foo(): string` | Yes |
+| Nullable types | `?string`, `function(): ?int` | Yes |
+| void return | `function(): void` | Yes |
+| array type | `function(array $a): array` | Yes |
+| object type | `function(): object` | Yes |
+| iterable type | `function(): iterable` | Yes |
+| self/parent | `function(): self` | Yes |
+| Class types | `function(Form $f): Field` | Yes |
+
+**NOT available until PHP 8.0+:**
+| Feature | Syntax | Workaround |
+|---------|--------|------------|
+| Union types | `string|int` | Use PHPDoc `@param string|int` |
+| Mixed type | `mixed` | Use PHPDoc `@param mixed` |
+| Named arguments | `foo(name: 'value')` | Use options arrays |
+| Attributes | `#[Attribute]` | Use PHPDoc annotations |
+| Match expression | `match($x) { }` | Use switch or ternary |
+| Constructor promotion | `__construct(public $x)` | Manual property declaration |
+| Nullsafe operator | `$obj?->method()` | Use `$obj !== null ? $obj->method() : null` |
+| Static return type | `function(): static` | Use `@return static` in PHPDoc |
 
 **Evidence:**
-```
-[TODO]
+```bash
+$ php -v
+PHP 7.4.33 (cli)
+
+# composer.json requirement:
+"require": {
+    "php": ">=7.4"
+}
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. Use PHPDoc for union types (`@param string|int $value`)
+2. Use PHPDoc for `mixed` type declarations
+3. Use `@return static` for fluent interfaces
+4. Generics via PHPDoc only (`@template`, `@phpstan-type`)
+
+**NOTE:** User indicated willingness to break Python-esque dynamic API for better typing. This opens options like:
+- Replacing dynamic `__get`/`__set` with explicit typed accessors
+- Using strict constructor signatures instead of options arrays
 
 **Follow-up Questions:**
-- [TODO]
+- Should we break backward compatibility for type safety?
 
 ---
 
 ### Q1.8 - Suppressions and Weak Types
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Command execution (grep for mixed, @var, noinspection)
+- [x] Command execution (grep for mixed, @var, noinspection)
 
 **Findings:**
-[TODO]
+**Suppressions found:**
+
+| Type | Count | Location |
+|------|-------|----------|
+| `@phpstan-ignore-next-line` | 1 | SessionCSRF.php:146 |
+| `@noinspection PhpUnusedParameterInspection` | 2 | CSRF.php, DefaultMeta.php |
+| `@noinspection PhpPropertyOnlyWrittenInspection` | 1 | Validator.php |
+
+**Mixed type usage:** 32 occurrences (excluding `array<string, mixed>`)
+
+Key locations with mixed:
+- `FieldList.php` - 12+ uses for generic field collections
+- `Field.php` - raw_data, arguments, default values
+- `FormField.php` - dynamic field access
 
 **Evidence:**
-```
-[TODO]
+```php
+// SessionCSRF.php - only @phpstan-ignore
+// @phpstan-ignore-next-line
+
+// FieldList.php - many mixed types for generic collections
+@var Field<mixed>
+@return array<int, mixed>|mixed
+
+// Field.php - raw data handling
+@var array<int, mixed>|null
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. **Low suppression count** - only 4 total, manageable
+2. **Mixed in FieldList** - unavoidable for heterogeneous collections, but could add generic constraints
+3. **Consider replacing** `Field<mixed>` with proper bounded generics when possible
+4. Remove unused parameter suppressions by adding proper type narrowing
 
 **Follow-up Questions:**
-- [TODO]
+- Can we use bounded generics to eliminate some `mixed` usage?
 
 ---
 
 ### Q1.9 - Dev Dependencies
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (`composer.json`)
+- [x] Code inspection (`composer.json`)
 
 **Findings:**
-[TODO]
+**Current dev dependencies:**
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| phpunit/phpunit | ^9.0 | Testing framework |
+| rector/rector | ^2.3 | Automated refactoring |
+| phpstan/phpstan | ^2.1 | Static analysis (primary) |
+| friendsofphp/php-cs-fixer | ^3.93 | Code style |
+
+**Runtime dependencies affecting types:**
+| Package | Version | Type implications |
+|---------|---------|------------------|
+| nesbot/carbon | ^2.0 \|\| ^3.0 | DateTime handling, needs Carbon types |
+| gettext/gettext | ^5.7 | i18n functions |
+| ext-openssl | * | Crypto functions |
 
 **Evidence:**
 ```json
-[TODO: Paste require-dev section]
+"require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "rector/rector": "^2.3",
+    "phpstan/phpstan": "^2.1",
+    "friendsofphp/php-cs-fixer": "^3.93"
+}
 ```
 
 **Decision/Recommendation:**
-[TODO]
+**Missing packages to add:**
+1. `vimeo/psalm` - for Psalm analysis + taint analysis
+2. `phpstan/phpstan-strict-rules` - stricter PHPStan checks
+3. `phpstan/phpstan-phpunit` - PHPUnit-aware analysis
+4. `phpstan/phpstan-deprecation-rules` - deprecation warnings
+5. `nesbot/carbon-phpstan` - Carbon type stubs (if exists)
 
 **Follow-up Questions:**
-- [TODO]
+- Is there a Carbon PHPStan extension?
 
 ---
 
 ### Q1.10 - Custom PHPStan Extensions
 
-**Status:** Needs Investigation
+**Status:** Answered
 
 **Investigation Method:**
-- [ ] Code inspection (phpstan.neon, src/PHPStan/)
+- [x] Code inspection (phpstan.neon, phpstan/)
 
 **Findings:**
-[TODO]
+**Custom extension exists:** `ValidatorThrowTypeExtension`
+
+**Location:** `phpstan/Extensions/ValidatorThrowTypeExtension.php`
+
+**Purpose:** Tells PHPStan that validator `__invoke()` calls don't propagate exceptions to callers. This is because `StopValidation` and `ValidationError` are caught internally by `Field::runValidationChain()`.
+
+**Supporting metadata:** `phpstan/Metadata/ValidatorMetadata.php`
+- Maps validators to exception types (StopValidation vs ValidationError)
+- Defines type narrowing rules (e.g., `DataRequired` removes `null` from union)
 
 **Evidence:**
-```
-[TODO]
+```php
+// ValidatorThrowTypeExtension.php
+class ValidatorThrowTypeExtension implements DynamicMethodThrowTypeExtension
+{
+    public function isMethodSupported(MethodReflection $methodReflection): bool
+    {
+        return '__invoke' === $methodReflection->getName()
+            && $this->isValidatorClass(...);
+    }
+
+    public function getThrowTypeFromMethodCall(...): ?Type
+    {
+        return null; // No exceptions propagate to caller
+    }
+}
+
+// ValidatorMetadata.php
+public const THROW_TYPES = [
+    DataRequired::class  => StopValidation::class,
+    Length::class        => ValidationError::class,
+    // ...
+];
+
+public const TYPE_NARROWING = [
+    DataRequired::class  => ['removes' => ['null']],
+    Email::class         => ['removes' => ['null'], 'narrows_to' => 'non-empty-string'],
+    // ...
+];
 ```
 
 **Decision/Recommendation:**
-[TODO]
+1. **Type narrowing metadata is prepared** but not yet implemented as a PHPStan rule
+2. Consider implementing a `TypeNarrowingExtension` using the metadata
+3. Excellent foundation for advanced static analysis
 
 **Follow-up Questions:**
-- [TODO]
+- Should we implement the type narrowing extension to use the metadata?
 
 ---
 
