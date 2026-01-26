@@ -184,16 +184,16 @@ Add Psalm as a complementary analysis tool:
 
 ### 3.3 Investigation Status
 
-- [ ] Q3.1 - Psalm installation documented
-- [ ] Q3.2 - Psalm levels understood
-- [ ] Q3.3 - Psalm vs PHPStan differences documented
-- [ ] Q3.4 - Coexistence configuration designed
-- [ ] Q3.5 - Psalm plugins identified
-- [ ] Q3.6 - Generics syntax differences documented
-- [ ] Q3.7 - Annotation compatibility understood
-- [ ] Q3.8 - Disagreement resolution strategy defined
-- [ ] Q3.9 - Alter mode evaluated
-- [ ] Q3.10 - CI integration planned
+- [x] Q3.1 - Psalm installation documented
+- [x] Q3.2 - Psalm levels understood
+- [x] Q3.3 - Psalm vs PHPStan differences documented
+- [x] Q3.4 - Coexistence configuration designed
+- [x] Q3.5 - Psalm plugins identified
+- [x] Q3.6 - Generics syntax differences documented
+- [x] Q3.7 - Annotation compatibility understood
+- [x] Q3.8 - Disagreement resolution strategy defined
+- [x] Q3.9 - Alter mode evaluated
+- [x] Q3.10 - CI integration planned
 
 ---
 

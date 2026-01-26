@@ -1107,7 +1107,285 @@ jobs:
 
 ## Section 3: Psalm Setup & Configuration
 
-[Template repeats for Q3.1 through Q3.10...]
+### Q3.1 - Psalm Installation
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+- [x] Web search
+
+**Findings:**
+**Installation:**
+```bash
+composer require --dev vimeo/psalm
+vendor/bin/psalm --init
+```
+
+**Files created:**
+- `psalm.xml` - main configuration file
+
+**Evidence:**
+```xml
+<!-- Generated psalm.xml -->
+<?xml version="1.0"?>
+<psalm
+    errorLevel="1"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+>
+    <projectFiles>
+        <directory name="src" />
+    </projectFiles>
+</psalm>
+```
+
+**Decision/Recommendation:**
+Install Psalm alongside PHPStan for complementary analysis and taint checking.
+
+---
+
+### Q3.2 - Psalm Levels
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Psalm levels are OPPOSITE to PHPStan:**
+| Psalm Level | Strictness | Equivalent PHPStan |
+|-------------|------------|-------------------|
+| 1 | Strictest | ~Level 9-10 |
+| 2 | Very strict | ~Level 8 |
+| 3-4 | Strict | ~Level 6-7 |
+| 5-6 | Moderate | ~Level 4-5 |
+| 7-8 | Loose | ~Level 1-3 |
+
+**Key difference:** Psalm 1 = max strict, PHPStan 9 = max strict
+
+**Decision/Recommendation:**
+Target Psalm level 1 (max strictness) to match our PHPStan level 9 goal.
+
+---
+
+### Q3.3 - Psalm vs PHPStan Differences
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Web search
+- [x] Documentation review
+
+**Findings:**
+**Psalm catches that PHPStan doesn't:**
+- Taint analysis (security vulnerabilities)
+- Immutability enforcement (`@psalm-immutable`)
+- More granular `@psalm-assert*` annotations
+- Template type variance (more strict)
+
+**PHPStan catches that Psalm doesn't:**
+- Some edge cases in magic methods
+- Better Laravel/framework magic support
+- Faster analysis (20-50% faster)
+
+**Both catch:**
+- Type mismatches, undefined variables, dead code
+- Generic/template type issues
+- PHPDoc parsing issues
+
+**Decision/Recommendation:**
+Run both tools - they're complementary, not competing.
+
+---
+
+### Q3.4 - Coexistence Configuration
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Both tools can coexist without conflicts:**
+
+```
+phpstan.neon   - PHPStan config
+psalm.xml      - Psalm config (different format!)
+```
+
+**Annotation compatibility:**
+- `@template` - both understand
+- `@param`, `@return` - both understand
+- `@phpstan-*` - PHPStan only
+- `@psalm-*` - Psalm only
+
+**Best practice:** Use tool-agnostic annotations where possible, tool-specific only when needed.
+
+**Decision/Recommendation:**
+Keep separate configs, prefer generic annotations, add tool-specific only for advanced features.
+
+---
+
+### Q3.5 - Psalm Plugins
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Web search
+
+**Findings:**
+**Relevant Psalm plugins:**
+
+| Plugin | Purpose |
+|--------|---------|
+| `psalm/plugin-phpunit` | PHPUnit assertions and mocks |
+| `weirdan/doctrine-psalm-plugin` | Doctrine entities (not needed for core) |
+
+**Not needed:**
+- Carbon plugin (not found, may not exist)
+- Framework plugins (we're framework-agnostic)
+
+**Decision/Recommendation:**
+Install `psalm/plugin-phpunit` for test analysis.
+
+---
+
+### Q3.6 - Generics Syntax Differences
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Mostly compatible syntax:**
+
+| Feature | PHPStan | Psalm | Compatible? |
+|---------|---------|-------|-------------|
+| `@template T` | Yes | Yes | ✓ |
+| `@template T of Foo` | Yes | Yes | ✓ |
+| `@template-covariant T` | Yes | Yes | ✓ |
+| `@extends Foo<T>` | Yes | Yes | ✓ |
+| `@phpstan-type` | Yes | No | Use `@psalm-type` too |
+| `@psalm-type` | No | Yes | Use `@phpstan-type` too |
+
+**Solution for custom types:**
+```php
+/**
+ * @phpstan-type MyArray array{foo: string}
+ * @psalm-type MyArray array{foo: string}
+ */
+```
+
+**Decision/Recommendation:**
+Use both annotations for custom types, standard generics work in both.
+
+---
+
+### Q3.7 - Annotation Compatibility
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**Tool-specific prefixes:**
+- `@phpstan-*` - ignored by Psalm
+- `@psalm-*` - ignored by PHPStan
+
+**Shared annotations (both understand):**
+- `@template`, `@template-covariant`, `@template-extends`
+- `@param`, `@return`, `@var`, `@throws`
+- `@deprecated`, `@internal`
+- Array shapes: `array{foo: string, bar: int}`
+
+**Psalm-only features:**
+- `@psalm-assert`, `@psalm-assert-if-true/false`
+- `@psalm-immutable`, `@psalm-pure`
+- `@psalm-taint-*` (for taint analysis)
+
+**Decision/Recommendation:**
+Use shared syntax by default. Add `@psalm-*` for taint analysis, `@phpstan-*` for type imports.
+
+---
+
+### Q3.8 - Disagreement Resolution
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**When tools disagree:**
+1. Check if it's a real issue or false positive
+2. If real issue - fix the code
+3. If false positive in one tool - use tool-specific ignore
+
+**Tool-specific ignores:**
+```php
+/** @phpstan-ignore-next-line */
+/** @psalm-suppress MixedAssignment */
+```
+
+**Decision/Recommendation:**
+1. Prefer fixing code over suppressing
+2. If must suppress, use tool-specific annotation
+3. Document why in comment
+
+---
+
+### Q3.9 - Psalm Alter Mode
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Documentation review
+
+**Findings:**
+**`--alter` mode** can automatically fix some issues:
+```bash
+vendor/bin/psalm --alter --issues=MissingReturnType,MissingParamType
+```
+
+**What it can fix:**
+- Add missing return types
+- Add missing param types
+- Add missing property types
+
+**Caveats:**
+- May not choose optimal types
+- Review changes before committing
+- Works best for simple cases
+
+**Decision/Recommendation:**
+Use `--alter` for initial type scaffolding, but review all changes manually.
+
+---
+
+### Q3.10 - Psalm CI Integration
+
+**Status:** Answered
+
+**Investigation Method:**
+- [x] Code inspection
+
+**Findings:**
+**Add to `.github/workflows/tests.yml`:**
+
+```yaml
+- name: Run Psalm
+  run: vendor/bin/psalm --no-progress --output-format=github
+```
+
+**`--output-format=github`** formats errors as GitHub annotations.
+
+**Decision/Recommendation:**
+Add Psalm to CI after initial setup and fixing level 8 errors.
+Run PHPStan and Psalm in parallel for speed.
 
 ---
 
