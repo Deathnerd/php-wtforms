@@ -22,7 +22,7 @@
 - [x] T001 Audit `ArrayOptions` base class for `validate()` and abstract `hydrateObject()` signatures
 - [x] T002 Audit `Field::constructFromOptions`, `Field::collectFieldFlags`, `Field::postHydrate` wiring
 - [x] T003 Audit `FieldListOptions::hydrateObject` and `FieldList::postHydrate` implementation
-- [ ] T004 Run full test suite to confirm baseline — zero failures
+- [x] T004 Run full test suite to confirm baseline — zero failures
 
 ### Implementation Notes
 - Read-only audit phase. No code changes expected unless bugs found.
