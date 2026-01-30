@@ -47,11 +47,11 @@
 **Estimated size**: ~400 lines
 
 ### Included Subtasks
-- [ ] T005 Implement `FieldOptions::hydrateObject()` — pure property assignment for label, description, validators, filters, id, default, render_kw
-- [ ] T006 Implement `SelectFieldOptions::hydrateObject()` — choices, coerce. Add `SelectField::postHydrate()` for default Select widget and identity coerce
-- [ ] T007 Implement `DateTimeFieldOptions::hydrateObject()` — format. Add `DateTimeField::postHydrate()` for strftime-to-Carbon conversion and default TextInput
-- [ ] T008 Update `SelectField` and `DateTimeField` constructors to accept `array|XOptions` union type
-- [ ] T009 Run full test suite — zero failures
+- [x] T005 Implement `FieldOptions::hydrateObject()` — pure property assignment for label, description, validators, filters, id, default, render_kw
+- [x] T006 Implement `SelectFieldOptions::hydrateObject()` — choices, coerce. Add `SelectField::postHydrate()` for default Select widget and identity coerce
+- [x] T007 Implement `DateTimeFieldOptions::hydrateObject()` — format. Add `DateTimeField::postHydrate()` for strftime-to-Carbon conversion and default TextInput
+- [x] T008 Update `SelectField` and `DateTimeField` constructors to accept `array|XOptions` union type
+- [x] T009 Run full test suite — zero failures
 
 ### Implementation Notes
 - `FieldOptions::hydrateObject()` is the foundation — all other field Options inherit from it.
