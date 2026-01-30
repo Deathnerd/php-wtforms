@@ -17,16 +17,17 @@ use WTForms\Widgets\Core\TextInput;
  * A text field, except all input is coerced to an integer. Erroneous input
  * is ignored and will not be accepted as a value.
  *
- * @extends Field<int|null>
+ * @phpstan-type IntegerFieldDataType int|null
+ * @extends Field<IntegerFieldDataType>
  *
- * @property int|null $data
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  */
 class IntegerField extends Field
 {
   /**
    * IntegerField constructor.
    *
-   * @param FieldOptions::FieldOptionsArray $options
+   * @phpstan-param FieldOptionsArray $options
    *
    * @phpstan-param array<string, mixed> $options
    */

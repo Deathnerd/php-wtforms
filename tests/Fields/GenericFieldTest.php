@@ -9,6 +9,9 @@
 
 namespace WTForms\Tests\Fields;
 
+use BadMethodCallException;
+use PHPUnit\Framework\TestCase;
+use stdClass;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
@@ -37,7 +40,7 @@ class GenericFieldTestForm extends Form
   }
 }
 
-class GenericFieldTest extends \PHPUnit\Framework\TestCase
+class GenericFieldTest extends TestCase
 {
   public function setUp(): void
   {
@@ -81,7 +84,7 @@ class GenericFieldTest extends \PHPUnit\Framework\TestCase
   public function testBadMethodCall()
   {
     $this->expectExceptionMessage('Method undefined_method not found on form!');
-    $this->expectException(\BadMethodCallException::class);
+    $this->expectException(BadMethodCallException::class);
     $field = new DummyField(['prefix' => 'blah', 'name' => 'boo']);
     $field->undefined_method();
   }
@@ -96,7 +99,7 @@ class GenericFieldTest extends \PHPUnit\Framework\TestCase
   public function testPopulateObj()
   {
     $field = new DummyField(['name' => 'blah', 'data' => 'foobar']);
-    $obj = new \stdClass();
+    $obj = new stdClass();
     $obj->blah = 'baz';
     $this->assertEquals('baz', $obj->blah);
     $field->populateObj($obj, 'blah');

@@ -9,6 +9,7 @@
 
 namespace WTForms\Validators;
 
+use RuntimeException;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
@@ -31,7 +32,7 @@ class RequiredIf extends DataRequired
    * @param string                                   $message error message to raise in case of a validation error
    * @param RequiredIfOptionsArray|RequiredIfOptions $options
    *
-   * @throws \RuntimeException
+   * @throws RuntimeException
    */
   public function __construct(string $message = '', $options = [])
   {
@@ -39,7 +40,7 @@ class RequiredIf extends DataRequired
       $options = $options->toArray();
     }
     if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
-      throw new \RuntimeException('RequiredIf requires fieldname!');
+      throw new RuntimeException('RequiredIf requires fieldname!');
     }
 
     $this->fieldname = $options['fieldname'];

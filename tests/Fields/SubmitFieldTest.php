@@ -9,10 +9,11 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Simple\SubmitField;
 use WTForms\Form;
 
-class SubmitFieldTest extends \PHPUnit\Framework\TestCase
+class SubmitFieldTest extends TestCase
 {
   public function testSubmitField()
   {

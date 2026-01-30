@@ -9,6 +9,7 @@
 
 namespace WTForms\Validators;
 
+use RuntimeException;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
@@ -33,7 +34,7 @@ class EqualTo extends Validator
    * @param string                             $message error message to raise in case of a validation error
    * @param EqualToOptionsArray|EqualToOptions $options
    *
-   * @throws \RuntimeException
+   * @throws RuntimeException
    */
   public function __construct(string $message = '', $options = [])
   {
@@ -42,7 +43,7 @@ class EqualTo extends Validator
     }
     parent::__construct($message, $options);
     if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
-      throw new \RuntimeException('EqualTo requires fieldname!');
+      throw new RuntimeException('EqualTo requires fieldname!');
     }
     $this->fieldname = $options['fieldname'];
   }

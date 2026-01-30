@@ -10,10 +10,11 @@
 namespace WTForms\Tests\Fields;
 
 use Carbon\Carbon;
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\HTML5;
 use WTForms\Form;
 
-class HTML5FieldsTest extends \PHPUnit\Framework\TestCase
+class HTML5FieldsTest extends TestCase
 {
   public function testHTML5Fields()
   {

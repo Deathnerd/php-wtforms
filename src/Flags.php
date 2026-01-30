@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace WTForms;
 
+use AllowDynamicProperties;
+use InvalidArgumentException;
+
 /**
  * Holds a set of boolean flags for a field.
  *
  * Flags are set by validators and widgets to communicate metadata
  * to templates and rendering logic (e.g., required indicators).
  */
+#[AllowDynamicProperties]
 class Flags
 {
   /**
@@ -30,18 +34,20 @@ class Flags
   /**
    * Set a flag by name.
    *
-   * @throws \InvalidArgumentException if flag name is unknown
+   * @throws InvalidArgumentException if flag name is unknown
    */
   public function set(string $flag, bool $value = true): void
   {
     if (!property_exists($this, $flag)) {
-      throw new \InvalidArgumentException(sprintf('Unknown flag "%s". Known flags: required, optional, hidden', $flag));
+      throw new InvalidArgumentException(sprintf('Unknown flag "%s". Known flags: required, optional, hidden', $flag));
     }
     $this->$flag = $value;
   }
 
   /**
    * Check if a flag is set.
+   *
+   * Returns false for unknown flag names rather than throwing.
    */
   public function has(string $flag): bool
   {

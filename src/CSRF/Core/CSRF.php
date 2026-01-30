@@ -9,24 +9,27 @@
 
 namespace WTForms\CSRF\Core;
 
+use ReflectionClass;
+use ReflectionException;
 use WTForms\Exceptions\ValidationError;
+use WTForms\Fields\Core\Field;
 use WTForms\Form;
 
 abstract class CSRF
 {
   /**
-   * @var class-string<\WTForms\Fields\Core\Field>
+   * @var class-string<Field>
    */
   public string $field_class = CSRFTokenField::class;
 
   /**
-   * @throws \ReflectionException
+   * @throws ReflectionException
    */
   public function setupForm(Form $form): array
   {
     $meta = $form->meta;
     $field_name = $meta->csrf_field_name;
-    $unbound_field = (new \ReflectionClass($this->field_class))->newInstance([
+    $unbound_field = (new ReflectionClass($this->field_class))->newInstance([
       'label'     => 'CSRF Token',
       'csrf_impl' => $this,
     ]);

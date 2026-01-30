@@ -10,6 +10,9 @@
 namespace WTForms\CSRF\Session;
 
 use Carbon\Carbon;
+use DateInterval;
+use DateTime;
+use Exception;
 use WTForms\CSRF\Core\CSRF;
 use WTForms\CSRF\Core\CSRFTokenField;
 use WTForms\DefaultMeta;
@@ -52,14 +55,14 @@ class SessionCSRF extends CSRF
    *
    * @param CSRFTokenField $csrf_token_field The field which is being used for CSRF
    *
-   * @throws \Exception
+   * @throws Exception
    * @throws TypeError
    */
   public function generateCSRFToken(CSRFTokenField $csrf_token_field): string
   {
     $meta = $this->form_meta;
     if (!$meta->csrf_secret) {
-      throw new \Exception('Must set `csrf_secret` on class Meta for SessionCSRF to work');
+      throw new Exception('Must set `csrf_secret` on class Meta for SessionCSRF to work');
     }
     if (PHP_SESSION_ACTIVE !== session_status()) {
       throw new TypeError('Must must have an active session to use SessionCSRF');
@@ -112,10 +115,10 @@ class SessionCSRF extends CSRF
     if ($this->time_limit) {
       $now_formatted = $this->now()->format(str_replace('%', '', self::TIME_FORMAT));
       try {
-        if ((new \DateTime($now_formatted)) > (new \DateTime($expires))) {
+        if ((new DateTime($now_formatted)) > (new DateTime($expires))) {
           throw new ValidationError('CSRF token expired');
         }
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         // DateTime parsing failed - invalid token format
         if ($e instanceof ValidationError) {
           throw $e;
@@ -136,9 +139,9 @@ class SessionCSRF extends CSRF
   }
 
   /**
-   * @internal
+   * @return bool|DateInterval|int|string|null
+   *@internal
    *
-   * @return bool|\DateInterval|int|string|null
    */
   public function __get($name)
   {

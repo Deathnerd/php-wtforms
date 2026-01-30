@@ -9,10 +9,11 @@
 
 namespace WTForms\Test\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Simple\HiddenField;
 use WTForms\Form;
 
-class HiddenFieldTest extends \PHPUnit\Framework\TestCase
+class HiddenFieldTest extends TestCase
 {
   public function testHiddenField()
   {

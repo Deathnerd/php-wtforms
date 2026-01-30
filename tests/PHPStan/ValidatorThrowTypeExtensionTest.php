@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use WTForms\PHPStan\Extensions\ValidatorThrowTypeExtension;
 use WTForms\Validators\Email;
 use WTForms\Validators\Length;
@@ -53,7 +54,7 @@ class ValidatorThrowTypeExtensionTest extends TestCase
   public function testIsValidatorClassReturnsFalseForNonValidatorClass(): void
   {
     $this->assertFalse(
-      $this->extension->isValidatorClass(\stdClass::class, false)
+      $this->extension->isValidatorClass(stdClass::class, false)
     );
   }
 

@@ -9,6 +9,8 @@
 
 namespace WTForms\Exceptions;
 
-class AssertionError extends \Exception
+use Exception;
+
+class AssertionError extends Exception
 {
 }

@@ -9,11 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
+use WTForms\Exceptions\StopValidation;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\InputRequired;
 
-class InputRequiredTest extends \PHPUnit\Framework\TestCase
+class InputRequiredTest extends TestCase
 {
   public $form;
 
@@ -25,7 +27,7 @@ class InputRequiredTest extends \PHPUnit\Framework\TestCase
   public function testInputRequired()
   {
     $this->expectExceptionMessage('This field is required.');
-    $this->expectException(\WTForms\Exceptions\StopValidation::class);
+    $this->expectException(StopValidation::class);
     $input_required = new InputRequired();
     $this->assertNull($input_required($this->form, new DummyField(['data' => 'foobar', 'raw_data' => ['foobar']])));
     $this->assertContains('required', $input_required->field_flags);
@@ -35,7 +37,7 @@ class InputRequiredTest extends \PHPUnit\Framework\TestCase
   public function testCustomMessage()
   {
     $this->expectExceptionMessage('foo');
-    $this->expectException(\WTForms\Exceptions\StopValidation::class);
+    $this->expectException(StopValidation::class);
     (new InputRequired('foo'))->__invoke($this->form, new DummyField(['data' => '', 'raw_data' => ['']]));
   }
 }

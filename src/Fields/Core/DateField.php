@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace WTForms\Fields\Core;
 
 use Carbon\Carbon;
+use DateTime;
+use Exception;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Options\DateTimeFieldOptions;
 
@@ -29,11 +31,11 @@ class DateField extends DateTimeField
       $date_str = implode(' ', $valuelist);
       try {
         $this->data = Carbon::createFromFormat($this->carbon_format, $date_str)->startOfDay();
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         $this->data = null;
         // Do not create a process error if this is an optional field
-        if (!empty($date_str) && !$this->flags->optional) {
-          throw new ValueError('Not a valid date value');
+        if(!$this->flags->optional) {
+          throw new ValueError(message: 'Not a valid date value', previous: $e);
         }
       }
     }
@@ -51,7 +53,7 @@ class DateField extends DateTimeField
 
       if ($this->data instanceof Carbon) {
         return $this->data->startOfDay()->format($this->carbon_format);
-      } elseif ($this->data instanceof \DateTime) {
+      } elseif ($this->data instanceof DateTime) {
         return Carbon::instance($this->data)->startOfDay()->format($this->carbon_format);
       }
 

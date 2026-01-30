@@ -2,6 +2,7 @@
 
 namespace WTForms\CSRF\Core;
 
+use ReflectionClass;
 use WTForms;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Simple\HiddenField;
@@ -39,7 +40,7 @@ class CSRFTokenField extends HiddenField
     if ($options['csrf_impl'] instanceof CSRF) {
       $this->csrf_impl = $options['csrf_impl'];
     } else {
-      $this->csrf_impl = (new \ReflectionClass($options['csrf_impl']))->newInstance();
+      $this->csrf_impl = (new ReflectionClass($options['csrf_impl']))->newInstance();
     }
     unset($options['csrf_impl']);
     parent::__construct($options);

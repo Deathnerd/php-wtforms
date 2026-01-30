@@ -5,21 +5,26 @@ declare(strict_types=1);
 namespace WTForms\Widgets\HTML5;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\Input;
 
 /**
  * Renders an input with type "number".
  *
- * @extends Input<int|float|null>
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
+ * @phpstan-type NumberInputOptions array{step?: string|int|null, min?: string|int|null, max?: string|int|null}
+ * @phpstan-type NumberInputDataType int|float|null
+ *
+ * @extends Input<NumberInputDataType>
  */
 class NumberInput extends Input
 {
-  public ?string $min;
-  public ?string $max;
-  public ?string $step;
+  public string|int|null $min = null;
+  public string|int|null $max = null;
+  public string|int|null $step = null;
 
   /**
-   * @param array{step?: string|null, min?: string|null, max?: string|null} $options
+   * @phpstan-param NumberInputOptions & FieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {

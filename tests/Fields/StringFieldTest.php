@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Common;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\StringField;
 use WTForms\Tests\SupportingClasses\FooMeta;
 use WTForms\Widgets\Core\TextInput;
 
-class StringFieldTest extends \PHPUnit\Framework\TestCase
+class StringFieldTest extends TestCase
 {
   public function testConstruct()
   {

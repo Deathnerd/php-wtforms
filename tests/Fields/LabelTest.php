@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\Label;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 
-class LabelTest extends \PHPUnit\Framework\TestCase
+class LabelTest extends TestCase
 {
   public function testDefaultLabelOptions()
   {

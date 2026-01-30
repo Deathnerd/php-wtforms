@@ -9,9 +9,10 @@
 
 namespace WTForms\Tests\Widgets;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Widgets\Core\Select;
 
-class SelectTest extends \PHPUnit\Framework\TestCase
+class SelectTest extends TestCase
 {
   public $field;
 

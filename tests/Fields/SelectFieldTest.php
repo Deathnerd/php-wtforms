@@ -9,6 +9,8 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
+use WTForms\Exceptions\NotImplemented;
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\_Option;
@@ -26,7 +28,7 @@ class SelectFieldBaseTestClass extends SelectFieldBase
   }
 }
 
-class SelectFieldTest extends \PHPUnit\Framework\TestCase
+class SelectFieldTest extends TestCase
 {
   /**
    * @var Form
@@ -130,7 +132,7 @@ class SelectFieldTest extends \PHPUnit\Framework\TestCase
 
   public function testSelectFieldBase()
   {
-    $this->expectException(\WTForms\Exceptions\NotImplemented::class);
+    $this->expectException(NotImplemented::class);
     $field = new SelectFieldBaseTestClass();
     $this->assertEmpty($field->value);
     $field->getChoices();

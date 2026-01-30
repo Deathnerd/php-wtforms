@@ -9,6 +9,8 @@
 
 namespace WTForms\Exceptions;
 
-class ValueError extends \Exception
+use Exception;
+
+class ValueError extends Exception
 {
 }

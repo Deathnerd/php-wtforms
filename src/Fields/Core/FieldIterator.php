@@ -13,7 +13,7 @@ namespace WTForms\Fields\Core;
  * Class FieldIterator.
  *
  * @property array $entries
- *
+ * @template TData
  * @codeCoverageIgnore
  */
 trait FieldIterator
@@ -23,17 +23,17 @@ trait FieldIterator
    *
    * @see  http://php.net/manual/en/iterator.current.php
    *
-   * @return Field can return any type
+   * @return Field<TData>|false can return any type
    *
    * @since 5.0.0
    */
-  public function current()
+  public function current(): Field|false
   {
     return current($this->entries);
   }
 
   /**
-   * Move forward to next element.
+   * Move forward to the next element.
    *
    * @see  http://php.net/manual/en/iterator.next.php
    *
@@ -41,7 +41,7 @@ trait FieldIterator
    *
    * @since 5.0.0
    */
-  public function next()
+  public function next(): void
   {
     next($this->entries);
   }
@@ -51,21 +51,21 @@ trait FieldIterator
    *
    * @see  http://php.net/manual/en/iterator.key.php
    *
-   * @return mixed scalar on success, or null on failure
+   * @return int|string|null scalar on success, or null on failure
    *
    * @since 5.0.0
    */
-  public function key()
+  public function key(): int|string|null
   {
     return key($this->entries);
   }
 
   /**
-   * Checks if current position is valid.
+   * Checks if the current position is valid.
    *
    * @see  http://php.net/manual/en/iterator.valid.php
    *
-   * @return bool The return value will be casted to boolean and then evaluated.
+   * @return bool The return value will be cast to boolean and then evaluated.
    *              Returns true on success or false on failure.
    *
    * @since 5.0.0
@@ -84,7 +84,7 @@ trait FieldIterator
    *
    * @since 5.0.0
    */
-  public function rewind()
+  public function rewind(): void
   {
     reset($this->entries);
   }

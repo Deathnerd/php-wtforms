@@ -10,8 +10,11 @@
 namespace WTForms\Tests\CSRF;
 
 use Carbon\Carbon;
+use Exception;
+use PHPUnit\Framework\TestCase;
 use WTForms\CSRF\Session\SessionCSRF;
 use WTForms\DefaultMeta;
+use WTForms\Exceptions\TypeError;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 
@@ -66,7 +69,7 @@ class FF extends Form
 
 class NTLMeta extends DefaultMeta
 {
-  public ?string $csrf_time_limit = null;
+  public ?int $csrf_time_limit = null;
   public bool $csrf = true;
   public ?string $csrf_secret = 'foobar';
 }
@@ -94,11 +97,11 @@ class Pinned extends FF
   }
 }
 
-class SessionCSRFTest extends \PHPUnit\Framework\TestCase
+class SessionCSRFTest extends TestCase
 {
   public function testVariousFailures1()
   {
-    $this->expectException(\WTForms\Exceptions\TypeError::class);
+    $this->expectException(TypeError::class);
     // Session must be active first before we can destroy it
     session_destroy();
     new FF();
@@ -107,7 +110,7 @@ class SessionCSRFTest extends \PHPUnit\Framework\TestCase
   public function testVariousFailures2()
   {
     $this->expectExceptionMessage('Must set `csrf_secret` on class Meta for SessionCSRF to work');
-    $this->expectException(\Exception::class);
+    $this->expectException(Exception::class);
     new FF(['meta' => ['csrf_secret' => null]]);
   }
 

@@ -9,9 +9,11 @@
 
 namespace WTForms\Exceptions;
 
+use Exception;
+
 /**
  * Raised when a validator fails to validate its input.
  */
-class ValidationError extends \Exception
+class ValidationError extends Exception
 {
 }

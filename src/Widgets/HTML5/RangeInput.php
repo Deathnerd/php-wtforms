@@ -5,19 +5,23 @@ declare(strict_types=1);
 namespace WTForms\Widgets\HTML5;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\Input;
 
 /**
  * Renders an input with the type "range".
  *
- * @extends Input<int|float|null>
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
+ * @phpstan-type RangeInputOptions array{step?: string|int|null}
+ * @phpstan-type RangeInputDataType int|float|null
+ * @extends Input<RangeInputDataType>
  */
 class RangeInput extends Input
 {
-  public ?string $step;
+  public string|int|null $step;
 
   /**
-   * @param array{step?: string|null} $options
+   * @phpstan-param RangeInputOptions & FieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {

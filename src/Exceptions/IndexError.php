@@ -9,6 +9,8 @@
 
 namespace WTForms\Exceptions;
 
-class IndexError extends \Exception
+use Exception;
+
+class IndexError extends Exception
 {
 }

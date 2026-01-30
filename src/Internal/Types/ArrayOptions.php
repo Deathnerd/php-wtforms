@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace WTForms\Internal\Types;
 
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use ReflectionClass;
+use ReflectionProperty;
+use Traversable;
+use WTForms\Exceptions\ValidationError;
+
 /**
  * Base class for type-safe options that can be used interchangeably with arrays.
  *
@@ -12,12 +21,12 @@ namespace WTForms\Internal\Types;
  *
  * @template TShape of array<string, mixed>
  *
- * @implements \ArrayAccess<key-of<TShape>, value-of<TShape>>
- * @implements \IteratorAggregate<key-of<TShape>, value-of<TShape>>
+ * @implements ArrayAccess<key-of<TShape>, value-of<TShape>>
+ * @implements IteratorAggregate<key-of<TShape>, value-of<TShape>>
  *
  * @phpstan-consistent-constructor
  */
-abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggregate
+abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
 {
   /**
    * Internal array storage.
@@ -59,8 +68,27 @@ abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggreg
   }
 
   /**
+   * Hydrate an object from the internal data array. To provide custom hydration, override this method.
+   * To provide validation only, override {@link validate}
+   * @template TObject of object
+   * @param TObject $obj
+   * @return TObject
+   * @throws ValidationError if validation failed
+   */
+  abstract function hydrateObject(object $obj): object;
+
+  /**
+   * Runs custom validation logic. Throws {@link ValidationError} if invalid.
+   * @throws ValidationError if validation failed
+   */
+  public function validate(): void {
+    // Default behavior is everything is valid
+  }
+
+  /**
    * Sync a property value back to the internal array.
    * Call this after modifying a property directly.
+   * @noinspection PhpUnused
    */
   protected function syncToArray(string $property): void
   {
@@ -77,8 +105,8 @@ abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggreg
   public function toArray(): array
   {
     // Sync all public properties to array before returning
-    $reflection = new \ReflectionClass($this);
-    foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
+    $reflection = new ReflectionClass($this);
+    foreach ($reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $prop) {
       $name = $prop->getName();
       if ('data' !== $name) {
         $this->data[$name] = $this->$name;
@@ -95,7 +123,7 @@ abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggreg
    *
    * @return static
    */
-  public static function from($options)
+  public static function from(array|ArrayOptions $options): static
   {
     if ($options instanceof static) {
       return $options;
@@ -116,10 +144,7 @@ abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggreg
     return array_key_exists($offset, $this->data) || property_exists($this, $offset);
   }
 
-  /**
-   * @param string $offset
-   */
-  public function offsetGet($offset)
+  public function offsetGet($offset): mixed
   {
     // Prefer property value if it exists (it may have been modified directly)
     if (property_exists($this, $offset) && 'data' !== $offset) {
@@ -164,12 +189,12 @@ abstract class ArrayOptions implements \ArrayAccess, \Countable, \IteratorAggreg
   // IteratorAggregate implementation
   // -------------------------------------------------------------------------
 
-  public function getIterator(): \Traversable
+  public function getIterator(): Traversable
   {
     // Sync properties before iterating
     $this->toArray();
 
-    return new \ArrayIterator($this->data);
+    return new ArrayIterator($this->data);
   }
 
   // -------------------------------------------------------------------------

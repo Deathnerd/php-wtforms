@@ -9,10 +9,12 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
+use stdClass;
 use WTForms\Fields\Core\BooleanField;
 use WTForms\Form;
 
-class BooleanFieldTest extends \PHPUnit\Framework\TestCase
+class BooleanFieldTest extends TestCase
 {
   /**
    * @var Form
@@ -65,7 +67,7 @@ class BooleanFieldTest extends \PHPUnit\Framework\TestCase
 
   public function testWithObjectAndPostData()
   {
-    $obj = new \stdClass();
+    $obj = new stdClass();
     $obj->bool1 = null;
     $obj->bool2 = true;
     $this->form->process(['formdata' => ['bool1' => ['y']], 'obj' => $obj]);

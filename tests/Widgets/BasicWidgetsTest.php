@@ -9,6 +9,7 @@
 
 namespace WTForms\Tests\Widgets;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\Label;
 use WTForms\Widgets\Core\CheckboxInput;
@@ -50,7 +51,7 @@ class DummyField extends Field
   }
 }
 
-class BasicWidgetsTest extends \PHPUnit\Framework\TestCase
+class BasicWidgetsTest extends TestCase
 {
   private DummyField $field;
 

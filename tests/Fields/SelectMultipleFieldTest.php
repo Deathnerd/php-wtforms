@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\SelectMultipleField;
 use WTForms\Form;
 
-class SelectMultipleFieldTest extends \PHPUnit\Framework\TestCase
+class SelectMultipleFieldTest extends TestCase
 {
   /**
    * @var Form

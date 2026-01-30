@@ -22,21 +22,24 @@
   "autoload-dev": {
     "psr-4": {
       "WTForms\\Tests\\": "tests/",
-      "WTForms\\PHPStan\\": "phpstan/"
+      "WTForms\\PHPStan\\": "phpstan/",
+      "commands\\": "commands/"
     }
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.5",
     "nesbot/carbon": "^2.0 || ^3.0",
     "gettext/gettext": "^5.7",
     "gettext/translator": "^1.2",
     "ext-openssl": "*"
   },
   "require-dev": {
+    "ext-json": "*",
     "phpunit/phpunit": "^9.0",
     "rector/rector": "^2.3",
     "phpstan/phpstan": "^2.1",
-    "friendsofphp/php-cs-fixer": "^3.93"
+    "friendsofphp/php-cs-fixer": "^3.93",
+    "symfony/console": "^5.4"
   },
   "scripts": {
     "format:check": "php-cs-fixer fix --dry-run --diff",

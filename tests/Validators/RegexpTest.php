@@ -9,11 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\Regexp;
 
-class RegexpTest extends \PHPUnit\Framework\TestCase
+class RegexpTest extends TestCase
 {
   public $form;
 
@@ -33,21 +35,21 @@ class RegexpTest extends \PHPUnit\Framework\TestCase
   public function testInvalidData()
   {
     $this->expectExceptionMessage('Invalid Input.');
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Regexp('', ['regex' => '/^a/']))->__invoke($this->form, new DummyField(['data' => 'foo']));
   }
 
   public function testNullData()
   {
     $this->expectExceptionMessage('Invalid Input.');
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Regexp('', ['regex' => '/^a/']))->__invoke($this->form, new DummyField(['data' => null]));
   }
 
   public function testCustomMessage()
   {
     $this->expectExceptionMessage('foo');
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Regexp('foo', ['regex' => '/^a/']))->__invoke($this->form, new DummyField(['data' => 'f']));
   }
 }

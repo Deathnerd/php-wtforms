@@ -1,7 +1,7 @@
 {
-  "name": "php-wtforms Multi-PHP",
+  "name": "php-wtforms",
   "dockerComposeFile": "docker-compose.yml",
-  "service": "php74",
+  "service": "php",
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {

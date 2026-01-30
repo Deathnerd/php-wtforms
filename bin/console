@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+$app = new Application('php-wtforms tooling', '0.1.0');
+
+// Register commands
+$app->add(new \commands\DumpPhpstanTypeCommand());
+
+$app->run();

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 /**
  * Created by PhpStorm.
@@ -9,6 +9,10 @@
 
 namespace WTForms\Fields\Core;
 
+use AllowDynamicProperties;
+use BadMethodCallException;
+use Closure;
+use Iterator;
 use WTForms\DefaultMeta;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValidationError;
@@ -30,10 +34,12 @@ use WTForms\Widgets\Core\Widget;
  * @property TData              $data
  * @property string|null        $value
  * @property array<int, string> $errors
+ * @uses FieldIterator<TData>
  *
  * @method string label(array $options = [])
  */
-class Field implements \Iterator
+#[AllowDynamicProperties]
+class Field implements Iterator
 {
   use FieldIterator;
 
@@ -56,10 +62,8 @@ class Field implements \Iterator
 
   /**
    * The widget for rendering this field.
-   *
-   * @var Widget|object|null
    */
-  public $widget;
+  public Widget|null $widget = null;
 
   /**
    * @var array<int, mixed>
@@ -101,11 +105,7 @@ class Field implements \Iterator
   public string $name = '';
 
   public Flags $flags;
-
-  /**
-   * @var Label|string
-   */
-  public $label;
+  public Label|string|null $label = null;
 
   /**
    * @var array<string, mixed>
@@ -124,10 +124,15 @@ class Field implements \Iterator
   /**
    * Field constructor.
    *
-   * @phpstan-param FieldOptionsArray $options
+   * @phpstan-param FieldOptionsArray|FieldOptions $options
    */
-  public function __construct(array $options = [])
+  public function __construct(array|FieldOptions $options = [])
   {
+    if ($options instanceof FieldOptions) {
+      $this->constructFromOptions($options);
+      return;
+    }
+
     if (array_key_exists('form', $options)) {
       $this->form = $options['form'];
       unset($options['form']);
@@ -225,22 +230,107 @@ class Field implements \Iterator
     }
   }
 
+  /**
+   * Construct the field from a typed FieldOptions object, bypassing
+   * the array-based construction path.
+   */
+  protected function constructFromOptions(FieldOptions $options): void
+  {
+    $this->constructor_options = $options->toArray();
+
+    // Resolve form
+    $this->form = $options->form ?? $this->resolveParentForm();
+
+    // Resolve meta: prefer form's meta, then options, then default
+    if ($this->form?->meta instanceof DefaultMeta) {
+      $this->meta = $this->form->meta;
+    } elseif ($options->meta !== null) {
+      $this->meta = $options->meta;
+    } else {
+      $this->meta = new DefaultMeta();
+    }
+
+    // Merge render keywords: attributes + render_kw + class
+    $this->render_kw = array_merge($this->render_kw, $options->attributes, $options->render_kw);
+    if ($options->class) {
+      $this->render_kw['class'] = $options->class;
+    }
+
+    // Simple property assignments
+    $this->default = $options->default;
+    $this->description = $options->description;
+    $this->filters = $options->filters;
+    $this->validators = $options->validators;
+    $this->flags = new Flags();
+
+    // Resolve prefix and name
+    $prefix = $options->prefix ?: ($this->form?->prefix ?? '');
+    $this->name = $prefix . ($options->name ?? '');
+    $this->short_name = $options->name ?? '';
+    $this->id = $options->id ?? $this->name;
+    $this->type = get_class();
+
+    // Label as string — promoted to Label by Form::__set or postHydrate
+    $this->label = $options->label ?? ucwords(str_replace('_', ' ', $this->short_name));
+
+    // Widget
+    if ($options->widget) {
+      $this->widget = $options->widget;
+    }
+
+    // Collect field flags from validators and widget
+    $this->collectFieldFlags();
+
+    // Let subclasses run post-construction derived state
+    $this->postHydrate();
+  }
+
+  /**
+   * Collect field_flags from validators and widget, setting them on $this->flags.
+   */
+  protected function collectFieldFlags(): void
+  {
+    $sources = $this->validators;
+    if ($this->widget instanceof Widget) {
+      $sources[] = $this->widget;
+    }
+    foreach ($sources as $source) {
+      if (is_object($source) && property_exists($source, 'field_flags') && $source->field_flags) {
+        foreach ($source->field_flags as $flag) {
+          $this->flags->set($flag);
+        }
+      }
+    }
+  }
+
+  /**
+   * Hook for subclasses to run post-construction logic after options
+   * have been applied. Use this for derived state like default widgets,
+   * label promotion, or computed properties.
+   *
+   * Called at the end of the FieldOptions-based construction path.
+   */
+  protected function postHydrate(): void
+  {
+    // Base implementation is a no-op.
+  }
+
   public function __clone()
   {
-    if ($this->default instanceof \Closure) {
+    if ($this->default instanceof Closure) {
       $this->default = $this->default->bindTo($this);
     }
   }
 
   public function __toString(): string
   {
-    return (string) $this->__invoke();
+    return $this->__invoke();
   }
 
   /**
    * Render this field as HTML, using keyword args as additional attributes.
    *
-   * This delegates rendering to {@link \WTForms\DefaultMeta::$render_field}
+   * This delegates rendering to {@link DefaultMeta}
    * whose default behavior is to call the field's widget, passing any
    * keyword arguments from this call to the widget.
    *
@@ -269,7 +359,7 @@ class Field implements \Iterator
       return $this->label->__invoke();
     }
 
-    throw new \BadMethodCallException("Method $name not found on form!");
+    throw new BadMethodCallException("Method $name not found on form!");
   }
 
   /**
@@ -280,10 +370,11 @@ class Field implements \Iterator
    * Subfields shouldn't override this, but rather override either
    * {@link pre_validate}, {@link post_validate}, or both, depending on needs.
    *
-   * @param Form        $form             the form the field belongs to
-   * @param Validator[] $extra_validators A sequence of extra validators to run
+   * @param Form               $form                the form the field belongs to
+   * @param callable|Validator ...$extra_validators A sequence of extra validators to run
+   * @noinspection PhpRedundantCatchClauseInspection Extended classes may throw in their own preValidate method
    */
-  public function validate(Form $form, array $extra_validators = []): bool
+  public function validate(Form $form, Validator|callable ...$extra_validators): bool
   {
     $this->errors = $this->process_errors;
     $stop_validation = false;
@@ -303,7 +394,6 @@ class Field implements \Iterator
 
     if (!$stop_validation) {
       $stop_validation = $this->runValidationChain($form, array_merge($this->validators, $extra_validators));
-      //                && $this->runValidationChain($form, $extra_validators);
     }
 
     // Call post_validate
@@ -381,8 +471,9 @@ class Field implements \Iterator
    *
    * @param array<string, mixed> $formdata
    * @param TData|null           $data
+   * @noinspection PhpRedundantCatchClauseInspection Extended classes may throw in their own processData or processFormData methods
    */
-  public function process(array $formdata, $data = null): void
+  public function process(array $formdata, mixed $data = null): void
   {
     $this->process_errors = [];
     if (null === $data) {
@@ -470,7 +561,11 @@ class Field implements \Iterator
   }
 
   /**
-   * @internal
+   * Magic getter method to retrieve specific properties.
+   *
+   * @param string $name The name of the property being accessed
+   *
+   * @return mixed The value of the requested property or null if the property does not exist
    */
   public function __get(string $name)
   {
@@ -487,6 +582,12 @@ class Field implements \Iterator
     return null;
   }
 
+  /**
+   * Resolves and returns the first parent instance of the Form class
+   * found in the debug backtrace.
+   *
+   * @return Form|null The parent Form instance if found, or null if none exists
+   */
   private function resolveParentForm(): ?Form
   {
     $backtrace = array_reverse(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4));

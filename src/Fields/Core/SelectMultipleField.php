@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
+use Generator;
 use WTForms\Exceptions\TypeError;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Options\SelectFieldOptions;
@@ -44,9 +45,9 @@ class SelectMultipleField extends SelectField
    * Provides data for choice widget rendering. Must return a sequence or
    * iterable of `[value,label,selected]` tuples.
    *
-   * @return \Generator<int, array{0: string|int, 1: string, 2: bool}>
+   * @return Generator<int, array{0: string|int, 1: string, 2: bool}>
    */
-  public function getChoices(): \Generator
+  public function getChoices(): Generator
   {
     foreach ($this->choices as list($value, $label)) {
       yield [$value, $label, null !== $this->data && in_array($value, $this->data)];

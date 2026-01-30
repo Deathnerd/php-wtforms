@@ -9,10 +9,11 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Simple\FileField;
 use WTForms\Form;
 
-class FileFieldTest extends \PHPUnit\Framework\TestCase
+class FileFieldTest extends TestCase
 {
   public function testFileField()
   {

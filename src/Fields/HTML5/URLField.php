@@ -15,11 +15,12 @@ use WTForms\Widgets\HTML5\URLInput;
 
 /**
  * Represents an ``<input type="url">``.
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  */
 class URLField extends StringField
 {
   /**
-   * @param FieldOptions::FieldOptionsArray $options
+   * @phpstan-param FieldOptionsArray $options
    *
    * @phpstan-param array<string, mixed> $options
    */

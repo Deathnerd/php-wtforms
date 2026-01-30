@@ -9,9 +9,10 @@
 
 namespace WTForms\Tests\Widgets;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Widgets\Core\TableWidget;
 
-class TableWidgetTest extends \PHPUnit\Framework\TestCase
+class TableWidgetTest extends TestCase
 {
   public function testBasic()
   {

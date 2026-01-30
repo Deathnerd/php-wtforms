@@ -16,16 +16,17 @@ use WTForms\Widgets\Core\TextInput;
 /**
  * A text field, except all input is coerced to a float.
  *
- * @extends Field<float|null>
+ * @phpstan-type FloatFieldDataType float|null
+ * @extends Field<FloatFieldDataType>
  *
- * @property float|null $data
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
  */
 class FloatField extends Field
 {
   /**
    * FloatField constructor.
    *
-   * @param FieldOptions::FieldOptionsArray $options
+   * @phpstan-param FieldOptionsArray $options
    *
    * @phpstan-param array<string, mixed> $options
    */

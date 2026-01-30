@@ -9,12 +9,14 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\EqualTo;
 
-class EqualToTest extends \PHPUnit\Framework\TestCase
+class EqualToTest extends TestCase
 {
   public $form;
 
@@ -38,7 +40,7 @@ class EqualToTest extends \PHPUnit\Framework\TestCase
   public function testNoFieldnameSupplied()
   {
     $this->expectExceptionMessage('EqualTo requires fieldname!');
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(RuntimeException::class);
     new EqualTo('', []);
   }
 

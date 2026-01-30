@@ -18,10 +18,11 @@ use WTForms\Widgets\Core\CheckboxInput;
  * ``checked`` into the html-element and sets the ``data`` to ``true``.
  *
  * @phpstan-import-type FieldOptionsArray from FieldOptions
+ * @phpstan-type BooleanFieldDataType bool
  *
  * @phpstan-type BooleanFieldOptionsArray array{false_values?: array<int, string>} & FieldOptionsArray
  *
- * @extends Field<bool>
+ * @extends Field<BooleanFieldDataType>
  */
 class BooleanField extends Field
 {
@@ -55,7 +56,7 @@ class BooleanField extends Field
    * This will be called during form construction by the form's `options` or
    * `obj` argument.
    *
-   * @param string|array<mixed>|bool|null $value
+   * @param string|array|bool|null $value
    */
   public function processData($value): void
   {

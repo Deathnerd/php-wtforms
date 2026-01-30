@@ -9,6 +9,10 @@
 
 namespace WTForms\Tests\Common;
 
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use stdClass;
 use WTForms\DefaultMeta;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Core\Field;
@@ -64,7 +68,7 @@ class TestForm extends Form
   }
 }
 
-class FormTest extends \PHPUnit\Framework\TestCase
+class FormTest extends TestCase
 {
   public function testFormCreation()
   {
@@ -161,7 +165,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
   {
     $form = new TestForm();
     $form->process(['a' => 'foobar']);
-    $obj = new \stdClass();
+    $obj = new stdClass();
     $obj->a = 'baz';
     $obj = $form->populateObj($obj);
     $this->assertEquals('foobar', $obj->a);
@@ -180,7 +184,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
   {
     $form = new TestForm();
     $form->process(['a' => 'foobar']);
-    $obj = new \stdClass();
+    $obj = new stdClass();
     $obj->a = 'baz';
     $arr = ['a' => 'baz'];
     $this->assertEquals('foobar', $form->populate($obj)->a);
@@ -214,7 +218,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
   public function testInvalidPopulateArgument()
   {
     $this->expectExceptionMessage('Form::populate accepts only an array or an object as input; string given.');
-    $this->expectException(\InvalidArgumentException::class);
+    $this->expectException(InvalidArgumentException::class);
     (new TestForm())->populate('foo');
   }
 
@@ -266,7 +270,7 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $this->assertFalse($result);
 
     // Use reflection to access protected $_errors
-    $reflection = new \ReflectionClass($form);
+    $reflection = new ReflectionClass($form);
     $errorsProp = $reflection->getProperty('_errors');
     $errorsProp->setAccessible(true);
     $internalErrors = $errorsProp->getValue($form);
@@ -302,9 +306,9 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $form = new TestForm();
     $form->process(['a' => 'hello']);
 
-    $obj = $form->populateTo(\stdClass::class);
+    $obj = $form->populateTo(stdClass::class);
 
-    $this->assertInstanceOf(\stdClass::class, $obj);
+    $this->assertInstanceOf(stdClass::class, $obj);
     $this->assertEquals('hello', $obj->a);
   }
 
@@ -343,8 +347,8 @@ class FormTest extends \PHPUnit\Framework\TestCase
     $this->assertInstanceOf(UserDTO::class, $dto);
 
     // Create another DTO type
-    $stdObj = $form->populateTo(\stdClass::class);
-    $this->assertInstanceOf(\stdClass::class, $stdObj);
+    $stdObj = $form->populateTo(stdClass::class);
+    $this->assertInstanceOf(stdClass::class, $stdObj);
     $this->assertNotInstanceOf(UserDTO::class, $stdObj);
   }
 }

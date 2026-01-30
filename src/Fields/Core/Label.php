@@ -31,7 +31,7 @@ class Label
 
   public function __toString(): string
   {
-    return (string) $this->__invoke();
+    return $this->__invoke();
   }
 
   /**

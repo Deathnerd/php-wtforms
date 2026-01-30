@@ -10,10 +10,12 @@
 namespace WTForms\Tests\Fields;
 
 use Carbon\Carbon;
+use DateTime;
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\DateTimeField;
 use WTForms\Form;
 
-class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
+class DateTimeFieldTest extends TestCase
 {
   /**
    * @var Form
@@ -61,7 +63,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
   public function testDateTimeDataValueGet()
   {
     $this->form->a = new DateTimeField();
-    $this->form->a->data = new \DateTime('2011-5-7 3:23:14');
+    $this->form->a->data = new DateTime('2011-5-7 3:23:14');
     $this->assertEquals('2011-05-07 03:23:14', $this->form->a->value);
   }
 }

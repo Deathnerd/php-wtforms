@@ -9,6 +9,7 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
@@ -32,7 +33,7 @@ class ProcessMethodsField extends Field
   }
 }
 
-class ProcessMethodsTest extends \PHPUnit\Framework\TestCase
+class ProcessMethodsTest extends TestCase
 {
   private function initField($value)
   {

@@ -9,6 +9,8 @@
 
 namespace WTForms\Exceptions;
 
-class NotImplemented extends \Exception
+use Exception;
+
+class NotImplemented extends Exception
 {
 }

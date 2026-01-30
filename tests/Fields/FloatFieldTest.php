@@ -9,10 +9,11 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\FloatField;
 use WTForms\Form;
 
-class FloatFieldTest extends \PHPUnit\Framework\TestCase
+class FloatFieldTest extends TestCase
 {
   /**
    * @var Form

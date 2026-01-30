@@ -9,9 +9,10 @@
 
 namespace WTForms\Tests\Widgets;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Widgets\HTML5;
 
-class HTML5Test extends \PHPUnit\Framework\TestCase
+class HTML5Test extends TestCase
 {
   public $field;
 

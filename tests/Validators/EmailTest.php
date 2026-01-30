@@ -9,11 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\Email;
 
-class EmailTest extends \PHPUnit\Framework\TestCase
+class EmailTest extends TestCase
 {
   public $form;
 
@@ -33,55 +35,55 @@ class EmailTest extends \PHPUnit\Framework\TestCase
 
   public function testNull()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => null]));
   }
 
   public function testNullString()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => '']));
   }
 
   public function testWhitespaceString()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => '  ']));
   }
 
   public function testFoo()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => 'foo']));
   }
 
   public function testJustSuffix()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => 'bar.dk']));
   }
 
   public function testFooAt()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => 'foo@']));
   }
 
   public function testAtSuffix()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => '@bar.dk']));
   }
 
   public function testFooAtBar()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => 'foo@bar']));
   }
 
   public function testFooAtDotBarDotAb()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     (new Email())->__invoke($this->form, new DummyField(['data' => 'foo@.bar.ab']));
   }
 }

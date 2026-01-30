@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Simple\PasswordField;
 use WTForms\Form;
 use WTForms\Widgets\Core\PasswordInput;
 
-class PasswordFieldTest extends \PHPUnit\Framework\TestCase
+class PasswordFieldTest extends TestCase
 {
   public function testPasswordField()
   {

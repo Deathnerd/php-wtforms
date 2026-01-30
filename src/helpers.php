@@ -117,7 +117,7 @@ if (!function_exists('html_params')) {
     foreach ($options as $key => $value) {
       if (in_array($key, ['class_', 'class__', 'for_'])) {
         $key = str_replace('_', '', $key);
-      } elseif (starts_with($key, 'data_')) {
+      } elseif (str_starts_with($key, 'data_')) {
         $key = preg_replace('/_/', '-', $key);
       }
       if (true === $value) {
@@ -133,55 +133,6 @@ if (!function_exists('html_params')) {
     }
 
     return implode(' ', $params);
-  }
-}
-
-if (!function_exists('str_contains')) {
-  /**
-   * Convenience method for determining if a needle string is in a haystack string.
-   *
-   * @param string      $haystack The string to search in
-   * @param string|null $needle   The string to search for
-   */
-  function str_contains(string $haystack, ?string $needle): bool
-  {
-    if (null === $needle || '' === $needle) {
-      return false;
-    }
-
-    return false !== strpos($haystack, $needle);
-  }
-}
-
-if (!function_exists('starts_with')) {
-  /**
-   * Convenience method for determining if a string starts with another string
-   * or collection of strings.
-   *
-   * @param string          $haystack The string to search in
-   * @param string|string[] $needle   The string(s) to search for in the haystack
-   *
-   * @codeCoverageIgnore
-   *
-   * @return bool
-   */
-  function starts_with(string $haystack, $needle): bool
-  {
-    if ('' === $needle) {
-      return false;
-    }
-
-    if (is_array($needle)) {
-      foreach ($needle as $n) {
-        if (starts_with($haystack, $n)) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    return 0 === strpos($haystack, $needle);
   }
 }
 

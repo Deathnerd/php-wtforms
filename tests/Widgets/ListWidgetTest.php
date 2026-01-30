@@ -9,9 +9,10 @@
 
 namespace WTForms\Tests\Widgets;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Widgets\Core\ListWidget;
 
-class ListWidgetTest extends \PHPUnit\Framework\TestCase
+class ListWidgetTest extends TestCase
 {
   public function testBasic()
   {

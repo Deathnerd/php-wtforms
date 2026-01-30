@@ -9,6 +9,7 @@
 
 namespace fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\StringField;
@@ -21,7 +22,7 @@ class PrePostTestField extends StringField
   {
     if ('stoponly' == $this->data) {
       throw new StopValidation();
-    } elseif (starts_with($this->data, 'stop')) {
+    } elseif (str_starts_with($this->data, 'stop')) {
       throw new StopValidation('stop with message');
     } elseif (!is_string($this->data)) {
       throw new ValueError("$this->data is not a string!");
@@ -38,7 +39,7 @@ class PrePostTestField extends StringField
   }
 }
 
-class PrePostValidationTest extends \PHPUnit\Framework\TestCase
+class PrePostValidationTest extends TestCase
 {
   public function testPreStop()
   {

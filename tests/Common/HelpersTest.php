@@ -9,7 +9,9 @@
 
 namespace WTForms\Tests\Common;
 
-class HelpersTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class HelpersTest extends TestCase
 {
   public function testHtmlParams()
   {
@@ -29,24 +31,6 @@ class HelpersTest extends \PHPUnit\Framework\TestCase
     $this->assertStringContainsString('class="fa fa-envelope"', $actual);
     $this->assertStringContainsString('for="another_id"', $actual);
     $this->assertStringContainsString('data-foo-bar', $actual);
-  }
-
-  public function testStartsWith()
-  {
-    $this->assertTrue(starts_with('_foobar', '_foo'));
-    $this->assertFalse(starts_with('_foobar', '_baz'));
-    $this->assertFalse(starts_with('_foobar', 'bar'));
-    $this->assertFalse(starts_with('blah', null));
-    $this->assertFalse(starts_with('blah', ''));
-  }
-
-  public function testStrContains()
-  {
-    $this->assertTrue(str_contains('_foobar', 'oba'));
-    $this->assertFalse(str_contains('_foobar', 'periwinkle'));
-    // Note: null is coerced to empty string by symfony/polyfill-php80
-    // and empty string is always "contained" in any string
-    $this->assertTrue(str_contains('_foobar', null));
   }
 
   public function testVsprintfNamed()

@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
+use ArrayAccess;
 use WTForms\Exceptions\TypeError;
+use WTForms\Fields\Options\FieldOptions;
 use WTForms\Form;
+use WTForms\Validators\Validator;
 use WTForms\Widgets\Core\TableWidget;
 
 /**
  * Encapsulate a form as a field into another form.
  *
- * @extends Field<array<string, mixed>>
+ * @phpstan-import-type FieldOptionsArray from FieldOptions
+ * @phpstan-type FormFieldOptionsArray array{ form_class?: class-string<Form> }
+ * @phpstan-type FormFieldDataType array<string,mixed>
+ * @extends Field<FormFieldDataType>
  */
-class FormField extends Field implements \ArrayAccess
+class FormField extends Field implements ArrayAccess
 {
   /**
    * Separator between form prefix and field name.
@@ -22,18 +28,13 @@ class FormField extends Field implements \ArrayAccess
 
   /**
    * The class name of the form to embed, or an instance of the form.
-   *
-   * @var class-string<Form>|Form
    */
-  public $form_class;
+  public Form|string $form_class;
+
+  private bool $usedDefault = false;
 
   /**
-   * @var object|null
-   */
-  private $obj;
-
-  /**
-   * @param array<string, mixed> $options
+   * @phpstan-param FormFieldOptionsArray & FieldOptionsArray $options
    *
    * @throws TypeError
    */
@@ -56,15 +57,13 @@ class FormField extends Field implements \ArrayAccess
       $this->separator = $options['separator'];
       unset($options['separator']);
     }
-    $this->obj = null;
-
     $options = array_merge(['widget' => new TableWidget()], $options);
     parent::__construct($options);
   }
 
   /**
-   * @param array<string, mixed>             $formdata
-   * @param object|array<string, mixed>|null $data
+   * @param FormFieldDataType             $formdata
+   * @param object|FormFieldDataType|null $data
    */
   public function process(array $formdata, $data = null): void
   {
@@ -74,7 +73,7 @@ class FormField extends Field implements \ArrayAccess
       } else {
         $data = $this->default;
       }
-      $this->obj = $data;
+      $this->usedDefault = true;
     }
 
     $this->object_data = $data;
@@ -100,11 +99,10 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
-   * @param array<int, \WTForms\Validators\Validator|callable> $extra_validators
-   *
+   * @inheritdoc
    * @throws TypeError
    */
-  public function validate(Form $form, array $extra_validators = []): bool
+  public function validate(Form $form, Validator|callable ...$extra_validators): bool
   {
     if ($extra_validators) {
       throw new TypeError('FormField does not accept in-line validators, as it gets errors from the enclosed form.');
@@ -117,10 +115,10 @@ class FormField extends Field implements \ArrayAccess
   {
     $candidate = $obj->$name;
     if (is_null($candidate)) {
-      if (is_null($this->obj)) {
+      if (!$this->usedDefault) {
         throw new TypeError('populate_obj: cannot find a value to populate from the provided obj or input data/defaults');
       }
-      $candidate = $this->obj;
+      $candidate = $this->object_data;
       $obj->$name = $candidate;
     }
     $this->form->populateObj($candidate);
@@ -139,12 +137,12 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
-   * @return Field<mixed>|false
+   * @return Field<FormFieldDataType>|false
    *
    * @codeCoverageIgnore
    */
 
-  public function current()
+  public function current(): Field|false
   {
     return current($this->form->fields);
   }
@@ -158,12 +156,9 @@ class FormField extends Field implements \ArrayAccess
   }
 
   /**
-   * @return string|int|null
-   *
    * @codeCoverageIgnore
    */
-
-  public function key()
+  public function key() : int|string|null
   {
     return key($this->form->fields);
   }

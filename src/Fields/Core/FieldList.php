@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
+use ArrayAccess;
+use Countable;
+use stdClass;
 use WTForms\Exceptions\AssertionError;
 use WTForms\Exceptions\IndexError;
 use WTForms\Exceptions\TypeError;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Options\FieldListOptions;
 use WTForms\Form;
+use WTForms\Validators\Validator;
 use WTForms\Widgets\Core\ListWidget;
 
 /**
@@ -18,10 +23,11 @@ use WTForms\Widgets\Core\ListWidget;
  * >>> $authors = new FieldList(new StringField("name", [new DataRequired()]));
  *
  * @phpstan-import-type FieldListOptionsArray from FieldListOptions
+ * @phpstan-type FieldListDataType array<int, mixed>
  *
- * @extends Field<array<int, mixed>>
+ * @extends Field<FieldListDataType>
  */
-class FieldList extends Field implements \Countable, \ArrayAccess
+class FieldList extends Field implements Countable, ArrayAccess
 {
   /**
    * Minimum number of entries to display.
@@ -58,42 +64,24 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   /**
    * FieldList constructor.
    *
-   * @param FieldListOptionsArray $options
+   * @phpstan-param FieldListOptionsArray|FieldListOptions $options
    *
    * @throws TypeError
    */
-  public function __construct(array $options = ['inner_field' => null,
-    'max_entries'                                             => null,
-    'min_entries'                                             => 0])
+  public function __construct(array|FieldListOptions $options = new FieldListOptions())
   {
-    if (!array_key_exists('inner_field', $options) || is_null($options['inner_field'])) {
-      throw new TypeError('FieldList requires an inner_field declaration');
-    } elseif (!$options['inner_field'] instanceof Field) {
-      // @codeCoverageIgnoreStart
-      if (is_object($options['inner_field'])) {
-        $type = get_class($options['inner_field']);
-      } else {
-        $type = gettype($options['inner_field']);
-      }
-      // @codeCoverageIgnoreEnd
-      throw new TypeError(sprintf('FieldList requires an inner_field type subclassing Field; %s given', $type));
-    } else {
-      $this->inner_field = $options['inner_field'];
-      unset($options['inner_field']);
+    if (is_array($options)) {
+      $options = new FieldListOptions($options);
     }
-    if (array_key_exists('filters', $options)) {
-      throw new TypeError('FieldList does not accept any filters. Instead, define them on the enclosed field');
-    }
-    if (array_key_exists('min_entries', $options)) {
-      $this->min_entries = $options['min_entries'];
-      unset($options['min_entries']);
-    }
-    if (array_key_exists('max_entries', $options)) {
-      $this->max_entries = $options['max_entries'];
-      unset($options['max_entries']);
-    }
-    $options = array_merge(['widget' => new ListWidget()], $options);
+    $options->hydrateObject($this);
     parent::__construct($options);
+  }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new ListWidget();
+    }
   }
 
   /**
@@ -110,12 +98,13 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    *
    * @param array<string, mixed>   $formdata
    * @param array<int, mixed>|null $data
+   * @throws AssertionError
    */
   public function process(array $formdata, $data = null): void
   {
     // @codeCoverageIgnoreStart
     $this->entries = [];
-    if (is_null($data) || !$data) {
+    if (!$data) {
       if (is_callable($this->default)) {
         $data = ($this->default)();
       } else {
@@ -175,7 +164,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     $ret = [];
     // Array keys are in the form of "prefix-numeric_index-subfield_name"
     foreach (array_keys($formdata) as $k) {
-      if (false !== strpos($k, $prefix)) {
+      if (str_contains($k, $prefix)) {
         $k = explode('-', substr($k, $offset), 2)[0];
         if (is_numeric($k)) {
           $ret[] = $k;
@@ -189,14 +178,11 @@ class FieldList extends Field implements \Countable, \ArrayAccess
   /**
    * Processes an unbound field and inserts it as a field type in this field list.
    *
-   * @param array<string, mixed> $formdata
-   * @param int|string|null      $index
-   *
    * @return Field<mixed>
    *
    * @throws AssertionError
    */
-  private function addEntry(array $formdata = [], $data = null, $index = null): Field
+  private function addEntry(array $formdata = [], $data = null, int|string|null $index = null): Field
   {
     if (!(!$this->max_entries || count($this->entries) < $this->max_entries)) {
       throw new AssertionError('You cannot have more than max_entries entries in the FieldList');
@@ -205,7 +191,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
     if (null === $index) {
       $index = $this->last_index + 1;
     }
-    $this->last_index = (int) $index;
+    $this->last_index = (int)$index;
     $name = "$this->short_name-$index";
     $id = "$this->id-$index";
     // I feel so dirty... There's gotta be a better way - Deathnerd
@@ -224,6 +210,14 @@ class FieldList extends Field implements \Countable, \ArrayAccess
      * @var Field<mixed> $field
      */
     $field = new $this->inner_field($inner_field_options);
+    if (!$field->label instanceof Label) {
+      if (is_string($field->label) && $field->label !== '') {
+        $text = $field->label;
+      } else {
+        $text = ucwords(str_replace('_', ' ', $field->short_name));
+      }
+      $field->label = new Label($field->id, $text);
+    }
     $field->process($formdata, $data);
 
     $this->entries[] = $field;
@@ -238,6 +232,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * only receive object data.
    *
    * @return Field<mixed>
+   * @throws AssertionError
    */
   public function appendEntry($data = null): Field
   {
@@ -268,10 +263,9 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * Note that the FieldList differs from normal field validation in
    * that FieldList validates all its enclosed fields first before running any
    * of its own validators.
-   *
-   * @param array<int, \WTForms\Validators\Validator|callable> $extra_validators
+   * @inheritdoc
    */
-  public function validate(Form $form, array $extra_validators = []): bool
+  public function validate(Form $form, Validator|callable ...$extra_validators): bool
   {
     $this->errors = [];
 
@@ -301,7 +295,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
       /**
        * @var Field<mixed> $field
        */
-      $fake_obj = new \stdClass();
+      $fake_obj = new stdClass();
       $fake_obj->data = @$values[$i];
       $field->populateObj($fake_obj, 'data');
       $output[] = $fake_obj->data;
@@ -350,7 +344,7 @@ class FieldList extends Field implements \Countable, \ArrayAccess
    * @codeCoverageIgnore
    */
 
-  public function offsetGet($offset)
+  public function offsetGet($offset): ?Field
   {
     if (isset($this->entries[$offset])) {
       return $this->entries[$offset];

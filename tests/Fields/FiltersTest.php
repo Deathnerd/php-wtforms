@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 
-class FiltersTest extends \PHPUnit\Framework\TestCase
+class FiltersTest extends TestCase
 {
   /**
    * @var Form

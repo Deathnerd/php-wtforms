@@ -9,11 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\URL;
 
-class URLTest extends \PHPUnit\Framework\TestCase
+class URLTest extends TestCase
 {
   public $form;
   public $url;
@@ -38,7 +40,7 @@ class URLTest extends \PHPUnit\Framework\TestCase
   public function testNoProtocolAndCustomMessage()
   {
     $this->expectExceptionMessage('foo');
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     $this->url = new URL('foo');
     $this->url->__invoke($this->form, new DummyField(['data' => 'foobar.dk']));
   }

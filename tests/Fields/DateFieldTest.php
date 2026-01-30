@@ -10,12 +10,14 @@
 namespace WTForms\Tests\Fields;
 
 use Carbon\Carbon;
+use DateTime;
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\DateField;
 use WTForms\Fields\Core\DateTimeField;
 use WTForms\Form;
 use WTForms\Validators\Optional;
 
-class DateFieldTest extends \PHPUnit\Framework\TestCase
+class DateFieldTest extends TestCase
 {
   /**
    * @var Form
@@ -26,7 +28,7 @@ class DateFieldTest extends \PHPUnit\Framework\TestCase
   {
     $form = new Form();
 
-    $form->dfield = new DateField(['name' => 'dfield', 'default' => new \DateTime('12/12/2012')]);
+    $form->dfield = new DateField(['name' => 'dfield', 'default' => new DateTime('12/12/2012')]);
     $form->process([]);
     $this->assertEquals('%Y-%m-%d', $form->dfield->format);
     $this->assertTrue($form->dfield instanceof DateTimeField);

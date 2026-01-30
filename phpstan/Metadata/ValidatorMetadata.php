@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WTForms\PHPStan\Metadata;
 
+use Throwable;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Validators\AnyOf;
@@ -37,7 +38,7 @@ final class ValidatorMetadata
    * Validators that halt validation chain throw StopValidation.
    * Validators that report field errors throw ValidationError.
    *
-   * @var array<class-string, class-string<\Throwable>>
+   * @var array<class-string, class-string<Throwable>>
    */
   public const THROW_TYPES = [
     // Stop validators - halt the validation chain

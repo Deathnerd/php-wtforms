@@ -20,7 +20,7 @@ use WTForms\Fields\Core\Field;
  */
 class Input extends Widget
 {
-  public string $type;
+  public string $type = '';
 
   /**
    * @param string $type If passed, will add ``type="$input_type"`` to the

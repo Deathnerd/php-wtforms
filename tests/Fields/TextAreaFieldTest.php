@@ -9,10 +9,11 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Simple\TextAreaField;
 use WTForms\Form;
 
-class TextAreaFieldTest extends \PHPUnit\Framework\TestCase
+class TextAreaFieldTest extends TestCase
 {
   public function testTextAreaField()
   {

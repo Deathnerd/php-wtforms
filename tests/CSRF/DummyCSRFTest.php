@@ -9,14 +9,17 @@
 
 namespace WTForms\Tests\CSRF;
 
+use Error;
+use PHPUnit\Framework\TestCase;
 use WTForms\CSRF\Core\CSRF;
 use WTForms\DefaultMeta;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
+use WTForms\Tests\SupportingClasses\DummyCSRF;
 
 class FMeta extends DefaultMeta
 {
-  public ?string $csrf_class = \WTForms\Tests\SupportingClasses\DummyCSRF::class;
+  public ?string $csrf_class = DummyCSRF::class;
   public bool $csrf = true;
 }
 
@@ -33,12 +36,12 @@ class F extends Form
   }
 }
 
-class DummyCSRFTest extends \PHPUnit\Framework\TestCase
+class DummyCSRFTest extends TestCase
 {
   public function testBaseClass()
   {
     // CSRF is now abstract and cannot be instantiated
-    $this->expectException(\Error::class);
+    $this->expectException(Error::class);
     $this->expectExceptionMessage('Cannot instantiate abstract class');
     (new F(['meta' => ['csrf_class' => CSRF::class]]))->process([]);
   }

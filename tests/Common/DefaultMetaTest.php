@@ -9,6 +9,7 @@
 
 namespace WTForms\Tests\Common;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\DefaultMeta;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
@@ -46,7 +47,7 @@ class G extends Form
   }
 }
 
-class DefaultMetaTest extends \PHPUnit\Framework\TestCase
+class DefaultMetaTest extends TestCase
 {
   public function testBasic()
   {

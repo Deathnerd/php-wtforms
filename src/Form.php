@@ -9,8 +9,12 @@
 
 namespace WTForms;
 
+use ArrayAccess;
+use InvalidArgumentException;
+use Iterator;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\Label;
+use WTForms\Validators\Validator;
 
 /**
  * Declarative Form base class.
@@ -19,7 +23,7 @@ use WTForms\Fields\Core\Label;
  * @property array $errors
  * @phpstan-consistent-constructor
  */
-class Form implements \ArrayAccess, \Iterator {
+class Form implements ArrayAccess, Iterator {
   /**
    * Implements the Arrayable interface for the form.
    */
@@ -56,12 +60,12 @@ class Form implements \ArrayAccess, \Iterator {
    *
    * @var DefaultMeta|null
    */
-  public ?DefaultMeta $meta;
+  public ?DefaultMeta $meta = null;
 
   /**
    * The CSRF implementation for this form.
    *
-   * @var object
+   * @var CSRF\Session\SessionCSRF|object
    */
   public $csrf;
 
@@ -119,7 +123,7 @@ class Form implements \ArrayAccess, \Iterator {
     $this->_errors = [];
     $success = true;
     foreach ($this->fields as $name => $field) {
-      if (!$field->validate($this, $this->getExtraValidatorFor($name))) {
+      if (!$field->validate($this, ...$this->getExtraValidatorFor($name))) {
         $success = false;
       }
     }
@@ -134,12 +138,17 @@ class Form implements \ArrayAccess, \Iterator {
    *
    * @param $name string The name of the field to get an extra validator for
    *
-   * @return array The names of extra validators defined on this form to be called
+   * @return array<Validator|callable> The names of extra validators defined on this form to be called
    *               by the field when executing validation
    */
   private function getExtraValidatorFor(string $name): array
   {
-    return method_exists($this, "validate_$name") ? [[$this, "validate_$name"]] : [];
+    if (method_exists($this, "validate_$name")) {
+      return [
+          $this->{"validate_$name"}(...)
+      ];
+    }
+    return [];
   }
 
   /**
@@ -197,7 +206,13 @@ class Form implements \ArrayAccess, \Iterator {
       }
       $value->name = $value->prefix . $name;
       $value->id = $value->name;
-      if (!$value->label->text) {
+      if ($value->label instanceof Label) {
+        if (!$value->label->text) {
+          $value->label = new Label($value->id, ucwords(str_replace('_', ' ', $value->short_name)));
+        }
+      } elseif (is_string($value->label) && $value->label !== '') {
+        $value->label = new Label($value->id, $value->label);
+      } else {
         $value->label = new Label($value->id, ucwords(str_replace('_', ' ', $value->short_name)));
       }
       $this->fields[$name] = $value;
@@ -237,7 +252,7 @@ class Form implements \ArrayAccess, \Iterator {
    *
    * @return TArray|T The result of populating the object or array passed
    *
-   * @throws \InvalidArgumentException If something besides an object or an array were passed
+   * @throws InvalidArgumentException If something besides an object or an array were passed
    */
   public function populate($data)
   {
@@ -247,7 +262,7 @@ class Form implements \ArrayAccess, \Iterator {
     if (is_array($data)) {
       return $this->populateArray($data);
     }
-    throw new \InvalidArgumentException(sprintf('Form::populate accepts only an array or an object as input; %s given.', gettype($data)));
+    throw new InvalidArgumentException(sprintf('Form::populate accepts only an array or an object as input; %s given.', gettype($data)));
   }
 
   /**

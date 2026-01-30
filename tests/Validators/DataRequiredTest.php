@@ -9,12 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\DataRequired;
 
-class DataRequiredTest extends \PHPUnit\Framework\TestCase
+class DataRequiredTest extends TestCase
 {
   public $form;
   public $field;

@@ -9,11 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
+use WTForms\Exceptions\ValidationError;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\UUID;
 
-class UUIDTest extends \PHPUnit\Framework\TestCase
+class UUIDTest extends TestCase
 {
   public $form;
   public $uuid;
@@ -34,25 +36,25 @@ class UUIDTest extends \PHPUnit\Framework\TestCase
 
   public function testInvalid1()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     $this->uuid->__invoke($this->form, new DummyField(['data' => '2bc1c94f-deb-43e9-92a1-4775189ec9f8']));
   }
 
   public function testInvalid2()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     $this->uuid->__invoke($this->form, new DummyField(['data' => '2bc1c94f-0deb-43e9-92a1-4775189ec9f']));
   }
 
   public function testInvalid3()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     $this->uuid->__invoke($this->form, new DummyField(['data' => 'gbc1c94f-0deb-43e9-92a1-4775189ec9f8']));
   }
 
   public function testInvalid4()
   {
-    $this->expectException(\WTForms\Exceptions\ValidationError::class);
+    $this->expectException(ValidationError::class);
     $this->uuid->__invoke($this->form, new DummyField(['data' => '2bc1c94f 0deb-43e9-92a1-4775189ec9f8']));
   }
 }

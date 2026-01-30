@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\TypeError;
 use WTForms\Fields\Core\RadioField;
 use WTForms\Form;
 
-class RadioFieldTest extends \PHPUnit\Framework\TestCase
+class RadioFieldTest extends TestCase
 {
   /**
    * @var Form

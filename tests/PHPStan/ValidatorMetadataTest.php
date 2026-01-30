@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WTForms\Tests\PHPStan;
 
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Exceptions\ValidationError;
 use WTForms\PHPStan\Metadata\ValidatorMetadata;
@@ -115,7 +116,7 @@ class ValidatorMetadataTest extends TestCase
         "Exception class {$exceptionClass} does not exist"
       );
       $this->assertTrue(
-        is_subclass_of($exceptionClass, \Throwable::class),
+        is_subclass_of($exceptionClass, Throwable::class),
         "{$exceptionClass} is not Throwable"
       );
     }

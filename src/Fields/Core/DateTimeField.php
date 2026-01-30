@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace WTForms\Fields\Core;
 
 use Carbon\Carbon;
+use DateTime;
+use Exception;
 use WTForms\Exceptions\ValueError;
 use WTForms\Fields\Options\DateTimeFieldOptions;
 use WTForms\Widgets\Core\TextInput;
@@ -13,8 +15,8 @@ use WTForms\Widgets\Core\TextInput;
  * A text field which stores a `DateTime` matching a format.
  *
  * @phpstan-import-type DateTimeFieldOptionsArray from DateTimeFieldOptions
- *
- * @extends Field<\Carbon\Carbon|\DateTime|null>
+ * @phpstan-type DateTimeFieldDataType Carbon|DateTime|null
+ * @extends Field<DateTimeFieldDataType>
  */
 class DateTimeField extends Field
 {
@@ -29,7 +31,7 @@ class DateTimeField extends Field
   protected string $carbon_format = 'Y-m-d H:i:s';
 
   /**
-   * @param DateTimeFieldOptionsArray $options
+   * @phpstan-param DateTimeFieldOptionsArray $options
    */
   public function __construct(array $options = [])
   {
@@ -54,7 +56,7 @@ class DateTimeField extends Field
 
       if ($this->data instanceof Carbon) {
         return $this->data->format($this->carbon_format);
-      } elseif ($this->data instanceof \DateTime) {
+      } elseif ($this->data instanceof DateTime) {
         return Carbon::instance($this->data)->format($this->carbon_format);
       }
 
@@ -75,9 +77,9 @@ class DateTimeField extends Field
       $date_str = implode(' ', $valuelist);
       try {
         $this->data = Carbon::createFromFormat($this->carbon_format, $date_str);
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         $this->data = null;
-        throw new ValueError('Not a valid datetime value');
+        throw new ValueError(message: 'Not a valid datetime value', previous: $e);
       }
     }
   }

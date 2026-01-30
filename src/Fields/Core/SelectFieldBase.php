@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WTForms\Fields\Core;
 
+use Iterator;
 use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\Widget;
 
@@ -19,7 +20,7 @@ use WTForms\Widgets\Core\Widget;
  *
  * @property array<int, _Option> $options
  */
-abstract class SelectFieldBase extends Field implements \Iterator
+abstract class SelectFieldBase extends Field implements Iterator
 {
   /**
    * Widget used to render individual options.

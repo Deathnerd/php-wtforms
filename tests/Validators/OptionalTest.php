@@ -9,12 +9,13 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Form;
 use WTForms\Tests\SupportingClasses\DummyField;
 use WTForms\Validators\Optional;
 
-class OptionalTest extends \PHPUnit\Framework\TestCase
+class OptionalTest extends TestCase
 {
   public $form;
 

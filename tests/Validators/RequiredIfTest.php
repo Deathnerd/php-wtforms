@@ -9,11 +9,12 @@
 
 namespace WTForms\Tests\Validators;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\StringField;
 use WTForms\Form;
 use WTForms\Validators\RequiredIf;
 
-class RequiredIfTest extends \PHPUnit\Framework\TestCase
+class RequiredIfTest extends TestCase
 {
   /**
    * @var Form

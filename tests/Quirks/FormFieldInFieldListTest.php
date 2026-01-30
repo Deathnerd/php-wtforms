@@ -9,6 +9,7 @@
 
 namespace WTForms\Tests\Quirks;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\FieldList;
 use WTForms\Fields\Core\FormField;
 use WTForms\Fields\Core\StringField;
@@ -16,16 +17,13 @@ use WTForms\Form;
 use WTForms\Validators\AnyOf;
 use WTForms\Validators\InputRequired;
 
-class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
+class FormFieldInFieldListTest extends TestCase
 {
-  /**
-   * @var ParentForm
-   */
-  public $form;
+  public Form|ParentForm $form;
 
   protected function setUp(): void
   {
-    $this->form = ParentForm::create([]);
+    $this->form = ParentForm::create();
   }
 
   public function testIndexing()
@@ -64,20 +62,26 @@ class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
     $this->assertCount(5, $errors['foo']);
     $expected_errors = [];
     for ($i = 0; $i < 5; ++$i) {
-      $expected_errors[] = ['bar' => ['Bar needs a value!']];
+      $expected_errors[] = [
+        'bar' => ['Bar needs a value!']
+      ];
     }
     $this->assertEquals($expected_errors, $errors['foo']);
   }
 
   public function testValidateWithInvalidData()
   {
-    $form = ParentForm::create(['formdata' => [
-      'foo-0-bar' => 'blah',
-      'foo-1-bar' => 'boo',
-      'foo-2-bar' => 'foobar',
-      'foo-3-bar' => 'blah',
-      'foo-4-bar' => 'boo',
-    ]]);
+    $form = ParentForm::create(
+      [
+        'formdata' => [
+          'foo-0-bar' => 'blah',
+          'foo-1-bar' => 'boo',
+          'foo-2-bar' => 'foobar',
+          'foo-3-bar' => 'blah',
+          'foo-4-bar' => 'boo',
+        ]
+      ]
+    );
     $this->assertFalse($form->validate());
     $this->assertCount(1, $form->errors['foo']);
     $this->assertEquals('Invalid value, must be one of: blah, boo.', $form->errors['foo'][0]['bar'][0]);
@@ -85,26 +89,34 @@ class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
 
   public function testValidateWithValidData()
   {
-    $form = ParentForm::create(['formdata' => [
-      'foo-0-bar' => 'blah',
-      'foo-1-bar' => 'boo',
-      'foo-2-bar' => 'blah',
-      'foo-3-bar' => 'blah',
-      'foo-4-bar' => 'boo',
-    ]]);
+    $form = ParentForm::create(
+      [
+        'formdata' => [
+          'foo-0-bar' => 'blah',
+          'foo-1-bar' => 'boo',
+          'foo-2-bar' => 'blah',
+          'foo-3-bar' => 'blah',
+          'foo-4-bar' => 'boo',
+        ]
+      ]
+    );
     $this->assertTrue($form->validate());
     $this->assertEmpty($form->errors);
   }
 
   public function testPopulatedFromFormdata()
   {
-    $form = ParentForm::create(['formdata' => [
-      'foo-0-bar' => 'blah',
-      'foo-1-bar' => 'boo',
-      'foo-2-bar' => 'blah',
-      'foo-3-bar' => 'blah',
-      'foo-4-bar' => 'boo',
-    ]]);
+    $form = ParentForm::create(
+      [
+        'formdata' => [
+          'foo-0-bar' => 'blah',
+          'foo-1-bar' => 'boo',
+          'foo-2-bar' => 'blah',
+          'foo-3-bar' => 'blah',
+          'foo-4-bar' => 'boo',
+        ]
+      ]
+    );
     $this->assertEquals('blah', $form->foo[0]['bar']->data);
     $this->assertEquals('boo', $form->foo[1]['bar']->data);
     $this->assertEquals('blah', $form->foo[2]['bar']->data);
@@ -114,13 +126,19 @@ class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
 
   public function testPopulatedFromDataArray()
   {
-    $form = ParentForm::create(['data' => [
-      'foo' => [['bar' => 'blah'],
-        ['bar' => 'boo'],
-        ['bar' => 'blah'],
-        ['bar' => 'blah'],
-        ['bar' => 'boo'], ],
-    ]]);
+    $form = ParentForm::create(
+      [
+        'data' => [
+          'foo' => [
+            ['bar' => 'blah'],
+            ['bar' => 'boo'],
+            ['bar' => 'blah'],
+            ['bar' => 'blah'],
+            ['bar' => 'boo'],
+          ],
+        ]
+      ]
+    );
     $this->assertEquals('blah', $form->foo[0]['bar']->data);
     $this->assertEquals('boo', $form->foo[1]['bar']->data);
     $this->assertEquals('blah', $form->foo[2]['bar']->data);
@@ -130,12 +148,14 @@ class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
 
   public function testPopulatedFromObject()
   {
-    $obj = (object) [
-      'foo' => [['bar' => 'blah'],
+    $obj = (object)[
+      'foo' => [
+        ['bar' => 'blah'],
         ['bar' => 'boo'],
         ['bar' => 'blah'],
         ['bar' => 'blah'],
-        ['bar' => 'boo']],
+        ['bar' => 'boo']
+      ],
     ];
     $form = ParentForm::create(['obj' => $obj]);
     $this->assertEquals('blah', $form->foo[0]['bar']->data);
@@ -148,7 +168,7 @@ class FormFieldInFieldListTest extends \PHPUnit\Framework\TestCase
   /**
    * @return array<FormField>
    */
-  private function getSubFields()
+  private function getSubFields(): array
   {
     $subfields = [];
     foreach ($this->form->foo as $subfield) {
@@ -167,8 +187,12 @@ class ParentForm extends Form
   public function __construct(array $options = [])
   {
     parent::__construct($options);
-    $this->foo = new FieldList(['inner_field' => new FormField(['form_class' => new ChildForm()]),
-      'min_entries'                           => 5]);
+    $this->foo = new FieldList(
+      [
+        'inner_field' => new FormField(['form_class' => new ChildForm()]),
+        'min_entries' => 5,
+      ]
+    );
   }
 }
 
@@ -181,12 +205,19 @@ class ChildForm extends Form
   public function __construct(array $options = [])
   {
     parent::__construct($options);
-    $this->bar = new StringField(['default' => 'Bar',
-      'validators'                          => [
-        new InputRequired('Bar needs a value!'),
-        new AnyOf('', ['values' => ['blah', 'boo']]),
-      ],
-    ]);
+    $this->bar = new StringField(
+      [
+        'default' => 'Bar',
+        'validators' => [
+          new InputRequired('Bar needs a value!'),
+          new AnyOf('',
+            [
+              'values' => ['blah', 'boo']
+            ]
+          ),
+        ],
+      ]
+    );
     $this->baz = new StringField(['default' => 'Baz']);
   }
 }

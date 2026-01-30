@@ -9,10 +9,11 @@
 
 namespace WTForms\Tests\Fields;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\IntegerField;
 use WTForms\Form;
 
-class IntegerFieldTest extends \PHPUnit\Framework\TestCase
+class IntegerFieldTest extends TestCase
 {
   public function testIntegerField()
   {

@@ -9,6 +9,9 @@
 
 namespace WTForms;
 
+use ReflectionClass;
+use ReflectionException;
+use WTForms\CSRF\Core\CSRF;
 use WTForms\CSRF\Session\SessionCSRF;
 use WTForms\Exceptions\TypeError;
 use WTForms\Fields\Core\Field;
@@ -20,11 +23,11 @@ use WTForms\Fields\Core\Field;
 class DefaultMeta
 {
   public string $csrf_field_name = 'csrf_token';
-  public ?string $csrf_time_limit = null;
+  public ?int $csrf_time_limit = null;
   public bool $csrf = false;
   public ?string $csrf_secret = null;
   /**
-   * @var ?class-string<covariant \WTForms\CSRF\Core\CSRF>
+   * @var ?class-string<covariant CSRF>
    */
   public ?string $csrf_class = null;
 
@@ -55,8 +58,8 @@ class DefaultMeta
   {
     if (!is_null($this->csrf_class)) {
       try {
-        return (new \ReflectionClass($this->csrf_class))->newInstance();
-      } catch (\ReflectionException $e) {
+        return (new ReflectionClass($this->csrf_class))->newInstance();
+      } catch (ReflectionException $e) {
         throw new TypeError(sprintf('csrf_class must be a valid class name (got %s)', $this->csrf_class));
       }
     }

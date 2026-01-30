@@ -1,13 +1,6 @@
 services:
-
-  php74:
-    build: ./php74
+  php:
+    build: ./php
     volumes:
       - ..:/workspace:cached
     working_dir: /workspace
-
-#  php84:
-#    build: ./php84
-#    volumes:
-#      - ..:/workspace:cached
-#    working_dir: /workspace

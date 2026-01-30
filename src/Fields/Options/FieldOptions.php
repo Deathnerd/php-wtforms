@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
@@ -13,12 +13,14 @@ use WTForms\Widgets\Core\Widget;
 /**
  * Base options class for Field constructors.
  *
+ * @template TDefault
+ *
  * @phpstan-type FieldOptionsArray array{
  *     validators?: list<Validator|callable>,
  *     filters?: list<callable>,
  *     description?: string,
  *     id?: string|null,
- *     default?: mixed,
+ *     default?: TDefault,
  *     widget?: Widget|null,
  *     render_kw?: array<string, mixed>,
  *     name?: string|null,
@@ -27,7 +29,9 @@ use WTForms\Widgets\Core\Widget;
  *     attributes?: array<string, mixed>,
  *     label?: string|null,
  *     class?: string|null,
- *     form?: Form|null
+ *     form?: Form|null,
+ *     type?: string,
+ *     data?: mixed|array,
  * }
  *
  * @template TOptions of array<string, mixed>
@@ -50,6 +54,7 @@ class FieldOptions extends ArrayOptions
 
   public ?string $id = null;
 
+  /** @var TDefault $default */
   public $default;
 
   public ?Widget $widget = null;

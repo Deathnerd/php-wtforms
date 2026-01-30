@@ -9,6 +9,7 @@
 
 namespace WTForms\Tests\Common;
 
+use PHPUnit\Framework\TestCase;
 use WTForms\Fields\Core\StringField;
 use WTForms\Flags;
 use WTForms\Form;
@@ -27,7 +28,7 @@ class FlagsTestForm extends Form
   }
 }
 
-class FlagsTest extends \PHPUnit\Framework\TestCase
+class FlagsTest extends TestCase
 {
   public function setUp(): void
   {
@@ -44,7 +45,6 @@ class FlagsTest extends \PHPUnit\Framework\TestCase
     $this->assertObjectHasProperty('_bar', $flags);
     $this->assertObjectNotHasProperty('bar', $flags);
     $this->assertFalse($flags->_bar);
-    $this->assertFalse($flags->foo == $flags->_foo);
   }
 
   public function testExistingValues()
@@ -59,18 +59,17 @@ class FlagsTest extends \PHPUnit\Framework\TestCase
 
   public function testAssignment()
   {
-    $flags = (new FlagsTestForm())->a->flags;
-    $this->assertFalse(property_exists($flags, 'optional'));
+    $flags = new FlagsTestForm()->a->flags;
+    $this->assertFalse($flags->optional);
     $flags->optional = true;
-    $this->assertEquals(true, $flags->optional);
-    $this->assertTrue(property_exists($flags, 'optional'));
+    $this->assertTrue($flags->optional);
   }
 
   public function testUnset()
   {
-    $flags = (new FlagsTestForm())->a->flags;
-    unset($flags->required);
-    $this->assertFalse(property_exists($flags, 'required'));
-    $this->assertEquals(false, $flags->required);
+    $flags = new FlagsTestForm()->a->flags;
+    $this->assertTrue($flags->required);
+    $flags->required = false;
+    $this->assertFalse($flags->required);
   }
 }

@@ -9,6 +9,8 @@
 
 namespace WTForms\Exceptions;
 
+use Exception;
+
 /**
  * Causes the validation chain to stop.
  *
@@ -16,6 +18,6 @@ namespace WTForms\Exceptions;
  * called. If raised with a message, the message will be added to the errors
  * list.
  */
-class StopValidation extends \Exception
+class StopValidation extends Exception
 {
 }
