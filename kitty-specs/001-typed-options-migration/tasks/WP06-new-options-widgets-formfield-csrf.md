@@ -1,7 +1,7 @@
 ---
 work_package_id: WP06
 title: New Options Classes — Widgets, FormField, CSRF
-lane: planned
+lane: "done"
 dependencies:
 - WP01
 subtasks:
@@ -16,8 +16,8 @@ phase: Phase 5 - New Options Classes
 assignee: ''
 agent: ''
 shell_pid: ''
-review_status: ''
-reviewed_by: ''
+review_status: "approved"
+reviewed_by: "Wes Gilleland"
 history:
 - timestamp: '2026-01-30T00:00:00Z'
   lane: planned
@@ -172,3 +172,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T23:26:20Z – unknown – lane=done – 6 widget Options, FormFieldOptions, CSRFTokenFieldOptions created. All constructors accept typed Options. 248 tests, same 8 pre-existing failures.
