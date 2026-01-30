@@ -1,0 +1,10 @@
+{
+  "feature_number": "001",
+  "slug": "001-typed-options-migration",
+  "friendly_name": "Typed Options Migration",
+  "mission": "software-dev",
+  "source_description": "@docs/plans/2026-01-30-typed-options-migration-design.md",
+  "created_at": "2026-01-30T00:00:00Z",
+  "target_branch": "master",
+  "vcs": "git"
+}
