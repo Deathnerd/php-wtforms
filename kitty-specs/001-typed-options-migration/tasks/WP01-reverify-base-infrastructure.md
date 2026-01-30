@@ -7,7 +7,7 @@ subtasks:
   - "T004"
 title: "Re-verify Base Class Infrastructure"
 phase: "Phase 1 - Re-verify Base Classes"
-lane: "doing"
+lane: "for_review"
 assignee: ""
 agent: "claude-opus"
 shell_pid: "16784"
@@ -127,3 +127,6 @@ history:
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
 - 2026-01-30T22:35:56Z – claude-opus – shell_pid=16784 – lane=doing – Started implementation via workflow command
+- 2026-01-30T22:40:10Z – claude-opus – shell_pid=16784 – lane=doing – Audit complete. T001-T003 PASS: ArrayOptions, Field base class, and FieldListOptions all correctly implemented. T004 BLOCKED: FieldOptions missing hydrateObject() implementation causes fatal error - tests cannot run. This is a pre-existing issue that must be resolved by a subsequent WP (likely WP02) adding hydrateObject() to FieldOptions before the test suite can pass.
+- 2026-01-30T22:40:27Z – claude-opus – shell_pid=16784 – lane=doing – T004 (baseline tests) cannot be marked done - FieldOptions lacks hydrateObject() causing fatal. Documented as follow-up for WP02.
+- 2026-01-30T22:42:18Z – claude-opus – shell_pid=16784 – lane=for_review – Audit complete. T001-T003 pass. T004 documented: FieldOptions missing hydrateObject() blocks tests. See docs/plans/WP01-audit-findings.md.
