@@ -21,6 +21,13 @@ class NumberRangeOptions extends ArrayOptions
   /** @var int|float|null */
   public $max;
 
+  public function hydrateObject(object $obj): object
+  {
+    $obj->min = $this->min;
+    $obj->max = $this->max;
+    return $obj;
+  }
+
   protected function getDefaults(): array
   {
     return ['min' => null, 'max' => null];

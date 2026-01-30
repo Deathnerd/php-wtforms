@@ -20,6 +20,22 @@ class AnyOfOptions extends ArrayOptions
   /** @var callable|null */
   public $formatter;
 
+  public function validate(): void
+  {
+    if (empty($this->values)) {
+      throw new \WTForms\Exceptions\TypeError('Values passed to AnyOf must be in the form of an non-empty array');
+    }
+    if ($this->formatter !== null && !is_callable($this->formatter)) {
+      throw new \WTForms\Exceptions\TypeError(sprintf('Formatter must be a callable; %s found', gettype($this->formatter)));
+    }
+  }
+
+  public function hydrateObject(object $obj): object
+  {
+    $obj->values = $this->values;
+    return $obj;
+  }
+
   protected function getDefaults(): array
   {
     return ['values' => [], 'formatter' => null];

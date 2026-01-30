@@ -35,10 +35,30 @@ abstract class Validator
   public function __construct(string $message = '', $options = [])
   {
     if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+      $this->constructFromOptions($message, $options);
+      return;
     }
     $this->message = $message;
     $this->options = $options;
+  }
+
+  /**
+   * Construct from a typed Options object.
+   */
+  protected function constructFromOptions(string $message, ArrayOptions $options): void
+  {
+    $this->message = $message;
+    $this->options = $options->toArray();
+    $options->validate();
+    $options->hydrateObject($this);
+    $this->postHydrate();
+  }
+
+  /**
+   * Hook for subclasses to run post-construction derived state.
+   */
+  protected function postHydrate(): void
+  {
   }
 
   abstract public function __invoke(Form $form, Field $field, string $message = '');

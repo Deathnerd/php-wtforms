@@ -43,10 +43,11 @@ class IPAddress extends Validator
    *
    * @throws ValueError If ip_type isn't a proper flag
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|IPAddressOptions $options = new IPAddressOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof IPAddressOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     $options = array_merge(['ip_type' => FILTER_FLAG_IPV4], $options);
     if (!in_array($options['ip_type'], [FILTER_FLAG_IPV4, FILTER_FLAG_IPV6])) {

@@ -36,10 +36,11 @@ class EqualTo extends Validator
    *
    * @throws RuntimeException
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|EqualToOptions $options = new EqualToOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof EqualToOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     parent::__construct($message, $options);
     if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {

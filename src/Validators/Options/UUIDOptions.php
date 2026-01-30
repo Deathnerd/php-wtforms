@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace WTForms\Validators\Options;
 
-use WTForms\Internal\Types\ArrayOptions;
-
 /**
  * Options for the UUID validator.
  *
  * @phpstan-type UUIDOptionsArray array{regex?:non-empty-string}
  *
- * @extends ArrayOptions<UUIDOptionsArray>
+ * @extends RegexpOptions<UUIDOptionsArray>
  */
-class UUIDOptions extends ArrayOptions
+class UUIDOptions extends RegexpOptions
 {
   /** @var non-empty-string */
   public string $regex = '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/';

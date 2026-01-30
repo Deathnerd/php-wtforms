@@ -35,7 +35,7 @@ class AnyOfTest extends TestCase
 
   public function testNoValues()
   {
-    $this->expectExceptionMessage('AnyOf validator expects an array of values!');
+    $this->expectExceptionMessage('Values passed to AnyOf must be in the form of an non-empty array');
     $this->expectException(TypeError::class);
     new AnyOf('test %s');
   }

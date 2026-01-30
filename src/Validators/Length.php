@@ -44,10 +44,11 @@ class Length extends Validator
    * @throws TypeError
    * @throws ValueError
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|LengthOptions $options = new LengthOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof LengthOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     $options = array_merge(['min' => -1, 'max' => -1], $options);
     if (!(-1 != $options['min'] || -1 != $options['max'])) {

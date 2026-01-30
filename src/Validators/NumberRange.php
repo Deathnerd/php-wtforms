@@ -42,10 +42,11 @@ class NumberRange extends Validator
    * @param string                                     $message error message to raise in case of a validation error
    * @param NumberRangeOptionsArray|NumberRangeOptions $options
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|NumberRangeOptions $options = new NumberRangeOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof NumberRangeOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     $options = array_merge(['min' => null, 'max' => null], $options);
     parent::__construct($message, $options);

@@ -34,10 +34,11 @@ class RequiredIf extends DataRequired
    *
    * @throws RuntimeException
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|RequiredIfOptions $options = new RequiredIfOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof RequiredIfOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     if (!array_key_exists('fieldname', $options) || !$options['fieldname']) {
       throw new RuntimeException('RequiredIf requires fieldname!');

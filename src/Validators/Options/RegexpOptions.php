@@ -17,6 +17,12 @@ class RegexpOptions extends ArrayOptions
 {
   public string $regex = '';
 
+  public function hydrateObject(object $obj): object
+  {
+    $obj->regex = $this->regex;
+    return $obj;
+  }
+
   protected function getDefaults(): array
   {
     return ['regex' => ''];

@@ -17,6 +17,19 @@ class RequiredIfOptions extends ArrayOptions
 {
   public string $fieldname = '';
 
+  public function validate(): void
+  {
+    if ($this->fieldname === '') {
+      throw new \RuntimeException('RequiredIf requires fieldname!');
+    }
+  }
+
+  public function hydrateObject(object $obj): object
+  {
+    $obj->fieldname = $this->fieldname;
+    return $obj;
+  }
+
   protected function getDefaults(): array
   {
     return ['fieldname' => ''];

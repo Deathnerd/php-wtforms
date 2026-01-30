@@ -35,10 +35,11 @@ class Regexp extends Validator
    * @param string                           $message Error message to raise in case of a validation error
    * @param RegexpOptionsArray|RegexpOptions $options
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|RegexpOptions $options = new RegexpOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof RegexpOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     assert(false !== preg_match($options['regex'], ''), 'Invalid regular expression passed to Regexp');
     parent::__construct($message, $options);

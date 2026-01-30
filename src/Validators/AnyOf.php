@@ -42,8 +42,13 @@ class AnyOf extends Validator
    *
    * @throws TypeError
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|AnyOfOptions $options = new AnyOfOptions())
   {
+    if ($options instanceof AnyOfOptions) {
+      $this->user_formatter = $options->formatter;
+      parent::__construct($message, $options);
+      return;
+    }
     parent::__construct($message, $options);
     if (!array_key_exists('values', $this->getOptions())) {
       throw new TypeError('AnyOf validator expects an array of values!');

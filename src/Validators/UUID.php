@@ -28,10 +28,11 @@ class UUID extends Regexp
    * @param string                       $message Error message to raise in case of validation error
    * @param UUIDOptionsArray|UUIDOptions $options
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|UUIDOptions $options = new UUIDOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof UUIDOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     if (!isset($options['regex'])) {
       $options['regex'] = '/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/';

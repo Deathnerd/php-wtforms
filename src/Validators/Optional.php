@@ -37,17 +37,18 @@ class Optional extends Validator
   /**
    * @var bool
    */
-  private $strip_whitespace;
+  public $strip_whitespace;
 
   /**
    * Optional constructor.
    *
    * @param OptionalOptionsArray|OptionalOptions $options
    */
-  public function __construct(string $message = '', $options = [])
+  public function __construct(string $message = '', array|OptionalOptions $options = new OptionalOptions())
   {
-    if ($options instanceof ArrayOptions) {
-      $options = $options->toArray();
+    if ($options instanceof OptionalOptions) {
+      parent::__construct($message, $options);
+      return;
     }
     $options = array_merge(['strip_whitespace' => true], $options);
     parent::__construct($message, $options);
