@@ -7,6 +7,7 @@ namespace WTForms\Widgets\HTML5;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\Input;
+use WTForms\Widgets\Options\RangeInputOptions as RangeInputOptionsClass;
 
 /**
  * Renders an input with the type "range".
@@ -23,8 +24,13 @@ class RangeInput extends Input
   /**
    * @phpstan-param RangeInputOptions & FieldOptionsArray $options
    */
-  public function __construct(array $options = [])
+  public function __construct(array|RangeInputOptionsClass $options = [])
   {
+    if ($options instanceof RangeInputOptionsClass) {
+      parent::__construct('range');
+      $this->constructFromOptions($options);
+      return;
+    }
     $options = array_merge(['step' => null], $options);
     $this->step = $options['step'];
     parent::__construct('range');

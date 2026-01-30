@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Widgets\Options\TableWidgetOptions;
 
 /**
  * Renders a list of fields as a set of table rows with th/td pairs.
@@ -25,8 +26,12 @@ class TableWidget extends Widget
    */
   public bool $with_table_tag;
 
-  public function __construct(bool $with_table_tag = true)
+  public function __construct(bool|TableWidgetOptions $with_table_tag = true)
   {
+    if ($with_table_tag instanceof TableWidgetOptions) {
+      $this->constructFromOptions($with_table_tag);
+      return;
+    }
     $this->with_table_tag = $with_table_tag;
   }
 

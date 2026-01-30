@@ -6,6 +6,7 @@ namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\SelectFieldBase;
+use WTForms\Widgets\Options\ListWidgetOptions;
 
 /**
  * Renders a list of fields as `ul` or `ol` list.
@@ -34,8 +35,12 @@ class ListWidget extends Widget
    * @param string $html_tag     Must be 'ul' or 'ol'
    * @param bool   $prefix_label If true, subfield labels appear before the field
    */
-  public function __construct(string $html_tag = 'ul', bool $prefix_label = true)
+  public function __construct(string|ListWidgetOptions $html_tag = 'ul', bool $prefix_label = true)
   {
+    if ($html_tag instanceof ListWidgetOptions) {
+      $this->constructFromOptions($html_tag);
+      return;
+    }
     assert(in_array($html_tag, ['ul', 'ol']));
     $this->html_tag = $html_tag;
     $this->prefix_label = $prefix_label;

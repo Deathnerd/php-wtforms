@@ -4,6 +4,7 @@ namespace WTForms\CSRF\Core;
 
 use ReflectionClass;
 use WTForms;
+use WTForms\CSRF\Options\CSRFTokenFieldOptions;
 use WTForms\Exceptions\ValidationError;
 use WTForms\Fields\Simple\HiddenField;
 use WTForms\Form;
@@ -30,9 +31,15 @@ class CSRFTokenField extends HiddenField
    *
    * @param CSRFTokenFieldOptions $options
    */
-  public function __construct(array $options = [])
+  public function __construct(array|CSRFTokenFieldOptions $options = [])
   {
-    /** @var CSRFTokenFieldOptions $defaults */
+    if ($options instanceof CSRFTokenFieldOptions) {
+      $options->hydrateObject($this);
+      parent::__construct($options);
+      return;
+    }
+
+    /** @var array $defaults */
     $defaults = ['label' => 'CSRF Token', 'csrf_impl' => 'WTForms\CSRF\Core\CSRF'];
     $options = array_merge($defaults, $options);
 

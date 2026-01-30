@@ -7,6 +7,7 @@ namespace WTForms\Widgets\HTML5;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Options\FieldOptions;
 use WTForms\Widgets\Core\Input;
+use WTForms\Widgets\Options\NumberInputOptions as NumberInputOptionsClass;
 
 /**
  * Renders an input with type "number".
@@ -26,8 +27,13 @@ class NumberInput extends Input
   /**
    * @phpstan-param NumberInputOptions & FieldOptionsArray $options
    */
-  public function __construct(array $options = [])
+  public function __construct(array|NumberInputOptionsClass $options = [])
   {
+    if ($options instanceof NumberInputOptionsClass) {
+      parent::__construct('number');
+      $this->constructFromOptions($options);
+      return;
+    }
     $options = array_merge(['step' => null, 'min' => null, 'max' => null], $options);
     $this->step = $options['step'];
     $this->min = $options['min'];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Widgets\Options\PasswordInputOptions;
 
 /**
  * Render a password input.
@@ -19,8 +20,13 @@ class PasswordInput extends Input
 {
   public bool $hide_value;
 
-  public function __construct(bool $hide_value = true)
+  public function __construct(bool|PasswordInputOptions $hide_value = true)
   {
+    if ($hide_value instanceof PasswordInputOptions) {
+      parent::__construct('password');
+      $this->constructFromOptions($hide_value);
+      return;
+    }
     parent::__construct('password');
     $this->hide_value = $hide_value;
   }

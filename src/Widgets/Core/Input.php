@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WTForms\Widgets\Core;
 
 use WTForms\Fields\Core\Field;
+use WTForms\Widgets\Options\InputOptions;
 
 /**
  * Render a basic ``<input>`` field.
@@ -23,11 +24,15 @@ class Input extends Widget
   public string $type = '';
 
   /**
-   * @param string $type If passed, will add ``type="$input_type"`` to the
-   *                     HTML attributes for this input
+   * @param string|InputOptions $type If passed, will add ``type="$input_type"`` to the
+   *                                  HTML attributes for this input
    */
-  public function __construct(string $type = '')
+  public function __construct(string|InputOptions $type = '')
   {
+    if ($type instanceof InputOptions) {
+      $this->constructFromOptions($type);
+      return;
+    }
     if ('' !== $type) {
       $this->type = $type;
     }

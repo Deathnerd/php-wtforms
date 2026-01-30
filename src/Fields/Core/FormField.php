@@ -7,6 +7,7 @@ namespace WTForms\Fields\Core;
 use ArrayAccess;
 use WTForms\Exceptions\TypeError;
 use WTForms\Fields\Options\FieldOptions;
+use WTForms\Fields\Options\FormFieldOptions;
 use WTForms\Form;
 use WTForms\Validators\Validator;
 use WTForms\Widgets\Core\TableWidget;
@@ -34,12 +35,18 @@ class FormField extends Field implements ArrayAccess
   private bool $usedDefault = false;
 
   /**
-   * @phpstan-param FormFieldOptionsArray & FieldOptionsArray $options
+   * @phpstan-param FormFieldOptionsArray & FieldOptionsArray|FormFieldOptions $options
    *
    * @throws TypeError
    */
-  public function __construct(array $options = [])
+  public function __construct(array|FormFieldOptions $options = [])
   {
+    if ($options instanceof FormFieldOptions) {
+      $options->hydrateObject($this);
+      parent::__construct($options);
+      return;
+    }
+
     if (!array_key_exists('form_class', $options)) {
       throw new TypeError('FormField must have a form_class property set!');
     }
@@ -59,6 +66,13 @@ class FormField extends Field implements ArrayAccess
     }
     $options = array_merge(['widget' => new TableWidget()], $options);
     parent::__construct($options);
+  }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new TableWidget();
+    }
   }
 
   /**
