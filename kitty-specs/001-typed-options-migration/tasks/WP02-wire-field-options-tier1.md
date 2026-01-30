@@ -1,7 +1,7 @@
 ---
 work_package_id: WP02
 title: Wire Existing Field Options — Tier 1
-lane: "doing"
+lane: "for_review"
 dependencies: [WP01]
 base_branch: 001-typed-options-migration-WP01
 base_commit: 2c54e440a640161d115be65fde1a3a73cf4ea895
@@ -152,3 +152,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T22:46:15Z – unknown – shell_pid=19848 – lane=for_review – Tier 1 field options wired. FieldOptions.hydrateObject() fixes fatal. SelectField/DateTimeField accept Options union. 248 tests run, 8 pre-existing failures (Label/SelectFieldBase issues, not caused by this WP).
