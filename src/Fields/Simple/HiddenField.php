@@ -27,4 +27,11 @@ class HiddenField extends StringField
     $options = array_merge(['widget' => new HiddenInput()], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new HiddenInput();
+    }
+  }
 }

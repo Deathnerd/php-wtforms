@@ -40,6 +40,13 @@ abstract class SelectFieldBase extends Field implements Iterator
     parent::__construct($options);
   }
 
+  protected function postHydrate(): void
+  {
+    if (!isset($this->option_widget)) {
+      $this->option_widget = new Option();
+    }
+  }
+
   /**
    * @return array<int, _Option>|mixed
    */

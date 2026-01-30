@@ -26,4 +26,11 @@ class SubmitField extends BooleanField
     $options = array_merge(['widget' => new SubmitInput()], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new SubmitInput();
+    }
+  }
 }

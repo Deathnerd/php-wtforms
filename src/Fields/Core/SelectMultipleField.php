@@ -41,6 +41,16 @@ class SelectMultipleField extends SelectField
     $widget->multiple = true;
   }
 
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new Select();
+    }
+    /** @var Select $widget */
+    $widget = $this->widget;
+    $widget->multiple = true;
+  }
+
   /**
    * Provides data for choice widget rendering. Must return a sequence or
    * iterable of `[value,label,selected]` tuples.

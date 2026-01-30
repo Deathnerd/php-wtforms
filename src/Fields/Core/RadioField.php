@@ -30,4 +30,14 @@ class RadioField extends SelectField
                            ], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new ListWidget('ul', false);
+    }
+    if (!isset($this->option_widget)) {
+      $this->option_widget = new RadioInput();
+    }
+  }
 }

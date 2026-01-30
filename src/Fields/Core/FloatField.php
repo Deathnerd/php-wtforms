@@ -36,6 +36,13 @@ class FloatField extends Field
     parent::__construct($options);
   }
 
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new TextInput();
+    }
+  }
+
   /**
    * Process data received over the wire from a form.
    *

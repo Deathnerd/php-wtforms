@@ -50,6 +50,13 @@ class BooleanField extends Field
     parent::__construct($options);
   }
 
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new CheckboxInput();
+    }
+  }
+
   /**
    * Process the data applied to this field and store the result.
    *
