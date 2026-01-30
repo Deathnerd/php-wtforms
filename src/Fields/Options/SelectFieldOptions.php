@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WTForms\Fields\Options;
 
+use WTForms\Fields\Core\SelectField;
+
 /**
  * Options class for SelectField constructors.
  *
@@ -32,8 +34,8 @@ class SelectFieldOptions extends FieldOptions
   public $coerce;
 
   /**
-   * @param \WTForms\Fields\Core\SelectField $obj
-   * @return \WTForms\Fields\Core\SelectField
+   * @phpstan-param SelectField $obj
+   * @return SelectField
    */
   public function hydrateObject(object $obj): object
   {

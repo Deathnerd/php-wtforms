@@ -67,7 +67,7 @@ class FieldListOptions extends FieldOptions
   /**
    * Pure property assignment from validated options to target object.
    *
-   * @param FieldList $obj
+   * @phpstan-param FieldList $obj
    *
    * @return FieldList
    *

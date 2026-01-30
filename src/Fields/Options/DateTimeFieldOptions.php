@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WTForms\Fields\Options;
 
+use WTForms\Fields\Core\DateTimeField;
+
 /**
  * Options class for DateTimeField constructors.
  *
@@ -19,8 +21,8 @@ class DateTimeFieldOptions extends FieldOptions
   public string $format = '%Y-%m-%d %H:%i:%s';
 
   /**
-   * @param \WTForms\Fields\Core\DateTimeField $obj
-   * @return \WTForms\Fields\Core\DateTimeField
+   * @phpstan-param DateTimeField $obj
+   * @return DateTimeField
    */
   public function hydrateObject(object $obj): object
   {

@@ -85,8 +85,9 @@ class FieldOptions extends ArrayOptions
   /**
    * Assign common field properties from options to the target object.
    *
-   * @param Field $obj
-   * @return Field
+   * @template TField of Field
+   * @phpstan-param TField $obj
+   * @return TField
    */
   public function hydrateObject(object $obj): object
   {
