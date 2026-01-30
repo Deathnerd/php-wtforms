@@ -245,7 +245,7 @@ class FieldListTest extends TestCase
 
   public function testImproperInnerFieldArgument()
   {
-    $this->expectExceptionMessage('FieldList requires an inner_field type subclassing Field; string given');
+    $this->expectExceptionMessage('Cannot assign string to property WTForms\Fields\Options\FieldListOptions::$inner_field');
     $this->expectException(TypeError::class);
     new FieldList(['inner_field' => '\WTForms\Fields\Core\StringField']);
   }

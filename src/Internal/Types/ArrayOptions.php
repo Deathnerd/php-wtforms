@@ -62,7 +62,14 @@ abstract class ArrayOptions implements ArrayAccess, Countable, IteratorAggregate
   {
     foreach ($this->data as $key => $value) {
       if (property_exists($this, $key)) {
-        $this->$key = $value;
+        try {
+          $this->$key = $value;
+        } catch (\TypeError) {
+          $type = is_object($value) ? get_class($value) : gettype($value);
+          throw new \WTForms\Exceptions\TypeError(
+            sprintf('Cannot assign %s to property %s::$%s', $type, static::class, $key)
+          );
+        }
       }
     }
   }
