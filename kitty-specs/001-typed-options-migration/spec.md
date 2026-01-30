@@ -86,10 +86,19 @@ New Options classes are created for Widget subclasses (`InputOptions`, `Password
 
 ### Edge Cases
 
-- What happens when an Options object is passed with extra/unknown properties? (Should be ignored or error?)
-- How does the array path interact with `postHydrate()` — does the array path also call `postHydrate()`?
-- What happens when a subclass overrides `postHydrate()` but the parent also has one? (Both must run in correct order.)
-- What happens when `hydrateObject()` receives a target that is not the expected class?
+- Unknown keys in the source array are silently ignored by `ArrayOptions` — no error thrown, supports forward compatibility.
+- Both the array path and the typed Options path converge on `postHydrate()`. Derived state (default widgets, computed properties) lives in `postHydrate()` only, avoiding duplication.
+- Base `postHydrate()` on `Field`, `Validator`, and `Widget` is a no-op hook. Subclasses override it without needing to call `parent::postHydrate()`.
+- `hydrateObject()` target type is enforced by PHPStan param typing at analysis time. No runtime class check is performed.
+
+## Clarifications
+
+### Session 2026-01-30
+
+- Q: What happens when an Options object has extra/unknown properties? → A: Silently ignore unknown keys.
+- Q: Does the array path also call `postHydrate()`? → A: Yes — both paths converge on `postHydrate()` so derived state lives in one place.
+- Q: Must subclass `postHydrate()` call `parent::postHydrate()`? → A: No — base is a no-op hook, calling parent is harmless but not required.
+- Q: Runtime check when `hydrateObject()` receives wrong target class? → A: No runtime check — rely on PHPStan param typing at analysis time.
 
 ## Requirements *(mandatory)*
 
