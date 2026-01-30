@@ -9,12 +9,12 @@ subtasks:
   - "T036"
 title: "FormOptions and Deprecation"
 phase: "Phase 6+7 - Form Options and Deprecation"
-lane: "planned"
+lane: "done"
 assignee: ""
 agent: ""
 shell_pid: ""
-review_status: ""
-reviewed_by: ""
+review_status: "approved"
+reviewed_by: "Wes Gilleland"
 dependencies: ["WP02", "WP03", "WP04", "WP05", "WP06"]
 history:
   - timestamp: "2026-01-30T00:00:00Z"
@@ -144,3 +144,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T23:28:36Z – unknown – lane=done – FormOptions created, Form accepts typed Options, deprecation annotations added. 248 tests, same 8 pre-existing failures.
