@@ -6,12 +6,12 @@ subtasks:
   - "T023"
 title: "Leaf Field postHydrate — HTML5 Fields"
 phase: "Phase 4 - Leaf Field postHydrate"
-lane: "planned"
+lane: "done"
 assignee: ""
 agent: ""
 shell_pid: ""
-review_status: ""
-reviewed_by: ""
+review_status: "approved"
+reviewed_by: "Wes Gilleland"
 dependencies: ["WP02"]
 history:
   - timestamp: "2026-01-30T00:00:00Z"
@@ -94,3 +94,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T23:19:57Z – unknown – lane=done – All 11 HTML5 leaf fields have postHydrate(). 248 tests, same 8 pre-existing failures.
