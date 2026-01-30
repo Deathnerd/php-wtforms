@@ -19,9 +19,9 @@
 **Estimated size**: ~250 lines
 
 ### Included Subtasks
-- [ ] T001 Audit `ArrayOptions` base class for `validate()` and abstract `hydrateObject()` signatures
-- [ ] T002 Audit `Field::constructFromOptions`, `Field::collectFieldFlags`, `Field::postHydrate` wiring
-- [ ] T003 Audit `FieldListOptions::hydrateObject` and `FieldList::postHydrate` implementation
+- [x] T001 Audit `ArrayOptions` base class for `validate()` and abstract `hydrateObject()` signatures
+- [x] T002 Audit `Field::constructFromOptions`, `Field::collectFieldFlags`, `Field::postHydrate` wiring
+- [x] T003 Audit `FieldListOptions::hydrateObject` and `FieldList::postHydrate` implementation
 - [ ] T004 Run full test suite to confirm baseline — zero failures
 
 ### Implementation Notes
