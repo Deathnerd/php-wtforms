@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Iterator;
 use WTForms\Fields\Core\Field;
 use WTForms\Fields\Core\Label;
+use WTForms\Options\FormOptions;
 use WTForms\Validators\Validator;
 
 /**
@@ -86,8 +87,14 @@ class Form implements ArrayAccess, Iterator {
    * Initialize a form. This is usually done in the context of a view/controller in your application. When a form is
    * constructed, the fields populate their input based on the form.
    */
-  public function __construct(array $options = [])
+  public function __construct(array|FormOptions $options = [])
   {
+    if ($options instanceof FormOptions) {
+      $this->constructFromOptions($options);
+      return;
+    }
+
+    /** @deprecated Use FormOptions parameter instead */
     // Update the meta values for this form's meta object with a user-supplied array
     // of key=>value pairs mapping to properties on this form's meta object
     if (array_key_exists('meta', $options) && is_array($options['meta'])) {
@@ -112,6 +119,41 @@ class Form implements ArrayAccess, Iterator {
     if ($this->prefix && !str_contains('-_;:/.', substr($this->prefix, -1))) {
       $this->prefix .= '-';
     }
+  }
+
+  /**
+   * Construct from typed FormOptions.
+   */
+  protected function constructFromOptions(FormOptions $options): void
+  {
+    $options->validate();
+
+    // Handle meta
+    if ($options->meta instanceof DefaultMeta) {
+      $this->meta = $options->meta;
+    } elseif (is_array($options->meta) && $this->meta) {
+      $this->meta->updateValues($options->meta);
+    }
+
+    // CSRF setup
+    if ($this->meta && $this->meta->csrf) {
+      $this->csrf = $this->meta->buildCSRF($this);
+      [$csrf_name, $csrf_field] = $this->csrf->setupForm($this);
+      if (!property_exists($csrf_field->csrf_impl, 'form_meta') || !$csrf_field->csrf_impl->form_meta) {
+        $csrf_field->csrf_impl->form_meta = $this->meta;
+      }
+      $this->__set($csrf_name, $csrf_field);
+    }
+
+    $options->hydrateObject($this);
+    $this->postHydrate();
+  }
+
+  /**
+   * Hook for subclasses to run post-construction derived state.
+   */
+  protected function postHydrate(): void
+  {
   }
 
   /**

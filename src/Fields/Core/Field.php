@@ -125,6 +125,7 @@ class Field implements Iterator
    * Field constructor.
    *
    * @phpstan-param FieldOptionsArray|FieldOptions $options
+   * @deprecated Passing an array is deprecated. Use a FieldOptions instance instead.
    */
   public function __construct(array|FieldOptions $options = [])
   {

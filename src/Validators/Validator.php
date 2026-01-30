@@ -32,12 +32,16 @@ abstract class Validator
   /**
    * @param TOptions|ArrayOptions<TOptions> $options
    */
+  /**
+   * @deprecated Passing an array for $options is deprecated. Use a typed Options instance instead.
+   */
   public function __construct(string $message = '', $options = [])
   {
     if ($options instanceof ArrayOptions) {
       $this->constructFromOptions($message, $options);
       return;
     }
+    /** @deprecated Array path - use typed Options instead */
     $this->message = $message;
     $this->options = $options;
   }
