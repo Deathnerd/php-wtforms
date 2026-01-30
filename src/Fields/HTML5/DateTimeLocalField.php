@@ -24,4 +24,11 @@ class DateTimeLocalField extends DateTimeField
     $options = array_merge(['widget' => new DateTimeLocalInput()], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new DateTimeLocalInput();
+    }
+  }
 }

@@ -24,4 +24,11 @@ class DecimalField extends \WTForms\Fields\Core\DecimalField
     $options = array_merge(['widget' => new NumberInput(['step' => '1'])], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new NumberInput(['step' => '1']);
+    }
+  }
 }

@@ -27,4 +27,11 @@ class EmailField extends StringField
     $options = array_merge(['widget' => new EmailInput()], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new EmailInput();
+    }
+  }
 }

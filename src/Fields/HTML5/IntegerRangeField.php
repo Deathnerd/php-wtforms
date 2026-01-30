@@ -24,4 +24,11 @@ class IntegerRangeField extends IntegerField
     $options = array_merge(['widget' => new RangeInput(['step' => '1'])], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new RangeInput(['step' => '1']);
+    }
+  }
 }

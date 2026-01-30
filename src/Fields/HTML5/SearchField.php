@@ -25,4 +25,11 @@ class SearchField extends StringField
     $options = array_merge(['widget' => new SearchInput()], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new SearchInput();
+    }
+  }
 }

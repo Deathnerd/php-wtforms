@@ -24,4 +24,11 @@ class DateTimeField extends \WTForms\Fields\Core\DateTimeField
     $options = array_merge(['widget' => new DateTimeInput()], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new DateTimeInput();
+    }
+  }
 }

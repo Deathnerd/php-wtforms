@@ -24,4 +24,11 @@ class DecimalRangeField extends DecimalField
     $options = array_merge(['widget' => new RangeInput(['step' => 'any'])], $options);
     parent::__construct($options);
   }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new RangeInput(['step' => 'any']);
+    }
+  }
 }
