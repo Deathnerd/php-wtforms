@@ -110,7 +110,7 @@ New Options classes are created for Widget subclasses (`InputOptions`, `Password
 - **FR-004**: Each Options class MUST implement `hydrateObject()` that performs pure property assignment from Options to target object.
 - **FR-005**: Target classes MUST implement `postHydrate()` for derived state (default widgets, label promotion, computed properties) where applicable.
 - **FR-006**: The lifecycle MUST execute in order: `validate()` → `hydrateObject()` → `postHydrate()`.
-- **FR-007**: All existing tests MUST pass without modification when using the array-based constructor path.
+- **FR-007**: All existing tests MUST pass without modification. Existing test files MUST NOT be changed under any circumstances — not even whitespace, imports, or type hints. The migration must be fully backward-compatible with zero test changes.
 - **FR-008**: Base classes (`Field`, `Validator`, `Widget`) MUST provide `constructFromOptions` and `postHydrate` hook infrastructure.
 - **FR-009**: New Options classes MUST be created for: `FormFieldOptions`, `CSRFTokenFieldOptions`, `InputOptions`, `PasswordInputOptions`, `ListWidgetOptions`, `TableWidgetOptions`, `NumberInputOptions`, `RangeInputOptions`, and `FormOptions`.
 - **FR-010**: Options classes MUST reside in a sibling `Options/` directory following the naming convention `{ClassName}Options`.
