@@ -7,12 +7,12 @@ subtasks:
   - "T020"
 title: "Leaf Field postHydrate — Core Fields"
 phase: "Phase 4 - Leaf Field postHydrate"
-lane: "planned"
+lane: "done"
 assignee: ""
 agent: ""
 shell_pid: ""
-review_status: ""
-reviewed_by: ""
+review_status: "approved"
+reviewed_by: "Wes Gilleland"
 dependencies: ["WP02"]
 history:
   - timestamp: "2026-01-30T00:00:00Z"
@@ -125,3 +125,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T23:16:16Z – unknown – lane=done – All 12 core leaf fields have postHydrate(). 248 tests, same 8 pre-existing failures. No new regressions.
