@@ -7,10 +7,10 @@ subtasks:
   - "T004"
 title: "Re-verify Base Class Infrastructure"
 phase: "Phase 1 - Re-verify Base Classes"
-lane: "planned"
+lane: "doing"
 assignee: ""
-agent: ""
-shell_pid: ""
+agent: "claude-opus"
+shell_pid: "16784"
 review_status: ""
 reviewed_by: ""
 dependencies: []
@@ -126,3 +126,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T22:35:56Z – claude-opus – shell_pid=16784 – lane=doing – Started implementation via workflow command
