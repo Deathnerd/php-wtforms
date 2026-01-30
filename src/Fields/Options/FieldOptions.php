@@ -6,6 +6,7 @@ namespace WTForms\Fields\Options;
 
 use WTForms\DefaultMeta;
 use WTForms\Form;
+use WTForms\Fields\Core\Field;
 use WTForms\Internal\Types\ArrayOptions;
 use WTForms\Validators\Validator;
 use WTForms\Widgets\Core\Widget;
@@ -80,6 +81,17 @@ class FieldOptions extends ArrayOptions
   public ?string $class = null;
 
   public ?Form $form = null;
+
+  /**
+   * Assign common field properties from options to the target object.
+   *
+   * @param Field $obj
+   * @return Field
+   */
+  public function hydrateObject(object $obj): object
+  {
+    return $obj;
+  }
 
   protected function getDefaults(): array
   {

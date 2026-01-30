@@ -31,6 +31,20 @@ class SelectFieldOptions extends FieldOptions
    */
   public $coerce;
 
+  /**
+   * @param \WTForms\Fields\Core\SelectField $obj
+   * @return \WTForms\Fields\Core\SelectField
+   */
+  public function hydrateObject(object $obj): object
+  {
+    parent::hydrateObject($obj);
+    $obj->choices = $this->choices;
+    if ($this->coerce !== null) {
+      $obj->coerce = $this->coerce;
+    }
+    return $obj;
+  }
+
   protected function getDefaults(): array
   {
     return array_merge(parent::getDefaults(), [

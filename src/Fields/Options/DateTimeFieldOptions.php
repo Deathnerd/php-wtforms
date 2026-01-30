@@ -18,6 +18,17 @@ class DateTimeFieldOptions extends FieldOptions
    */
   public string $format = '%Y-%m-%d %H:%i:%s';
 
+  /**
+   * @param \WTForms\Fields\Core\DateTimeField $obj
+   * @return \WTForms\Fields\Core\DateTimeField
+   */
+  public function hydrateObject(object $obj): object
+  {
+    parent::hydrateObject($obj);
+    $obj->format = $this->format;
+    return $obj;
+  }
+
   protected function getDefaults(): array
   {
     return array_merge(parent::getDefaults(), [

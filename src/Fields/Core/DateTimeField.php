@@ -31,10 +31,16 @@ class DateTimeField extends Field
   protected string $carbon_format = 'Y-m-d H:i:s';
 
   /**
-   * @phpstan-param DateTimeFieldOptionsArray $options
+   * @phpstan-param DateTimeFieldOptionsArray|DateTimeFieldOptions $options
    */
-  public function __construct(array $options = [])
+  public function __construct(array|DateTimeFieldOptions $options = [])
   {
+    if ($options instanceof DateTimeFieldOptions) {
+      $options->hydrateObject($this);
+      parent::__construct($options);
+      return;
+    }
+
     if (array_key_exists('format', $options)) {
       $this->format = $options['format'];
       unset($options['format']);
@@ -42,6 +48,14 @@ class DateTimeField extends Field
     $this->carbon_format = preg_replace('/%/', '', $this->format) ?? $this->carbon_format;
     $options = array_merge(['widget' => new TextInput()], $options);
     parent::__construct($options);
+  }
+
+  protected function postHydrate(): void
+  {
+    $this->carbon_format = preg_replace('/%/', '', $this->format) ?? $this->carbon_format;
+    if (!$this->widget) {
+      $this->widget = new TextInput();
+    }
   }
 
   /**

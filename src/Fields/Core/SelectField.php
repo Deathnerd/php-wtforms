@@ -35,10 +35,16 @@ class SelectField extends SelectFieldBase
   public $coerce;
 
   /**
-   * @param SelectFieldOptionsArray $options
+   * @phpstan-param SelectFieldOptionsArray|SelectFieldOptions $options
    */
-  public function __construct(array $options = ['choices' => []])
+  public function __construct(array|SelectFieldOptions $options = ['choices' => []])
   {
+    if ($options instanceof SelectFieldOptions) {
+      $options->hydrateObject($this);
+      parent::__construct($options);
+      return;
+    }
+
     if (array_key_exists('choices', $options)) {
       $this->choices = $options['choices'];
       unset($options['choices']);
@@ -55,6 +61,16 @@ class SelectField extends SelectFieldBase
     }
     $options = array_merge(['widget' => new Select()], $options);
     parent::__construct($options);
+  }
+
+  protected function postHydrate(): void
+  {
+    if (!$this->widget) {
+      $this->widget = new Select();
+    }
+    if (!isset($this->coerce)) {
+      $this->coerce = fn($x) => $x;
+    }
   }
 
   /**
