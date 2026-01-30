@@ -10,12 +10,12 @@ subtasks:
   - "T016"
 title: "Wire Validator Base and Options — Tier 1"
 phase: "Phase 3 - Wire Existing Validator Options"
-lane: "planned"
+lane: "done"
 assignee: ""
 agent: ""
 shell_pid: ""
-review_status: ""
-reviewed_by: ""
+review_status: "approved"
+reviewed_by: "Wes Gilleland"
 dependencies: ["WP01"]
 history:
   - timestamp: "2026-01-30T00:00:00Z"
@@ -164,3 +164,4 @@ history:
 ## Activity Log
 
 - 2026-01-30T00:00:00Z – system – lane=planned – Prompt created.
+- 2026-01-30T23:12:22Z – unknown – lane=done – Implementation complete (commit 1182795). All 9 validator Options wired with validate/hydrateObject. Validator base has constructFromOptions/postHydrate. 248 tests, 8 pre-existing failures unchanged.
