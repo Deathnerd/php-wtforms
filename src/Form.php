@@ -246,7 +246,7 @@ class Form implements ArrayAccess, Iterator {
       if (!$value->short_name) {
         $value->short_name = $name;
       }
-      $value->name = $value->prefix . $name;
+      $value->name = $value->prefix . $value->short_name;
       $value->id = $value->name;
       if ($value->label instanceof Label) {
         if (!$value->label->text) {
