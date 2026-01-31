@@ -206,7 +206,7 @@ class Field implements Iterator
     unset($options['id']);
     $label = $options['label'] ?? ucwords(str_replace('_', ' ', $this->short_name));
     unset($options['label']);
-    $this->label = $label;
+    $this->label = new Label($this->id, $label);
     if ($options['widget']) {
       $this->widget = $options['widget'];
     }
@@ -271,8 +271,8 @@ class Field implements Iterator
     $this->id = $options->id ?? $this->name;
     $this->type = get_class();
 
-    // Label as string — promoted to Label by Form::__set or postHydrate
-    $this->label = $options->label ?? ucwords(str_replace('_', ' ', $this->short_name));
+    $labelText = $options->label ?? ucwords(str_replace('_', ' ', $this->short_name));
+    $this->label = new Label($this->id, $labelText);
 
     // Widget
     if ($options->widget) {
@@ -353,6 +353,9 @@ class Field implements Iterator
   public function __call(string $name, array $arguments)
   {
     if ('label' == $name) {
+      if (is_string($this->label)) {
+        $this->label = new Label($this->id, $this->label);
+      }
       if (count($arguments) > 0) {
         return $this->label->__invoke($arguments[0]);
       }
