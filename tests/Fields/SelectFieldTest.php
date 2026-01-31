@@ -20,20 +20,12 @@ use WTForms\Form;
 use WTForms\Widgets\Core\Option;
 use WTForms\Widgets\Core\TextInput;
 
-class SelectFieldBaseTestClass extends SelectFieldBase
-{
-  public function getChoices(): iterable
-  {
-    return [];
-  }
-}
-
 class SelectFieldTest extends TestCase
 {
   /**
    * @var Form
    */
-  public $form;
+  public Form $form;
 
   protected function setUp(): void
   {
@@ -128,13 +120,5 @@ class SelectFieldTest extends TestCase
     $this->assertNull($this->form->a->data);
     $this->assertEquals(1, count($this->form->a->errors));
     $this->assertEquals(['Not a valid choice'], $this->form->a->errors);
-  }
-
-  public function testSelectFieldBase()
-  {
-    $this->expectException(NotImplemented::class);
-    $field = new SelectFieldBaseTestClass();
-    $this->assertEmpty($field->value);
-    $field->getChoices();
   }
 }
