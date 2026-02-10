@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace WTForms\Options;
 
 use WTForms\DefaultMeta;
+use WTForms\Form;
 use WTForms\Internal\Types\ArrayOptions;
+use WTForms\Internal\Types\UnsetType;
 
 /**
  * Options for Form constructors.
@@ -17,26 +19,28 @@ use WTForms\Internal\Types\ArrayOptions;
  *     obj?: object|null,
  *     data?: array<string, mixed>|null
  * }
+ *
  * @extends ArrayOptions<FormOptionsArray>
  */
 class FormOptions extends ArrayOptions
 {
-  /** @var array<string, mixed>|DefaultMeta|null */
-  public array|DefaultMeta|null $meta = null;
+  /** @var array<string, mixed>|DefaultMeta|UnsetType */
+  public array|DefaultMeta|UnsetType $meta;
 
   public string $prefix = '';
 
   /** @var array<string, mixed> */
   public array $formdata = [];
 
-  public ?object $obj = null;
+  public object $obj;
 
-  /** @var array<string, mixed>|null */
-  public ?array $data = null;
+  /** @var array<string, mixed>|UnsetType */
+  public array $data;
 
   /**
-   * @phpstan-param \WTForms\Form $obj
-   * @return \WTForms\Form
+   * @phpstan-param Form $obj
+   *
+   * @return Form
    */
   public function hydrateObject(object $obj): object
   {
@@ -47,17 +51,18 @@ class FormOptions extends ArrayOptions
         $obj->prefix .= '-';
       }
     }
+
     return $obj;
   }
 
   protected function getDefaults(): array
   {
     return [
-      'meta' => null,
-      'prefix' => '',
+      'meta'     => new UnsetType(),
+      'prefix'   => '',
       'formdata' => [],
-      'obj' => null,
-      'data' => null,
+      'obj'      => new UnsetType(),
+      'data'     => new UnsetType(),
     ];
   }
 }

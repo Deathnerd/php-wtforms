@@ -12,6 +12,7 @@
             <directory>./tests/CSRF</directory>
             <directory>./tests/Quirks</directory>
             <directory>./tests/PHPStan</directory>
+            <directory>./tests/Integration</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">

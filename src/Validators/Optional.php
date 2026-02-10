@@ -12,7 +12,6 @@ namespace WTForms\Validators;
 use WTForms\Exceptions\StopValidation;
 use WTForms\Fields\Core\Field;
 use WTForms\Form;
-use WTForms\Internal\Types\ArrayOptions;
 use WTForms\Validators\Options\OptionalOptions;
 
 /**
@@ -20,10 +19,6 @@ use WTForms\Validators\Options\OptionalOptions;
  *
  * If input is empty, also removes prior errors (such as processing errors)
  * from the field
- *
- * @phpstan-import-type OptionalOptionsArray from OptionalOptions
- *
- * @template-extends Validator<OptionalOptionsArray>
  */
 class Optional extends Validator
 {
@@ -42,17 +37,11 @@ class Optional extends Validator
   /**
    * Optional constructor.
    *
-   * @param OptionalOptionsArray|OptionalOptions $options
+   * @param OptionalOptions $options
    */
-  public function __construct(string $message = '', array|OptionalOptions $options = new OptionalOptions())
+  public function __construct(string $message = '', OptionalOptions $options = new OptionalOptions())
   {
-    if ($options instanceof OptionalOptions) {
-      parent::__construct($message, $options);
-      return;
-    }
-    $options = array_merge(['strip_whitespace' => true], $options);
     parent::__construct($message, $options);
-    $this->strip_whitespace = $options['strip_whitespace'];
   }
 
   /**
@@ -61,6 +50,7 @@ class Optional extends Validator
   public function __invoke(Form $form, Field $field, string $message = '')
   {
     if (is_null($field->raw_data)
+        || empty($field->raw_data)
         || (is_string($field->raw_data[0]) && '' == $this->stringCheck($field->raw_data[0]))
     ) {
       $field->errors = [];

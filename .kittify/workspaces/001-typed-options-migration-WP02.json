@@ -1,0 +1,14 @@
+{
+  "wp_id": "WP02",
+  "feature_slug": "001-typed-options-migration",
+  "worktree_path": ".worktrees\\001-typed-options-migration-WP02",
+  "branch_name": "001-typed-options-migration-WP02",
+  "base_branch": "001-typed-options-migration-WP01",
+  "base_commit": "2c54e440a640161d115be65fde1a3a73cf4ea895",
+  "dependencies": [
+    "WP01"
+  ],
+  "created_at": "2026-01-30T22:43:20.285289+00:00",
+  "created_by": "implement-command",
+  "vcs_backend": "git"
+}
